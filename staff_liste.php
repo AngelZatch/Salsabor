@@ -14,6 +14,7 @@ include "functions/db_connect.php";
            <?php include "side-menu.php";?>
            <div class="col-sm-9 main">
            <h1>Liste du staff</h1>
+           <div class="btn-toolbar"><a href="" role="button" class="btn btn-default"><span class="glyphicon glyphicon-plus"> Ajouter un staff</span></a></div>
            <ul class="nav nav-tabs">
              <?php $staff_ranks = $db->query('SELECT * FROM rank');
                 while($row_staff_ranks = $staff_ranks->fetch(PDO::FETCH_ASSOC)){

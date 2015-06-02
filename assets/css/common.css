@@ -20,6 +20,7 @@ body{
 .main-option{
     color: white !important;
     font-weight: 600;
+    font-family: 'Open Sans', sans-serif !important;
 }
 
 .main-option:hover{
