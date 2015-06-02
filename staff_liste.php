@@ -1,5 +1,5 @@
 <?php
-include "functions/db_connect.php";
+require_once "functions/db_connect.php";
 $rank_value = $_GET['rank'];
 ?>
 <html>
@@ -16,7 +16,7 @@ $rank_value = $_GET['rank'];
            <div class="col-sm-10 main">
                <h1>Liste du staff</h1>
                <div class="btn-toolbar">
-                   <a href="functions/staff_add.php" role="button" class="btn btn-default" data-title="Ajouter un staff" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un staff</a>
+                   <a href="actions/staff_add.php" role="button" class="btn btn-default" data-title="Ajouter un staff" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un staff</a>
                    <a href="" role="button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Ajouter un rang</a>
                    <a href="" role="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Modifier un rang</a>
                </div>
