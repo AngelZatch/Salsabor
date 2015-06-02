@@ -29,3 +29,7 @@ body{
 .mandatory {
     color: red;
 }
+
+.lightbox-form {
+    padding: 15px;
+}
