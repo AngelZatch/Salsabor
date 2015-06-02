@@ -1,3 +1,6 @@
+<?php
+include "functions/db_connect.php";
+?>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -9,7 +12,8 @@
    <div class="container-fluid">
        <div class="row">
            <?php include "side-menu.php";?>
-           <div class="col-sm-9 main">CONTENU</div>
+           <div class="col-sm-9 main">CONTENU
+           </div>
        </div>
    </div>
    <?php include "scripts.php";?>    

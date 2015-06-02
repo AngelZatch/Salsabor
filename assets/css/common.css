@@ -1,0 +1,30 @@
+body{
+    padding-top: 50px;
+}
+
+.sidebar{
+    display: none;
+}
+@media(min-width:768px){
+    .sidebar{
+        display: block;
+        background-color: #262626;
+        z-index: 1000;
+        overflow-x: hidden;
+        overflow-y: auto;
+        min-height: 100%;
+        padding-left: 5px;
+    }
+}
+
+.main-option{
+    color: white !important;
+    font-weight: 600;
+}
+
+.main-option:hover{
+    color: red !important;
+}
+.mandatory {
+    color: red;
+}
