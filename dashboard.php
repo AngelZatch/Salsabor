@@ -12,7 +12,8 @@ include "functions/db_connect.php";
    <div class="container-fluid">
        <div class="row">
            <?php include "side-menu.php";?>
-           <div class="col-sm-9 main">CONTENU
+           <div class="col-sm-9 main">
+           <h1><span class="glyphicon glyphicon-dashboard"></span> Panneau principal</h1>
            </div>
        </div>
    </div>

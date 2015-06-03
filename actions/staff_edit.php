@@ -1,5 +1,6 @@
 <?php
 require_once "../functions/db_connect.php";
+/** Ensemble de code pour éditer un staff. Cette page est appelée dans une lightbox dans staff_liste.php **/
 ?>
 <div class="row">
    <form action="staff_liste.php?rank=0" method="post" class="lightbox-form">
