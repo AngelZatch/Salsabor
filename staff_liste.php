@@ -1,6 +1,19 @@
 <?php
 require_once "functions/db_connect.php";
+require_once "functions/staff.php";
 $rank_value = $_GET['rank'];
+
+if(isset($_POST['addStaff'])){
+    addStaff();
+}
+
+if(isset($_POST['addRank'])){
+    addRank();
+}
+
+if(isset($_POST['deleteStaff'])){
+    deleteStaff();
+}
 ?>
 <html>
 <head>
@@ -17,7 +30,7 @@ $rank_value = $_GET['rank'];
                <h1>Liste du staff</h1>
                <div class="btn-toolbar">
                    <a href="actions/staff_add.php" role="button" class="btn btn-default" data-title="Ajouter un staff" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un staff</a>
-                   <a href="" role="button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Ajouter un rang</a>
+                   <a href="actions/rank_add.php" role="button" class="btn btn-default" data-title="Ajouter un rang" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un rang</a>
                    <a href="" role="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Modifier un rang</a>
                </div>
                <br>
@@ -47,7 +60,6 @@ $rank_value = $_GET['rank'];
                            </tr>
                        </thead>
                        <tbody>
-                           <tr>
                                <?php if($rank_value==0) $staff_members = $db->query('SELECT * FROM staff');
                                         else {
                                             $staff_members = $db->prepare('SELECT * FROM staff WHERE id=?');
@@ -55,7 +67,8 @@ $rank_value = $_GET['rank'];
                                             $staff_members->execute();
                                         }
                                 while($row_staff_members = $staff_members->fetch(PDO::FETCH_ASSOC)){
-                                    echo "<td class='col-sm-3'>".$row_staff_members['prenom']."</td>
+                                    echo "<tr>
+                                        <td class='col-sm-3'>".$row_staff_members['prenom']."</td>
                                         <td class='col-sm-3'>".$row_staff_members['nom']."</td>
                                         <td class='col-sm-2'>";
                                     $member_rank = $db->prepare('SELECT * FROM rank JOIN staff ON(rank_id=rank.id) WHERE nom=?');
@@ -65,11 +78,15 @@ $rank_value = $_GET['rank'];
                                         echo $row_member_rank['rank_name']."</td>";
                                     }
                                     echo "<td class='col-sm-4'>
+                                    <form method='post' action='staff_liste.php?rank=0'>
                                     <div class='btn-group' role='group'>
-                                    <a href='' type='button' role='button' class='btn btn-default'><span class='glyphicon glyphicon-edit'></span> Modifier</a>
-                                    <a href='' type='button' role='button' class='btn btn-default'><span class='glyphicon glyphicon-trash'></span> Supprimer</a>
+                                        <a href='actions/staff_edit.php&nom=".$row_staff_members['nom']."' type='button' role='button' class='btn btn-default'><span class='glyphicon glyphicon-edit'></span> Modifier</a>
+                                        <button type='submit' name='deleteStaff' class='btn btn-default'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>
                                     </div>
-                                    </td>";
+                                    <input type='hidden' name='id' value=".$row_staff_members['id'].">
+                                    </form>
+                                    </td>
+                                    </tr>";
                                     
                                 };
                                ?>
