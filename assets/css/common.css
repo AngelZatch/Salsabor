@@ -33,7 +33,7 @@ body{
         overflow-x: hidden;
         overflow-y: auto;
         min-height: 100%;
-        padding: 20px 0;
+        padding: 25px 0;
     }
 }
 
@@ -93,4 +93,51 @@ body{
 
 .nav-pills > li > a {
 	color: #FAB913;
+}
+#small-menu {
+    width: 4.1666666667%;
+}
+
+#small-menu>ul>li {
+    font-size: 1.4em;
+}
+
+.main.large {
+    width: 95.833333335%;
+}
+
+#close {
+    border-radius: 2px;
+    right: 25px;
+    top: 2px;
+    z-index: 2;
+    position: absolute;
+    cursor: pointer;
+}
+
+#open {
+    border-radius: 2px;
+    right: 15px;
+    top: 2px;
+    z-index: 2;
+    position: absolute;
+    cursor: pointer;
+}
+
+#close:before, #close:after{
+    content: " ";
+    position: absolute;
+    border: 10px solid white;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-bottom-color: transparent;
+}
+
+#open:before, #open:after{
+    content: " ";
+    position: absolute;
+    border: 10px solid white;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
 }
