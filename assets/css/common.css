@@ -1,6 +1,10 @@
 *{
     font-family: 'Open Sans' sans-serif;
 }
+
+.form-horizontal .control-label{
+    text-align: right;
+}
     
 body{
     padding-top: 50px;
@@ -53,7 +57,7 @@ body{
 }
 
 .lightbox-form {
-    padding: 15px;
+    padding: 15px !important;
 }
 
 .btn-primary{

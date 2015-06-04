@@ -2,10 +2,18 @@
 /** ADD STAFF **/
 function addStaff(){
     $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-    $insertStaff = $db->prepare('INSERT INTO staff (prenom, nom, rank_id) VALUES(:prenom,:nom,:rank)');
+    $insertStaff = $db->prepare('INSERT INTO staff(prenom, nom, date_naissance, date_inscription, rue, code_postal, ville, mail, tel_fixe, tel_port, rank_id) VALUE(:prenom, :nom, :date_naissance, :date_inscription, :rue, :code_postal, :ville, :mail, :tel_fixe, :tel_port, :rank)');
     $insertStaff->execute(array(":prenom" => $_POST['prenom'],
-        ":nom" => $_POST['nom'],
-        ":rank" => $_POST['rank']));
+                                ":nom" => $_POST['nom'],
+                                ":date_naissance" => $_POST['date_naissance'],
+                                ":date_inscription" => date('Y-m-d', time()),
+                                ":rue" => $_POST['rue'],
+                                ":code_postal" => $_POST['code_postal'],
+                                ":ville" => $_POST['ville'],
+                                ":mail" => $_POST['mail'],
+                                ":tel_fixe" => $_POST['tel_fixe'],
+                                ":tel_port" => $_POST['tel_port'],
+                                ":rank" => $_POST['rank']));
 }
 
 /** EDIT STAFF **/

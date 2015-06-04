@@ -82,7 +82,7 @@ if(isset($_POST['addRank'])){
                         while($row_staff_members = $staff_members->fetch(PDO::FETCH_ASSOC)){
                             echo "<tr>
                                 <td class='col-sm-2'>".$row_staff_members['prenom']." ".$row_staff_members['nom']."</td>
-                                <td class='col-sm-1'>".(date_create($row_staff_members['date_inscription'])->format('j M y'))."</td>
+                                <td class='col-sm-1'>".(date_create($row_staff_members['date_inscription'])->format('j/m/y'))."</td>
                                 <td class='col-sm-2'>".$row_staff_members['rue']."<br>"." ".$row_staff_members['code_postal']." ".$row_staff_members['ville']."</td>
                                 <td class='col-sm-2'>".$row_staff_members['mail']."<br>".$row_staff_members['tel_fixe']." / ".$row_staff_members['tel_port']."</td>
                                 <td class='col-sm-2'>";
@@ -96,7 +96,8 @@ if(isset($_POST['addRank'])){
                             <form method='post' action='staff_liste.php?rank=0'>
                             <div class='btn-group' role='group'>
                                 <a href='actions/staff_edit.php&nom=".$row_staff_members['nom']."' type='button' role='button' class='btn btn-default'><span class='glyphicon glyphicon-edit'></span></a>
-                                 <button type='submit' class='btn btn-default'><span class='glyphicon glyphicon-send'></span></button>
+                                <button type='submit' class='btn btn-default'><span class='glyphicon glyphicon-send'></span></button>
+                                <button type='submit' class='btn btn-default'><span class='glyphicon glyphicon-ok'></span></button>                                 
                                 <button type='submit' name='deleteStaff' class='btn btn-default'><span class='glyphicon glyphicon-trash'></span></button>
                             </div>
                             <input type='hidden' name='id' value=".$row_staff_members['id'].">

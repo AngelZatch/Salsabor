@@ -9,7 +9,7 @@
    <div class="container-fluid">
        <div class="row">
            <?php include "side-menu.php";?>
-           <div class="col-sm-9 main">CONTENU</div>
+           <div class="col-sm-10 main">CONTENU</div>
        </div>
    </div>
    <?php include "scripts.php";?>    
