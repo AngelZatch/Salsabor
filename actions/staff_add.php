@@ -2,8 +2,6 @@
 require_once "../functions/db_connect.php";
 /** Ensemble de code pour ajouter un staff. Cette page est appelée dans une lightbox dans staff_liste.php **/
 ?>
-<!--<link rel="stylesheet" href="../assets/css/common.css">
-<link rel="stylesheet" href="../bootstrap/css/bootstrap.css">-->
    <form action="staff_liste.php?rank=0" method="post" class="form-horizontal" role="form">
         <div class="form-group">
             <label for="prenom" class="col-sm-3 control-label">Nom <span class="mandatory">*</span></label>

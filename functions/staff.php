@@ -2,7 +2,7 @@
 /** ADD STAFF **/
 function addStaff(){
     $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-    $insertStaff = $db->prepare('INSERT INTO staff(prenom, nom, date_naissance, date_inscription, rue, code_postal, ville, mail, tel_fixe, tel_port, rank_id) VALUE(:prenom, :nom, :date_naissance, :date_inscription, :rue, :code_postal, :ville, :mail, :tel_fixe, :tel_port, :rank)');
+    $insertStaff = $db->prepare('INSERT INTO staff(prenom, nom, date_naissance, date_inscription, rue, code_postal, ville, mail, tel_fixe, tel_port, rank_id_foreign) VALUE(:prenom, :nom, :date_naissance, :date_inscription, :rue, :code_postal, :ville, :mail, :tel_fixe, :tel_port, :rank)');
     $insertStaff->execute(array(":prenom" => $_POST['prenom'],
                                 ":nom" => $_POST['nom'],
                                 ":date_naissance" => $_POST['date_naissance'],
@@ -24,7 +24,7 @@ function editStaff(){
 /** DELETE STAFF **/
 function deleteStaff(){
     $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-    $deleteStaff = $db->prepare('DELETE FROM staff WHERE id=?');
+    $deleteStaff = $db->prepare('DELETE FROM staff WHERE staff_id=?');
     $deleteStaff->bindValue(1,$_POST['id'], PDO::PARAM_INT);
     $deleteStaff->execute();
 }
@@ -40,7 +40,7 @@ function addRank(){
 /** DELETE RANK **/
 function deleteRank(){
     $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-    $deleteRank = $db->prepare('DELETE FROM rank WHERE id=?');
+    $deleteRank = $db->prepare('DELETE FROM rank WHERE rank_id=?');
     $deleteRank->bindValue(1, $_POST['id'], PDO::PARAM_INT);
     $deleteRank->execute();
 }

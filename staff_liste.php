@@ -51,10 +51,10 @@ if(isset($_POST['addRank'])){
                     }
                     /** Construction des options de filtrage **/
                     while($row_staff_ranks = $staff_ranks->fetch(PDO::FETCH_ASSOC)){
-                        if($rank_value == $row_staff_ranks['id']){
-                            echo "<li role='presentation' class='active'><a href=".$_SERVER['PHP_SELF']."?rank=".$row_staff_ranks['id'].">".$row_staff_ranks['rank_name']."</a></li>";
+                        if($rank_value == $row_staff_ranks['rank_id']){
+                            echo "<li role='presentation' class='active'><a href=".$_SERVER['PHP_SELF']."?rank=".$row_staff_ranks['rank_id'].">".$row_staff_ranks['rank_name']."</a></li>";
                         } else {
-                        echo "<li role='presentation'><a href=".$_SERVER['PHP_SELF']."?rank=".$row_staff_ranks['id'].">".$row_staff_ranks['rank_name']."</a></li>";
+                        echo "<li role='presentation'><a href=".$_SERVER['PHP_SELF']."?rank=".$row_staff_ranks['rank_id'].">".$row_staff_ranks['rank_name']."</a></li>";
                         }
                     }?>
                </ul>
@@ -75,7 +75,7 @@ if(isset($_POST['addRank'])){
                         /** Affichage de tous les membres du staff possédant le rang administratif correspondant **/
                         if($rank_value==0) $staff_members = $db->query('SELECT * FROM staff');
                                 else {
-                                    $staff_members = $db->prepare('SELECT * FROM staff WHERE rank_id=?');
+                                    $staff_members = $db->prepare('SELECT * FROM staff WHERE rank_id_foreign=?');
                                     $staff_members->bindParam(1, $rank_value, PDO::PARAM_INT);
                                     $staff_members->execute();
                                 }
@@ -86,7 +86,7 @@ if(isset($_POST['addRank'])){
                                 <td class='col-sm-2'>".$row_staff_members['rue']."<br>"." ".$row_staff_members['code_postal']." ".$row_staff_members['ville']."</td>
                                 <td class='col-sm-2'>".$row_staff_members['mail']."<br>".$row_staff_members['tel_fixe']." / ".$row_staff_members['tel_port']."</td>
                                 <td class='col-sm-2'>";
-                            $member_rank = $db->prepare('SELECT * FROM rank JOIN staff ON(rank_id=rank.id) WHERE nom=?');
+                            $member_rank = $db->prepare('SELECT * FROM rank JOIN staff ON(rank_id_foreign=rank.rank_id) WHERE nom=?');
                             $member_rank->bindParam(1, $row_staff_members['nom'], PDO::PARAM_STR);
                             $member_rank->execute();
                             while($row_member_rank = $member_rank->fetch(PDO::FETCH_ASSOC)){
@@ -100,7 +100,7 @@ if(isset($_POST['addRank'])){
                                 <button type='submit' class='btn btn-default'><span class='glyphicon glyphicon-ok'></span></button>                                 
                                 <button type='submit' name='deleteStaff' class='btn btn-default'><span class='glyphicon glyphicon-trash'></span></button>
                             </div>
-                            <input type='hidden' name='id' value=".$row_staff_members['id'].">
+                            <input type='hidden' name='id' value=".$row_staff_members['staff_id'].">
                             </form>
                             </td>
                             </tr>";

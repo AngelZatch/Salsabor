@@ -72,3 +72,25 @@ body{
 .nav-tabs>li>a{
     color: #81002B;
 }
+
+#tri-cours{
+    float: right;
+}
+
+#tri-cours>li>a{
+    border-radius: 35px;
+    line-height: 30px;
+    padding: 0 15px;
+}
+
+.nav-pills > li.active > a{
+	background-color: #FAB913 !important;
+}
+
+.nav-pills > li.active > a:hover{
+	background-color: #E5A910!important;
+}
+
+.nav-pills > li > a {
+	color: #FAB913;
+}
