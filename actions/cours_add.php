@@ -6,17 +6,17 @@ require_once "../functions/db_connect.php";
         <div class="form-group">
             <label for="intitule" class="col-sm-3 control-label">Intitulé <span class="mandatory">*</span></label>
             <?php
-            $autocomplete_cours_name = $db->query('SELECT intitule FROM cours');
-            $return_arr = array();
-            while($row_autocomplete_cours_name = $autocomplete_cours_name->fetch(PDO::FETCH_ASSOC)){
-                array_push($return_arr, trim(preg_replace('/[0-9]+/', '', $row_autocomplete_cours_name['intitule'])));
+            $cours_name = $db->query('SELECT intitule FROM cours');
+            $arr_cours_name = array();
+            while($row_cours_name = $cours_name->fetch(PDO::FETCH_ASSOC)){
+                array_push($arr_cours_name, trim(preg_replace('/[0-9]+/', '', $row_cours_name['intitule'])));
             }
             ?>
             <div class="col-sm-9 ui-widget">
                 <input type="text" class="form-control" name="intitule" id="cours_tags" placeholder="Nom du cours">
                 <script>
                 $(function(){
-                    var coursNameTags = JSON.parse('<?php echo json_encode($return_arr);?>');
+                    var coursNameTags = JSON.parse('<?php echo json_encode($arr_cours_name);?>');
                     $('#cours_tags').autocomplete({
                         source: coursNameTags
                     });
@@ -27,15 +27,23 @@ require_once "../functions/db_connect.php";
        <div class="form-group">
             <label for="jour" class="col-sm-3 control-label">Jour <span class="mandatory">*</span></label>
             <div class="col-sm-9">
-                <select class="form-control" name="jour">
                 <?php
                 $jours = $db->query('SHOW COLUMNS FROM cours WHERE field="jours"');
+                $arr_jours = array();
                 $row_jours = $jours->fetch(PDO::FETCH_ASSOC);
                 foreach(explode("','",substr($row_jours['Type'],6,-2)) as $option){
-                    echo "<option>$option</option>";
+                    array_push($arr_jours, $option);
                 }
-                    ?>
-                </select>
+                ?>
+                <input type="text" class="form-control" name="jour" id="jours_tags" placeholder="Jour">
+                <script>
+                $(function(){
+                    var joursTags = JSON.parse('<?php echo json_encode($arr_jours);?>');
+                    $('#jours_tags').autocomplete({
+                        source: joursTags
+                    });
+                });
+                </script>
             </div>
        </div>
        <div class="form-group">
@@ -81,17 +89,25 @@ require_once "../functions/db_connect.php";
        </div>
        <div class="form-group">
            <label for="niveau" class="col-sm-3 control-label">Niveau<span class="mandatory">*</span></label>
-           <div class="col-sm-9">
-           <select name="niveau" class="form-control">
-           <?php
+            <div class="col-sm-9">
+            <?php
             $niveaux = $db->query('SELECT * FROM niveau');
+            $arr_niveaux = array();
+            $row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC);
             while($row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC)){
-                echo "<option value=".$row_niveaux['niveau_id'].">".$row_niveaux['niveau_name']."</option>";
+                array_push($arr_niveaux, $row_niveaux['niveau_name']);
             }
-            $niveaux->closeCursor();
-           ?>
-           </select>
-           </div>
+            ?>
+            <input type="text" class="form-control" name="niveau" id="niveaux_tags" placeholder="Niveau">
+            <script>
+            $(function(){
+                var niveauxTags = JSON.parse('<?php echo json_encode($arr_niveaux);?>');
+                $('#niveaux_tags').autocomplete({
+                    source: niveauxTags
+                });
+            });
+            </script>
+            </div>
        </div>
        <div class="form-group">
            <label for="lieu" class="col-sm-3 control-label">Lieu<span class="mandatory">*</span></label>
