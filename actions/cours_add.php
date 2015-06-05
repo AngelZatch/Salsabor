@@ -5,8 +5,23 @@ require_once "../functions/db_connect.php";
    <form action="cours_liste.php" method="post" class="form-horizontal" role="form">
         <div class="form-group">
             <label for="intitule" class="col-sm-3 control-label">Intitulé <span class="mandatory">*</span></label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" name="intitule" placeholder="Nom du cours">
+            <?php
+            $autocomplete_cours_name = $db->query('SELECT intitule FROM cours');
+            $return_arr = array();
+            while($row_autocomplete_cours_name = $autocomplete_cours_name->fetch(PDO::FETCH_ASSOC)){
+                array_push($return_arr, trim(preg_replace('/[0-9]+/', '', $row_autocomplete_cours_name['intitule'])));
+            }
+            ?>
+            <div class="col-sm-9 ui-widget">
+                <input type="text" class="form-control" name="intitule" id="cours_tags" placeholder="Nom du cours">
+                <script>
+                $(function(){
+                    var coursNameTags = JSON.parse('<?php echo json_encode($return_arr);?>');
+                    $('#cours_tags').autocomplete({
+                        source: coursNameTags
+                    });
+                });
+                </script>
             </div>
        </div>
        <div class="form-group">

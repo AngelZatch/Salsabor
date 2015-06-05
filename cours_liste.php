@@ -11,7 +11,6 @@ if(isset($_POST['addCours'])){
 ?>
 <html>
 <head>
-    <meta charset="UTF-8">
     <title>Salsabor - Cours</title>
     <?php include "includes.php";?>
 </head>
@@ -97,6 +96,6 @@ if(isset($_POST['addCours'])){
             showDeselectButton: 'true',
         });
     });**/
-    </script> 
+    </script>
 </body>
 </html>

@@ -142,3 +142,8 @@ body{
     border-right-color: transparent;
     border-bottom-color: transparent;
 }
+
+/** To be in front of the lightboxes **/
+.ui-widget{
+    z-index: 1051 !important;
+}
