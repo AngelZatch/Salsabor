@@ -56,7 +56,7 @@ require_once "../functions/db_connect.php";
                 <?php
                 $staff_ranks = $db->query('SELECT * FROM rank');
                 while($row_staff_ranks = $staff_ranks->fetch(PDO::FETCH_ASSOC)){
-                    echo "<option value=".$row_staff_ranks['id'].">".$row_staff_ranks['rank_name']."</option>";
+                    echo "<option value=".$row_staff_ranks['rank_id'].">".$row_staff_ranks['rank_name']."</option>";
                 }
                 $staff_ranks->closeCursor();
                 ?>
