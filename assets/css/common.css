@@ -43,7 +43,8 @@ body{
     font-family: 'globersemibold_free';
 }
 
-.main-option:hover{
+.main-option:hover,
+.main-option.active{
     background-color: #720026 !important;
     color: #FAB913 !important;
 }
