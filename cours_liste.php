@@ -20,13 +20,15 @@ if(isset($_POST['addCours'])){
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
-               <h1 class="page-title"><span class="glyphicon glyphicon-cd"></span> Cours</h1>
+               <h1 class="page-title"><span class="glyphicon glyphicon-cd"></span> Liste des Cours</h1>
                <div class="btn-toolbar">
-                   <a href="actions/cours_add.php" role="button" class="btn btn-primary" data-title="Ajouter un cours" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a></div>
+                   <a href="actions/cours_add.php" role="button" class="btn btn-primary" data-title="Ajouter un cours" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a>
+               </div> <!-- btn-toolbar -->
+               <div id="display-liste" style="display:block;">
                <div class="menu-bar">
                    <ul class="nav nav-pills" id="tri-cours">
-                       <li role="presentation" class="active"><a href=""><span class="glyphicon glyphicon-list"></span> Liste</a></li>
-                       <li role="presentation"><a href=""><span class="glyphicon glyphicon-calendar"></span> Planning</a></li>
+                       <li role="presentation" class="active"><a onClick="toggleListePlanning()"><span class="glyphicon glyphicon-list"></span> Liste</a></li>
+                       <li role="presentation"><a onClick="toggleListePlanning()"><span class="glyphicon glyphicon-calendar"></span> Planning</a></li>
                    </ul>
                </div> <!-- menu-bar -->
                <br><br>
@@ -67,6 +69,19 @@ if(isset($_POST['addCours'])){
                        </tbody>
                    </table>
                </div> <!-- table-responsive -->
+               </div> <!-- Display en Liste -->
+               <div id="display-planning" style="display:none;">
+                    <div class="menu-bar">
+                        <ul class="nav nav-pills" id="tri-cours">
+                            <li role="presentation"><a onClick="toggleListePlanning()"><span class="glyphicon glyphicon-list"></span> Liste</a></li>
+                            <li role="presentation" class="active"><a onClick="toggleListePlanning()"><span class="glyphicon glyphicon-calendar"></span> Planning</a></li>
+                        </ul>
+                    </div> <!-- menu-bar -->
+                    <br><br>
+                    <div id="calendar" class="fc fc-ltr fc-unthemed">
+                        
+                    </div>
+               </div> <!-- Display en Planning -->
            </div> <!-- col-sm-10 main -->
        </div>
    </div>
@@ -79,6 +94,32 @@ if(isset($_POST['addCours'])){
             return $(this).ekkoLightbox({
                 onNavigate: false
             });
+        });
+        
+        // Full calendar
+        $('#calendar').fullCalendar({
+            header:{
+                left:'prev,next today',
+                center:'title',
+                right:'agendaWeek, agendaDay'
+            },
+            defaultDate: 'now',
+            defaultView: 'agendaWeek',
+            lang:'fr',
+            editable: true,
+            hiddenDays: [0],
+            timeZone: 'local',
+            minTime: '13:00',
+            allDaySlot: false,
+            events:{
+                url: 'calendarfeed.php',
+                type: 'POST',
+                error: function(){
+                    alert('Erreur pendant l\'obtention des évènements');
+                }
+            },
+            backgroundColor: 'yellow',
+            textColor:'black'
         });
     });
    /**$('#timepicker').timepicker({});

@@ -1,6 +1,6 @@
 <div class="col-sm-2 col-md-2 sidebar" id="large-menu" style="display:block;">
    <ul class="nav nav-sidebar">
-      <a id="close"><span></span></a>
+      <a id="close" onClick="toggleSideMenu()"><span></span></a>
       <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-dashboard"></span> Panneau principal</a></li>
       <li><a href="" class="main-option"><span class="glyphicon glyphicon-user"></span> Base Client</a></li>
       <li><a href="" class="main-option"><span class="glyphicon glyphicon-star"></span> Réservation de salle</a></li>
@@ -19,7 +19,7 @@
 
 <div class="col-sm-1 col-md-1 sidebar" id="small-menu" style="display:none;">
     <ul class="nav nav-sidebar">
-        <a id="open"><span></span></a>
+        <a id="open" onClick="toggleSideMenu()"><span></span></a>
         <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-dashboard"></span></a></li>
         <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-user"></span></a></li>
         <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-star"></span></a></li>
