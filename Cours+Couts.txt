@@ -1,1 +1,4 @@
 Coûts horaires calculés par types de cours et d'enseignants (au cas par cas)
+
+Accès à l'application de test :
+192.168.0.150 / patrick / Abricotier

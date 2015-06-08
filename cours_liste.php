@@ -46,11 +46,11 @@ if(isset($_POST['addCours'])){
                        </thead>
                        <tbody>
                        <?php
-                        $cours = $db->query('SELECT * FROM cours JOIN staff ON (prof_principal=staff.staff_id) JOIN niveau ON(niveau=niveau.niveau_id) JOIN salle ON (salle=salle.salle_id)');
+                        $cours = $db->query('SELECT * FROM cours_parent JOIN staff ON (parent_prof_principal=staff.staff_id) JOIN niveau ON(parent_niveau=niveau.niveau_id) JOIN salle ON (parent_salle=salle.salle_id)');
                         while($row_cours = $cours->fetch(PDO::FETCH_ASSOC)){
                             echo "<tr>
-                            <td class='col-sm-2'>".$row_cours['intitule']."</td>
-                            <td class='col-sm-2'>".$row_cours['jours']."<br>".(date_create($row_cours['heure_debut'])->format('G:i'))." - ".(date_create($row_cours['heure_fin'])->format('G:i'))."</td>
+                            <td class='col-sm-2'>".$row_cours['parent_intitule']."</td>
+                            <td class='col-sm-2'>".$row_cours['weekday']."<br>".(date_create($row_cours['parent_start_time'])->format('G:i'))." - ".(date_create($row_cours['parent_end_time'])->format('G:i'))."</td>
                             <td class='col-sm-2'>".$row_cours['prenom']." ".$row_cours['nom']."</td>
                             <td class='col-sm-2'><span class='label label-level-".$row_cours['niveau_id']."'>".$row_cours['niveau_name']."</span></td>
                             <td class='col-sm-2'>".$row_cours['salle_name']."</td>
@@ -60,7 +60,7 @@ if(isset($_POST['addCours'])){
                                 <button type='submit' class='btn btn-default'><span class='glyphicon glyphicon-edit'></span></button>
                                 <button type='submit' class='btn btn-default'><span class='glyphicon glyphicon-trash'></span></button>
                             </div>
-                            <input type='hidden' name='id' value=".$row_cours['cours_id'].">
+                            <input type='hidden' name='id' value=".$row_cours['parent_id'].">
                             </form>
                             </td>
                             </tr>";
@@ -112,7 +112,7 @@ if(isset($_POST['addCours'])){
             minTime: '13:00',
             allDaySlot: false,
             events:{
-                url: 'calendarfeed.php',
+                url: 'functions/calendarfeed.php',
                 type: 'POST',
                 error: function(){
                     alert('Erreur pendant l\'obtention des évènements');

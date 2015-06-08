@@ -6,7 +6,7 @@ require_once "../functions/db_connect.php";
         <div class="form-group">
             <label for="intitule" class="col-sm-3 control-label">Intitulé <span class="mandatory">*</span></label>
             <?php
-            $cours_name = $db->query('SELECT intitule FROM cours');
+            $cours_name = $db->query('SELECT cours_intitule FROM cours');
             $arr_cours_name = array();
             while($row_cours_name = $cours_name->fetch(PDO::FETCH_ASSOC)){
                 array_push($arr_cours_name, trim(preg_replace('/[0-9]+/', '', $row_cours_name['intitule'])));
@@ -24,27 +24,27 @@ require_once "../functions/db_connect.php";
                 </script>
             </div>
        </div>
-       <div class="form-group">
-            <label for="jour" class="col-sm-3 control-label">Jour <span class="mandatory">*</span></label>
-            <div class="col-sm-9">
-                <?php
-                $jours = $db->query('SHOW COLUMNS FROM cours WHERE field="jours"');
-                $arr_jours = array();
-                $row_jours = $jours->fetch(PDO::FETCH_ASSOC);
-                foreach(explode("','",substr($row_jours['Type'],6,-2)) as $option){
-                    array_push($arr_jours, $option);
-                }
-                ?>
-                <input type="text" class="form-control" name="jour" id="jours_tags" placeholder="Jour">
-                <script>
-                $(function(){
-                    var joursTags = JSON.parse('<?php echo json_encode($arr_jours);?>');
-                    $('#jours_tags').autocomplete({
-                        source: joursTags
-                    });
-                });
-                </script>
-            </div>
+      <div class="form-group">
+           <label for="date_debut" class="col-sm-3 control-label">Date de Début<span class="mandatory">*</span></label>
+           <div class="col-sm-9"><input type="date" class="form-control" name="date_debut"></div>
+           
+           <div class="col-sm-9 col-sm-offset-3">
+               <label for="recurrence" class="control-label"><input type="checkbox" name="recurrence" id="recurrence" class="checkbox-inline" value="1" onClick="toggleRecurringOptions()">Est récurent<span class="mandatory">*</span></label>
+           </div>
+       </div>
+      <div class="form-group" id="recurring-options" style="display:none;">
+           <label for="date_fin" class="col-sm-3 control-label">Date de Fin<span class="mandatory">*</span></label>
+           <div class="col-sm-9">
+               <input type="date" class="form-control" name="date_fin">
+          </div>
+              <label for="frequence_repetition" class="col-sm-3 control-label">Récurrence<span class="mandatory">*</span></label>
+               <div class="col-sm-9">
+                   <div id="options-recurrence">
+                       <input type="radio" value="1" name="frequence_repetition"> Quotidienne<br>
+                       <input type="radio" value="7" name="frequence_repetition"> Hebdomadaire <br>
+                       <input type="radio" value="14" name="frequence_repetition"> Bi-mensuelle<br>
+                   </div>
+               </div>
        </div>
        <div class="form-group">
            <fieldset>
@@ -90,23 +90,15 @@ require_once "../functions/db_connect.php";
        <div class="form-group">
            <label for="niveau" class="col-sm-3 control-label">Niveau<span class="mandatory">*</span></label>
             <div class="col-sm-9">
+            <select name="niveau" class="form-control">
             <?php
             $niveaux = $db->query('SELECT * FROM niveau');
-            $arr_niveaux = array();
             $row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC);
             while($row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC)){
-                array_push($arr_niveaux, $row_niveaux['niveau_name']);
+                echo"<option value=".$row_niveaux['niveau_id'].">".$row_niveaux['niveau_name']."</option>";
             }
             ?>
-            <input type="text" class="form-control" name="niveau" id="niveaux_tags" placeholder="Niveau">
-            <script>
-            $(function(){
-                var niveauxTags = JSON.parse('<?php echo json_encode($arr_niveaux);?>');
-                $('#niveaux_tags').autocomplete({
-                    source: niveauxTags
-                });
-            });
-            </script>
+            </select>
             </div>
        </div>
        <div class="form-group">
@@ -122,20 +114,6 @@ require_once "../functions/db_connect.php";
             ?>
             </select>
            </div>
-       </div>
-       <div class="form-group">
-           <label for="date_debut" class="col-sm-3 control-label">Date de Début<span class="mandatory">*</span></label>
-           <div class="col-sm-9"><input type="date" class="form-control" name="date_debut"></div>
-           <label for="date_fin" class="col-sm-3 control-label">Date de Fin<span class="mandatory">*</span></label>
-           <div class="col-sm-9"><input type="date" class="form-control" name="date_fin"></div>
-       </div>
-       <div class="form-group">
-           <label for="unite" class="col-sm-3 control-label">Unités<span class="mandatory">*</span></label>
-           <div class="col-sm-9"><input type="text" class="form-control" name="unite" placeholder="Unités"></div>
-       </div>
-       <div class="form-group">
-           <label for="cout_horaire" class="col-sm-3 control-label">Coût horaire<span class="mandatory">*</span></label>
-           <div class="col-sm-9"><input type="text" class="form-control" name="cout_horaire" placeholder="Coût Horaire"></div>
        </div>
             <input type="submit" name="addCours" value="Ajouter" class="btn btn-default">
         </div>
