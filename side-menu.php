@@ -19,17 +19,16 @@
 <div class="col-sm-1 col-md-1 sidebar" id="small-menu" style="display:none;">
     <ul class="nav nav-sidebar">
         <a id="open" onClick="toggleSideMenu()"><span></span></a>
-        <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-dashboard"></span></a></li>
-        <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-user"></span></a></li>
-        <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-star"></span></a></li>
-        <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-cd"></span></a></li>
-        <li><a href="cours_liste.php" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='cours_liste.php') echo "active";?>"><span class="glyphicon glyphicon-time"></span></a></li>
-        <li><a href="staff_liste.php?rank=0" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='staff_liste.php') echo "active";?>"><span class="glyphicon glyphicon-briefcase"></span></a></li>
-        <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-hdd"></span></a></li>
-        <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-calendar"></span></a></li>
-        <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-thumbs-up"></span></a></li>
-        <li><a href="stats.php" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='stats.php') echo "active";?>"><span class="glyphicon glyphicon-stats"></span></a></li>
-        <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-th-list"></span></a></li>
-        <li><a href="dashboard.php" class="main-option"><span class="glyphicon glyphicon-off"></span></a></li>
+        <li><a href="dashboard.php" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Panneau d'administration"><span class="glyphicon glyphicon-dashboard"></span></a></li>
+        <li><a href="dashboard.php" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Base client"><span class="glyphicon glyphicon-user"></span></a></li>
+        <li><a href="dashboard.php" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Forfaits"><span class="glyphicon glyphicon-cd"></span></a></li>
+        <li><a href="cours_liste.php" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='cours_liste.php') echo "active";?>" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Planning et Réservations"><span class="glyphicon glyphicon-time"></span></a></li>
+        <li><a href="staff_liste.php?rank=0" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='staff_liste.php') echo "active";?>" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Gestion du staff"><span class="glyphicon glyphicon-briefcase"></span></a></li>
+        <li><a href="dashboard.php" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Ressources"><span class="glyphicon glyphicon-hdd"></span></a></li>
+        <li><a href="dashboard.php" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Evènements"><span class="glyphicon glyphicon-calendar"></span></a></li>
+        <li><a href="dashboard.php" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Réseaux Sociaux"><span class="glyphicon glyphicon-thumbs-up"></span></a></li>
+        <li><a href="stats.php" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='stats.php') echo "active";?>" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Statistiques"><span class="glyphicon glyphicon-stats"></span></a></li>
+        <li><a href="dashboard.php" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Base de données"><span class="glyphicon glyphicon-th-list"></span></a></li>
+        <li><a href="dashboard.php" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Déconnexion"><span class="glyphicon glyphicon-off"></span></a></li>
     </ul>
 </div>

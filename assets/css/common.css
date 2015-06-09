@@ -31,8 +31,6 @@ body{
         position: fixed;
         background-color: #A9023A;
         z-index: 1000;
-        overflow-x: hidden;
-        overflow-y: auto;
         min-height: 100%;
         height: inherit;
         padding: 25px 0;
