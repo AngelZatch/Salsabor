@@ -165,3 +165,7 @@ body{
 .popover-x{
     padding: 15px !important;
 }
+
+.table-responsive{
+    overflow-x: auto !important;
+}
