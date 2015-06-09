@@ -37,9 +37,13 @@ if(isset($_POST['addCours'])){
                    </ul>
                </div> <!-- menu-bar -->
                <br><br>
-               <input type="text" id="search" class="form-control" placeholder="Tapez n'importe quoi pour rechercher">
+               <div class="input-group input-group-lg">
+               <span class="glyphicon glyphicon-filter input-group-addon" id="basic-addon1"></span>
+               <input type="text" id="search" class="form-control" placeholder="Tapez n'importe quoi pour rechercher" aria-describedby="basic-addon1">
+               </div>
+               <br>
                <div class="table-responsive">
-                   <table class="table table-striped table-hover" id="filter-enabled">
+                   <table class="table table-striped table-hover">
                        <thead>
                            <tr>
                                <th class="col-sm-2">Intitulé</th>
@@ -50,7 +54,7 @@ if(isset($_POST['addCours'])){
                                <th class="col-sm-2">Actions</th>
                            </tr>
                        </thead>
-                       <tbody>
+                       <tbody id="filter-enabled">
                        <?php
                         $cours = $db->query('SELECT * FROM cours JOIN staff ON (prof_principal=staff.staff_id) JOIN niveau ON(cours_niveau=niveau.niveau_id) JOIN salle ON (cours_salle=salle.salle_id)');
                         while($row_cours = $cours->fetch(PDO::FETCH_ASSOC)){
@@ -58,7 +62,7 @@ if(isset($_POST['addCours'])){
                             <td class='col-sm-2'>".$row_cours['cours_intitule']."</td>
                             <td class='col-sm-2'>".date_create($row_cours['cours_start'])->format('d/m/Y')."<br>".(date_create($row_cours['cours_start'])->format('G:i'))." - ".(date_create($row_cours['cours_end'])->format('G:i'))."</td>
                             <td class='col-sm-2'>".$row_cours['prenom']." ".$row_cours['nom']."</td>
-                            <td class='col-sm-2'><span class='label label-level-".$row_cours['niveau_id']."'>".$row_cours['niveau_name']."</span></td>
+                            <td class='col-sm-2 level-display'><span class='label label-level-".$row_cours['niveau_id']."'>".$row_cours['niveau_name']."</span></td>
                             <td class='col-sm-2'>".$row_cours['salle_name']."</td>
                             <td class='col-sm-2'>
                             <form method='post'>

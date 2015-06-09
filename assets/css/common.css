@@ -159,3 +159,7 @@ body{
 .ui-widget{
     z-index: 1051 !important;
 }
+
+.level-display{
+    text-align: center;
+}
