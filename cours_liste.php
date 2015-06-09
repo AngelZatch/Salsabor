@@ -25,6 +25,9 @@ if(isset($_POST['addCours'])){
                <h1 class="page-title"><span class="glyphicon glyphicon-time"></span> Planning des salles et Réservations</h1>
                <div class="btn-toolbar">
                    <a href="actions/cours_add.php" role="button" class="btn btn-primary" data-title="Ajouter un cours" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a>
+                   <a href="actions/resa_add.php" role="button" class="btn btn-primary disabled" data-title="Ajouter une réservation" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-record"></span> Réserver une salle</a>
+                   <a href="actions/salle_add.php" role="button" class="btn btn-primary disabled" data-title="Ajouter une salle" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter une salle</a>
+                   <a href="actions/niveau_add.php" role="button" class="btn btn-primary disabled" data-title="Ajouter un niveau" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un niveau</a>
                </div> <!-- btn-toolbar -->
                <div id="display-liste" style="display:none;">
                <div class="menu-bar">
@@ -34,8 +37,9 @@ if(isset($_POST['addCours'])){
                    </ul>
                </div> <!-- menu-bar -->
                <br><br>
+               <input type="text" id="search" class="form-control" placeholder="Tapez n'importe quoi pour rechercher">
                <div class="table-responsive">
-                   <table class="table table-striped table-hover">
+                   <table class="table table-striped table-hover" id="filter-enabled">
                        <thead>
                            <tr>
                                <th class="col-sm-2">Intitulé</th>
@@ -122,6 +126,15 @@ if(isset($_POST['addCours'])){
             },
             backgroundColor: 'yellow',
             textColor:'black'
+        });
+        
+        var $rows = $('#filter-enabled tr');
+        $('#search').keyup(function(){
+            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+            $rows.show().filter(function(){
+               var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                return !~text.indexOf(val);
+            }).hide();
         });
     });
    /**$('#timepicker').timepicker({});

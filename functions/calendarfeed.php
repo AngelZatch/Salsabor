@@ -4,7 +4,7 @@ try
 {
     $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
     /** Obtention des cours **/
-    $calendar = $db->prepare('SELECT * FROM cours');
+    $calendar = $db->prepare('SELECT * FROM cours JOIN salle ON (cours_salle=salle.salle_id) JOIN niveau ON (cours_niveau=niveau.niveau_id)');
     $calendar->execute();
     $events = array();
 
@@ -12,7 +12,7 @@ try
     while($row_calendar = $calendar->fetch(PDO::FETCH_ASSOC)){
         $e = array();
         $e['id'] = $row_calendar['cours_id'];
-        $e['title'] = $row_calendar['cours_intitule'];
+        $e['title'] = $row_calendar['cours_intitule']." (".$row_calendar['salle_name']." - ".$row_calendar['niveau_name'].")";
         // La date de début sert à délimiter la durée réelle d'un SEUL cours. Il est
         // ensuite répété par un script js qui le répète à une fréquence hebdomadaire
         // jusqu'à la date de fin, en respectant toutes les données.
