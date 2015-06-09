@@ -161,3 +161,7 @@ body{
 .level-display{
     text-align: center;
 }
+
+.popover-x{
+    padding: 15px !important;
+}

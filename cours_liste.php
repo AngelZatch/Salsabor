@@ -10,6 +10,18 @@ setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
 if(isset($_POST['addCours'])){
     addCours();
 }
+
+if(isset($_POST['deleteCoursOne'])){
+    deleteCoursOne();
+}
+
+if(isset($_POST['deleteCoursNext'])){
+    deleteCoursNext();
+}
+
+if(isset($_POST['deleteCoursAll'])){
+    deleteCoursAll();
+}
 ?>
 <html>
 <head>
@@ -68,7 +80,14 @@ if(isset($_POST['addCours'])){
                             <form method='post'>
                             <div class='btn btn-group' role='group'>
                                 <button type='submit' class='btn btn-default'><span class='glyphicon glyphicon-edit'></span></button>
-                                <button type='submit' class='btn btn-default'><span class='glyphicon glyphicon-trash'></span></button>
+                                <button type='button' class='btn btn-default' data-toggle='popover-x' data-placement='bottom' data-target='#delete-options-".$row_cours['cours_id']."'><span class='glyphicon glyphicon-trash'></span></button>
+                                <div id='delete-options-".$row_cours['cours_id']."' class='popover popover-default'>
+                                    <div class='arrow'></div>
+                                        <p style='font-weight:700;'>Supprimer...</p>
+                                        <button type='submit' name='deleteCoursOne' class='btn btn-default' style='width:11em;'>Cet évènement</button>
+                                        <button type='submit' name='deleteCoursNext' class='btn btn-default' style='width:11em;'>Tous les suivants</button>
+                                        <button type='submit' name='deleteCoursAll' class='btn btn-default' style='width:11em;'>Toute la série</button>
+                                </div>
                             </div>
                             <input type='hidden' name='id' value=".$row_cours['cours_id'].">
                             </form>
@@ -138,6 +157,8 @@ if(isset($_POST['addCours'])){
                 return !~text.indexOf(val);
             }).hide();
         });
+        
+        $('[data-toggle="popover"]').popover();
     });
    /**$('#timepicker').timepicker({});
     $(document).ready(function(){
