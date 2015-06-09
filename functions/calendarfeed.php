@@ -13,9 +13,6 @@ try
         $e = array();
         $e['id'] = $row_calendar['cours_id'];
         $e['title'] = $row_calendar['cours_intitule']." (".$row_calendar['salle_name']." - ".$row_calendar['niveau_name'].")";
-        // La date de début sert à délimiter la durée réelle d'un SEUL cours. Il est
-        // ensuite répété par un script js qui le répète à une fréquence hebdomadaire
-        // jusqu'à la date de fin, en respectant toutes les données.
         $e['start'] = $row_calendar['cours_start'];
         $e['end'] = $row_calendar['cours_end'];
         // Paramètre propriétaire de Fullcalendar.js qui sert à délimiter un évènement
