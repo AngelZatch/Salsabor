@@ -68,19 +68,20 @@ function addCours(){
         } catch(PDOException $e){
             $db->rollBack();
             var_dump($e->getMessage());
-        }
-
+            }
     } else {
         $recurrence = $_POST['recurrence'];
         $frequence_repetition = $_POST['frequence_repetition'];
-        $until = (365/$frequence_repetition);
+        $date_fin = $_POST['date_fin'];
+        $nombre_repetitions = (strtotime($date_fin) - strtotime($date_debut))/(86400*$frequence_repetition)+1;
         if($frequence_repetition == 1){
             $weekday = 0;
         }
         $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $db->beginTransaction();
         try{
+            $db->beginTransaction();
+            /** Insertion du modèle de cours dans cours_parent **/
             $insertCours = $db->prepare('INSERT INTO cours_parent(parent_intitule, weekday, parent_start_date, parent_end_date, parent_start_time, parent_end_time, parent_prof_principal, parent_prof_remplacant, parent_niveau, parent_salle, parent_unite, parent_cout_horaire, recurrence, frequence_repetition)
             VALUES(:intitule, :weekday, :date_debut, :date_fin, :heure_debut, :heure_fin, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :recurrence, :frequence_repetition)');
             $insertCours->bindParam(':intitule', $intitule);
@@ -102,8 +103,8 @@ function addCours(){
             /** Récupération de l'ID de la dernière insertion dans cours_parent **/
             $last_id = $db->lastInsertId();
             
-            for($x = 0; $x < $until; $x++){
-                /** Insertion du cours principal dans cours **/
+            for($i = 0; $i < $nombre_repetitions; $i++){
+                /** Insertion de toutes les récurrences du cours dans la table cours **/
                 $insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_start, cours_end, prof_principal, prof_remplacant, cours_niveau, cours_salle, cours_unite, cours_cout_horaire)
                 VALUES(:cours_parent_id, :intitule, :cours_start, :cours_end, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire)');
                 $insertCours->bindParam(':cours_parent_id', $last_id);

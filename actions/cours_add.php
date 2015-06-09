@@ -9,7 +9,7 @@ require_once "../functions/db_connect.php";
             $cours_name = $db->query('SELECT cours_intitule FROM cours');
             $arr_cours_name = array();
             while($row_cours_name = $cours_name->fetch(PDO::FETCH_ASSOC)){
-                array_push($arr_cours_name, trim(preg_replace('/[0-9]+/', '', $row_cours_name['intitule'])));
+                array_push($arr_cours_name, trim(preg_replace('/[0-9]+/', '', $row_cours_name['cours_intitule'])));
             }
             ?>
             <div class="col-sm-9 ui-widget">
