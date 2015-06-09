@@ -113,14 +113,12 @@ if(isset($_POST['addCours'])){
                 center:'title',
                 right:'agendaWeek, agendaDay'
             },
-            defaultDate: 'today',
             defaultView: 'agendaWeek',
             lang:'fr',
             editable: true,
-            hiddenDays: [0],
-            timeZone: 'local',
-            minTime: '13:00',
+            minTime: '9:00',
             allDaySlot: false,
+            height: 'auto',
             events:{
                 url: 'functions/calendarfeed.php',
                 type: 'POST',
