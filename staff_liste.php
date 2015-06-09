@@ -40,6 +40,11 @@ if(isset($_POST['addRank'])){
                    <a href="actions/rank_add.php" role="button" class="btn btn-primary" data-title="Ajouter un rang" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un rang</a>
                </div>
                <br>
+               <div class="input-group input-group-lg">
+               <span class="glyphicon glyphicon-filter input-group-addon" id="basic-addon1"></span>
+               <input type="text" id="search" class="form-control" placeholder="Tapez n'importe quoi pour rechercher" aria-describedby="basic-addon1">
+               </div>
+               <br>
                <ul class="nav nav-tabs">
                  <?php 
                     /** Fetch des ranks et affichage dans l'URL. Pour tout afficher, rank vaut 0. **/
@@ -70,7 +75,7 @@ if(isset($_POST['addRank'])){
                                <th class="col-sm-2">Actions</th>
                            </tr>
                        </thead>
-                       <tbody>
+                       <tbody id="filter-enabled">
                        <?php
                         /** Affichage de tous les membres du staff possédant le rang administratif correspondant **/
                         if($rank_value==0) $staff_members = $db->query('SELECT * FROM staff');
@@ -127,6 +132,15 @@ if(isset($_POST['addRank'])){
                     onNavigate: false
                 });
             });
+            
+        var $rows = $('#filter-enabled tr');
+        $('#search').keyup(function(){
+            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+            $rows.show().filter(function(){
+               var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                return !~text.indexOf(val);
+            }).hide();
+        });
         });
     </script>
 </body>
