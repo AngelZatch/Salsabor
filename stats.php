@@ -10,7 +10,7 @@
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
-               <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Page Template</h1>
+               <h1 class="page-title"><span class="glyphicon glyphicon-stats"></span> Statistiques</h1>
            </div>
        </div>
    </div>
