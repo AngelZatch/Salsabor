@@ -24,6 +24,35 @@ require_once "../functions/db_connect.php";
                 </script>
             </div>
        </div>
+       <div class="form-group">
+           <label for="suffixe" class="col-sm-3 control-label">Suffixe</label>
+           <div class="col-sm-9">
+              <?php
+                $suffixes = $db->query("SHOW COLUMNS FROM cours_parent LIKE 'parent_suffixe'");
+                while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
+                    $array_suffixes = preg_split("/','/", substr($row_suffixes['Type'], 5, strlen($row_suffixes['Type'])-7));
+                    $j = 1;
+                    for($i = 0; $i < 3; $i++){
+                    echo "<input type='checkbox' name='suffixe-".$i."' id='suffixe-".$i."' class='checkbox-inline' value=".$j."'>".$array_suffixes[$i]."</input>";
+                        $j *= 2;
+                    }
+                }
+               ?>
+           </div>
+       </div>
+       <div class="form-group">
+           <label for="type" class="col-sm-3 control-label">Type de cours<span class="mandatory">*</span></label>
+            <div class="col-sm-9">
+                <select name="type" class="form-control">
+                    <?php
+                    $types = $db->query('SELECT * FROM cours_type');
+                    while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
+                        echo"<option value=".$row_types['cours_type_id'].">".$row_types['cours_type_name']."</option>";
+                    }
+                    ?>
+               </select>
+            </div>
+       </div>
       <div class="form-group">
            <label for="date_debut" class="col-sm-3 control-label">Date de Début<span class="mandatory">*</span></label>
            <div class="col-sm-9"><input type="date" class="form-control" name="date_debut"></div>
@@ -93,7 +122,6 @@ require_once "../functions/db_connect.php";
             <select name="niveau" class="form-control">
             <?php
             $niveaux = $db->query('SELECT * FROM niveau');
-            $row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC);
             while($row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC)){
                 echo"<option value=".$row_niveaux['niveau_id'].">".$row_niveaux['niveau_name']."</option>";
             }

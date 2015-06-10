@@ -2,3 +2,31 @@ Coûts horaires calculés par types de cours et d'enseignants (au cas par cas)
 
 Accès à l'application de test :
 192.168.0.150 / patrick / Abricotier
+
+// PRIORITAIRE //
+
+Planning de cours :
+- Possibilité de modifier un créneau en justifiant la modification
+- Ajouter les créneaux fixes FORPRO et élèves.
+- Sous-types de cours : Shines, Suelta & Couples
+=> COURS PRIORITAIRES SUR RESERVATIONS
+=> Déplacer "Cours particulier" dans une table réservation_type
+
+Réservation de salles :
+- Doit pouvoir indiquer la raison de la réservation, la personne qui a demandé la réservation, le type de réservation (cours particulier, répétition, cours collectifs, Enterrements de vie de jeune fille/jeune garçon), et si la réservation est payée ou libre.
+- Prix changent en fonction de la plage horaire et des jours (En cas d'enterrement de vie, le prix varie en fonction du nombre de personnes)
+
+// NON-PRIORITAIRE //
+
+Présence à l'accueil :
+- Savoir qui est présent à l'accueil à tout moment
+
+Gestion du staff :
+- Certains professeurs donnent des cours à l'extérieur
+- Chaque professeur a ses tarifs en fonction de l'activité
+- Certains professeurs sont payés à l'heure, d'autres au nombre d'élèves
+
+Calculateur :
+- Donne les valeurs d'argent à payer à un professeur en fonction de telle ou telle activité.
+- CHAQUE ACTIVITE D'UN PROFESSEUR DOIT ÊTRE MARQUEE COMME PAYEE OU NON.
+- Prévisionel des montants à payer
