@@ -1,9 +1,16 @@
 <?php
-setlocale(LC_TIME, 'fr_FR.utf8');
-
-//echo date('l', strtotime('Sunday + 1 DAYS'));
-
-//echo strftime('%A', mktime(0,0,0,(date_create('2015-08-06')->format('j')),(date_create('2015-08-06')->format('n')),(date_create('2015-08-06')->format('Y'))));
-
-echo $nombre_repetitions = (strtotime('2015-08-27') - strtotime('2015-08-06'))/(86400*1)+1;
+    $index = 38;
+    $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    try{
+        $db->beginTransaction();
+        $findParent = $db->prepare('SELECT COUNT(*) FROM cours WHERE cours_parent_id=?');
+        $findParent->bindParam(1, $index, PDO::PARAM_INT);
+        $findParent->execute();
+        print_r($findParent->fetchColumn());
+    } catch(PDOException $e){
+        $db->rollBack();
+        var_dump($e->getMessage());
+    }
+    /** Il faut vérifier si la table parent a encore d'autres entrées pour cet id dans la table cours. Si elle n'en a plus, alors il faut supprimer l'entrée parente également. **/
 ?>

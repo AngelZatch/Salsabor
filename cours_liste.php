@@ -85,8 +85,8 @@ if(isset($_POST['deleteCoursAll'])){
                                     <div class='arrow'></div>
                                         <p style='font-weight:700;'>Supprimer...</p>
                                         <button type='submit' name='deleteCoursOne' class='btn btn-default' style='width:11em;'>Cet évènement</button>
-                                        <button type='submit' name='deleteCoursNext' class='btn btn-default disabled' style='width:11em;'>Tous les suivants</button>
-                                        <button type='submit' name='deleteCoursAll' class='btn btn-default disabled' style='width:11em;'>Toute la série</button>
+                                        <button type='submit' name='deleteCoursNext' class='btn btn-default' style='width:11em;'>Tous les suivants</button>
+                                        <button type='submit' name='deleteCoursAll' class='btn btn-default' style='width:11em;'>Toute la série</button>
                                 </div>
                             </div>
                             <input type='hidden' name='id' value=".$row_cours['cours_id'].">

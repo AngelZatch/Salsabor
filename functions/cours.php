@@ -143,11 +143,71 @@ function deleteCoursOne(){
         $deleteCours = $db->prepare('DELETE FROM cours WHERE cours_id=?');
         $deleteCours->bindValue(1, $index, PDO::PARAM_INT);
         $deleteCours->execute();
+        checkParent($index);
         $db->commit();
     } catch(PDOException $e){
         $db->rollBack();
         var_dump($e->getMessage());
     }
-    /** Il faut vérifier si la table parent a encore d'autres entrées pour cet id dans la table cours. Si elle n'en a plus, alors il faut supprimer l'entrée parente également. **/
+}
+
+function deleteCoursNext(){
+    $index = $_POST['id'];
+    $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    try{
+        $db->beginTransaction();
+        $findCurrent = $db->prepare('SELECT cours_start, cours_parent_id FROM cours WHERE cours_id=?');
+        $findCurrent->bindParam(1, $index, PDO::PARAM_INT);
+        $findCurrent->execute();
+        $row_findCurrent = $findCurrent->fetch(PDO::FETCH_ASSOC);
+        $deleteCours = $db->prepare('DELETE FROM cours WHERE cours_start >=? AND cours_parent_id=?');
+        $deleteCours->bindParam(1, $row_findCurrent['cours_start'], PDO::PARAM_STR);
+        $deleteCours->bindParam(2, $row_findCurrent['cours_parent_id'], PDO::PARAM_INT);
+        $deleteCours->execute();
+        checkParent($index);
+        $db->commit();
+    } catch(PDOException $e){
+        $db->rollBack();
+        var_dump($e->getMessage());
+    }
+}
+
+function deleteCoursAll(){
+    $index = $_POST['id'];
+    $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    try{
+        $db->beginTransaction();
+        $findAll = $db->prepare('SELECT cours_parent_id FROM cours WHERE cours_id=?');
+        $findAll->bindParam(1, $index, PDO::PARAM_INT);
+        $findAll->execute();
+        $row_findAll = $findAll->fetch(PDO::FETCH_ASSOC);
+        /** On supprime tous les évènements de la série, caractérisés par le même id parent **/
+        $deleteAll = $db->prepare('DELETE FROM cours WHERE cours_parent_id=?');
+        $deleteAll->bindParam(1, $row_findAll['cours_parent_id'], PDO::PARAM_INT);
+        $deleteAll->execute();
+        
+        /** On supprime ensuite la référence parent **/
+        $deleteAll = $db->prepare('DELETE FROM cours_parent WHERE parent_id=?');
+        $deleteAll->bindParam(1, $row_findAll['cours_parent_id'], PDO::PARAM_INT);
+        $deleteAll->execute();
+        $db->commit();
+    } catch(PDOException $e){
+        $db->rollBack();
+        var_dump($e->getMessage());
+    }
+}
+
+function checkParent($data){
+        /** On supprime ensuite la référence parent si elle n'a plus aucun cours enfant **/
+        $findParent = $db->prepare('SELECT COUNT(*) FROM cours WHERE cours_parent_id=?');
+        $findParent->bindParam(1, $data, PDO::PARAM_INT);
+        $findParent->execute();
+        if($findParent->fetchColumn() == 0){
+            $deleteAll = $db->prepare('DELETE FROM cours_parent WHERE parent_id=?');
+            $deleteAll->bindParam(1, $data, PDO::PARAM_INT);
+            $deleteAll->execute();
+        }
 }
 ?>
