@@ -73,7 +73,7 @@ function addCours(){
         $recurrence = $_POST['recurrence'];
         $frequence_repetition = $_POST['frequence_repetition'];
         $date_fin = $_POST['date_fin'];
-        $nombre_repetitions = (strtotime($date_fin) - strtotime($date_debut))/(86400*$frequence_repetition)+1;
+        (int)$nombre_repetitions = (strtotime($date_fin) - strtotime($date_debut))/(86400*$frequence_repetition)+1;
         if($frequence_repetition == 1){
             $weekday = 0;
         }
@@ -208,9 +208,9 @@ function deleteCoursAll(){
 }
 
 function checkParent($data){
-        $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        /** On supprime ensuite la référence parent si elle n'a plus aucun cours enfant **/
+    $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    /** On supprime ensuite la référence parent si elle n'a plus aucun cours enfant **/
     try{
         $findParent = $db->prepare('SELECT COUNT(*) FROM cours WHERE cours_parent_id=?');
         $findParent->bindParam(1, $data, PDO::PARAM_INT);
