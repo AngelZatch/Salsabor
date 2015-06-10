@@ -59,8 +59,9 @@ if(isset($_POST['deleteCoursAll'])){
                        <thead>
                            <tr>
                                <th class="col-sm-2">Intitulé</th>
-                               <th class="col-sm-2">Jour</th>
-                               <th class="col-sm-2">Professeur</th>
+                               <th class="col-sm-1">Professeur</th>
+                               <th class="col-sm-1">Jour</th>
+                               <th class="col-sm-2">Type de cours</th>
                                <th class="col-sm-2">Niveau</th>
                                <th class="col-sm-2">Lieu</th>
                                <th class="col-sm-2">Actions</th>
@@ -68,12 +69,13 @@ if(isset($_POST['deleteCoursAll'])){
                        </thead>
                        <tbody id="filter-enabled">
                        <?php
-                        $cours = $db->query('SELECT * FROM cours JOIN staff ON (prof_principal=staff.staff_id) JOIN niveau ON(cours_niveau=niveau.niveau_id) JOIN salle ON (cours_salle=salle.salle_id)');
+                        $cours = $db->query('SELECT * FROM cours JOIN staff ON (prof_principal=staff.staff_id) JOIN niveau ON(cours_niveau=niveau.niveau_id) JOIN salle ON (cours_salle=salle.salle_id) JOIN cours_type ON(cours_type=cours_type.cours_type_id)');
                         while($row_cours = $cours->fetch(PDO::FETCH_ASSOC)){
                             echo "<tr>
-                            <td class='col-sm-2'>".$row_cours['cours_intitule']."</td>
-                            <td class='col-sm-2'>".date_create($row_cours['cours_start'])->format('d/m/Y')."<br>".(date_create($row_cours['cours_start'])->format('G:i'))." - ".(date_create($row_cours['cours_end'])->format('G:i'))."</td>
-                            <td class='col-sm-2'>".$row_cours['prenom']." ".$row_cours['nom']."</td>
+                            <td class='col-sm-2'>".$row_cours['cours_intitule']." (".$row_cours['cours_suffixe'].")</td>
+                            <td class='col-sm-1'>".$row_cours['prenom']." ".$row_cours['nom']."</td>
+                            <td class='col-sm-1'>".date_create($row_cours['cours_start'])->format('d/m/Y')."<br>".(date_create($row_cours['cours_start'])->format('G:i'))." - ".(date_create($row_cours['cours_end'])->format('G:i'))."</td>
+                            <td class='col-sm-2'>".$row_cours['cours_type_name']."</td>
                             <td class='col-sm-2 level-display'><span class='label label-level-".$row_cours['niveau_id']."'>".$row_cours['niveau_name']."</span></td>
                             <td class='col-sm-2'>".$row_cours['salle_name']."</td>
                             <td class='col-sm-2'>

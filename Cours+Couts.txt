@@ -1,5 +1,3 @@
-Coûts horaires calculés par types de cours et d'enseignants (au cas par cas)
-
 Accès à l'application de test :
 192.168.0.150 / patrick / Abricotier
 
@@ -8,8 +6,7 @@ Accès à l'application de test :
 Planning de cours :
 - Possibilité de modifier un créneau en justifiant la modification
 - Ajouter les créneaux fixes FORPRO et élèves.
-- Sous-types de cours : Shines, Suelta & Couples
-=> COURS PRIORITAIRES SUR RESERVATIONS
+=> COURS PRIORITAIRES SUR RESERVATIONS (Half-done)
 => Déplacer "Cours particulier" dans une table réservation_type
 
 Réservation de salles :
