@@ -103,7 +103,7 @@ function addCours(){
             /** Récupération de l'ID de la dernière insertion dans cours_parent **/
             $last_id = $db->lastInsertId();
             
-            for($i = 0; $i < $nombre_repetitions; $i++){
+            for($i = 1; $i < $nombre_repetitions; $i++){
                 /** Insertion de toutes les récurrences du cours dans la table cours **/
                 $insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_start, cours_end, prof_principal, prof_remplacant, cours_niveau, cours_salle, cours_unite, cours_cout_horaire)
                 VALUES(:cours_parent_id, :intitule, :cours_start, :cours_end, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire)');
