@@ -69,7 +69,7 @@ if(isset($_POST['deleteCoursAll'])){
                        </thead>
                        <tbody id="filter-enabled">
                        <?php
-                        $cours = $db->query('SELECT * FROM cours JOIN staff ON (prof_principal=staff.staff_id) JOIN niveau ON(cours_niveau=niveau.niveau_id) JOIN salle ON (cours_salle=salle.salle_id) JOIN prestations ON(cours_type=prestations.prestations_id)');
+                        $cours = $db->query('SELECT * FROM cours JOIN professeurs ON (prof_principal=professeurs.prof_id) JOIN niveau ON(cours_niveau=niveau.niveau_id) JOIN salle ON (cours_salle=salle.salle_id) JOIN prestations ON(cours_type=prestations.prestations_id)');
                         while($row_cours = $cours->fetch(PDO::FETCH_ASSOC)){
                             echo "<tr>
                             <td class='col-sm-2'>".$row_cours['cours_intitule']." (".$row_cours['cours_suffixe'].")</td>
