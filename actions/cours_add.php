@@ -45,9 +45,9 @@ require_once "../functions/db_connect.php";
             <div class="col-sm-9">
                 <select name="type" class="form-control">
                     <?php
-                    $types = $db->query('SELECT * FROM cours_type');
+                    $types = $db->query('SELECT * FROM prestations');
                     while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
-                        echo"<option value=".$row_types['cours_type_id'].">".$row_types['cours_type_name']."</option>";
+                        echo"<option value=".$row_types['prestations_id'].">".$row_types['prestations_name']."</option>";
                     }
                     ?>
                </select>
