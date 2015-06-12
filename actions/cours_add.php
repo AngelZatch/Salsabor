@@ -149,5 +149,4 @@ require_once "../functions/db_connect.php";
        </div>
        </div>
         <input type="submit" name="addCours" value="Ajouter" class="btn btn-default">
-    </div>
 </form>

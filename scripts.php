@@ -2,7 +2,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 
 <script src="assets/js/moment.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.js"></script>
+<script src="assets/js/fullcalendar.min.js"></script>
 <script src="assets/js/jquery.ui.timepicker.js"></script>
 <script src="assets/js/lang-all.js"></script>
 
