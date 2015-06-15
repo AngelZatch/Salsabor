@@ -30,55 +30,36 @@ if(isset($_POST['addTarifResa'])){
                    </ul>
                </div> <!-- menu-bar -->
                 <?php
-                /** On obtient le nombre maximum de prestations pour pouvoir afficher plus tard toutes les prestations qui nous correspondent **/
-                $count = $db->query('SELECT COUNT(*) FROM prestations');
-                $maxPrestations = $count->fetchColumn();
-                /** On obtient le nombre d'horaires différents pour tout **/
-                $liste_tarifs = $db->prepare('SELECT DISTINCT heure_debut_resa FROM tarifs_reservations');
-                $liste_tarifs->execute();
-                $array_heures = $liste_tarifs->fetchAll(PDO::FETCH_COLUMN);
-                /** On obtient la liste des jours **/
-                $liste_tarifs = $db->prepare('SELECT DISTINCT jour_resa FROM tarifs_reservations');
-                $liste_tarifs->execute();
-                $array_jours = $liste_tarifs->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_COLUMN);
-                for($k = 0; $k < sizeof($array_jours); $k++){
+                $jours = array('Semaine', 'Samedi', 'Dimanche');
+                for($i = 1; $i <= 3; $i++){
                     echo "<div class='table-responsive'>
-                            <table class='table table-striped table-hover'>
-                                <thead>
-                                    <tr>
-                                        <th class='col-sm-3'></th>";
+                            <h2>".$jours[$i-1]."</h2>
+                                <table class='table table-striped table-hover'>
+                                    <thead>
+                                        <tr>
+                                            <th class='col-sm-3'></th>";
                     $liste_types = $db->query('SELECT prestations_id, prestations_name FROM prestations WHERE est_resa=1');
+                    $id_prestations = array();
                     while($row_liste_types = $liste_types->fetch(PDO::FETCH_ASSOC)){
                         echo "<th class='col-sm-2'>".$row_liste_types['prestations_name']."</th>";
+                        array_push($id_prestations, $row_liste_types['prestations_id']);
                     }
-                   echo "</tr>
-                        </thead>";
-                    /** Affichage des jours **/
-                    echo "<tbody>";
-                    for($j = 0; $j < sizeof($array_heures); $j++){
-                        /** Pour chaque heure, on obtient tous les tarifs pour toutes les activités **/
-                        $liste_tarifs = $db->prepare('SELECT * FROM tarifs_reservations WHERE heure_debut_resa=? AND jour_resa=?');
-                        $liste_tarifs->bindValue(1, $array_heures[$j]);
-                        $liste_tarifs->bindValue(2, $array_jours[$k]);
-                        $liste_tarifs->execute();
-                        echo "<tr>";
-                        while($row_liste_tarifs = $liste_tarifs->fetch(PDO::FETCH_ASSOC)){
-                            /** Affichage des horaires par jour**/
-                            echo "<td class='col-sm-4'>".$row_liste_tarifs['heure_debut_resa']." - ".$row_liste_tarifs['heure_fin_resa']."</td>";
-                            /** Pour chaque heure et chaque jour, on obtient le tarif et le type d'activité **/
-                            $liste_tarifs = $db->prepare('SELECT prix_resa, type_prestation FROM tarifs_reservations WHERE type_prestation=? AND heure_debut_resa=? AND jour_resa=?');
-                            for($i = 1; $i <= $maxPrestations; $i++){
-                                $liste_tarifs->bindValue(1, $i, PDO::PARAM_INT);
-                                $liste_tarifs->bindValue(2, $array_heures[$j]);
-                                $liste_tarifs->bindValue(3, $array_jours[$k]);
-                                $liste_tarifs->execute();
-                                while($row_definitive = $liste_tarifs->fetch(PDO::FETCH_ASSOC)){
-                                    /** Affichage des prix par horaires, par jour et par activité **/
-                                        echo "<td class='col-sm-2'>".$row_definitive['prix_resa']." € TTC</td>";
-                                }
-                            }
-                            echo "</tr>";
+                    echo "</tr></thead><tbody>";
+
+                    /** Get les horaires et les id associés **/
+                    $liste_horaires = $db->prepare('SELECT * FROM plages_reservations WHERE plages_resa_jour=?');
+                    $liste_horaires->bindValue(1, $i);
+                    $liste_horaires->execute();
+                    while($row_liste_horaires = $liste_horaires->fetch(PDO::FETCH_ASSOC)){
+                        echo "<tr><td class='col-sm-2'>".$row_liste_horaires['plages_resa_debut']." - ".$row_liste_horaires['plages_resa_fin']."</td>";
+                        /** Get les tarifs associés à l'id qu'on a **/
+                        $tarifs_valeur = $db->prepare('SELECT * FROM tarifs_reservations WHERE plage_resa=? ORDER BY type_prestation ASC');
+                        $tarifs_valeur->bindValue(1, $row_liste_horaires['plages_resa_id']);
+                        $tarifs_valeur->execute();
+                        while($row_tarifs_valeur = $tarifs_valeur->fetch(PDO::FETCH_ASSOC)){
+                            echo "<td class='col-sm-2'>".$row_tarifs_valeur['prix_resa']."€ TTC</td>";
                         }
+                        echo "</tr>";
                     }
                     echo "</tbody></table></div>";
                 }

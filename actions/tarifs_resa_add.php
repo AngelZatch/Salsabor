@@ -19,34 +19,31 @@ require_once "../functions/db_connect.php";
     <div class="form-group">
         <label for="jour" class="col-sm-3 control-label">Jours de réservation <span class="mandatory">*</span></label>
         <div class="col-sm-9">
-            <input type="checkbox" name="jour-1" id="jour-1" class="checkbox-inline" value="1">Semaine</input>
+            <input type="checkbox" name="jour-1" id="jour-1" class="checkbox-inline" value="1" onClick="toggleWeekHours()">Semaine</input>
             <input type="checkbox" name="jour-2" id="jour-2" class="checkbox-inline" value="2">Samedi</input>
             <input type="checkbox" name="jour-3" id="jour-3" class="checkbox-inline" value="3">Dimanche</input>
         </div>
     </div>
-    <div class="form-group">
-       <fieldset>
-            <label for="heure_debut" class="col-sm-3 control-label">Début à <span class="mandatory">*</span></label>
-            <div class="col-sm-9">
-                <input type="time" class="form-control" name="heure_debut" placeholder="10h00">
-            </div>
-            <label for="heure_fin" class="col-sm-3 control-label">Fin à <span class="mandatory">*</span></label>
-            <div class="col-sm-9">
-                <input type="time" class="form-control" name="heure_fin" placeholder="14h00">
-            </div>
-       </fieldset>
+    <div class="form-group" id="week-hours" style="display:none;">
+    <label for="heures_semaine" class="col-sm-3 control-label">Plages horaires</label>
+    <div class="col-sm-9">
+       <?php
+        $liste_plages = $db->query('SELECT * FROM plages_reservations');
+?>
+        <input type="checkbox" name="plage-1" class="checkbox" value="1">Matin (10h00 - 14h00)</input>
+        <input type="checkbox" name="plage-2" class="checkbox" value="2">Après-midi (14h00 - 18h00)</input>
+        <input type="checkbox" name="plage-3" class="checkbox" value="3">Soirée (19h00 - 22h00)</input>
+    </div>
     </div>
     <div class="form-group">
         <label for="lieu_resa" class="col-sm-3 control-label">Lieu réservé <span class="mandatory">*</span></label>
         <div class="col-sm-9">
-           <select name="lieu_resa" class="form-control">
             <?php
             $lieux = $db->query('SELECT * FROM salle');
             while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){
-                echo "<option value=".$row_lieux['salle_id'].">".$row_lieux['salle_name']."</option>";
+                echo "<input type='checkbox' class='checkbox-inline' value=".$row_lieux['salle_id'].">".$row_lieux['salle_name']."</option>";
             }
             ?>
-            </select>
         </div>
     </div>
     <div class="form-group">

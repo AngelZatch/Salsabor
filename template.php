@@ -1,3 +1,6 @@
+<?php
+require_once 'functions/db_connect.php';
+?>
 <html>
 <head>
     <meta charset="UTF-8">
