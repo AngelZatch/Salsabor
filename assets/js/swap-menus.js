@@ -26,6 +26,10 @@ function toggleRecurringOptions(){
     $("#recurring-options").toggle('600');
 }
 
+function toggleWeekHours(){
+    $("#week-hours").toggle('600');
+}
+
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover();
 });
