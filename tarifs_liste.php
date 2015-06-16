@@ -30,35 +30,34 @@ if(isset($_POST['addTarifResa'])){
                    </ul>
                </div> <!-- menu-bar -->
                 <?php
-                $jours = array('Semaine', 'Samedi', 'Dimanche');
                 $id_prestations = array();
                 $id_horaires = array();
-                for($i = 1; $i <= 3; $i++){
-                    echo "<div class='table-responsive'>
-                            <h2>".$jours[$i-1]."</h2>
-                                <table class='table table-striped table-hover'>
-                                    <thead>
-                                        <tr>
-                                            <th class='col-sm-3'></th>";
+                echo "<div class='table-responsive'>
+                        <table class='table table-striped table-hover'>
+                            <thead>
+                                <tr>
+                                    <th class='col-sm-3'></th>";
                     $liste_types = $db->query('SELECT prestations_id, prestations_name FROM prestations WHERE est_resa=1');
                     while($row_liste_types = $liste_types->fetch(PDO::FETCH_ASSOC)){
                         echo "<th class='col-sm-2'>".$row_liste_types['prestations_name']."</th>";
                         array_push($id_prestations, $row_liste_types['prestations_id']);
                     }
                     echo "</tr></thead><tbody>";
-
-                    /** Get les horaires et les id associés **/
-                    $liste_horaires = $db->prepare('SELECT * FROM plages_reservations WHERE plages_resa_jour=?');
-                    $liste_horaires->bindValue(1, $i);
-                    $liste_horaires->execute();
-                    while($row_liste_horaires = $liste_horaires->fetch(PDO::FETCH_ASSOC)){
-                        $id_horaires[] = array($row_liste_horaires['plages_resa_id'],
-                                               $row_liste_horaires['plages_resa_debut'],
-                                               $row_liste_horaires['plages_resa_fin']);
+                    for($i = 1; $i <= 3; $i++){
+                        /** Get les horaires et les id associés **/
+                        $liste_horaires = $db->prepare('SELECT * FROM plages_reservations WHERE plages_resa_jour=?');
+                        $liste_horaires->bindValue(1, $i);
+                        $liste_horaires->execute();
+                        while($row_liste_horaires = $liste_horaires->fetch(PDO::FETCH_ASSOC)){
+                            $id_horaires[] = array($row_liste_horaires['plages_resa_id'],
+                                                   $row_liste_horaires['plage_resa_nom'],
+                                                   date_create($row_liste_horaires['plages_resa_debut'])->format('H:i'),
+                                                   date_create($row_liste_horaires['plages_resa_fin'])->format('H:i'));
+                        }
                     }
-                    for($j = 0; $j < 3; $j++){
-                        echo "<tr><td class='col-sm-2'>".$id_horaires[$j][1]." - ".$id_horaires[$j][2]."</td>";
-                        for($k = 0; $k <= 3; $k++){
+                    for($j = 0; $j < sizeof($id_horaires); $j++){
+                        echo "<tr><td class='col-sm-2'>".$id_horaires[$j][1]." (".$id_horaires[$j][2]." - ".$id_horaires[$j][3].")</td>";
+                        for($k = 0; $k < sizeof($id_prestations); $k++){
                             /** Get les tarifs associés à l'id qu'on a **/
                             $tarif = $db->prepare('SELECT prix_resa FROM tarifs_reservations WHERE type_prestation=? AND plage_resa=? AND lieu_resa=1');
                             $tarif->bindValue(1, $id_prestations[$k]);
@@ -73,8 +72,7 @@ if(isset($_POST['addTarifResa'])){
                         }
                         echo "</tr>";
                     }
-                    echo "</tbody></table></div>";
-                }
+                echo "</tbody></table></div>";
                ?>
            </div>
        </div>
