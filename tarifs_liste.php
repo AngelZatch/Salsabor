@@ -31,6 +31,8 @@ if(isset($_POST['addTarifResa'])){
                </div> <!-- menu-bar -->
                 <?php
                 $jours = array('Semaine', 'Samedi', 'Dimanche');
+                $id_prestations = array();
+                $id_horaires = array();
                 for($i = 1; $i <= 3; $i++){
                     echo "<div class='table-responsive'>
                             <h2>".$jours[$i-1]."</h2>
@@ -39,7 +41,6 @@ if(isset($_POST['addTarifResa'])){
                                         <tr>
                                             <th class='col-sm-3'></th>";
                     $liste_types = $db->query('SELECT prestations_id, prestations_name FROM prestations WHERE est_resa=1');
-                    $id_prestations = array();
                     while($row_liste_types = $liste_types->fetch(PDO::FETCH_ASSOC)){
                         echo "<th class='col-sm-2'>".$row_liste_types['prestations_name']."</th>";
                         array_push($id_prestations, $row_liste_types['prestations_id']);
@@ -51,13 +52,24 @@ if(isset($_POST['addTarifResa'])){
                     $liste_horaires->bindValue(1, $i);
                     $liste_horaires->execute();
                     while($row_liste_horaires = $liste_horaires->fetch(PDO::FETCH_ASSOC)){
-                        echo "<tr><td class='col-sm-2'>".$row_liste_horaires['plages_resa_debut']." - ".$row_liste_horaires['plages_resa_fin']."</td>";
-                        /** Get les tarifs associés à l'id qu'on a **/
-                        $tarifs_valeur = $db->prepare('SELECT * FROM tarifs_reservations WHERE plage_resa=? ORDER BY type_prestation ASC');
-                        $tarifs_valeur->bindValue(1, $row_liste_horaires['plages_resa_id']);
-                        $tarifs_valeur->execute();
-                        while($row_tarifs_valeur = $tarifs_valeur->fetch(PDO::FETCH_ASSOC)){
-                            echo "<td class='col-sm-2'>".$row_tarifs_valeur['prix_resa']."€ TTC</td>";
+                        $id_horaires[] = array($row_liste_horaires['plages_resa_id'],
+                                               $row_liste_horaires['plages_resa_debut'],
+                                               $row_liste_horaires['plages_resa_fin']);
+                    }
+                    for($j = 0; $j < 3; $j++){
+                        echo "<tr><td class='col-sm-2'>".$id_horaires[$j][1]." - ".$id_horaires[$j][2]."</td>";
+                        for($k = 0; $k <= 3; $k++){
+                            /** Get les tarifs associés à l'id qu'on a **/
+                            $tarif = $db->prepare('SELECT prix_resa FROM tarifs_reservations WHERE type_prestation=? AND plage_resa=? AND lieu_resa=1');
+                            $tarif->bindValue(1, $id_prestations[$k]);
+                            $tarif->bindValue(2, $id_horaires[$j][0]);
+                            $tarif->execute();
+                            $row_tarifs = $tarif->fetch(PDO::FETCH_ASSOC);
+                            if(isset($row_tarifs['prix_resa'])){
+                                echo "<td class='col-sm-2'>".$row_tarifs['prix_resa']."€ TTC</td>";
+                            } else {
+                                echo "<td class='col-sm-2'> -- € TTC </td>";
+                            }
                         }
                         echo "</tr>";
                     }
