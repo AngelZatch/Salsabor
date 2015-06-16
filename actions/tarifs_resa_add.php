@@ -28,11 +28,11 @@ require_once "../functions/db_connect.php";
     <label for="heures_semaine" class="col-sm-3 control-label">Plages horaires</label>
     <div class="col-sm-9">
        <?php
-        $liste_plages = $db->query('SELECT * FROM plages_reservations');
-?>
-        <input type="checkbox" name="plage-1" class="checkbox" value="1">Matin (10h00 - 14h00)</input>
-        <input type="checkbox" name="plage-2" class="checkbox" value="2">Après-midi (14h00 - 18h00)</input>
-        <input type="checkbox" name="plage-3" class="checkbox" value="3">Soirée (19h00 - 22h00)</input>
+        $liste_plages = $db->query('SELECT * FROM plages_reservations WHERE plages_resa_jour=1');
+        while($row_liste_plages = $liste_plages->fetch(PDO::FETCH_ASSOC)){
+            echo "<input type='checkbox' class='checkbox-inline' value=".$row_liste_plages['plages_resa_id']." name=plage-".$row_liste_plages['plages_resa_id'].">".$row_liste_plages['plage_resa_nom']."</input>";
+        }
+        ?>
     </div>
     </div>
     <div class="form-group">
@@ -41,7 +41,7 @@ require_once "../functions/db_connect.php";
             <?php
             $lieux = $db->query('SELECT * FROM salle');
             while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){
-                echo "<input type='checkbox' class='checkbox-inline' value=".$row_lieux['salle_id'].">".$row_lieux['salle_name']."</option>";
+                echo "<input type='checkbox' class='checkbox-inline' value=".$row_lieux['salle_id']." name='salle-".$row_lieux['salle_id']."'>".$row_lieux['salle_name'];
             }
             ?>
         </div>
