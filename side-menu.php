@@ -7,7 +7,7 @@
       <li><a href="tarifs_liste.php" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='tarifs_liste.php') echo "active";?>"><span class="glyphicon glyphicon-scale"></span> Tarifs</a></li>
       <li><a href="cours_liste.php" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='cours_liste.php') echo "active";?>"><span class="glyphicon glyphicon-time"></span> Planning et Réservations</a></li>
       <li><a href="staff_liste.php?rank=0" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='staff_liste.php') echo "active";?>"><span class="glyphicon glyphicon-briefcase"></span> Gestion du staff</a></li>
-      <li><a href="profs_liste.php" class="main-option <?if(basename($_SERVER['PHP_SELF']) == 'profs_liste.php') echo "active";?>"><span class="glyphicon glyphicon-blackboard"></span> Base Professeurs</a></li>
+      <li><a href="profs_liste.php" class="main-option <?php if(basename($_SERVER['PHP_SELF']) == 'profs_liste.php') echo "active";?>"><span class="glyphicon glyphicon-blackboard"></span> Base Professeurs</a></li>
       <li><a href="" class="main-option"><span class="glyphicon glyphicon-hdd"></span> Ressources</a></li>
       <li><a href="" class="main-option"><span class="glyphicon glyphicon-calendar"></span> Evènements</a></li>
       <li><a href="" class="main-option"><span class="glyphicon glyphicon-thumbs-up"></span> Réseaux Sociaux</a></li>
