@@ -11,7 +11,7 @@ require_once "../functions/db_connect.php";
     <div class="form-group">
         <label for="prestation" class="col-sm-3 control-label">Activité <span class="mandatory">*</span></label>
         <div class="col-sm-9">
-           <select name="prestation" id="" class="form-control">
+           <select name="prestation" id="prestation" class="form-control" onChange="calculTarif()">
            <?php
             $prestations = $db->query('SELECT * FROM prestations WHERE est_resa=1');
             while($row_prestations = $prestations->fetch(PDO::FETCH_ASSOC)){
@@ -23,20 +23,20 @@ require_once "../functions/db_connect.php";
     </div>
     <div class="form-group">
         <label for="date_resa" class="col-sm-3 control-label">Date <span class="mandatory">*</span></label>
-        <div class="col-sm-9"><input type="date" class="form-control" name="date_resa"></div>
+        <div class="col-sm-9"><input type="date" class="form-control" name="date_resa" id="date_resa" onChange="calculTarif()"></div>
     </div>
     <div class="form-group">
         <fieldset>
             <label for="heure_debut" class="col-sm-3 control-label">Début à <span class="mandatory">*</span></label>
-            <div class="col-sm-9"><input type="time" class="form-control" name="heure_debut" placeholder="19h30"></div>
+            <div class="col-sm-9"><input type="time" class="form-control" id="heure_debut" name="heure_debut" onChange="calculTarif()"></div>
             <label for="heure_fin" class="col-sm-3 control-label">Fin à <span class="mandatory">*</span></label>
-            <div class="col-sm-9"><input type="time" class="form-control" name="heure_fin" placeholder="21h30"></div>
+            <div class="col-sm-9"><input type="time" class="form-control" id="heure_fin" name="heure_fin" onChange="calculTarif()"></div>
         </fieldset>
     </div>
     <div class="form-group">
         <label for="lieu" class="col-sm-3 control-label">Salle <span class="mandatory">*</span></label>
         <div class="col-sm-9">
-           <select name="lieu" class="form-control">
+           <select name="lieu" class="form-control" id="lieu" onChange="calculTarif()">
            <?php
             $lieux = $db->query('SELECT * FROM salle');
             while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){
@@ -47,6 +47,5 @@ require_once "../functions/db_connect.php";
             </select>          
         </div>
     </div>
-    <input name="calculerTarif" value="Calculer le tarif" class="btn btn-default" id="calcul-tarif">
-    <p id="prix_resa"> Prix de la réservation  : </p>
+    <p id="prix_resa"> Prix de la réservation  : <span id="prix_calcul" style="font-size:40px;"></span></p>
 </form>

@@ -162,23 +162,28 @@ if(isset($_POST['deleteCoursAll'])){
         $('[data-toggle="popover"]').popover();
         
         // Calculer le tarif d'une réservation
-        $('#calcul-tarif').click(function(e){
-            e.preventDefault();
-            alert("click");
-            /*$.ajax({
-               url: 'reservations.php',
-               type: 'GET',
-               data: $("#add_resa").serialize(),
-               success : function(output){
-                   alert(output);
-               },
-               failure: function(){
-                   alert('erreur');
-               }
-           }); */
-        });
-        
     });
+		$('select#type').change(function(){
+			var type = $('#type').val();
+			alert(type);
+		});
+	   
+	   function getValue(){
+		   var type = $('#type').val();
+		   alert(type);
+	   };
+	   
+	   function calculTarif(){
+		   var prestation = $('#prestation').val();
+		   var date_resa = $('#date_resa').val();
+		   var heure_debut = $('#heure_debut').val();
+		   var heure_fin = $('#heure_fin').val();
+		   var lieu = $('#lieu').val();
+		   $.post("functions/reservations.php", {prestation, date_resa, heure_debut, heure_fin, lieu}).done(function(data){
+			   $('#prix_calcul').empty();
+			   $('#prix_calcul').append(data);
+		   });
+	   }
    /**$('#timepicker').timepicker({});
     $(document).ready(function(){
         $('#timepicker_locale_fin').timepicker({
