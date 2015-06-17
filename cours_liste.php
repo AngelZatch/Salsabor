@@ -162,26 +162,26 @@ if(isset($_POST['deleteCoursAll'])){
         $('[data-toggle="popover"]').popover();
         
         // Calculer le tarif d'une réservation
-    });
-		$('select#type').change(function(){
-			var type = $('#type').val();
-			alert(type);
-		});
-	   
-	   function getValue(){
-		   var type = $('#type').val();
-		   alert(type);
-	   };
-	   
+    });	   
 	   function calculTarif(){
 		   var prestation = $('#prestation').val();
 		   var date_resa = $('#date_resa').val();
 		   var heure_debut = $('#heure_debut').val();
 		   var heure_fin = $('#heure_fin').val();
 		   var lieu = $('#lieu').val();
-		   $.post("functions/reservations.php", {prestation, date_resa, heure_debut, heure_fin, lieu}).done(function(data){
+		   $.post("functions/resa_calcul_prix.php", {prestation, date_resa, heure_debut, heure_fin, lieu}).done(function(data){
 			   $('#prix_calcul').empty();
 			   $('#prix_calcul').append(data);
+		   });
+		   $.post("functions/check_calendar.php",{date_resa, heure_debut, heure_fin, lieu}).done(function(data){
+			   if(data != 0){
+				   $('#error_message').empty();
+				   $('#error_message').append('Cette plage horaire est déjà utilisée pour un cours ou une réservation.');
+				   $('.confirmAdd').prop('disabled', true);
+			   } else {
+				   $('#error_message').empty();
+				   $('.confirmAdd').prop('disabled', false);
+			   }
 		   });
 	   }
    /**$('#timepicker').timepicker({});

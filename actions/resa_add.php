@@ -1,6 +1,7 @@
 <?php
 require_once "../functions/db_connect.php";
 ?>
+<div class="row row-custom">
 <form action="cours_liste.php" method="post" class="form-horizontal" role="form" id="add_resa">
     <div class="form-group">
         <label for="identite" class="col-sm-3 control-label">Demandeur <span class="mandatory">*</span></label>
@@ -47,5 +48,10 @@ require_once "../functions/db_connect.php";
             </select>          
         </div>
     </div>
-    <p id="prix_resa"> Prix de la réservation  : <span id="prix_calcul" style="font-size:40px;"></span></p>
+    <div class="align-right">
+    	<p class="" id="error_message"></p>
+    <p id="prix_resa"> Prix de la réservation  : <span id="prix_calcul"></span></p>
+    <input type="submit" name="addResa" value="Valider" class="btn btn-default btn-primary confirmAdd">
+    </div>
 </form>
+</div>

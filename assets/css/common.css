@@ -169,3 +169,23 @@ body{
 .table-responsive{
     overflow-x: visible;
 }
+.align-right {
+	text-align:right;
+}
+
+#prix_calcul{
+	font-size: 25px;
+	color: #a9023a;
+}
+
+.confirmAdd {
+	float: right;
+}
+
+.row-custom {
+	margin-right: 0 !important;
+}
+
+#error_message {
+	color: #720026;
+}
