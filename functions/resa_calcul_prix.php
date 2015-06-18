@@ -7,7 +7,7 @@ $lieu = $_POST['lieu'];
 $cumulatedPrice = 0;
 
 /** Conversion de la date **/
-$date = date_create($_POST['date_resa'])->format('N');
+$date = date_create($_POST['date_debut'])->format('N');
 if($date <= 5){
 	$plage_resa = 1;
 }

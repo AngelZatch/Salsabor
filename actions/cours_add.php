@@ -55,8 +55,9 @@ require_once "../functions/db_connect.php";
    </div>
   <div class="form-group">
        <label for="date_debut" class="col-sm-3 control-label">Date de Début<span class="mandatory">*</span></label>
-       <div class="col-sm-9"><input type="date" class="form-control" name="date_debut"></div>
-
+       <div class="col-sm-9">
+       <input type="date" class="form-control" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
+       </div>
        <div class="col-sm-9 col-sm-offset-3">
            <label for="recurrence" class="control-label"><input type="checkbox" name="recurrence" id="recurrence" class="checkbox-inline" value="1" onClick="toggleRecurringOptions()">Est récurent<span class="mandatory">*</span></label>
        </div>
@@ -64,14 +65,14 @@ require_once "../functions/db_connect.php";
   <div class="form-group" id="recurring-options" style="display:none;">
        <label for="date_fin" class="col-sm-3 control-label">Date de Fin<span class="mandatory">*</span></label>
        <div class="col-sm-9">
-           <input type="date" class="form-control" name="date_fin">
+           <input type="date" class="form-control" name="date_fin" id="date_fin" onChange="checkCalendar(false, true)">
       </div>
           <label for="frequence_repetition" class="col-sm-3 control-label">Récurrence<span class="mandatory">*</span></label>
            <div class="col-sm-9">
                <div id="options-recurrence">
-                   <input type="radio" value="1" name="frequence_repetition"> Quotidienne<br>
-                   <input type="radio" value="7" name="frequence_repetition"> Hebdomadaire <br>
-                   <input type="radio" value="14" name="frequence_repetition"> Bi-mensuelle<br>
+                   <input type="radio" value="1" name="frequence_repetition" onChange="checkCalendar(false, true)"> Quotidienne<br>
+                   <input type="radio" value="7" name="frequence_repetition" onChange="checkCalendar(false, true)"> Hebdomadaire <br>
+                   <input type="radio" value="14" name="frequence_repetition" onChange="checkCalendar(false, true)"> Bi-mensuelle<br>
                </div>
            </div>
    </div>
@@ -79,11 +80,11 @@ require_once "../functions/db_connect.php";
        <fieldset>
        <label for="herue_debut" class="col-sm-3 control-label">Début à <span class="mandatory">*</span></label>
        <div class="col-sm-9">
-           <input type="time" class="form-control hasTimepicker" id="timepicker_locale_debut" name="heure_debut" placeholder="18h30">
+           <input type="time" class="form-control hasTimepicker" name="heure_debut" id="heure_debut" onChange="checkCalendar(false, false)">
        </div>
        <label for="heure_fin" class="col-sm-3 control-label">Fin à <span class="mandatory">*</span></label>
        <div class="col-sm-9">
-           <input type="time" class="form-control hasTimepicker" id="timepicker_locale_fin" name="heure_fin" placeholder="19h30">
+           <input type="time" class="form-control hasTimepicker" name="heure_fin" id="heure_fin" onChange="checkCalendar(false, false)">
        </div>
        </fieldset>
    </div>
@@ -132,7 +133,7 @@ require_once "../functions/db_connect.php";
    <div class="form-group">
        <label for="lieu" class="col-sm-3 control-label">Lieu<span class="mandatory">*</span></label>
        <div class="col-sm-9">
-       <select name="lieu" class="form-control">
+       <select name="lieu" class="form-control" id="lieu" onChange="checkCalendar(false, false)">
        <?php
        $lieux = $db->query('SELECT * FROM salle');
         while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){
@@ -146,7 +147,10 @@ require_once "../functions/db_connect.php";
        <div class="form-group">
           <div class="col-sm-9 col-sm-offset-3">
               <label for="paye" class="control-label"><input type="checkbox" name="paye" id="paye" class="checkbox-inline" value="1">Déjà payé<span class="mandatory">*</span></label>
+		  </div>
        </div>
+       <div class="align-right">
+       		<p id="error_message"></p>
+       		<input type="submit" name="addCours" value="Ajouter" class="btn btn-default btn-primary confirm-add">
        </div>
-        <input type="submit" name="addCours" value="Ajouter" class="btn btn-default">
 </form>

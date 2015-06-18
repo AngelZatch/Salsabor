@@ -21,22 +21,29 @@ require_once 'functions/db_connect.php';
     $lieu = '1';
 	$cumulatedPrice = 0;
     
-    
     /** Conversion de la date **/
-    $date = '2015-06-29 '.$heure_debut;
-    if($date <= 5){
-        $plage_resa = 1;
-    }
-    else if($date == 6){
-        $plage_resa = 2;
-    }
-    else $plage_resa = 3;
-    
-$findResa = $db->prepare('SELECT COUNT(*) FROM cours WHERE cours_salle=? AND cours_start=?');
+	$frequence_repetition = 7;
+	$date_debut = '2015-06-08';
+	$date_fin = '2015-06-30';
+    $start = $date_debut." ".$heure_debut;
+	$end = $date_debut." ".$heure_fin;
+	(int)$nombre_repetitions = (strtotime($date_fin) - strtotime($date_debut))/(86400 * $frequence_repetition)+1;
+$res = 0;
+for($i = 1; $i < $nombre_repetitions; $i++){
+	echo $start." - ".$end."<br>";
+	$findResa = $db->prepare('SELECT COUNT(*) FROM cours WHERE cours_salle=? AND ((cours_start<=? AND cours_end>=?) OR (cours_start<=? AND cours_end>=?))');
 $findResa->bindValue(1, $lieu);
-$findResa->bindValue(2, $date);
-$findResa->execute();
-$res = $findResa->fetchColumn();
+	$findResa->bindValue(2, $start);
+	$findResa->bindValue(3, $start);
+	$findResa->bindValue(4, $end);
+	$findResa->bindValue(5, $end);
+	$findResa->execute();
+	$res += $findResa->fetchColumn();
+	$date_debut = strtotime($start.'+'.$frequence_repetition.'DAYS');
+	$date_fin = strtotime($end.'+'.$frequence_repetition.'DAYS');
+	$start = date("Y-m-d H:i:s", $date_debut);
+	$end = date("Y-m-d H:i:s", $date_fin);
+}
 echo $res;
                     ?>
             </form>
