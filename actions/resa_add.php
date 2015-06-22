@@ -50,7 +50,12 @@ require_once "../functions/db_connect.php";
     </div>
     <div class="align-right">
     	<p class="" id="error_message"></p>
-    <p id="prix_resa"> Prix de la réservation  : <span id="prix_calcul"></span></p>
+    	<div class="form-group">
+    		<label for="prix_resa" class="col-sm-3 control-label">Prix de la réservation : </label>
+    		<div class="col-sm-9">
+    			<input type="text" name="prix_resa" id="prix_calcul" class="form-control">
+    		</div>
+    	</div>
     <input type="submit" name="addResa" value="Valider" class="btn btn-default btn-primary confirm-add">
     </div>
 </form>

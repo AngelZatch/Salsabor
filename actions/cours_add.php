@@ -59,7 +59,7 @@ require_once "../functions/db_connect.php";
        <input type="date" class="form-control" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
        </div>
        <div class="col-sm-9 col-sm-offset-3">
-           <label for="recurrence" class="control-label"><input type="checkbox" name="recurrence" id="recurrence" class="checkbox-inline" value="1" onClick="toggleRecurringOptions()">Est récurent<span class="mandatory">*</span></label>
+           <label for="recurrence" class="control-label"><input type="checkbox" name="recurrence" id="recurrence" class="checkbox-inline" value="1" onClick="toggleRecurringOptions()">Est récurrent<span class="mandatory">*</span></label>
        </div>
    </div>
   <div class="form-group" id="recurring-options" style="display:none;">

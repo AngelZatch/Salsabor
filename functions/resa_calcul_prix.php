@@ -29,5 +29,5 @@ else $plage_resa = 3;
 		$res = $findHours->fetch(PDO::FETCH_ASSOC);
 		$cumulatedPrice += 0.5 * $res['prix_resa'];
 	}
-   echo $cumulatedPrice." €";
+   echo $cumulatedPrice;
 ?>

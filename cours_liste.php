@@ -2,6 +2,7 @@
 require_once "functions/db_connect.php";
 /** Le fichier functions/cours.php contient toutes les fonctions relatives aux cours **/
 require_once "functions/cours.php";
+require_once "functions/reservations.php";
 
 setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
 
@@ -11,14 +12,22 @@ if(isset($_POST['addCours'])){
     addCours();
 }
 
+// Ajout d'une réservation
+if(isset($_POST['addResa'])){
+	addResa();
+}
+
+// Sauf d'un seul cours
 if(isset($_POST['deleteCoursOne'])){
     deleteCoursOne();
 }
 
+// Suppression de tous les cours suivant le sélectionné
 if(isset($_POST['deleteCoursNext'])){
     deleteCoursNext();
 }
 
+// Suppression de tous les cours du même genre que le sélectionné
 if(isset($_POST['deleteCoursAll'])){
     deleteCoursAll();
 }
@@ -111,6 +120,12 @@ if(isset($_POST['deleteCoursAll'])){
                     <div id="calendar" class="fc fc-ltr fc-unthemed">
                         
                     </div>
+                    <div id="add-options" class="popover popover-default">
+                    	<div class="arrow"></div>
+                    	<p style="font-weight:700;">Ajouter...</p>
+                    	<button class="btn btn-default">Un cours</button>
+                    	<button class="btn btn-default">Une réservation</button>
+                    </div>
                </div> <!-- Display en Planning -->
            </div> <!-- col-sm-10 main -->
        </div>
@@ -135,19 +150,44 @@ if(isset($_POST['deleteCoursAll'])){
             },
             defaultView: 'agendaWeek',
             lang:'fr',
-            editable: true,
+            editable: false,
             minTime: '9:00',
             allDaySlot: false,
             height: 'auto',
-            events:{
-                url: 'functions/calendarfeed.php',
-                type: 'POST',
-                error: function(){
-                    alert('Erreur pendant l\'obtention des évènements');
-                }
-            },
-            backgroundColor: 'yellow',
-            textColor:'black'
+            eventSources:[
+				{
+					url: 'functions/calendarfeed_cours.php',
+					type: 'POST',
+					color: '#0FC5F5',
+					textColor:'black',
+					error: function(){
+						console.log('Erreur pendant l\'obtention des évènements');
+					}
+            	},
+				{
+					url: 'functions/calendarfeed_resa.php',
+					type: 'POST',
+					color: '#03FBA6',
+					textColor: 'black',
+					error: function(){
+						alert('Erreur pendant l\'obtention des réservations');
+					}
+				}
+			],
+			eventClick: function(calEvent){
+				//alert("click sur l'évènement : " + calEvent);
+				console.log(calEvent.description);
+			},
+			dayClick: function(date, jsEvent, view){
+				//$(jsEvent.target).attr('id', 'click-id');
+				console.log(jsEvent.target);
+				//$('#add-options').popoverX('toggle');
+				/**$(this).ekkoLightbox({
+					remote: 'actions/cours_add.php',
+					title: 'Ajouter un cours',
+					onNavigate: false
+				});**/
+			}
         });
         
         var $rows = $('#filter-enabled tr');
@@ -160,6 +200,12 @@ if(isset($_POST['deleteCoursAll'])){
         });
         
         $('[data-toggle="popover"]').popover();
+		$('#add-options').popoverX({
+			target: '#click-id',
+			placement: 'bottom',
+			closeOtherPopovers: true,
+			useOffsetForPos: true,
+		});
     });
 	   // On vérifie que la réservation n'est pas superposée à un cours
 	   function checkCalendar(reservation, recurring){
@@ -180,8 +226,8 @@ if(isset($_POST['deleteCoursAll'])){
 					   if(reservation){
 						   var prestation = $('#prestation').val();
 						   $.post("functions/resa_calcul_prix.php", {prestation, date_debut, heure_debut, heure_fin, lieu}).done(function(data){
-							   $('#prix_calcul').empty();
-							   $('#prix_calcul').append(data);
+							   $('input#prix_calcul').empty();
+							   $('input#prix_calcul').val(data);
 						   });
 					   }
 				   }
