@@ -43,7 +43,8 @@ if(isset($_POST['deleteCoursAll'])){
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
-               <h1 class="page-title"><span class="glyphicon glyphicon-time"></span> Planning des salles et Réservations</h1>                    <div class="btn-toolbar">
+               <h1 class="page-title"><span class="glyphicon glyphicon-time"></span> Planning des salles et Réservations</h1>
+			  <div class="btn-toolbar">
                    <a href="actions/cours_add.php" role="button" class="btn btn-primary" data-title="Ajouter un cours" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a>
                    <a href="actions/resa_add.php" role="button" class="btn btn-primary" data-title="Ajouter une réservation" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-record"></span> Réserver une salle</a>
                    <a href="actions/salle_add.php" role="button" class="btn btn-primary disabled" data-title="Ajouter une salle" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter une salle</a>
@@ -117,14 +118,24 @@ if(isset($_POST['deleteCoursAll'])){
                         </ul>
                     </div> <!-- menu-bar -->
                     <br><br>
-                    <div id="calendar" class="fc fc-ltr fc-unthemed">
-                        
-                    </div>
-                    <div id="add-options" class="popover popover-default">
+                    <div id="calendar" class="fc fc-ltr fc-unthemed"></div>
+                    <div id="cours-options" class="popover popover-default">
                     	<div class="arrow"></div>
-                    	<p style="font-weight:700;">Ajouter...</p>
-                    	<button class="btn btn-default">Un cours</button>
-                    	<button class="btn btn-default">Une réservation</button>
+                    	<p style="font-weight:700;">Actions sur cours</p>
+						<a href="" role="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Modifier</a>
+						<form method="post">
+							<button class="btn btn-default">Supprimer ce cours</button>
+							<button class="btn btn-default">Supprimer tous les suivants</button>
+							<button class="btn btn-default">Supprimer toute la série</button>
+                    	</form>
+                    </div>
+                    <div id="resa-options" class="popover popover-default">
+                    	<div class="arrow"></div>
+                    	<p style="font-weight:700;">Actions sur réservation</p>
+							<a href="" class="btn btn-default">Modifier</button>
+						<form method="post">
+							<button class="btn btn-default">Supprimer</button>
+                    	</form>
                     </div>
                </div> <!-- Display en Planning -->
            </div> <!-- col-sm-10 main -->
@@ -178,11 +189,23 @@ if(isset($_POST['deleteCoursAll'])){
 				element.attr('id', calEvent.type+'-'+calEvent.id);
 			},
 			eventClick: function(calEvent, element){
-				$('#add-options').popoverX({
-					target: '#'+$(this).attr('id'),
-					closeOtherPopovers: true,
-				});
-				$('#add-options').popoverX('toggle');
+				if(calEvent.type == 'cours'){
+					$('#cours-options').popoverX({
+						target: '#'+$(this).attr('id'),
+						closeOtherPopovers: true,
+					});
+					$('#cours-options>a').attr('href', 'cours_edit.php?id='+calEvent.id);
+					$('#cours-options').popoverX('refreshPosition');	
+					$('#cours-options').popoverX('toggle');	
+				} else {
+					$('#resa-options').popoverX({
+						target: '#'+$(this).attr('id'),
+						closeOtherPopovers: true,
+					});
+					$('#resa-options>a').attr('href', 'resa_edit.php?id='+calEvent.id);
+					$('#resa-options').popoverX('refreshPosition');
+					$('#resa-options').popoverX('toggle');
+				}
 			},
 			dayClick: function(date, jsEvent, view){
 				//$(jsEvent.target).attr('id', 'click-id');

@@ -14,7 +14,11 @@ require_once 'functions/db_connect.php';
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Page Test !</h1>
- <button class='btn btn-default' id='test'><span class='glyphicon glyphicon-trash'></span></button>
+ <button class='btn btn-default' id='test-1'><span class='glyphicon glyphicon-trash'></span></button>
+                    <button class='btn btn-default' id='test-2'><span class='glyphicon glyphicon-trash'></span></button>
+                     <button class='btn btn-default' id='test-3'><span class='glyphicon glyphicon-trash'></span></button>
+                      <button class='btn btn-default' id='test-4'><span class='glyphicon glyphicon-trash'></span></button>
+                       <button class='btn btn-default' id='test-5'><span class='glyphicon glyphicon-trash'></span></button>
                     <div id="add-options" class="popover popover-default">
                     	<div class="arrow"></div>
                     	<p style="font-weight:700;">Ajouter...</p>
@@ -26,15 +30,18 @@ require_once 'functions/db_connect.php';
    </div>
    <?php include "scripts.php";?>
    <script>
-	   $("#test").click(function(){
-
-		   		   	$('#add-options').popoverX({
-		target: '#test',
-		placement: 'bottom',
-		closeOtherPopovers: true,
-		useOffsetForPos: true
-	});
-		   $('#add-options').popoverX('toggle');	
+	   $('button').click(function(){
+		   var id;
+		   id = '#'+$(this).attr('id');
+		   console.log(id);
+			$('#add-options').popoverX({
+				target: id,
+				placement: 'bottom',
+				closeOtherPopovers: true,
+			});
+		   $('#add-options').popoverX('hide');
+		   $('#add-options').popoverX('refreshPosition');		
+		   $('#add-options').popoverX('show');
 	   })
 	</script>
 </body>
