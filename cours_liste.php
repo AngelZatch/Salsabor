@@ -171,12 +171,18 @@ if(isset($_POST['deleteCoursAll'])){
 					textColor: 'black',
 					error: function(){
 						alert('Erreur pendant l\'obtention des réservations');
-					}
+					},
 				}
 			],
-			eventClick: function(calEvent){
-				//alert("click sur l'évènement : " + calEvent);
-				console.log(calEvent.description);
+			eventRender: function(calEvent, element){
+				element.attr('id', calEvent.type+'-'+calEvent.id);
+			},
+			eventClick: function(calEvent, element){
+				$('#add-options').popoverX({
+					target: '#'+$(this).attr('id'),
+					closeOtherPopovers: true,
+				});
+				$('#add-options').popoverX('toggle');
 			},
 			dayClick: function(date, jsEvent, view){
 				//$(jsEvent.target).attr('id', 'click-id');
@@ -189,7 +195,6 @@ if(isset($_POST['deleteCoursAll'])){
 				});**/
 			}
         });
-        
         var $rows = $('#filter-enabled tr');
         $('#search').keyup(function(){
             var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
@@ -200,12 +205,7 @@ if(isset($_POST['deleteCoursAll'])){
         });
         
         $('[data-toggle="popover"]').popover();
-		$('#add-options').popoverX({
-			target: '#click-id',
-			placement: 'bottom',
-			closeOtherPopovers: true,
-			useOffsetForPos: true,
-		});
+
     });
 	   // On vérifie que la réservation n'est pas superposée à un cours
 	   function checkCalendar(reservation, recurring){

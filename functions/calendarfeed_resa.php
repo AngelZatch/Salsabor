@@ -15,6 +15,7 @@ try
         $e['title'] = $row_calendar['prestations_name']." (".$row_calendar['reservation_personne']." - ".$row_calendar['salle_name'].")";
         $e['start'] = $row_calendar['reservation_start'];
         $e['end'] = $row_calendar['reservation_end'];
+		$e['type'] = 'reservation';
         // Paramètre propriétaire de Fullcalendar.js qui sert à délimiter un évènement
         // à ses heures de début et de fin.
         $e['allDay'] = false;

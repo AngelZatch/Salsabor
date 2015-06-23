@@ -14,18 +14,29 @@ require_once 'functions/db_connect.php';
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Page Test !</h1>
-               <?php
-    $calendar = $db->prepare('SELECT * FROM reservations JOIN salle ON (reservation_salle=salle.salle_id) JOIN prestations ON (type_prestation=prestations.prestations_id)');
-    $calendar->execute();
-    while($row_calendar = $calendar->fetch(PDO::FETCH_ASSOC)){
-		echo $row_calendar['reservation_start'];
-		    }
-?>
-
+ <button class='btn btn-default' id='test'><span class='glyphicon glyphicon-trash'></span></button>
+                    <div id="add-options" class="popover popover-default">
+                    	<div class="arrow"></div>
+                    	<p style="font-weight:700;">Ajouter...</p>
+                    	<button class="btn btn-default">Un cours</button>
+                    	<button class="btn btn-default">Une réservation</button>
+                    </div>
            </div>
        </div>
    </div>
-   <?php include "scripts.php";?>    
+   <?php include "scripts.php";?>
+   <script>
+	   $("#test").click(function(){
+
+		   		   	$('#add-options').popoverX({
+		target: '#test',
+		placement: 'bottom',
+		closeOtherPopovers: true,
+		useOffsetForPos: true
+	});
+		   $('#add-options').popoverX('toggle');	
+	   })
+	</script>
 </body>
 </html>
 <script>
