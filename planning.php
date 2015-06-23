@@ -133,7 +133,8 @@ if(isset($_POST['deleteCoursAll'])){
 		</div>
 		<div id="resa-options" class="popover popover-default">
 			<div class="arrow"></div>
-			<p style="font-weight:700;">Actions sur réservation</p>
+			<p style="font-weight:700;" id="resa-title"></p>
+			<p id="resa-hours"></p>
 				<a href="" class="btn btn-default">Modifier</a>
 			<form method="post">
 				<button class="btn btn-default">Supprimer</button>
@@ -187,6 +188,7 @@ if(isset($_POST['deleteCoursAll'])){
 			],
 			eventRender: function(calEvent, element){
 				element.attr('id', calEvent.type+'-'+calEvent.id);
+				console.log(calEvent);
 			},
 			eventClick: function(calEvent, element){
 				if(calEvent.type == 'cours'){
@@ -205,6 +207,9 @@ if(isset($_POST['deleteCoursAll'])){
 						closeOtherPopovers: true,
 						useOffsetForPos: true
 					});
+					$('#resa-title').empty();
+					$('#resa-title').append(calEvent.title);
+					$('#resa-hours').append(calEvent.start._i+" "+calEvent.end._i);
 					$('#resa-options>a').attr('href', 'resa_edit.php?id='+calEvent.id);
 					$('#resa-options').popoverX('toggle');
 				}
