@@ -34,7 +34,7 @@ if(isset($_POST['deleteCoursAll'])){
 ?>
 <html>
 <head>
-    <title>Salsabor - Cours</title>
+    <title>Planning</title>
     <?php include "includes.php";?>
 </head>
 <body>
@@ -122,7 +122,7 @@ if(isset($_POST['deleteCoursAll'])){
                     <div id="cours-options" class="popover popover-default">
                     	<div class="arrow"></div>
                     	<p style="font-weight:700;">Actions sur cours</p>
-						<a href="" role="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Modifier</a>
+						<a role="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Modifier</a>
 						<form method="post">
 							<button class="btn btn-default">Supprimer ce cours</button>
 							<button class="btn btn-default">Supprimer tous les suivants</button>
@@ -209,7 +209,6 @@ if(isset($_POST['deleteCoursAll'])){
 			},
 			dayClick: function(date, jsEvent, view){
 				//$(jsEvent.target).attr('id', 'click-id');
-				console.log(jsEvent.target);
 				//$('#add-options').popoverX('toggle');
 				/**$(this).ekkoLightbox({
 					remote: 'actions/cours_add.php',

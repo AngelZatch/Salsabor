@@ -29,7 +29,7 @@ if(isset($_POST['edit'])){
 		$db->rollBack();
 		var_dump($e->getMessage());
 	}
-	header('Location: cours_liste.php');
+	header('Location: planning.php');
 }
 ?>
 <html>
@@ -47,9 +47,9 @@ if(isset($_POST['edit'])){
            <br>
                <form method="post" class="form-horizontal" role="form">
 				   <div class="btn-toolbar">
-					   <a href="cours_liste.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
+					   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
 					   <input type="submit" name="edit" role="button" class="btn btn-success" value="ENREGISTRER">
-					   <a href="cours_liste.php" role="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer</a>
+					   <a href="planning.php" role="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer</a>
 				   </div> <!-- btn-toolbar -->   		
 				   <br>
                		<div class="form-group">

@@ -38,10 +38,11 @@ require_once 'functions/db_connect.php';
 				target: id,
 				placement: 'bottom',
 				closeOtherPopovers: true,
-			});
-		   $('#add-options').popoverX('hide');
-		   $('#add-options').popoverX('refreshPosition');		
-		   $('#add-options').popoverX('show');
+			});		
+		   $('#add-options').popoverX('toggle');
+		   $('#add-options').on('show.bs.modal', function(){
+			   $('#add-options').popoverX('refreshPosition');
+		   });
 	   })
 	</script>
 </body>

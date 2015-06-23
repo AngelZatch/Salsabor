@@ -1,8 +1,8 @@
 <?php
 require_once "../functions/db_connect.php";
-/** Ensemble de code pour ajouter un cours. Cette page est appelée dans une lightbox dans cours_liste.php **/
+/** Ensemble de code pour ajouter un cours. Cette page est appelée dans une lightbox dans planning.php **/
 ?>
-<form action="cours_liste.php" method="post" class="form-horizontal" role="form">
+<form action="planning.php" method="post" class="form-horizontal" role="form">
     <div class="form-group">
         <label for="intitule" class="col-sm-3 control-label">Intitulé <span class="mandatory">*</span></label>
         <?php

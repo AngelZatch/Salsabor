@@ -2,7 +2,7 @@
 require_once "../functions/db_connect.php";
 ?>
 <div class="row row-custom">
-<form action="cours_liste.php" method="post" class="form-horizontal" role="form" id="add_resa">
+<form action="planning.php" method="post" class="form-horizontal" role="form" id="add_resa">
     <div class="form-group">
         <label for="identite" class="col-sm-3 control-label">Demandeur <span class="mandatory">*</span></label>
         <div class="col-sm-9">
