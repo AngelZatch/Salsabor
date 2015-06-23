@@ -132,7 +132,7 @@ if(isset($_POST['deleteCoursAll'])){
                     <div id="resa-options" class="popover popover-default">
                     	<div class="arrow"></div>
                     	<p style="font-weight:700;">Actions sur réservation</p>
-							<a href="" class="btn btn-default">Modifier</button>
+							<a href="" class="btn btn-default">Modifier</a>
 						<form method="post">
 							<button class="btn btn-default">Supprimer</button>
                     	</form>
