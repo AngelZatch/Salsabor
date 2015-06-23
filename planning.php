@@ -119,26 +119,26 @@ if(isset($_POST['deleteCoursAll'])){
                     </div> <!-- menu-bar -->
                     <br><br>
                     <div id="calendar" class="fc fc-ltr fc-unthemed"></div>
-                    <div id="cours-options" class="popover popover-default">
-                    	<div class="arrow"></div>
-                    	<p style="font-weight:700;">Actions sur cours</p>
-						<a role="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Modifier</a>
-						<form method="post">
-							<button class="btn btn-default">Supprimer ce cours</button>
-							<button class="btn btn-default">Supprimer tous les suivants</button>
-							<button class="btn btn-default">Supprimer toute la série</button>
-                    	</form>
-                    </div>
-                    <div id="resa-options" class="popover popover-default">
-                    	<div class="arrow"></div>
-                    	<p style="font-weight:700;">Actions sur réservation</p>
-							<a href="" class="btn btn-default">Modifier</a>
-						<form method="post">
-							<button class="btn btn-default">Supprimer</button>
-                    	</form>
-                    </div>
                </div> <!-- Display en Planning -->
            </div> <!-- col-sm-10 main -->
+	   <div id="cours-options" class="popover popover-default">
+			<div class="arrow"></div>
+			<p style="font-weight:700;">Actions sur cours</p>
+			<a role="button" class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Modifier >></a>
+			<!--<form method="post">
+				<button class="btn btn-default">Supprimer ce cours</button>
+				<button class="btn btn-default">Supprimer tous les suivants</button>
+				<button class="btn btn-default">Supprimer toute la série</button>
+			</form>-->
+		</div>
+		<div id="resa-options" class="popover popover-default">
+			<div class="arrow"></div>
+			<p style="font-weight:700;">Actions sur réservation</p>
+				<a href="" class="btn btn-default">Modifier</a>
+			<form method="post">
+				<button class="btn btn-default">Supprimer</button>
+			</form>
+		</div>
        </div>
    </div>
    <?php include "scripts.php";?>
@@ -192,18 +192,20 @@ if(isset($_POST['deleteCoursAll'])){
 				if(calEvent.type == 'cours'){
 					$('#cours-options').popoverX({
 						target: '#'+$(this).attr('id'),
+						placement: 'top',
 						closeOtherPopovers: true,
+						useOffsetForPos: true
 					});
 					$('#cours-options>a').attr('href', 'cours_edit.php?id='+calEvent.id);
-					$('#cours-options').popoverX('refreshPosition');	
-					$('#cours-options').popoverX('toggle');	
+					$('#cours-options').popoverX('toggle');
 				} else {
 					$('#resa-options').popoverX({
 						target: '#'+$(this).attr('id'),
+						placement: 'top',
 						closeOtherPopovers: true,
+						useOffsetForPos: true
 					});
 					$('#resa-options>a').attr('href', 'resa_edit.php?id='+calEvent.id);
-					$('#resa-options').popoverX('refreshPosition');
 					$('#resa-options').popoverX('toggle');
 				}
 			},
