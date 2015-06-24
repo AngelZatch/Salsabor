@@ -2,8 +2,7 @@
 <link rel="stylesheet" href="assets/css/common.css">
 <link rel="stylesheet" href="assets/css/labels.css">
 <link rel="stylesheet" href="assets/css/fonts.css">
-<link rel="stylesheet" href="assets/js/jquery-ui-1.11.2/jquery-ui.min.css">
-<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="assets/css/jquery-ui.min.css">
 <link rel="stylesheet" href="assets/css/fullcalendar.min.css">
 <link rel="stylesheet" href="assets/css/jquery.ui.timepicker.css">
 <link rel="stylesheet" href="assets/css/bootstrap-popover-x.min.css">
