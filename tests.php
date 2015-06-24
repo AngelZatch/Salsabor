@@ -25,6 +25,8 @@ require_once 'functions/db_connect.php';
                     	<button class="btn btn-default">Un cours</button>
                     	<button class="btn btn-default">Une réservation</button>
                     </div>
+                    
+                    <input type="checkbox" checked data-toggle="toggle" data-on="Cours" data-off="Réservation" data-onstyle="cours" data-offstyle="resa">
            </div>
        </div>
    </div>
