@@ -206,13 +206,14 @@ if(isset($_POST['deleteCoursAll'])){
                 $('#'+calEvent.type+'-options').popoverX('toggle');
 			},
 			dayClick: function(date, jsEvent, view){
-				//$(jsEvent.target).attr('id', 'click-id');
+				console.log(date._d);
+                //$(jsEvent.target).attr('id', 'click-id');
 				//$('#add-options').popoverX('toggle');
-				/**$(this).ekkoLightbox({
+/*				$(this).ekkoLightbox({
 					remote: 'actions/cours_add.php',
 					title: 'Ajouter un cours',
 					onNavigate: false
-				});**/
+				});*/
 			}
         });
         var $rows = $('#filter-enabled tr');

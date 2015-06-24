@@ -22,11 +22,13 @@ if(isset($_POST['editOne'])){
 		$db->beginTransaction();
 		$edit = $db->prepare('UPDATE cours SET cours_intitule = :intitule,
 										cours_start = :cours_start,
-										cours_end = :cours_end
+										cours_end = :cours_end,
+                                        justification_modification = :edit_comment
 										WHERE cours_id = :id');
 		$edit->bindParam(':intitule', $_POST['intitule']);
 		$edit->bindParam(':cours_start', $start);
 		$edit->bindParam(':cours_end', $end);
+        $edit->bindParam(':edit_comment', $_POST['edit-comment']);
 		$edit->bindParam(':id', $id);
 		$edit->execute();
 		$db->commit();
@@ -52,11 +54,13 @@ if(isset($_POST['editNext'])){
 		for($i = 1; $i < $nombre_repetitions; $i++){
 			$edit = $db->prepare('UPDATE cours SET cours_intitule = :intitule,
 											cours_start = :cours_start,
-											cours_end = :cours_end
+											cours_end = :cours_end,
+                                            justification_modification = :edit_comment
 							WHERE cours_parent_id = :parent_id AND cours_id = :id');
 			$edit->bindParam(':intitule', $_POST['intitule']);
 			$edit->bindParam(':cours_start', $start);
 			$edit->bindParam(':cours_end', $end);
+            $edit->bindParam(':edit_comment', $_POST['edit-comment']);
 			$edit->bindParam(':parent_id', $row_data['cours_parent_id']);
 			$edit->bindParam(':id', $id);
 			$edit->execute();
@@ -137,7 +141,12 @@ if(isset($_POST['editAll'])){
                				</select>
                			</div>
                		</div>
-               		<div class="form-group"></div>
+               		<div class="form-group">
+                          <div class="col-sm-9">
+               		    <label for="edit-comment">Raison de modification :</label>
+               		    <textarea name="edit-comment" id="edit-comment" cols="30" rows="5" class="form-control"></textarea>
+               		    </div>
+               		</div>
                		<div class="form-group"></div>
                		<div class="form-group"></div>
                		<div class="form-group"></div>
