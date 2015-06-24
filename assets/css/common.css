@@ -194,3 +194,11 @@ body{
 .fc-event{
 	cursor: pointer !important;
 }
+
+.btn-cours{
+    background-color: #0FC5F5;
+}
+
+.btn-resa{
+    background-color: #D21CFC;
+}
