@@ -123,7 +123,8 @@ if(isset($_POST['deleteCoursAll'])){
            </div> <!-- col-sm-10 main -->
 	   <div id="cours-options" class="popover popover-default">
 			<div class="arrow"></div>
-			<p style="font-weight:700;">Actions sur cours</p>
+			<p style="font-weight:700;" id="popover-cours-title"></p>
+			<p id="popover-cours-hours"></p>
 			<a role="button" class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Modifier >></a>
 			<!--<form method="post">
 				<button class="btn btn-default">Supprimer ce cours</button>
@@ -133,12 +134,12 @@ if(isset($_POST['deleteCoursAll'])){
 		</div>
 		<div id="resa-options" class="popover popover-default">
 			<div class="arrow"></div>
-			<p style="font-weight:700;" id="resa-title"></p>
-			<p id="resa-hours"></p>
-				<a href="" class="btn btn-default">Modifier</a>
-			<form method="post">
+			<p style="font-weight:700;" id="popover-resa-title"></p>
+			<p id="popover-resa-hours"></p>
+				<a class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Modifier...</a>
+			<!--<form method="post">
 				<button class="btn btn-default">Supprimer</button>
-			</form>
+			</form>-->
 		</div>
        </div>
    </div>
@@ -198,6 +199,10 @@ if(isset($_POST['deleteCoursAll'])){
 						closeOtherPopovers: true,
 						useOffsetForPos: true
 					});
+					$('#popover-cours-title').empty();
+					$('#popover-cours-hours').empty();
+					$('#popover-cours-title').append(calEvent.title);
+					$('#popover-cours-hours').append("Le "+$.format.date(calEvent.start._i, "dd/MM/yyyy")+" de "+$.format.date(calEvent.start._i, "HH:mm")+" à "+$.format.date(calEvent.end._i, "HH:mm"));
 					$('#cours-options>a').attr('href', 'cours_edit.php?id='+calEvent.id);
 					$('#cours-options').popoverX('toggle');
 				} else {
@@ -207,9 +212,11 @@ if(isset($_POST['deleteCoursAll'])){
 						closeOtherPopovers: true,
 						useOffsetForPos: true
 					});
-					$('#resa-title').empty();
-					$('#resa-title').append(calEvent.title);
-					$('#resa-hours').append(calEvent.start._i+" "+calEvent.end._i);
+					$('#popover-resa-title').empty();
+					$('#popover-resa-hours').empty();
+					$('#popover-resa-title').append(calEvent.title);
+					console.log();
+					$('#popover-resa-hours').append("Le "+$.format.date(calEvent.start._i, "dd/MM/yyyy")+" de "+$.format.date(calEvent.start._i, "HH:mm")+" à "+$.format.date(calEvent.end._i, "HH:mm"));
 					$('#resa-options>a').attr('href', 'resa_edit.php?id='+calEvent.id);
 					$('#resa-options').popoverX('toggle');
 				}
