@@ -125,7 +125,7 @@ if(isset($_POST['deleteCoursAll'])){
 			<div class="arrow"></div>
 			<p style="font-weight:700;" id="popover-cours-title"></p>
 			<p id="popover-cours-hours"></p>
-			<a role="button" class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Modifier >></a>
+			<a role="button" class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Détails >></a>
 			<!--<form method="post">
 				<button class="btn btn-default">Supprimer ce cours</button>
 				<button class="btn btn-default">Supprimer tous les suivants</button>
@@ -136,7 +136,7 @@ if(isset($_POST['deleteCoursAll'])){
 			<div class="arrow"></div>
 			<p style="font-weight:700;" id="popover-reservation-title"></p>
 			<p id="popover-reservation-hours"></p>
-				<a class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Modifier...</a>
+				<a class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Détails >></a>
 			<!--<form method="post">
 				<button class="btn btn-default">Supprimer</button>
 			</form>-->
