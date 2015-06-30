@@ -15,19 +15,43 @@ $db = PDOFactory::getConnection();
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Page Test !</h1>
- <button class='btn btn-default' id='test-1'><span class='glyphicon glyphicon-trash'></span></button>
-                    <button class='btn btn-default' id='test-2'><span class='glyphicon glyphicon-trash'></span></button>
-                     <button class='btn btn-default' id='test-3'><span class='glyphicon glyphicon-trash'></span></button>
-                      <button class='btn btn-default' id='test-4'><span class='glyphicon glyphicon-trash'></span></button>
-                       <button class='btn btn-default' id='test-5'><span class='glyphicon glyphicon-trash'></span></button>
-                    <div id="add-options" class="popover popover-default">
-                    	<div class="arrow"></div>
-                    	<p style="font-weight:700;">Ajouter...</p>
-                    	<button class="btn btn-default">Un cours</button>
-                    	<button class="btn btn-default">Une réservation</button>
-                    </div>
-                    
-                    <input type="checkbox" checked data-toggle="toggle" data-on="Cours" data-off="Réservation" data-onstyle="cours" data-offstyle="resa">
+      <?php
+	$heure_debut = '13:00:00';
+	$heure_fin = '15:00:00';
+	$lieu = '1';
+	$date_debut = '2015-07-01 '.$heure_debut;
+	$date_fin = '2015-07-01 '.$heure_fin;
+$prof_principal = '3';
+$prof_remplacant = '1';
+
+	$findCours = $db->prepare('SELECT * FROM cours WHERE ((cours_start<=? AND cours_end>?) OR (cours_start<? AND cours_end>=?)) AND ((cours_salle=?) OR (prof_principal=? OR prof_remplacant=?))');
+	$findCours->bindValue(1, $date_debut);
+	$findCours->bindValue(2, $date_debut);
+	$findCours->bindValue(3, $date_fin);
+	$findCours->bindValue(4, $date_fin);
+	$findCours->bindValue(5, $lieu);
+	$findCours->bindValue(6, $prof_principal);
+	$findCours->bindValue(7, $prof_remplacant);
+	$findCours->execute();
+	echo $res = $findCours->rowCount();
+
+	$findResa = $db->prepare('SELECT * FROM reservations WHERE reservation_salle=? AND ((reservation_start<=? AND reservation_end>?) OR (reservation_start<? AND reservation_end>=?))');
+	$findResa->bindValue(1, $lieu);
+	$findResa->bindValue(2, $date_debut);
+	$findResa->bindValue(3, $date_debut);
+	$findResa->bindValue(4, $date_fin);
+	$findResa->bindValue(5, $date_fin);
+	$findResa->execute();
+	if($findResa->rowCount() != 0){
+		$resResa = $findResa->fetch(PDO::FETCH_ASSOC);
+		if($resResa['priorite'] != '0'){
+			echo "Réservation déjà payée";
+		} else {
+			echo "Réservation non payée";
+		}
+	}
+	?>
+
            </div>
        </div>
    </div>

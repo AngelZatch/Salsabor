@@ -7,7 +7,7 @@ function checkCalendar(reservation, recurring){
 			   $.post("functions/check_calendar.php",{date_debut, heure_debut, heure_fin, lieu, recurring}).done(function(data){
 				   if(data != 0){
 					   $('#error_message').empty();
-					   $('#error_message').append('Cette plage horaire est déjà utilisée pour un cours ou une réservation.');
+					   $('#error_message').append('Cette plage horaire est déjà utilisée pour un cours ou une réservation, ou l\'enseignant a déjà un cours pour cette plage.');
 					   $('.confirm-add').prop('disabled', true);
 				   } else {
 					   $('#error_message').empty();

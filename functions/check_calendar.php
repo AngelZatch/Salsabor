@@ -23,7 +23,7 @@ if($recurring == 'false'){
 	$findResa->bindValue(5, $date_fin);
 	$findResa->execute();
 	echo $res = $findResa->fetchColumn();
-} else {
+	} else {
 	/** Cas des cours récurrents **/
 	$frequence_repetition = $_POST['frequence_repetition'];
 	$date_debut = $_POST['date_debut'];
