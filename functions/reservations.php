@@ -1,5 +1,6 @@
 <?php
 require_once "db_connect.php";
+include "librairies/fpdf.php";
 function addResa(){
 	$demandeur = $_POST['identite'];
 	$prestation = $_POST['prestation'];
@@ -30,6 +31,12 @@ function addResa(){
 		$insertResa->execute();
 		
 		$db->commit();
+		// On génère le PDF "facture" une fois que la transaction est terminée
+		/**$pdf = new FPDF();
+		$pdf->AddPage();
+		$pdf->SetFont('Arial', 'B', 15);
+		$pdf->Cell(40,10, $demandeur);
+		$pdf->Output();**/
 	} catch(PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());
