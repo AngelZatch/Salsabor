@@ -14,6 +14,7 @@
 <script src="assets/js/bootstrap-toggle.min.js"></script>
 <script src="assets/js/js.cookie.js"></script>
 <script src="assets/js/Chart.js"></script>
+<script src="assets/js/checkbox-x.min.js"></script>
 
 <!-- custom -->
 <script src="assets/js/swap-menus.js"></script>
