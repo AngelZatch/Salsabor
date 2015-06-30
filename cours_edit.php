@@ -218,7 +218,7 @@ if(isset($_POST['editAll'])){
 		} else {
 			$('#paiement-sub').val(0);
 		}
-	})
+	});
 	</script>
 </body>
 </html>
