@@ -19,17 +19,20 @@ if(isset($_POST['editOne'])){
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$start = $_POST['date_debut']." ".$_POST['heure_debut'];
 	$end = $_POST['date_fin']." ".$_POST['heure_fin'];
+	$paiement = $_POST['paiement'];
 	try{
 		$db->beginTransaction();
 		$edit = $db->prepare('UPDATE cours SET cours_intitule = :intitule,
 										cours_start = :cours_start,
 										cours_end = :cours_end,
+										paiement_effectue = :paiement,
                                         justification_modification = :edit_comment,
 										derniere_modification = :derniere_modification
 										WHERE cours_id = :id');
 		$edit->bindParam(':intitule', $_POST['intitule']);
 		$edit->bindParam(':cours_start', $start);
 		$edit->bindParam(':cours_end', $end);
+		$edit->bindParam(':paiement', $paiement);
         $edit->bindParam(':edit_comment', $_POST['edit-comment']);
 		$edit->bindParam(':derniere_modification', date_create('now')->format('Y-m-d H:i:s'));
 		$edit->bindParam(':id', $id);
@@ -149,8 +152,10 @@ if(isset($_POST['editAll'])){
 							$data->bindParam(1, $row_data['prof_principal']);
 							$data->execute();
 							$data_prof = $data->fetch(PDO::FETCH_ASSOC);
-							echo $data_prof['prenom']." ".$data_prof['nom'];
 							?>
+							<p>
+								<?php echo $data_prof['prenom']." ".$data_prof['nom'];?>
+							</p>
 						</div>
 							<div class="panel-body">
 									<label for="liste_participants">Participants enregistrés :</label>
@@ -188,7 +193,8 @@ if(isset($_POST['editAll'])){
 								}
 								echo "<span id='prix_calcul'>".$prix_final." €</span>";
 								?>
-								<input type="checkbox" <?php if($row_data['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstlye="danger" style="float:left;" name="paiement">
+								<input type="checkbox" <?php if($row_data['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
+								<input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $row_data['paiement_effectue'];?>">
 								</li>
 							</ul>
                			</div>
@@ -203,6 +209,16 @@ if(isset($_POST['editAll'])){
            </div>
        </div>
    </div>
-   <?php include "scripts.php";?>    
+   <?php include "scripts.php";?>
+   <script>
+	$('#paiement').change(function(){
+		var state = $('#paiement').prop('checked');
+		if(state){
+			$('#paiement-sub').val(1);
+		} else {
+			$('#paiement-sub').val(0);
+		}
+	})
+	</script>
 </body>
 </html>
