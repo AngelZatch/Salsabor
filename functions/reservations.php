@@ -42,3 +42,7 @@ function addResa(){
 		var_dump($e->getMessage());
 	}
 }
+
+function deleteResa(){
+	
+}
