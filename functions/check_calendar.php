@@ -1,5 +1,6 @@
 <?php
 require_once "../functions/db_connect.php";
+$db = PDOFactory::getConnection();
 // Vérifie si l'emplacement est libre
 $heure_debut = $_POST['heure_debut'];
 $heure_fin = $_POST['heure_fin'];

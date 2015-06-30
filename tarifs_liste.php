@@ -1,9 +1,10 @@
 <?php
 require_once "functions/db_connect.php";
-require_once "functions/tarifs.php";
+$db = PDOFactory::getConnection();
+include "functions/tarifs.php";
 
 if(isset($_POST['addTarifResa'])){
-    addTarifResa();
+	addTarifResa();
 }
 ?>
 <html>

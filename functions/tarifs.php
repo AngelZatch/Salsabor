@@ -1,11 +1,9 @@
 <?php
-/** AJOUTER UN TARIF RESERVATION **/
+require_once "db_connect.php";
 function addTarifResa(){
-    $type_prestation = $_POST['type_prestation'];
+	$type_prestation = $_POST['type_prestation'];
     $prix_resa = $_POST['prix_resa'];
-    
-    $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $db = PDOFactory::getConnection();
     try{
         $db->beginTransaction();
         /** On parcourt tous les jours **/

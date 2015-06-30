@@ -1,5 +1,6 @@
 <?php
 require_once "../functions/db_connect.php";
+$db = PDOFactory::getConnection();
 ?>
 <div class="row">
    <form action="staff_liste.php?rank=0" method="post" class="lightbox-form">

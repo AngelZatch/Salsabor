@@ -1,6 +1,7 @@
 <?php
 require_once 'functions/db_connect.php';
-
+$db = PDOFactory::getConnection();
+require_once 'functions/cours.php';
 /** Récupération des valeurs dans la base de données des champs **/
 $id = $_GET['id'];
 $data = $db->prepare('SELECT * FROM cours WHERE cours_id=?');

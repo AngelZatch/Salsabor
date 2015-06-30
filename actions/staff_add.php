@@ -1,5 +1,6 @@
 <?php
 require_once "../functions/db_connect.php";
+$db = PDOFactory::getConnection();
 /** Ensemble de code pour ajouter un staff. Cette page est appelée dans une lightbox dans staff_liste.php **/
 ?>
    <form action="staff_liste.php?rank=0" method="post" class="form-horizontal" role="form">

@@ -1,5 +1,6 @@
 <?php
 require_once "../functions/db_connect.php";
+$db = PDOFactory::getConnection();
 ?>
 <div class="row row-custom">
 <form action="planning.php" method="post" class="form-horizontal" role="form" id="add_resa">

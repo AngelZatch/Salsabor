@@ -1,8 +1,9 @@
 <?php
+require_once "db_connect.php";
 /** Page servant à alimenter le planning des cours **/
 try
 {
-    $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
+    $db = PDOFactory::getConnection();
     /** Obtention des cours **/
     $calendar = $db->prepare('SELECT * FROM reservations JOIN salle ON (reservation_salle=salle.salle_id) JOIN prestations ON (type_prestation=prestations.prestations_id)');
     $calendar->execute();

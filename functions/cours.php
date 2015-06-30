@@ -1,4 +1,5 @@
 <?php
+require_once "db_connect.php";
 /** ADD COURS **/
 function addCours(){
     $intitule = $_POST['intitule'];
@@ -24,14 +25,14 @@ function addCours(){
     /** Calculs automatiques de valeurs **/
     $unite = (strtotime($heure_fin) - strtotime($heure_debut))/3600;
     $cout_horaire = 40;
+	
+	$db = PDOFactory::getConnection();
     
     /** Insertion du cours si pas de récurrence (cours ponctuel) **/
     if(!isset($_POST['recurrence'])){
         $recurrence = 0;
         $frequence_repetition = 0;
         $date_fin = $_POST['date_debut'];
-        $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try{
             $db->beginTransaction();
             /** Insertion du cours principal dans cours_parent **/
@@ -91,8 +92,6 @@ function addCours(){
         if($frequence_repetition == 1){
             $weekday = 0;
         }
-        $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try{
             $db->beginTransaction();
             /** Insertion du modèle de cours dans cours_parent **/
@@ -156,8 +155,7 @@ function addCours(){
 /** DELETE COURS **/
 function deleteCoursOne(){
     $index = $_POST['id'];
-    $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$db = PDOFactory::getConnection();
     try{
         $db->beginTransaction();
         /** On obtient l'id parent du cours que l'on supprime **/
@@ -180,8 +178,7 @@ function deleteCoursOne(){
 
 function deleteCoursNext(){
     $index = $_POST['id'];
-    $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$db = PDOFactory::getConnection();
     try{
         $db->beginTransaction();
         /** On obtient l'id parent du cours que l'on supprime et on supprime les cours**/
@@ -203,8 +200,7 @@ function deleteCoursNext(){
 
 function deleteCoursAll(){
     $index = $_POST['id'];
-    $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$db = PDOFactory::getConnection();
     try{
         $db->beginTransaction();
         $findAll = $db->prepare('SELECT cours_parent_id FROM cours WHERE cours_id=?');
@@ -228,9 +224,7 @@ function deleteCoursAll(){
 }
 
 function checkParent($data){
-    $db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    /** On supprime ensuite la référence parent si elle n'a plus aucun cours enfant **/
+	$db = PDOFactory::getConnection();
     try{
         $findParent = $db->prepare('SELECT COUNT(*) FROM cours WHERE cours_parent_id=?');
         $findParent->bindParam(1, $data, PDO::PARAM_INT);

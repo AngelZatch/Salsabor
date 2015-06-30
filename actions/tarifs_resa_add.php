@@ -1,5 +1,6 @@
 <?php
 require_once "../functions/db_connect.php";
+$db = PDOFactory::getConnection();
 /** Ensemble de code pour ajouter un tarif pour une réservation **/
 ?>
 <form action="tarifs_liste.php" method="post" class="form-horizontal" role="form">

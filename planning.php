@@ -1,5 +1,6 @@
 <?php
 require_once "functions/db_connect.php";
+$db = PDOFactory::getConnection();
 /** Le fichier functions/cours.php contient toutes les fonctions relatives aux cours **/
 require_once "functions/cours.php";
 require_once "functions/reservations.php";

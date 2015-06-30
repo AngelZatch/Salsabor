@@ -1,4 +1,5 @@
 <?php
+require_once "db_connect.php";
 function addResa(){
 	$demandeur = $_POST['identite'];
 	$prestation = $_POST['prestation'];
@@ -12,8 +13,7 @@ function addResa(){
 	$priorite = 0;
 	$paiement = 0;
 	
-	$db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$db = PDOFactory::getConnection();
 	try{
 		$db->beginTransaction();
 		$insertResa = $db->prepare('INSERT INTO reservations(reservation_personne, type_prestation, reservation_start, reservation_end, reservation_salle, reservation_unite, reservation_prix, priorite, paiement_effectue)

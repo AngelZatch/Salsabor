@@ -1,5 +1,6 @@
 <?php
 require_once "../functions/db_connect.php";
+$db = PDOFactory::getConnection();
 /** Ensemble de code pour ajouter un cours. Cette page est appelée dans une lightbox dans planning.php **/
 ?>
 <form action="planning.php" method="post" class="form-horizontal" role="form">

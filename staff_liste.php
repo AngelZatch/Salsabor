@@ -1,5 +1,6 @@
 <?php
 require_once "functions/db_connect.php";
+$db = PDOFactory::getConnection();
 /** Le fichier functions/staff.php contient toutes les fonctions relatives au staff.**/
 require_once "functions/staff.php";
 
