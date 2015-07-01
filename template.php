@@ -1,5 +1,6 @@
 <?php
 require_once 'functions/db_connect.php';
+$db = PDOFactory::getConnection();
 ?>
 <html>
 <head>

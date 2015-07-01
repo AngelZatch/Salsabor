@@ -160,7 +160,7 @@ if(isset($_POST['deleteCoursAll'])){
             header:{
                 left:'prev,next today',
                 center:'title',
-                right:'agendaWeek, agendaDay'
+                right:'month, agendaWeek, agendaDay'
             },
             defaultView: 'agendaWeek',
             lang:'fr',

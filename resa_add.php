@@ -79,7 +79,10 @@ $db = PDOFactory::getConnection();
                     <div class="form-group" id="prix_reservation">
                         <label for="prix_resa" class="col-sm-3 control-label">Prix de la réservation : </label>
                         <div class="col-sm-9">
-                            <input type="text" name="prix_resa" id="prix_calcul" class="form-control">
+                               <div class="input-group">
+                                    <span class="input-group-addon" id="currency-addon">€</span>
+                                    <input type="text" name="prix_resa" id="prix_calcul" class="form-control" aria-describedby="currency-addon">
+                                </div>
                             <input type="checkbox" unchecked data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
                             <input type="hidden" name="paiement" id="paiement-sub" value="0">
                         </div>

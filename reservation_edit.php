@@ -13,11 +13,11 @@ if(isset($_POST['edit'])){
 	$db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$start = $_POST['date_debut']." ".$_POST['heure_debut'];
-	$end = $_POST['date_fin']." ".$_POST['heure_fin'];
+	$end = $_POST['date_debut']." ".$_POST['heure_fin'];
 	try{
 		$db->beginTransaction();
 		$edit = $db->prepare('UPDATE reservations SET reservation_personne = :demandeur,
-										type_prestation = :type,
+										type_prestation = :prestation,
 										reservation_start = :start,
 										reservation_end = :end,
 										reservation_salle = :lieu,
@@ -27,7 +27,7 @@ if(isset($_POST['edit'])){
 										derniere_modification = :derniere_modification
 										WHERE reservation_id = :id');
 		$edit->bindParam(':demandeur', $_POST['demandeur']);
-		$edit->bindParam(':type', $_POST['type']);
+		$edit->bindParam(':prestation', $_POST['prestation']);
 		$edit->bindParam(':start', $start);
 		$edit->bindParam(':end', $end);
 		$edit->bindParam(':lieu', $_POST['lieu']);
@@ -76,13 +76,12 @@ if(isset($_POST['delete'])){
 						<input type="text" class="form-control" name="demandeur" style="font-size:30px; height:inherit;" value="<?php echo $row_data['reservation_personne'];?>">
 					</div>
 					<div class="form-group">
-						<input type="date" class="col-sm-3" name="date_debut" id="date_debut" value=<?php echo date_create($row_data['reservation_start'])->format('Y-m-d');?>>
-						<input type="time" class="col-sm-3" name="heure_debut" id="heure_debut" value=<?php echo date_create($row_data['reservation_start'])->format('H:i')?>>
-						<input type="time" class="col-sm-3" name="heure_fin" id="heure_fin" value=<?php echo date_create($row_data['reservation_end'])->format('H:i');?>>
-						<input type="date" class="col-sm-3" name="date_fin" id="date_fin" value=<?php echo date_create($row_data['reservation_end'])->format('Y-m-d');?>>
+						<input type="date" class="col-sm-4" name="date_debut" id="date_debut" onChange="checkCalendar(true, false)" value=<?php echo date_create($row_data['reservation_start'])->format('Y-m-d');?>>
+						<input type="time" class="col-sm-4" name="heure_debut" id="heure_debut" onChange="checkCalendar(true, false)" value=<?php echo date_create($row_data['reservation_start'])->format('H:i')?>>
+						<input type="time" class="col-sm-4" name="heure_fin" id="heure_fin" onChange="checkCalendar(true, false)" value=<?php echo date_create($row_data['reservation_end'])->format('H:i');?>>
 					</div>
 					<div class="form-group">
-						<select name="type" id="" class="form-control">
+						<select name="prestation" id="prestation" class="form-control" onChange="checkCalendar(true, false)">
 						<?php
 						$types = $db->query('SELECT * FROM prestations WHERE est_resa=1');
 						while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
@@ -92,7 +91,7 @@ if(isset($_POST['delete'])){
 						</select>
 					</div>
 					<div class="form-group">
-						<select name="lieu" id="" class="form-control">
+						<select name="lieu" id="lieu" class="form-control" onChange="checkCalendar(true, false)">
 							<?php
 							$lieux = $db->query('SELECT * FROM salle');
 									while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){
@@ -107,10 +106,13 @@ if(isset($_POST['delete'])){
 						<label for="priorite">Une réservation payée ne peut plus être supprimée au profit d'un cours.</label>
 					</div>
 					<div class="form-group" id="prix_reservation">
-						<p>Prix de la réservation : <span id='prix_calcul'><?php echo $row_data['reservation_prix'];?> €</span>
-							<input type="checkbox" <?php if($row_data['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
-							<input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $row_data['paiement_effectue'];?>">
-						</p>
+					    <label for="prix_resa" class="control-label">Prix de la réservation : </label>
+                        <div class="input-group">
+				            <span class="input-group-addon" id="currency-addon">€</span>
+				            <input type="text" name="prix_resa" id="prix_calcul" class="form-control" value="<?php echo $row_data['reservation_prix'];?>" aria-describedby="currency-addon">
+				        </div>
+                        <input type="checkbox" <?php if($row_data['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
+                        <input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $row_data['paiement_effectue'];?>">
 					</div>
 					<div class="form-group">
 						<label for="edit_comment">Raison de modification :</label>

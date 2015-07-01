@@ -15,8 +15,7 @@ $data->execute();
 $res_recurrence = $data->fetch(PDO::FETCH_ASSOC);
 
 if(isset($_POST['editOne'])){
-	$db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$db = PDOFactory::getConnection();
 	$start = $_POST['date_debut']." ".$_POST['heure_debut'];
 	$end = $_POST['date_fin']." ".$_POST['heure_fin'];
 	$paiement = $_POST['paiement'];
@@ -53,8 +52,7 @@ if(isset($_POST['editNext'])){
 	$date_fin = $_POST['parent_end_date'];
 	(int)$nombre_repetitions = (strtotime($res_recurrence['parent_end_date']) - strtotime($_POST['date_debut']))/(86400*$frequence_repetition)+1;
 	
-	$db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
-	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$db = PDOFactory::getConnection();
 	try{
 		$db->beginTransaction();
 		for($i = 1; $i < $nombre_repetitions; $i++){
@@ -88,6 +86,21 @@ if(isset($_POST['editNext'])){
 if(isset($_POST['editAll'])){
 	
 }
+
+// Sauf d'un seul cours
+if(isset($_POST['deleteCoursOne'])){
+    deleteCoursOne();
+}
+
+// Suppression de tous les cours suivant le sélectionné
+if(isset($_POST['deleteCoursNext'])){
+    deleteCoursNext();
+}
+
+// Suppression de tous les cours du même genre que le sélectionné
+if(isset($_POST['deleteCoursAll'])){
+    deleteCoursAll();
+}
 ?>
 <html>
 <head>
@@ -120,6 +133,11 @@ if(isset($_POST['editAll'])){
 					   		<input type="submit" name="editNext" role="button" class="btn btn-success" value="Tous les suivants">
 					   		<button class="btn btn-primary">Toute la série</button>
 					   	</div>
+					   </div>
+					   <div class="collapse" id="delete-options">
+					       <input type="submit" name="deleteCoursOne" role="button" class="btn btn-danger" value="Cet évènement">
+					       <input type="submit" name="deleteCoursNext" role="button" class="btn btn-danger" value="Tous les suivants">
+					       <input type="submit" name="deleteCoursAll" role="button" class="btn btn-danger" value="Toute la série">
 					   </div>
 				   </div> <!-- btn-toolbar -->   		
 				   <br>
