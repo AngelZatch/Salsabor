@@ -190,7 +190,18 @@ if(isset($_POST['deleteCoursAll'])){
 			],
 			eventRender: function(calEvent, element){
 				element.attr('id', calEvent.type+'-'+calEvent.id);
-                console.log(calEvent.type);
+                //console.log(calEvent.type);
+                console.log(calEvent.priorite);
+                if(calEvent.type == 'reservation'){
+                    if (calEvent.priorite == 0){
+                        element.css('background-color', '#ebb3f9');
+                        element.css('font-style', 'italic');
+                        element.css('color', '#555');
+                        element.css('border', 'dashed 2px');
+                    } else {
+                        element.css('background-color', '#D21CFC');
+                    }
+                }
 			},
 			eventClick: function(calEvent, element){
                 var options = {     

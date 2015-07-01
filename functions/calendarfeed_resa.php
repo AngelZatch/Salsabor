@@ -17,6 +17,7 @@ try
         $e['start'] = $row_calendar['reservation_start'];
         $e['end'] = $row_calendar['reservation_end'];
 		$e['type'] = 'reservation';
+        $e['priorite'] = $row_calendar['priorite'];
         // Paramètre propriétaire de Fullcalendar.js qui sert à délimiter un évènement
         // à ses heures de début et de fin.
         $e['allDay'] = false;
