@@ -116,12 +116,16 @@ if(isset($_POST['delete'])){
 						<label for="edit_comment">Raison de modification :</label>
 						<textarea name="edit_comment" id="edit_comment" cols="30" rows="5" class="form-control"></textarea>
 					</div>
+                  <div class="align-right">
+                      <p id="error_message"></p>
+                  </div>
                	</form>
                </div>
            </div>
        </div>
    </div>
    <?php include "scripts.php";?>
+   <script src="assets/js/check_calendar.js"></script>
    <script>
    if($('#priorite').attr('value') == 0){
 	   $('#prix_reservation').hide();

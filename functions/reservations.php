@@ -12,8 +12,8 @@ function addResa(){
 	$unite = (strtotime($_POST['heure_fin']) - strtotime($_POST['heure_debut']))/3600;
 	$prix = $_POST['prix_resa'];
 	
-	$priorite = 0;
-	$paiement = 0;
+	$priorite = $_POST['priorite'];
+	$paiement = $_POST['paiement'];
 	
 	$db = PDOFactory::getConnection();
 	try{

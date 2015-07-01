@@ -69,14 +69,23 @@ $db = PDOFactory::getConnection();
                	            </select>          
                	        </div>
                	    </div>
+                    <div class="form-group">
+						<label for="priorite" class="col-sm-3 control-label">Réservation payée</label>
+						<div class="col-sm-9">
+						    <input name="priorite" id="priorite" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+						    <label for="priorite">Une réservation payée ne peut plus être supprimée au profit d'un cours.</label>
+						</div>
+					</div>
+                    <div class="form-group" id="prix_reservation">
+                        <label for="prix_resa" class="col-sm-3 control-label">Prix de la réservation : </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="prix_resa" id="prix_calcul" class="form-control">
+                            <input type="checkbox" unchecked data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
+                            <input type="hidden" name="paiement" id="paiement-sub" value="0">
+                        </div>
+                    </div>
                	    <div class="align-right">
                	    	<p class="" id="error_message"></p>
-               	    	<div class="form-group">
-               	    		<label for="prix_resa" class="col-sm-3 control-label">Prix de la réservation : </label>
-               	    		<div class="col-sm-9">
-               	    			<input type="text" name="prix_resa" id="prix_calcul" class="form-control">
-               	    		</div>
-               	    	</div>
                	    </div>
                	</form>
                </div>
@@ -85,5 +94,21 @@ $db = PDOFactory::getConnection();
    </div>
    <?php include "scripts.php";?>
    <script src="assets/js/check_calendar.js"></script>
+      <script>
+   if($('#priorite').attr('value') == 0){
+	   $('#prix_reservation').hide();
+   }
+	   $('#priorite').change(function(){
+		   $('#prix_reservation').toggle('600');
+	   })
+	$('#paiement').change(function(){
+		var state = $('#paiement').prop('checked');
+		if(state){
+			$('#paiement-sub').val(1);
+		} else {
+			$('#paiement-sub').val(0);
+		}
+	});
+	</script> 
 </body>
 </html>
