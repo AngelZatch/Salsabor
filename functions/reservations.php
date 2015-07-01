@@ -1,6 +1,7 @@
 <?php
 require_once "db_connect.php";
 include "librairies/fpdf.php";
+
 function addResa(){
 	$demandeur = $_POST['identite'];
 	$prestation = $_POST['prestation'];
@@ -44,5 +45,17 @@ function addResa(){
 }
 
 function deleteResa(){
-	
+	$index = $_POST['id'];
+    $db = PDOFactory::getConnection();
+    try{
+        $db->beginTransaction();
+        $delete = $db->prepare('DELETE FROM reservations WHERE reservation_id=?');
+        $delete->bindValue(1, $index, PDO::PARAM_INT);
+        $delete->execute();
+        $db->commit();
+    } catch(PDOException $e){
+        $db->rollBack();
+        var_dump($e->getMessage());
+    }
+    header('Location: planning.php');
 }

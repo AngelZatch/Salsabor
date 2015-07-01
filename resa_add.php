@@ -77,10 +77,8 @@ $db = PDOFactory::getConnection();
                	    			<input type="text" name="prix_resa" id="prix_calcul" class="form-control">
                	    		</div>
                	    	</div>
-               	    <input type="submit" name="addResa" value="Valider" class="btn btn-default btn-primary confirm-add">
                	    </div>
                	</form>
-               	<button>Ouvrir un PDF</button>
                </div>
            </div>
        </div>

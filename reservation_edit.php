@@ -44,6 +44,10 @@ if(isset($_POST['edit'])){
 	}
 	header('Location: planning.php');
 }
+
+if(isset($_POST['delete'])){
+    deleteResa();
+}
 ?>
 <html>
 <head>
@@ -63,7 +67,8 @@ if(isset($_POST['edit'])){
 				   <div class="btn-toolbar">
 					   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
 					   <input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER">
-					   <a href="planning.php" role="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer</a>
+					   <input type="submit" name="delete" role="button" class="btn btn-danger" value="SUPPRIMER">
+					   <input type="hidden" name="id" value="<?php echo $id;?>">
 				   </div> <!-- btn-toolbar -->   		
 				   <br>
 				   <p id="last-edit"><?php if($row_data['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($row_data['derniere_modification'])->format('d/m/Y')." à ".date_create($row_data['derniere_modification'])->format('H:i');?></p>
