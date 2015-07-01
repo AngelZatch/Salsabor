@@ -126,7 +126,8 @@ if(isset($_POST['deleteCoursAll'])){
 							echo "<a href='#save-options' class='btn btn-primary' role='button' data-toggle='collapse' aria-expanded='false' aria-controls='saveOptions'>ENREGISTRER</a>";
 						}
 					   ?>
-					   <a href="planning.php" role="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer</a>
+					   <a href="#delete-options" role="button" class="btn btn-danger" data-toggle="collapse" aria-expanded="false" aria-controls="deleteOptions"><span class="glyphicon glyphicon-trash"></span> Supprimer</a>
+					   <input type="hidden" name="id" value="<?php echo $id;?>">
 					   <div class="collapse" id="save-options">
 					   	<div class="well">
 					   		<input type="submit" name="editOne" role="button" class="btn btn-success" value="Cet évènement">
@@ -135,9 +136,11 @@ if(isset($_POST['deleteCoursAll'])){
 					   	</div>
 					   </div>
 					   <div class="collapse" id="delete-options">
-					       <input type="submit" name="deleteCoursOne" role="button" class="btn btn-danger" value="Cet évènement">
-					       <input type="submit" name="deleteCoursNext" role="button" class="btn btn-danger" value="Tous les suivants">
-					       <input type="submit" name="deleteCoursAll" role="button" class="btn btn-danger" value="Toute la série">
+                            <div class="well">
+					           <input type="submit" name="deleteCoursOne" role="button" class="btn btn-danger" value="Cet évènement">
+					           <input type="submit" name="deleteCoursNext" role="button" class="btn btn-danger" value="Tous les suivants">
+					           <input type="submit" name="deleteCoursAll" role="button" class="btn btn-danger" value="Toute la série">
+					       </div>
 					   </div>
 				   </div> <!-- btn-toolbar -->   		
 				   <br>

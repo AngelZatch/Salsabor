@@ -174,6 +174,7 @@ function deleteCoursOne(){
         $db->rollBack();
         var_dump($e->getMessage());
     }
+    header('Location: planning.php');
 }
 
 function deleteCoursNext(){
@@ -196,6 +197,7 @@ function deleteCoursNext(){
         $db->rollBack();
         var_dump($e->getMessage());
     }
+    header('Location: planning.php');
 }
 
 function deleteCoursAll(){
@@ -221,6 +223,7 @@ function deleteCoursAll(){
         $db->rollBack();
         var_dump($e->getMessage());
     }
+    header('Location: planning.php');
 }
 
 function checkParent($data){
