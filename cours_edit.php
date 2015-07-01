@@ -51,6 +51,7 @@ if(isset($_POST['editNext'])){
 	$frequence_repetition = $res_recurrence['frequence_repetition'];
 	$date_fin = $_POST['parent_end_date'];
 	(int)$nombre_repetitions = (strtotime($res_recurrence['parent_end_date']) - strtotime($_POST['date_debut']))/(86400*$frequence_repetition)+1;
+    $paiement = $_POST['paiement'];
 	
 	$db = PDOFactory::getConnection();
 	try{
@@ -59,12 +60,14 @@ if(isset($_POST['editNext'])){
 			$edit = $db->prepare('UPDATE cours SET cours_intitule = :intitule,
 											cours_start = :cours_start,
 											cours_end = :cours_end,
-                                            justification_modification = :edit_comment
+                                            justification_modification = :edit_comment,
+                                            paiement_effectue = :paiement
 							WHERE cours_parent_id = :parent_id AND cours_id = :id');
 			$edit->bindParam(':intitule', $_POST['intitule']);
 			$edit->bindParam(':cours_start', $start);
 			$edit->bindParam(':cours_end', $end);
             $edit->bindParam(':edit_comment', $_POST['edit-comment']);
+            $edit->bindParam(':paiement', $_POST['paiement']);
 			$edit->bindParam(':parent_id', $row_data['cours_parent_id']);
 			$edit->bindParam(':id', $id);
 			$edit->execute();

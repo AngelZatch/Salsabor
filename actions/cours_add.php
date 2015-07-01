@@ -147,7 +147,9 @@ $db = PDOFactory::getConnection();
    </div>
        <div class="form-group">
           <div class="col-sm-9 col-sm-offset-3">
-              <label for="paye" class="control-label"><input type="checkbox" name="paye" id="paye" class="checkbox-inline" value="1">Déjà payé<span class="mandatory">*</span></label>
+              <label for="paiement" class="control-label">
+                  <input type="checkbox" name="paiement" id="paiement" class="checkbox-inline" value="1">Déjà payé<span class="mandatory">*</span>
+              </label>
 		  </div>
        </div>
        <div class="align-right">

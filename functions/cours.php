@@ -25,6 +25,7 @@ function addCours(){
     /** Calculs automatiques de valeurs **/
     $unite = (strtotime($heure_fin) - strtotime($heure_debut))/3600;
     $cout_horaire = 40;
+    if(isset($_POST['paiement'])) $paiement = $_POST['paiement'];
 	
 	$db = PDOFactory::getConnection();
     
@@ -61,8 +62,8 @@ function addCours(){
             $last_id = $db->lastInsertId();
             
             /** Insertion du cours principal dans cours **/
-            $insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_suffixe, cours_type, cours_start, cours_end, prof_principal, prof_remplacant, cours_niveau, cours_salle, cours_unite, cours_cout_horaire, priorite)
-            VALUES(:cours_parent_id, :intitule, :suffixe, :type, :cours_start, :cours_end, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :priorite)');
+            $insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_suffixe, cours_type, cours_start, cours_end, prof_principal, prof_remplacant, cours_niveau, cours_salle, cours_unite, cours_cout_horaire, priorite, paiement_effectue)
+            VALUES(:cours_parent_id, :intitule, :suffixe, :type, :cours_start, :cours_end, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :priorite, :paiement)');
             $insertCours->bindParam(':cours_parent_id', $last_id);
             $insertCours->bindParam(':intitule', $intitule);
             $insertCours->bindParam(':suffixe', $suffixe);
@@ -76,6 +77,7 @@ function addCours(){
             $insertCours->bindParam(':unite', $unite);
             $insertCours->bindParam(':cout_horaire', $cout_horaire);
             $insertCours->bindParam(':priorite', $priorite);
+            $insertCours->bindParam(':paiement', $paiement);
             
             $insertCours->execute();
             
@@ -121,8 +123,8 @@ function addCours(){
             
             for($i = 1; $i < $nombre_repetitions; $i++){
                 /** Insertion de toutes les récurrences du cours dans la table cours **/
-                $insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_suffixe, cours_type, cours_start, cours_end, prof_principal, prof_remplacant, cours_niveau, cours_salle, cours_unite, cours_cout_horaire, priorite)
-                VALUES(:cours_parent_id, :intitule, :suffixe, :type, :cours_start, :cours_end, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :priorite)');
+                $insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_suffixe, cours_type, cours_start, cours_end, prof_principal, prof_remplacant, cours_niveau, cours_salle, cours_unite, cours_cout_horaire, priorite, paiement_effectue)
+                VALUES(:cours_parent_id, :intitule, :suffixe, :type, :cours_start, :cours_end, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :priorite, :paiement)');
                 $insertCours->bindParam(':cours_parent_id', $last_id);
                 $insertCours->bindParam(':intitule', $intitule);
                 $insertCours->bindParam(':suffixe', $suffixe);
@@ -136,6 +138,7 @@ function addCours(){
                 $insertCours->bindParam(':unite', $unite);
                 $insertCours->bindParam(':cout_horaire', $cout_horaire);
                 $insertCours->bindParam(':priorite', $priorite);
+                $insertCours->bindParam(':paiement', $paiement);
                 $insertCours->execute();
                 
                 $start_date = strtotime($start.'+'.$frequence_repetition.'DAYS');
