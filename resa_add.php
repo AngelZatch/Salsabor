@@ -1,6 +1,5 @@
 <?php
 require_once 'functions/db_connect.php';
-include 'librairies/fpdf.php';
 $db = PDOFactory::getConnection();
 ?>
 <html>

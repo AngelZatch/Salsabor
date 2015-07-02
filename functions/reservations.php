@@ -50,23 +50,26 @@ function addResa(){
 	$pdf->SetSourceFile("librairies/Salsabor-resa-facture.pdf");
 	$tplIdx = $pdf->importPage(1);
 	$pdf->useTemplate($tplIdx, 0, 0, 210);
-	$pdf->setXY(10, 73);
 	$pdf->SetFont('Arial', '', 12);
+	// Phrase de début
+	$pdf->setXY(21, 49);
+	$infos = "ANDREAS PINBOUEN";
+	$pdf->Write(0, $infos);
 	
+	// Informations
+	$pdf->setXY(10, 74);
 	$infos = "M.\n".$demandeur."\n51, rue Servan - 75011 Paris\npinbouen.andreas@gmail.com\nTél : 06 82 71 11 71";
 	$infos = iconv('UTF-8', 'windows-1252', $infos);
 	$pdf->MultiCell(0, 7, $infos);
-	/**	
+	
 	// Réservation
+	$pdf->setXY(10, 131);
 	if($priorite == 0) {
 		$textPriorite = 'libre (Attention : une réservation libre peut être supprimée sans préavis au profit d\'un cours)';
 	} else $textPriorite = 'payée';
-	$reservation = "Détail de la réservation : \n".$_POST['prestation']."\n Le ".date_create($date_debut)->format('d/m/Y')." de ".date_create($date_debut)->format('H:i')." à ".date_create($date_fin)->format('H:i')."\nRéservation ".$textPriorite;
+	$reservation = $_POST['prestation']."\n Le ".date_create($date_debut)->format('d/m/Y')." de ".date_create($date_debut)->format('H:i')." à ".date_create($date_fin)->format('H:i')."\nRéservation ".$textPriorite;
 	$reservation = iconv('UTF-8', 'windows-1252', $reservation);
-	
-	$pdf->SetFont('Arial', '', 15);
-	$pdf->MultiCell(0, 10, "Informations du Demandeur : \n".$infos, 1, 1);
-	$pdf->MultiCell(0, 10, $reservation, 1, 1);**/
+	$pdf->MultiCell(0, 7, $reservation);
 	$pdf->Output();
 	
 	/**$pdf = new ReservationPDF();
