@@ -50,7 +50,7 @@ function addResa(){
 	$pdf->SetSourceFile("librairies/Salsabor-resa-facture.pdf");
 	$tplIdx = $pdf->importPage(1);
 	$pdf->useTemplate($tplIdx, 0, 0, 210);
-	$pdf->setXY(10, 80);
+	$pdf->setXY(10, 73);
 	$pdf->SetFont('Arial', '', 12);
 	
 	$infos = "M.\n".$demandeur."\n51, rue Servan - 75011 Paris\npinbouen.andreas@gmail.com\nTél : 06 82 71 11 71";
