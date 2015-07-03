@@ -187,7 +187,7 @@ body{
 	margin-right: 0 !important;
 }
 
-#error_message {
+.error-alert {
 	color: #720026;
 }
 
@@ -205,3 +205,5 @@ body{
 #last-edit {
 	font-style: italic;
 }
+
+

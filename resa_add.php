@@ -23,11 +23,40 @@ $db = PDOFactory::getConnection();
 					   <a href="planning.php" role="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer</a>
               	    </div> <!-- btn-toolbar -->   
               	    <br>
+              	    <div class="alert alert-success" id="user-added" style="display:none;">Adhérent ajouté avec succès</div>
+              	    <div class="class alert alert-danger" id="user-error" style="display:none;">Erreur. Certains champs sont vides</div>
                	    <div class="form-group">
                	        <label for="identite" class="col-sm-3 control-label">Demandeur <span class="mandatory">*</span></label>
                	        <div class="col-sm-9">
-               	            <input type="text" name="identite_prenom" class="form-control" placeholder="Prénom">
-               	            <input type="text" name="identite_nom" class="form-control" placeholder="Nom">
+               	            <input type="text" name="identite_prenom" id="identite_prenom" class="form-control" placeholder="Prénom" onChange="ifAdherentExists()">
+               	            <input type="text" name="identite_nom" id="identite_nom" class="form-control" placeholder="Nom" onChange="ifAdherentExists()">
+               	        </div>
+               	        <div class="align-right">
+							<p class="error-alert" id="err_adherent"></p>
+							<a href="#user-details" role="button" class="btn btn-primary" value="create-user" id="create-user" style="display:none;" data-toggle="collapse" aria-expanded="false" aria-controls="userDetails">Créer</a>
+               	        </div>
+               	        <div id="user-details" class="collapse">
+               	        	<div class="well">
+               	        		<div class="form-group">
+               	        			<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control">
+								</div>
+								<div class="form-group">
+									<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control">
+								</div>
+								<div class="form-group">
+									<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control">
+								</div>
+								<div class="form-group">
+									<input type="text" name="mail" id="mail" placeholder="Adresse mail" class="form-control">
+								</div>
+								<div class="form-group">
+									<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control">
+								</div>
+								<div class="form-group">
+									<input type="date" name="date_naissance" id="date_naissance" class="form-control">
+								</div>
+               	        		<a class="btn btn-primary" onClick="addAdherent()">AJOUTER</a>
+               	        	</div>
                	        </div>
                	    </div>
                	    <div class="form-group">
@@ -88,7 +117,7 @@ $db = PDOFactory::getConnection();
                         </div>
                     </div>
                	    <div class="align-right">
-               	    	<p class="" id="error_message"></p>
+               	    	<p class="error-alert" id="error_message"></p>
                	    </div>
                	</form>
                </div>
@@ -97,21 +126,54 @@ $db = PDOFactory::getConnection();
    </div>
    <?php include "scripts.php";?>
    <script src="assets/js/check_calendar.js"></script>
-      <script>
-   if($('#priorite').attr('value') == 0){
-	   $('#prix_reservation').hide();
-   }
-	   $('#priorite').change(function(){
-		   $('#prix_reservation').toggle('600');
-	   })
-	$('#paiement').change(function(){
-		var state = $('#paiement').prop('checked');
-		if(state){
-			$('#paiement-sub').val(1);
+   <script>
+if($('#priorite').attr('value') == 0){
+	$('#prix_reservation').hide();
+}
+$('#priorite').change(function(){
+	$('#prix_reservation').toggle('600');
+});
+$('#paiement').change(function(){
+	var state = $('#paiement').prop('checked');
+	if(state){
+		$('#paiement-sub').val(1);
+	} else {
+		$('#paiement-sub').val(0);
+	}
+});
+		  
+function ifAdherentExists(){
+	var identite_prenom = $('#identite_prenom').val();
+	var identite_nom = $('#identite_nom').val();
+	$.post("functions/check_adherent.php", {identite_prenom, identite_nom}).done(function(data){
+		if(data == 0){
+			$('#err_adherent').empty();
+			$('#err_adherent').append("Cet adhérent n'existe pas. Voulez-vous le créer ?");
+			$('#create-user').show();
 		} else {
-			$('#paiement-sub').val(0);
+			$('#err_adherent').empty();
+			$('#create-user').hide();
 		}
 	});
+}
+
+function addAdherent(){
+	var identite_prenom = $('#identite_prenom').val();
+	var identite_nom = $('#identite_nom').val();
+	var rue = $('#rue').val();
+	var code_postal = $('#code_postal').val();
+	var ville = $('#ville').val();
+	var mail = $('#mail').val();
+	var telephone = $('#telephone').val();
+	var date_naissance = $('#date_naissance').val();
+	$.post("functions/add_adherent.php", {identite_prenom, identite_nom, rue, code_postal, ville, mail, telephone, date_naissance}).done(function(data){
+		$('#create-user').click();
+		$('#user-added').show('500').delay(3000).hide('3000');
+		ifAdherentExists();
+	}).fail(function(data){
+		$('#user-error').show('500').delay(3000).hide('3000');
+	});
+}
 	</script> 
 </body>
 </html>

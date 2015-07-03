@@ -94,7 +94,7 @@ function addResa(){
 	$pdf->Output();
 	/**** /PDF ****/
 	
-	/**
+	/
 	try{
 		$db->beginTransaction();
 		$insertResa = $db->prepare('INSERT INTO reservations(reservation_personne, type_prestation, reservation_start, reservation_end, reservation_salle, reservation_unite, reservation_prix, priorite, paiement_effectue)
@@ -115,7 +115,7 @@ function addResa(){
 	} catch(PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());
-	}**/
+	}
 }
 
 function deleteResa(){
@@ -136,9 +136,9 @@ function deleteResa(){
 
 function getAdherent($prenom, $nom){
 	$db = PDOFactory::getConnection();
-	$search = $db->prepare('SELECT * FROM adherents WHERE eleve_nom=? AND eleve_prenom=?');
-	$search->bindParam(1, $nom);
-	$search->bindParam(2, $prenom);
+	$search = $db->prepare('SELECT * FROM adherents WHERE eleve_prenom=? AND eleve_nom=?');
+	$search->bindParam(1, $prenom);
+	$search->bindParam(2, $nom);
 	$search->execute();
 	$res = $search->fetch(PDO::FETCH_ASSOC);
 	return $res;

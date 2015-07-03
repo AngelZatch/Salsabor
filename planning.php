@@ -184,14 +184,14 @@ if(isset($_POST['deleteCoursAll'])){
 					color: '#D21CFC',
 					textColor: 'black',
 					error: function(){
-						alert('Erreur pendant l\'obtention des réservations');
+						console.log('Erreur pendant l\'obtention des réservations');
 					},
 				}
 			],
 			eventRender: function(calEvent, element){
 				element.attr('id', calEvent.type+'-'+calEvent.id);
                 //console.log(calEvent.type);
-                console.log(calEvent.priorite);
+                //console.log(calEvent.priorite);
                 if(calEvent.type == 'reservation'){
                     if (calEvent.priorite == 0){
                         element.css('background-color', '#ebb3f9');
@@ -218,7 +218,7 @@ if(isset($_POST['deleteCoursAll'])){
                 $('#'+calEvent.type+'-options').popoverX('toggle');
 			},
 			dayClick: function(date, jsEvent, view){
-				console.log(date._d);
+				//console.log(date._d);
                 //$(jsEvent.target).attr('id', 'click-id');
 				//$('#add-options').popoverX('toggle');
 /*				$(this).ekkoLightbox({
