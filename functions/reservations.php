@@ -66,7 +66,7 @@ function addResa(){
 	$pdf->SetFont('Arial', '', 11);
 	// Informations
 	$pdf->setXY(10, 74);
-	$infos = "Mme.\n".$adherent['eleve_prenom']." ".$adherent['eleve_nom']."\n".$adherent['rue']." - ".$adherent['code_postal']." ".$adherent['ville']."\n".$adherent['mail']."\nTél : ".$adherent['telephone'];
+	$infos = $adherent['eleve_prenom']." ".$adherent['eleve_nom']."\n".$adherent['rue']." - ".$adherent['code_postal']." ".$adherent['ville']."\n".$adherent['mail']."\nTél : ".$adherent['telephone'];
 	$infos = iconv('UTF-8', 'windows-1252', $infos);
 	$pdf->MultiCell(0, 7, $infos);
 	
