@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 require_once 'functions/reservations.php';
 /** Récupération des valeurs dans la base de données des champs **/
 $id = $_GET['id'];
-$data = $db->prepare('SELECT * FROM reservations WHERE reservation_id=?');
+$data = $db->prepare('SELECT * FROM reservations JOIN adherents ON (reservation_personne=adherents.eleve_id) WHERE reservation_id=?');
 $data->bindParam(1, $id);
 $data->execute();
 $row_data = $data->fetch(PDO::FETCH_ASSOC);
@@ -73,7 +73,7 @@ if(isset($_POST['delete'])){
 				   <br>
 				   <p id="last-edit"><?php if($row_data['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($row_data['derniere_modification'])->format('d/m/Y')." à ".date_create($row_data['derniere_modification'])->format('H:i');?></p>
 					<div class="form-group">
-						<input type="text" class="form-control" name="demandeur" style="font-size:30px; height:inherit;" value="<?php echo $row_data['reservation_personne'];?>">
+						<input type="text" class="form-control" name="identite_prenom" style="font-size:30px; height:inherit;" value="<?php echo $row_data['eleve_prenom']." ".$row_data['eleve_nom'];?>">
 					</div>
 					<div class="form-group">
 						<input type="date" class="col-sm-4" name="date_debut" id="date_debut" onChange="checkCalendar(true, false)" value=<?php echo date_create($row_data['reservation_start'])->format('Y-m-d');?>>

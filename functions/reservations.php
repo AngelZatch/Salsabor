@@ -98,7 +98,7 @@ function addResa(){
 		$db->beginTransaction();
 		$insertResa = $db->prepare('INSERT INTO reservations(reservation_personne, type_prestation, reservation_start, reservation_end, reservation_salle, reservation_unite, reservation_prix, priorite, paiement_effectue)
 		VALUES(:reservation_personne, :type_prestation, :reservation_start, :reservation_end, :lieu, :unite, :prix, :priorite, :paiement_effectue)');
-		$insertResa->bindParam(':reservation_personne', $demandeur);
+		$insertResa->bindParam(':reservation_personne', $adherent['eleve_id']);
 		$insertResa->bindParam(':type_prestation', $prestation);
 		$insertResa->bindParam(':reservation_start', $date_debut);
 		$insertResa->bindParam(':reservation_end', $date_fin);
