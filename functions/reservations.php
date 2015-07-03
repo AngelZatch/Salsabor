@@ -93,8 +93,7 @@ function addResa(){
 	}
 	$pdf->Output();
 	/**** /PDF ****/
-	
-	/
+
 	try{
 		$db->beginTransaction();
 		$insertResa = $db->prepare('INSERT INTO reservations(reservation_personne, type_prestation, reservation_start, reservation_end, reservation_salle, reservation_unite, reservation_prix, priorite, paiement_effectue)
