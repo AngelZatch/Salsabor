@@ -33,7 +33,10 @@ class ReservationPDF extends FPDF
 }
 
 function addResa(){
-	$demandeur = $_POST['identite'];
+	$db = PDOFactory::getConnection();
+	
+	$prenom = $_POST['identite_prenom'];
+	$nom = $_POST['identite_nom'];
 	$prestation = $_POST['prestation'];
 	$date_debut = $_POST['date_debut']." ".$_POST['heure_debut'];
 	$date_fin = $_POST['date_debut']." ".$_POST['heure_fin'];
@@ -45,20 +48,25 @@ function addResa(){
 	$priorite = $_POST['priorite'];
 	$paiement = $_POST['paiement'];
 	
+	// Obtention de la personne qui a fait la réservation
+	$adherent = getAdherent($prenom, $nom);
+	$salle = getLieu($lieu);
+	
+	/**** PDF ****/
 	$pdf = new FPDI();
 	$pdf->AddPage();
 	$pdf->SetSourceFile("librairies/Salsabor-resa-facture.pdf");
 	$tplIdx = $pdf->importPage(1);
 	$pdf->useTemplate($tplIdx, 0, 0, 210);
-	$pdf->SetFont('Arial', '', 12);
+	$pdf->SetFont('Arial', '', 10);
 	// Phrase de début
 	$pdf->setXY(21, 49);
-	$infos = "ANDREAS PINBOUEN";
+	$infos = $adherent['eleve_prenom']." ".$adherent['eleve_nom'];
 	$pdf->Write(0, $infos);
-	
+	$pdf->SetFont('Arial', '', 11);
 	// Informations
 	$pdf->setXY(10, 74);
-	$infos = "M.\n".$demandeur."\n51, rue Servan - 75011 Paris\npinbouen.andreas@gmail.com\nTél : 06 82 71 11 71";
+	$infos = "Mme.\n".$adherent['eleve_prenom']." ".$adherent['eleve_nom']."\n".$adherent['rue']." - ".$adherent['code_postal']." ".$adherent['ville']."\n".$adherent['mail']."\nTél : ".$adherent['telephone'];
 	$infos = iconv('UTF-8', 'windows-1252', $infos);
 	$pdf->MultiCell(0, 7, $infos);
 	
@@ -67,17 +75,26 @@ function addResa(){
 	if($priorite == 0) {
 		$textPriorite = 'libre (Attention : une réservation libre peut être supprimée sans préavis au profit d\'un cours)';
 	} else $textPriorite = 'payée';
-	$reservation = $_POST['prestation']."\n Le ".date_create($date_debut)->format('d/m/Y')." de ".date_create($date_debut)->format('H:i')." à ".date_create($date_fin)->format('H:i')."\nRéservation ".$textPriorite;
+	
+	// Obtention de l'intitulé du type de prestation
+	$nomPresa = $db->query('SELECT prestations_name FROM prestations WHERE prestations_id='.$prestation)->fetch(PDO::FETCH_ASSOC);
+	
+	$reservation = $nomPresa['prestations_name']."\nLe ".date_create($date_debut)->format('d/m/Y')." de ".date_create($date_debut)->format('H:i')." à ".date_create($date_fin)->format('H:i')."\nRéservation ".$textPriorite."\n".$salle['salle_name'];
 	$reservation = iconv('UTF-8', 'windows-1252', $reservation);
 	$pdf->MultiCell(0, 7, $reservation);
+	
+	if($priorite == 1){
+		$pdf->setXY(170, 165);
+		$pdf->setFont('Arial', 'B', 18);
+		$pdf->SetTextColor(169, 2, 58);
+		$linePrix = $prix." € TTC";
+		$linePrix = iconv('UTF-8', 'windows-1252', $linePrix);
+		$pdf->Write(0, $linePrix);
+	}
 	$pdf->Output();
+	/**** /PDF ****/
 	
-	/**$pdf = new ReservationPDF();
-	$titre = "FACTURE DE RESERVATION DE SALLE";
-	$pdf->setTitle($titre);
-	$pdf->Output();**/
-	
-	/**$db = PDOFactory::getConnection();
+	/**
 	try{
 		$db->beginTransaction();
 		$insertResa = $db->prepare('INSERT INTO reservations(reservation_personne, type_prestation, reservation_start, reservation_end, reservation_salle, reservation_unite, reservation_prix, priorite, paiement_effectue)
@@ -115,4 +132,23 @@ function deleteResa(){
         var_dump($e->getMessage());
     }
     header('Location: planning.php');
+}
+
+function getAdherent($prenom, $nom){
+	$db = PDOFactory::getConnection();
+	$search = $db->prepare('SELECT * FROM adherents WHERE eleve_nom=? AND eleve_prenom=?');
+	$search->bindParam(1, $nom);
+	$search->bindParam(2, $prenom);
+	$search->execute();
+	$res = $search->fetch(PDO::FETCH_ASSOC);
+	return $res;
+}
+
+function getLieu($id){
+	$db = PDOFactory::getConnection();
+	$search = $db->prepare('SELECT * FROM salle WHERE salle_id=?');
+	$search->bindParam(1, $id);
+	$search->execute();
+	$res = $search->fetch(PDO::FETCH_ASSOC);
+	return $res;
 }

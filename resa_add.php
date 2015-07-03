@@ -26,7 +26,8 @@ $db = PDOFactory::getConnection();
                	    <div class="form-group">
                	        <label for="identite" class="col-sm-3 control-label">Demandeur <span class="mandatory">*</span></label>
                	        <div class="col-sm-9">
-               	            <input type="text" name="identite" id="resa_add_identite" class="form-control" placeholder="Entrez un nom">
+               	            <input type="text" name="identite_prenom" class="form-control" placeholder="Prénom">
+               	            <input type="text" name="identite_nom" class="form-control" placeholder="Nom">
                	        </div>
                	    </div>
                	    <div class="form-group">
