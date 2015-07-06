@@ -11,6 +11,10 @@ body{
     /**background-color: #ECECEC;**/
 }
 
+nav-tabs{
+    margin-bottom: 10px;
+}
+
 .navbar{
     background-color: #81002B;
     border: 0;
@@ -212,4 +216,8 @@ body{
 
 .payment-due{
     color: red;
+}
+
+#top-page-buttons {
+    margin-top: 10px;
 }
