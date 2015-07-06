@@ -19,11 +19,13 @@ if(isset($_POST['editOne'])){
 	$start = $_POST['date_debut']." ".$_POST['heure_debut'];
 	$end = $_POST['date_fin']." ".$_POST['heure_fin'];
 	$paiement = $_POST['paiement'];
+    $prix_final = $_POST['prix_cours'];
 	try{
 		$db->beginTransaction();
 		$edit = $db->prepare('UPDATE cours SET cours_intitule = :intitule,
 										cours_start = :cours_start,
 										cours_end = :cours_end,
+                                        cours_prix = :prix,
 										paiement_effectue = :paiement,
                                         justification_modification = :edit_comment,
 										derniere_modification = :derniere_modification
@@ -31,6 +33,7 @@ if(isset($_POST['editOne'])){
 		$edit->bindParam(':intitule', $_POST['intitule']);
 		$edit->bindParam(':cours_start', $start);
 		$edit->bindParam(':cours_end', $end);
+        $edit->bindParam(':prix', $prix_final);
 		$edit->bindParam(':paiement', $paiement);
         $edit->bindParam(':edit_comment', $_POST['edit-comment']);
 		$edit->bindParam(':derniere_modification', date_create('now')->format('Y-m-d H:i:s'));
@@ -52,6 +55,7 @@ if(isset($_POST['editNext'])){
 	$date_fin = $_POST['parent_end_date'];
 	(int)$nombre_repetitions = (strtotime($res_recurrence['parent_end_date']) - strtotime($_POST['date_debut']))/(86400*$frequence_repetition)+1;
     $paiement = $_POST['paiement'];
+    $prix_final = $_POST['prix_cours'];
 	
 	$db = PDOFactory::getConnection();
 	try{
@@ -60,12 +64,14 @@ if(isset($_POST['editNext'])){
 			$edit = $db->prepare('UPDATE cours SET cours_intitule = :intitule,
 											cours_start = :cours_start,
 											cours_end = :cours_end,
+                                            cours_prix = :prix,
                                             justification_modification = :edit_comment,
                                             paiement_effectue = :paiement
 							WHERE cours_parent_id = :parent_id AND cours_id = :id');
 			$edit->bindParam(':intitule', $_POST['intitule']);
 			$edit->bindParam(':cours_start', $start);
 			$edit->bindParam(':cours_end', $end);
+            $edit->bindParam(':prix', $prix_final);
             $edit->bindParam(':edit_comment', $_POST['edit-comment']);
             $edit->bindParam(':paiement', $_POST['paiement']);
 			$edit->bindParam(':parent_id', $row_data['cours_parent_id']);
@@ -215,7 +221,7 @@ if(isset($_POST['deleteCoursAll'])){
 								} else{
 									$prix_final = $data_tarif['cout_horaire'] * $data_tarif['cours_unite'];
 								}
-								echo "<span id='prix_calcul'>".$prix_final." €</span>";
+								echo "<span class='input-group-addon' id='currency-addon'>€</span><input type=text name='prix_cours' id='prix_calcul' class='form-control' value=".$prix_final." aria-describedby='currency-addon'>";
 								?>
 								<input type="checkbox" <?php if($row_data['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
 								<input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $row_data['paiement_effectue'];?>">
