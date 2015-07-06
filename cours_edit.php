@@ -14,6 +14,23 @@ $data->bindParam(1, $row_data['cours_parent_id']);
 $data->execute();
 $res_recurrence = $data->fetch(PDO::FETCH_ASSOC);
 
+$queryProf = $db->prepare('SELECT * FROM professeurs WHERE prof_id=?');
+$queryProf->bindParam(1, $row_data['prof_principal']);
+$queryProf->execute();
+$data_prof = $queryProf->fetch(PDO::FETCH_ASSOC);
+
+$queryParticipants = $db->prepare('SELECT * FROM cours_participants JOIN adherents ON eleve_id_foreign=adherents.eleve_id WHERE cours_id_foreign=?');
+$queryParticipants->bindParam(1, $id);
+$queryParticipants->execute();
+
+$nombre_eleves = $queryParticipants->rowCount();
+
+$queryTarif = $db->prepare('SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=? AND type_prestation=?');
+$queryTarif->bindParam(1, $row_data['prof_principal']);
+$queryTarif->bindParam(2, $row_data['cours_type']);
+$queryTarif->execute();
+$tarif = $queryTarif->fetch(PDO::FETCH_ASSOC);
+
 if(isset($_POST['editOne'])){
 	$db = PDOFactory::getConnection();
 	$start = $_POST['date_debut']." ".$_POST['heure_debut'];
@@ -167,66 +184,47 @@ if(isset($_POST['deleteCoursAll'])){
                			<select name="type" id="" class="form-control">
                				<?php
 							$types = $db->query('SELECT * FROM prestations WHERE est_cours=1');
-							while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
-								echo"<option value=".$row_types['prestations_id'].">".$row_types['prestations_name']."</option>";
-							}
-							?>
+							while($row_types = $types->fetch(PDO::FETCH_ASSOC)){?>
+								<option value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>;
+							<?php } ?>
                			</select>
                		</div>
                		<div class="form-group">
                			<div class="panel panel-default">
                			<div class="panel-heading">               			
 							<label for="professeur">Professeur : </label>
-							<?php
-							$data = $db->prepare('SELECT * FROM professeurs WHERE prof_id=?');
-							$data->bindParam(1, $row_data['prof_principal']);
-							$data->execute();
-							$data_prof = $data->fetch(PDO::FETCH_ASSOC);
-							?>
 							<p>
 								<?php echo $data_prof['prenom']." ".$data_prof['nom'];?>
 							</p>
 						</div>
-							<div class="panel-body">
-									<label for="liste_participants">Participants enregistrés :</label>
-									<input type="text" for="liste_participants" class="form-control" placeholder="Ajouter un participant">
-							</div>
-							<ul class="list-group">
-								<?php
-								$liste_participants = $db->prepare('SELECT * FROM cours_participants JOIN adherents ON eleve_id_foreign=adherents.eleve_id WHERE cours_id_foreign=?');
-								$liste_participants->bindParam(1, $id);
-								$liste_participants->execute();
-								while($row_liste_participants = $liste_participants->fetch(PDO::FETCH_ASSOC)){
-									echo "<li class='list-group-item'>".$row_liste_participants['eleve_prenom']." ".$row_liste_participants['eleve_nom']."</li>";
-								}
-								$nombre_eleves = $liste_participants->rowCount();
-								?>
-								<li class="list-group-item" id="prix-calcul">Somme due à l'enseignant :
-								<?php
-								$data = $db->prepare('SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=? AND type_prestation=?');
-								$data->bindParam(1, $row_data['prof_principal']);
-								$data->bindParam(2, $row_data['cours_type']);
-								$data->execute();
-								$data_tarif = $data->fetch(PDO::FETCH_ASSOC);
-
-								// Calcul de la somme due à l'enseignant en fonction de la table des tarifs
-								if(isset($data_tarif['ratio_multiplicatif'])){
-									if($data_tarif['ratio_multiplicatif'] == 'personne'){
-										$prix_final = $data_tarif['tarif_prestation'] * $nombre_eleves;
-									} else if ($data_tarif['ratio_multiplicatif'] == 'prestation'){
-										$prix_final = $data_tarif['tarif_prestation'];
-									} else{
-										$prix_final = $data_tarif['tarif_prestation'] * $row_data['cours_unite'];
-									}
-								} else{
-									$prix_final = $data_tarif['cout_horaire'] * $data_tarif['cours_unite'];
-								}
-								echo "<span class='input-group-addon' id='currency-addon'>€</span><input type=text name='prix_cours' id='prix_calcul' class='form-control' value=".$prix_final." aria-describedby='currency-addon'>";
-								?>
-								<input type="checkbox" <?php if($row_data['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
-								<input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $row_data['paiement_effectue'];?>">
-								</li>
-							</ul>
+                        <div class="panel-body">
+                                <label for="liste_participants">Participants enregistrés :</label>
+                                <input type="text" for="liste_participants" class="form-control" placeholder="Ajouter un participant">
+                        </div>
+                        <ul class="list-group">
+                            <?php while($participants = $queryParticipants->fetch(PDO::FETCH_ASSOC)){?>
+                                <li class='list-group-item'><?php echo $participants['eleve_prenom']." ".$participants['eleve_nom'];?></li>
+                            <?php } ?>
+                            <li class="list-group-item" id="prix-calcul">Somme due à l'enseignant :
+                            <?php
+                            // Calcul de la somme due à l'enseignant en fonction de la table des tarifs
+                            if(isset($tarif['ratio_multiplicatif'])){
+                                if($tarif['ratio_multiplicatif'] == 'personne'){
+                                    $prix_final = $tarif['tarif_prestation'] * $nombre_eleves;
+                                } else if ($tarif['ratio_multiplicatif'] == 'prestation'){
+                                    $prix_final = $tarif['tarif_prestation'];
+                                } else{
+                                    $prix_final = $tarif['tarif_prestation'] * $row_data['cours_unite'];
+                                }
+                            } else{
+                                $prix_final = $tarif['cout_horaire'] * $tarif['cours_unite'];
+                            }?>
+                            <span class='input-group-addon' id='currency-addon'>€</span>
+                            <input type=text name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $prix_final?>" aria-describedby='currency-addon'>
+                            <input type="checkbox" <?php if($row_data['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
+                            <input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $row_data['paiement_effectue'];?>">
+                            </li>
+                        </ul>
                			</div>
                		</div>
                		<div class="form-group">

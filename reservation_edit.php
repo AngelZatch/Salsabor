@@ -4,10 +4,13 @@ $db = PDOFactory::getConnection();
 require_once 'functions/reservations.php';
 /** Récupération des valeurs dans la base de données des champs **/
 $id = $_GET['id'];
-$data = $db->prepare('SELECT * FROM reservations JOIN adherents ON (reservation_personne=adherents.eleve_id) WHERE reservation_id=?');
-$data->bindParam(1, $id);
-$data->execute();
-$row_data = $data->fetch(PDO::FETCH_ASSOC);
+$queryReservation = $db->prepare('SELECT * FROM reservations JOIN adherents ON (reservation_personne=adherents.eleve_id) WHERE reservation_id=?');
+$queryReservation->bindParam(1, $id);
+$queryReservation->execute();
+$reservation = $queryReservation->fetch(PDO::FETCH_ASSOC);
+
+$queryTypes = $db->query('SELECT * FROM prestations WHERE est_resa=1');
+$queryLieux = $db->query('SELECT * FROM salle');
 
 if(isset($_POST['edit'])){
 	$db = new PDO('mysql:host=localhost;dbname=Salsabor;charset=utf8', 'root', '');
@@ -71,48 +74,42 @@ if(isset($_POST['delete'])){
 					   <input type="hidden" name="id" value="<?php echo $id;?>">
 				   </div> <!-- btn-toolbar -->   		
 				   <br>
-				   <p id="last-edit"><?php if($row_data['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($row_data['derniere_modification'])->format('d/m/Y')." à ".date_create($row_data['derniere_modification'])->format('H:i');?></p>
+				   <p id="last-edit"><?php if($reservation['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($reservation['derniere_modification'])->format('d/m/Y')." à ".date_create($reservation['derniere_modification'])->format('H:i');?></p>
 					<div class="form-group">
-						<input type="text" class="form-control" name="identite_prenom" style="font-size:30px; height:inherit;" value="<?php echo $row_data['eleve_prenom']." ".$row_data['eleve_nom'];?>">
+						<input type="text" class="form-control" name="identite_prenom" style="font-size:30px; height:inherit;" value="<?php echo $reservation['eleve_prenom']." ".$reservation['eleve_nom'];?>">
 					</div>
 					<div class="form-group">
-						<input type="date" class="col-sm-4" name="date_debut" id="date_debut" onChange="checkCalendar(true, false)" value=<?php echo date_create($row_data['reservation_start'])->format('Y-m-d');?>>
-						<input type="time" class="col-sm-4" name="heure_debut" id="heure_debut" onChange="checkCalendar(true, false)" value=<?php echo date_create($row_data['reservation_start'])->format('H:i')?>>
-						<input type="time" class="col-sm-4" name="heure_fin" id="heure_fin" onChange="checkCalendar(true, false)" value=<?php echo date_create($row_data['reservation_end'])->format('H:i');?>>
+						<input type="date" class="col-sm-4" name="date_debut" id="date_debut" onChange="checkCalendar(true, false)" value=<?php echo date_create($reservation['reservation_start'])->format('Y-m-d');?>>
+						<input type="time" class="col-sm-4" name="heure_debut" id="heure_debut" onChange="checkCalendar(true, false)" value=<?php echo date_create($reservation['reservation_start'])->format('H:i')?>>
+						<input type="time" class="col-sm-4" name="heure_fin" id="heure_fin" onChange="checkCalendar(true, false)" value=<?php echo date_create($reservation['reservation_end'])->format('H:i');?>>
 					</div>
 					<div class="form-group">
 						<select name="prestation" id="prestation" class="form-control" onChange="checkCalendar(true, false)">
-						<?php
-						$types = $db->query('SELECT * FROM prestations WHERE est_resa=1');
-						while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
-							echo"<option value=".$row_types['prestations_id'].">".$row_types['prestations_name']."</option>";
-						}
-						?>
+						<?php while($type = $queryTypes->fetch(PDO::FETCH_ASSOC)){?>
+							<option value="<?php echo $type['prestations_id'];?>"><?php echo $type['prestations_name'];?></option>
+						<?php } ?>
 						</select>
 					</div>
 					<div class="form-group">
 						<select name="lieu" id="lieu" class="form-control" onChange="checkCalendar(true, false)">
-							<?php
-							$lieux = $db->query('SELECT * FROM salle');
-									while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){
-										echo "<option value=".$row_lieux['salle_id'].">".$row_lieux['salle_name']."</option>";
-									}
-							?>
+							<?php while($lieux = $queryLieux->fetch(PDO::FETCH_ASSOC)){?>
+                                <option value="<?php echo $lieux['salle_id'];?>"><?php echo $lieux['salle_name'];?></option>
+                            <?php } ?>
 						</select>
 					</div>
 					<div class="form-group">
 						<label for="priorite" class="cbx-label">Réservation payée</label>
-						<input name="priorite" id="priorite" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $row_data['priorite']?>">
+						<input name="priorite" id="priorite" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $reservation['priorite']?>">
 						<label for="priorite">Une réservation payée ne peut plus être supprimée au profit d'un cours.</label>
 					</div>
 					<div class="form-group" id="prix_reservation">
 					    <label for="prix_resa" class="control-label">Prix de la réservation : </label>
                         <div class="input-group">
 				            <span class="input-group-addon" id="currency-addon">€</span>
-				            <input type="text" name="prix_resa" id="prix_calcul" class="form-control" value="<?php echo $row_data['reservation_prix'];?>" aria-describedby="currency-addon">
+				            <input type="text" name="prix_resa" id="prix_calcul" class="form-control" value="<?php echo $reservation['reservation_prix'];?>" aria-describedby="currency-addon">
 				        </div>
-                        <input type="checkbox" <?php if($row_data['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
-                        <input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $row_data['paiement_effectue'];?>">
+                        <input type="checkbox" <?php if($reservation['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
+                        <input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $reservation['paiement_effectue'];?>">
 					</div>
 					<div class="form-group">
 						<label for="edit_comment">Raison de modification :</label>

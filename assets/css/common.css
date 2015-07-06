@@ -226,3 +226,11 @@ body{
     float: right;
     cursor: pointer;
 }
+
+#display-planning {
+    margin-top: 10px;
+}
+
+#solo-form {
+    margin-top: 10px !important;
+}

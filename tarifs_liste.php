@@ -3,6 +3,11 @@ require_once "functions/db_connect.php";
 $db = PDOFactory::getConnection();
 include "functions/tarifs.php";
 
+$id_prestations = array();
+$id_horaires = array();
+
+$liste_types = $db->query('SELECT prestations_id, prestations_name FROM prestations WHERE est_resa=1');
+
 if(isset($_POST['addTarifResa'])){
 	addTarifResa();
 }
@@ -30,21 +35,19 @@ if(isset($_POST['addTarifResa'])){
                       <li role="presentation"><a onClick="toggleListePlanning()"><span class="glyphicon glyphicon-user"></span> Professeurs</a></li>
                    </ul>
                </div> <!-- menu-bar -->
-                <?php
-                $id_prestations = array();
-                $id_horaires = array();
-                echo "<div class='table-responsive'>
-                        <table class='table table-striped table-hover'>
-                            <thead>
-                                <tr>
-                                    <th class='col-sm-3'></th>";
-                    $liste_types = $db->query('SELECT prestations_id, prestations_name FROM prestations WHERE est_resa=1');
-                    while($row_liste_types = $liste_types->fetch(PDO::FETCH_ASSOC)){
-                        echo "<th class='col-sm-2'>".$row_liste_types['prestations_name']."</th>";
-                        array_push($id_prestations, $row_liste_types['prestations_id']);
-                    }
-                    echo "</tr></thead><tbody>";
-                    for($i = 1; $i <= 3; $i++){
+                <div class='table-responsive'>
+                    <table class='table table-striped table-hover'>
+                        <thead>
+                            <tr>
+                                <th class='col-sm-3'></th>
+                                <?php while($row_liste_types = $liste_types->fetch(PDO::FETCH_ASSOC)){?>
+                        <th class='col-sm-2'><?php echo $row_liste_types['prestations_name'];?></th>
+                        <?php array_push($id_prestations, $row_liste_types['prestations_id']);
+                    }?>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    <?php for($i = 1; $i <= 3; $i++){
                         /** Get les horaires et les id associés **/
                         $liste_horaires = $db->prepare('SELECT * FROM plages_reservations WHERE plages_resa_jour=?');
                         $liste_horaires->bindValue(1, $i);
@@ -52,13 +55,14 @@ if(isset($_POST['addTarifResa'])){
                         while($row_liste_horaires = $liste_horaires->fetch(PDO::FETCH_ASSOC)){
                             $id_horaires[] = array($row_liste_horaires['plages_resa_id'],
                                                    $row_liste_horaires['plage_resa_nom'],
-                                                   date_create($row_liste_horaires['plages_resa_debut'])->format('H:i'),
+                                                    date_create($row_liste_horaires['plages_resa_debut'])->format('H:i'),
                                                    date_create($row_liste_horaires['plages_resa_fin'])->format('H:i'));
                         }
                     }
-                    for($j = 0; $j < sizeof($id_horaires); $j++){
-                        echo "<tr><td class='col-sm-2'>".$id_horaires[$j][1]." (".$id_horaires[$j][2]." - ".$id_horaires[$j][3].")</td>";
-                        for($k = 0; $k < sizeof($id_prestations); $k++){
+                    for($j = 0; $j < sizeof($id_horaires); $j++){?>
+                            <tr>
+                                <td class='col-sm-2'><?php echo $id_horaires[$j][1]." (".$id_horaires[$j][2]." - ".$id_horaires[$j][3].")"?></td>
+                        <?php for($k = 0; $k < sizeof($id_prestations); $k++){
                             /** Get les tarifs associés à l'id qu'on a **/
                             $tarif = $db->prepare('SELECT prix_resa FROM tarifs_reservations WHERE type_prestation=? AND plage_resa=? AND lieu_resa=1');
                             $tarif->bindValue(1, $id_prestations[$k]);
@@ -70,11 +74,12 @@ if(isset($_POST['addTarifResa'])){
                             } else {
                                 echo "<td class='col-sm-2'> -- € TTC </td>";
                             }
-                        }
-                        echo "</tr>";
-                    }
-                echo "</tbody></table></div>";
-               ?>
+                        }?>
+                            </tr>
+                <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
            </div>
        </div>
    </div>

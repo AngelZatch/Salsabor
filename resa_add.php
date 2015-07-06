@@ -1,6 +1,9 @@
 <?php
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
+
+$queryPrestations = $db->query('SELECT * FROM prestations WHERE est_resa=1');
+$queryLieux = $db->query('SELECT * FROM salle');
 ?>
 <html>
 <head>
@@ -14,8 +17,7 @@ $db = PDOFactory::getConnection();
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
-              <br>
-               <div class="col-sm-9">
+               <div class="col-sm-9" id="solo-form">
                	<form action="planning.php" method="post" class="form-horizontal" role="form" id="add_resa">
 					 <div class="btn-toolbar">
 					   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
@@ -63,12 +65,9 @@ $db = PDOFactory::getConnection();
                	        <label for="prestation" class="col-sm-3 control-label">Activité <span class="mandatory">*</span></label>
                	        <div class="col-sm-9">
                	           <select name="prestation" id="prestation" class="form-control" onChange="checkCalendar(true, false)">
-               	           <?php
-               	            $prestations = $db->query('SELECT * FROM prestations WHERE est_resa=1');
-               	            while($row_prestations = $prestations->fetch(PDO::FETCH_ASSOC)){
-               	                echo "<option value=".$row_prestations['prestations_id'].">".$row_prestations['prestations_name']."</option>";
-               	            }
-               	            ?>
+               	           <?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){?>
+               	                <option value="<?php echo $prestations['prestations_id'];?>"><?php echo $prestations['prestations_name'];?></option>";
+               	            <?php } ?>
                	            </select>
                	        </div>
                	    </div>
@@ -88,13 +87,9 @@ $db = PDOFactory::getConnection();
                	        <label for="lieu" class="col-sm-3 control-label">Salle <span class="mandatory">*</span></label>
                	        <div class="col-sm-9">
                	           <select name="lieu" class="form-control" id="lieu" onChange="checkCalendar(true, false)">
-               	           <?php
-               	            $lieux = $db->query('SELECT * FROM salle');
-               	            while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){
-               	                echo "<option value=".$row_lieux['salle_id'].">".$row_lieux['salle_name']."</option>";
-               	            }
-               	            $lieux->closeCursor();
-               	            ?>
+               	           <?php while($lieux = $queryLieux->fetch(PDO::FETCH_ASSOC)){?>
+               	                <option value="<?php echo $lieux['salle_id'];?>"><?php echo $lieux['salle_name'];?></option>;
+               	            <?php } ?>
                	            </select>          
                	        </div>
                	    </div>
