@@ -11,7 +11,7 @@ $queryDetails->execute();
 $details = $queryDetails->fetch(PDO::FETCH_ASSOC);
 
 // On obtient l'historique de ses cours
-$queryHistory = $db->prepare('SELECT * FROM cours JOIN niveau ON cours_niveau=niveau.niveau_id JOIN salle ON cours_salle=salle.salle_id WHERE prof_principal=? OR prof_remplacant=?');
+$queryHistory = $db->prepare('SELECT * FROM cours JOIN niveau ON cours_niveau=niveau.niveau_id JOIN salle ON cours_salle=salle.salle_id WHERE prof_principal=? OR prof_remplacant=? ORDER BY cours_start ASC');
 $queryHistory->bindValue(1, $data);
 $queryHistory->bindValue(2, $data);
 $queryHistory->execute();
@@ -119,6 +119,7 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
                            <?php } ?>
                        </tbody>
                    </table>
+                   <!--<button class="btn btn-primary">AJOUTER UN TARIF</button>-->
                </section> <!-- Tarifs -->
            </div>
        </div>

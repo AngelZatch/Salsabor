@@ -221,3 +221,8 @@ body{
 #top-page-buttons {
     margin-top: 10px;
 }
+
+.sort-icon {
+    float: right;
+    cursor: pointer;
+}
