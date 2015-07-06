@@ -26,7 +26,6 @@ $db = PDOFactory::getConnection();
                         <thead>
                             <tr>
                                 <th class="col-sm-4">Professeur</th>
-                                <th class="col-sm-5"></th>
                                 <th class="col-sm-3"></th>
                             </tr>
                         </thead>
@@ -39,6 +38,9 @@ $db = PDOFactory::getConnection();
                                 <?php
                                     echo $row_profs['prenom'].' '.$row_profs['nom'];
                                 ?>
+                                </td>
+                                <td class="col-sm-3">
+                                    <a href="profs_details.php?id=<?php echo $row_profs['prof_id'];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a> 
                                 </td>
                             </tr>
                             <?php

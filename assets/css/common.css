@@ -206,4 +206,10 @@ body{
 	font-style: italic;
 }
 
+.payment-done{
+    color: green;
+}
 
+.payment-due{
+    color: red;
+}
