@@ -10,8 +10,9 @@ $stmt->bindValue(1, $data);
 $stmt->execute();
 $details = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$stmt = $db->prepare('SELECT * FROM cours JOIN niveau ON cours_niveau=niveau.niveau_id JOIN salle ON cours_salle=salle.salle_id WHERE prof_principal=?');
+$stmt = $db->prepare('SELECT * FROM cours JOIN niveau ON cours_niveau=niveau.niveau_id JOIN salle ON cours_salle=salle.salle_id WHERE prof_principal=? OR prof_remplacant=?');
 $stmt->bindValue(1, $data);
+$stmt->bindValue(2, $data);
 $stmt->execute();
 
 // Prix de tous les cours
@@ -31,11 +32,21 @@ $totalDue = 0;
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
+              <div class="btn-toolbar" id="top-page-buttons">
+                   <a href="profs_liste.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
+                </div> <!-- btn-toolbar -->
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span>
                    <?php echo $details['prenom']." ".$details['nom'];?>
                </h1>
-               <section class="history">
-                   <p id="history-title">Historique</p>
+               <ul class="nav nav-tabs">
+                   <li role="presentation" id="infos-toggle"><a>Informations personnelles</a></li>
+                   <li role="presentation" id="history-toggle" class="active"><a>Historique des cours</a></li>
+                   <li role="presentation" id="tarifs-toggle"><a>Tarifs</a></li>
+               </ul>
+               <section id="infos">
+                   Informations personnelles
+               </section> <!-- Informations personnelles -->
+               <section id="history">
                    <table class="table table-striped">
                        <thead>
                            <tr>
@@ -67,9 +78,24 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_cout_horaire
                        <p>Somme restante : <?php echo $totalDue = $totalPrice - $totalPaid;?> €</p>
                    </div>
                </section><!-- Historique des cours -->
+               <section id="tarifs">
+                   Tarifs
+               </section> <!-- Tarifs -->
            </div>
        </div>
    </div>
-   <?php include "scripts.php";?>    
+   <?php include "scripts.php";?>
+   <script>
+       $("section#infos").hide();
+       $("section#tarifs").hide();
+       $("li[id$=-toggle]").css('cursor', 'pointer');
+        $("li[id$=-toggle]").click(function(){
+            $("section").hide();
+            $("li").attr('class', '');
+            $(this).attr('class', 'active');
+            var token = $(this).attr('id').replace("-toggle", "");
+            $("#"+token).show();
+        });
+    </script>    
 </body>
 </html>
