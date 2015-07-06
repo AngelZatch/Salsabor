@@ -11,8 +11,8 @@ body{
     /**background-color: #ECECEC;**/
 }
 
-nav-tabs{
-    margin-bottom: 10px;
+.nav-tabs{
+    margin-bottom: 10px !important;
 }
 
 .navbar{
