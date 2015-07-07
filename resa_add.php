@@ -17,6 +17,7 @@ $queryLieux = $db->query('SELECT * FROM salle');
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
+              <h1 class="page-title"><span class="glyphicon glyphicon-record"></span> Effectuer une réservation</h1>
                <div class="col-sm-9" id="solo-form">
                	<form action="planning.php" method="post" class="form-horizontal" role="form" id="add_resa">
 					 <div class="btn-toolbar">
@@ -24,7 +25,6 @@ $queryLieux = $db->query('SELECT * FROM salle');
 					   <input type="submit" name="addResa" role="button" class="btn btn-primary" value="ENREGISTRER">
 					   <a href="planning.php" role="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer</a>
               	    </div> <!-- btn-toolbar -->   
-              	    <br>
               	    <div class="alert alert-success" id="user-added" style="display:none;">Adhérent ajouté avec succès</div>
               	    <div class="class alert alert-danger" id="user-error" style="display:none;">Erreur. Certains champs sont vides</div>
                	    <div class="form-group">

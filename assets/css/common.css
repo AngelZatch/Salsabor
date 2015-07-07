@@ -234,3 +234,7 @@ body{
 #solo-form {
     margin-top: 10px !important;
 }
+
+.btn-toolbar {
+	margin-bottom: 20px;
+}
