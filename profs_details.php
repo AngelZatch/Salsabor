@@ -125,17 +125,6 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
        </div>
    </div>
    <?php include "scripts.php";?>
-   <script>
-       $("section#infos").hide();
-       $("section#tarifs").hide();
-       $("li[id$=-toggle]").css('cursor', 'pointer');
-        $("li[id$=-toggle]").click(function(){
-            $("section").hide();
-            $("li").attr('class', '');
-            $(this).attr('class', 'active');
-            var token = $(this).attr('id').replace("-toggle", "");
-            $("#"+token).show();
-        });
-    </script>    
+   <script src="assets/js/nav-tabs.js"></script>  
 </body>
 </html>
