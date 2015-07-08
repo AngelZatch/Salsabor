@@ -5,15 +5,44 @@ $db = PDOFactory::getConnection();
 if(isset($_POST['addAdherent'])){
 	// Upload de l'image
 	$target_dir = "assets/pictures/";
-	$target_file = $target_dir.basename($_FILES['fileToUpload']['name']);
+	$target_file = $target_dir.basename($_FILES["photo_identite"]["name"]);
 	$uploadOk = 1;
-	$imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
-	$check = getimagesize($_FILES['fileToUpload']['tmp_name']);
+	//$imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+	/**$check = getimagesize($_FILES['photo_identite']['tmp_name']);
 	if(!$check){
 		$uploadOk = 1;
 	} else {
 		echo "Fichier non conforme";
 		$uploadOk = 0;
+	}**/
+	if($uploadOk == 1){
+		if(move_uploaded_file($_FILES["photo_identite"]["tmp_name"], $target_file)){
+			echo "Fichier uploadé avec succès.";
+		} else {
+			echo "Erreur au transfert du fichier.";
+		}
+	}
+	print_r($_FILES);
+	try{
+		$db->beginTransaction();
+		$new = $db->prepare('INSERT INTO adherents(eleve_prenom, eleve_nom, date_naissance, date_inscription, rue, code_postal, ville, mail, telephone, photo)
+		VALUES(:prenom, :nom, :date_naissance, :date_inscription, :rue, :code_postal, :ville, :mail, :telephone, :photo)');
+		$new->bindParam(':prenom', $_POST['identite_prenom']);
+		$new->bindParam(':nom', $_POST['identite_nom']);
+		$new->bindParam(':date_naissance', $_POST['date_naissance']);
+		$new->bindParam(':date_inscription', date_create('now')->format('Y-m-d'));
+		$new->bindParam(':rue', $_POST['rue']);
+		$new->bindParam(':code_postal', $_POST['code_postal']);
+		$new->bindParam(':ville', $_POST['ville']);
+		$new->bindParam(':mail', $_POST['mail']);
+		$new->bindParam(':telephone', $_POST['telephone']);
+		$new->bindParam(':photo', $target_file);
+		$new->execute();
+		$db->commit();
+		echo "Succès lors de l'ajout";
+	} catch(PDOException $e){
+		$db->rollBack();
+		echo $e->getMessage();
 	}
 }
 ?>
@@ -45,7 +74,11 @@ if(isset($_POST['addAdherent'])){
 						<input type="text" name="identite_nom" id="identite_nom" class="form-control" placeholder="Nom">
 					</div>
 					<div class="form-group">
-					<label for="profile_picture" class="control-label">Photo d'identité</label>
+						<label for="profile_picture" class="control-label">Photo d'identité</label>
+						<input type="file" class="form-control" name="photo_identite">
+					</div>
+					<div class="form-group">
+						<label for="certificat_medical" class="control-label">Certificat Médical</label>
 						<input type="file" class="form-control">
 					</div>
 					<div class="form-group">
