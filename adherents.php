@@ -37,7 +37,7 @@ $queryAdherents = $db->query('SELECT * FROM adherents');
                			<td><?php echo $adherents['mail'];?></td>
                			<td></td>
                			<td></td>
-               			<td><button class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails</button></td>
+               			<td><a href="eleve_details.php?id=<?php echo $adherents['eleve_id'];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
                		</tr>
 					<?php } ?>
                	</tbody>

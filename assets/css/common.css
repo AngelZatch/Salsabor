@@ -238,3 +238,6 @@ body{
 .btn-toolbar {
 	margin-bottom: 20px;
 }
+#picture-container {
+	height: 230px;
+}
