@@ -8,6 +8,11 @@ $queryDetails = $db->prepare('SELECT * FROM adherents WHERE eleve_id=?');
 $queryDetails->bindValue(1, $data);
 $queryDetails->execute();
 $details = $queryDetails->fetch(PDO::FETCH_ASSOC);
+
+// On obtient l'historique de ses cours
+$queryHistory = $db->prepare('SELECT * FROM cours_participants JOIN cours ON cours_id_foreign=cours.cours_id JOIN niveau ON cours.cours_niveau=niveau.niveau_id JOIN salle ON cours.cours_salle=salle.salle_id WHERE eleve_id_foreign=?');
+$queryHistory->bindValue(1, $data);
+$queryHistory->execute();
 ?>
 <html>
 <head>
@@ -28,7 +33,6 @@ $details = $queryDetails->fetch(PDO::FETCH_ASSOC);
 			  <ul class="nav nav-tabs">
                    <li role="presentation" id="infos-toggle" class="active"><a>Informations personnelles</a></li>
                    <li role="presentation" id="history-toggle"><a>Historique des cours</a></li>
-                   <li role="presentation" id="tarifs-toggle"><a>Tarifs</a></li>
                </ul>
                <section id="infos">
                		<form action="">
@@ -74,6 +78,30 @@ $details = $queryDetails->fetch(PDO::FETCH_ASSOC);
 						</div>
 					  <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" style="width:100%;">
 					  </form>
+               </section>
+               <section id="history">
+               	<table class="table table-striped">
+               		<thead>
+               			<tr>
+               				<th>Intitulé</th>
+               				<th>Jour</th>
+               				<th>Niveau</th>
+               				<th>Lieu</th>
+               				<th>Prix pondéré</th>
+               			</tr>
+               		</thead>
+               		<tbody>
+               		<?php while($history = $queryHistory->fetch(PDO::FETCH_ASSOC)){ ?>
+               			<tr>
+               				<td><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
+               				<td><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
+               				<td><?php echo $history['niveau_name'];?></td>
+               				<td><?php echo $history['salle_name'];?></td>
+               				<td>A déterminer</td>
+               			</tr>
+               		</tbody>
+					<?php } ?>
+               	</table>
                </section>
            </div>
        </div>
