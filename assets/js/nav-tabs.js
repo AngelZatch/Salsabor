@@ -1,10 +1,14 @@
-$("section#infos").hide();
-$("section#tarifs").hide();
+$(document).ready(toggleNavTabs());
 $("li[id$=-toggle]").css('cursor', 'pointer');
+
+function toggleNavTabs(){
+	$("section").hide();
+	var token = $(".active").attr('id').replace("-toggle", "");
+	$("section#"+token).show();	
+}
+
 $("li[id$=-toggle]").click(function(){
-    $("section").hide();
     $("li").attr('class', '');
     $(this).attr('class', 'active');
-    var token = $(this).attr('id').replace("-toggle", "");
-    $("#"+token).show();
+    toggleNavTabs();
 });
