@@ -41,7 +41,7 @@ if(isset($_POST['add'])){
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</h1>
                <div class="col-sm-9" id="solo-form">
-               	<form action="planning.php" method="post" class="form-horizontal" role="form">
+               	<form action="cours_add.php" method="post" class="form-horizontal" role="form">
 						 <div class="btn-toolbar">
 						   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
 						   <input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER">

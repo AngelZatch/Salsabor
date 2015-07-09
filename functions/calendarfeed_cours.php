@@ -14,9 +14,10 @@ try
     while($row_calendar = $calendar->fetch(PDO::FETCH_ASSOC)){
         $e = array();
         $e['id'] = $row_calendar['cours_id'];
-        $e['title'] = $row_calendar['cours_intitule']." (".$row_calendar['salle_name']." - ".$row_calendar['niveau_name'].")";
+        $e['title'] = $row_calendar['cours_intitule']."\n".$row_calendar['salle_name']."\n".$row_calendar['niveau_name'];
         $e['start'] = $row_calendar['cours_start'];
         $e['end'] = $row_calendar['cours_end'];
+		$e['prestation'] = $row_calendar['cours_type'];
 		$e['type'] = 'cours';
         // Paramètre propriétaire de Fullcalendar.js qui sert à délimiter un évènement
         // à ses heures de début et de fin.

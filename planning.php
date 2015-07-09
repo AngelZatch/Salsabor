@@ -50,11 +50,6 @@ if(isset($_POST['deleteCoursAll'])){
 			<p style="font-weight:700;" id="popover-cours-title"></p>
 			<p id="popover-cours-hours"></p>
 			<a role="button" class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Détails >></a>
-			<!--<form method="post">
-				<button class="btn btn-default">Supprimer ce cours</button>
-				<button class="btn btn-default">Supprimer tous les suivants</button>
-				<button class="btn btn-default">Supprimer toute la série</button>
-			</form>-->
 		</div>
         <div id="reservation-options" class="popover popover-default">
             <div class="arrow"></div>
@@ -121,7 +116,17 @@ if(isset($_POST['deleteCoursAll'])){
                     } else {
                         element.css('background-color', '#D21CFC');
                     }
-                }
+                } else {
+					switch(calEvent.prestation){
+						case '6':
+							element.css('background-color', '#2DF588');
+							element.css('border-color', '#28DB7A');
+							break;
+							
+						default:
+							break;
+					}
+				}
 			},
 			eventClick: function(calEvent, element){
                 var options = {     
