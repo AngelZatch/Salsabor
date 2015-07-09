@@ -13,6 +13,37 @@ $details = $queryDetails->fetch(PDO::FETCH_ASSOC);
 $queryHistory = $db->prepare('SELECT * FROM cours_participants JOIN cours ON cours_id_foreign=cours.cours_id JOIN niveau ON cours.cours_niveau=niveau.niveau_id JOIN salle ON cours.cours_salle=salle.salle_id WHERE eleve_id_foreign=?');
 $queryHistory->bindValue(1, $data);
 $queryHistory->execute();
+
+// Edit des informations
+if(isset($_POST["edit"])){
+	try{
+		$db->beginTransaction();
+		$edit = $db->prepare('UPDATE adherents SET eleve_prenom = :prenom,
+													eleve_nom = :nom,
+													date_naissance = :date_naissance,
+													rue = :rue,
+													code_postal = :code_postal,
+													ville = :ville,
+													mail = :mail,
+													telephone = :telephone
+													WHERE eleve_id = :id');
+		$edit->bindParam(':prenom', $_POST["identite_prenom"]);
+		$edit->bindParam(':nom', $_POST["identite_nom"]);
+		$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
+		$edit->bindParam(':rue', $_POST["rue"]);
+		$edit->bindParam(':code_postal', $_POST["code_postal"]);
+		$edit->bindParam(':ville', $_POST["ville"]);
+		$edit->bindParam(':mail', $_POST["mail"]);
+		$edit->bindParam(':telephone', $_POST["telephone"]);
+		$edit->bindParam(':id', $data);
+		$edit->execute();
+		$db->commit();
+		header("Location:eleve_details.php?id=$data");
+	} catch(PDOException $e){
+		$db->rollBack();
+		var_dump($e->getMessage());
+	}
+}
 ?>
 <html>
 <head>
@@ -35,7 +66,7 @@ $queryHistory->execute();
                    <li role="presentation" id="history-toggle"><a>Historique des cours</a></li>
                </ul>
                <section id="infos">
-               		<form action="">
+               		<form method="post" role="form">
 						<div class="container-fluid">
                				<div class="form-group col-sm-2 thumbnail" id="picture-container">
 								<img src="<?php echo $details["photo"];?>" alt="Pas de photo" style="max-height:100%; max-width:100%;">
@@ -76,7 +107,7 @@ $queryHistory->execute();
 							<label for="certificat_medical" class="control-label">Certificat Médical</label>
 							<input type="file" class="form-control">
 						</div>
-					  <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" style="width:100%;">
+					  <input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER LES MODIFICATIONS" style="width:100%;">
 					  </form>
                </section>
                <section id="history">
