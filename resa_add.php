@@ -23,7 +23,6 @@ $queryLieux = $db->query('SELECT * FROM salle');
 					 <div class="btn-toolbar">
 					   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
 					   <input type="submit" name="addResa" role="button" class="btn btn-primary" value="ENREGISTRER">
-					   <a href="planning.php" role="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer</a>
               	    </div> <!-- btn-toolbar -->   
               	    <div class="alert alert-success" id="user-added" style="display:none;">Adhérent ajouté avec succès</div>
               	    <div class="class alert alert-danger" id="user-error" style="display:none;">Erreur. Certains champs sont vides</div>
