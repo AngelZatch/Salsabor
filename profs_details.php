@@ -25,6 +25,38 @@ $queryTarifs->execute();
 $totalPrice = 0;
 $totalPaid = 0;
 $totalDue = 0;
+
+if(isset($_POST["edit"])){
+	try{
+		$db->beginTransaction();
+		$edit = $db->prepare('UPDATE professeurs SET prenom = :prenom,
+													nom = :nom,
+													date_naissance = :date_naissance,
+													rue = :rue,
+													code_postal = :code_postal,
+													ville = :ville,
+													mail = :mail,
+													tel_fixe = :tel_fixe,
+													tel_port = :tel_port
+													WHERE prof_id = :id');
+		$edit->bindValue(':prenom', $_POST["prenom"]);
+		$edit->bindValue(':nom', $_POST["nom"]);
+		$edit->bindValue(':date_naissance', date_create($_POST["date_naissance"])->format('Y-m-d'));
+		$edit->bindParam(':rue', $_POST["rue"]);
+		$edit->bindParam(':code_postal', $_POST["code_postal"]);
+		$edit->bindParam(':ville', $_POST["ville"]);
+		$edit->bindParam(':mail', $_POST["mail"]);
+		$edit->bindParam(':tel_fixe', $_POST["tel_fixe"]);
+		$edit->bindParam(':tel_port', $_POST["tel_port"]);
+		$edit->bindParam(':id', $data);
+		$edit->execute();
+		$db->commit();
+		header("Location:profs_details.php?id=$data");
+	} catch (PDOException $e){
+		$db->rollBack();
+		var_dump($e->getMessage());
+	}
+}
 ?>
 <html>
 <head>
@@ -50,22 +82,42 @@ $totalDue = 0;
                    <li role="presentation" id="tarifs-toggle"><a>Tarifs</a></li>
                </ul>
                <section id="infos">
-                   <form action="">
+                   <form method="post">
                        <div class="form-group">
-                           <input type="text" class="form-control" value="<?php echo $details['prenom'];?>">
+                          <label for="prenom" class="control-label">Prénom</label>
+                           <input type="text" name="prenom" class="form-control" value="<?php echo $details['prenom'];?>">
                        </div>
                        <div class="form-group">
-                           <input type="text" class="form-control" value="<?php echo $details['nom'];?>">
+                          <label for="" form="nom" class="control-label">Nom</label>
+                           <input type="text" name="nom" class="form-control" value="<?php echo $details['nom'];?>">
                        </div>
                        <div class="form-group">
-                           <input type="text" class="form-control" value="<?php echo $details['mail'];?>">
+                          <label for="mail" class="control-label">Adresse mail</label>
+                           <input type="text" name="mail" class="form-control" value="<?php echo $details['mail'];?>">
                        </div>
                        <div class="form-group">
-                           <input type="text" class="form-control" value="<?php echo $details['tel_fixe'];?>">
+                       		<label for="" class="control-label">Adresse postale</label>
+                       		<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control" value="<?php echo $details["rue"];?>">
+                       </div>
+						<div class="form-group">
+							<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control" value="<?php echo $details["code_postal"];?>">
+						</div>
+						<div class="form-group">
+							<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control" value="<?php echo $details["ville"];?>">
+						</div>
+                       <div class="form-group">
+                          <label for="tel_fixe" class="control-label">Téléphone fixe</label>
+                           <input type="text" name="tel_fixe" class="form-control" value="<?php echo $details['tel_fixe'];?>">
                        </div>
                        <div class="form-group">
-                           <input type="text" class="form-control" value="<?php echo $details['tel_port'];?>">
+                          <label for="tel_port" class="control-label">Téléphone portable</label>
+                           <input type="text" name="tel_port" class="form-control" value="<?php echo $details['tel_port'];?>">
                        </div>
+						<div class="form-group">
+							<label for="date_naissance" class="control-label">Date de naissance</label>
+							<input type="date" name="date_naissance" id="date_naissance" class="form-control" value=<?php echo $details["date_naissance"];?>>
+						</div>
+					  <input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER LES MODIFICATIONS" style="width:100%;">
                    </form>
                </section> <!-- Informations personnelles -->
                <section id="history">
