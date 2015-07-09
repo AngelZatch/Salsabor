@@ -1,9 +1,15 @@
 <?php
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
+require_once 'functions/reservations.php';
 
 $queryPrestations = $db->query('SELECT * FROM prestations WHERE est_resa=1');
 $queryLieux = $db->query('SELECT * FROM salle');
+
+// Ajout d'une réservation
+if(isset($_POST['addResa'])){
+	addResa();
+}
 ?>
 <html>
 <head>

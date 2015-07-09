@@ -8,12 +8,6 @@ require_once "functions/reservations.php";
 setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
 
 /** Chaque trigger de tous les formulaires appelle une des fonctions dans functions/cours.php **/
-
-// Ajout d'une réservation
-if(isset($_POST['addResa'])){
-	addResa();
-}
-
 // Sauf d'un seul cours
 if(isset($_POST['deleteCoursOne'])){
     deleteCoursOne();
