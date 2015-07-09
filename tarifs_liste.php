@@ -27,14 +27,7 @@ if(isset($_POST['addTarifResa'])){
                <h1 class="page-title"><span class="glyphicon glyphicon-scale"></span> Tarifs</h1>
                <div class="btn-toolbar">
                    <a href="actions/tarifs_resa_add.php" role="button" class="btn btn-primary" data-title="Ajouter un tarif Réservation" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un tarif Réservation</a>
-                   <a href="actions/tarifs_profs_add.php" role="button" class="btn btn-primary disabled" data-title="Ajouter un tarif Professeur" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un tarif Professeur</a>
                </div> <!-- btn-toolbar -->
-              <div class="menu-bar">
-                   <ul class="nav nav-pills" id="tri-cours">
-                      <li role="presentation" class="active"><a onClick="toggleListePlanning()"><span class="glyphicon glyphicon-time"></span> Réservations</a></li>
-                      <li role="presentation"><a onClick="toggleListePlanning()"><span class="glyphicon glyphicon-user"></span> Professeurs</a></li>
-                   </ul>
-               </div> <!-- menu-bar -->
                 <div class='table-responsive'>
                     <table class='table table-striped table-hover'>
                         <thead>

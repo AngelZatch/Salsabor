@@ -17,11 +17,6 @@ function toggleSideMenu(){
     }
 }
 
-function toggleListePlanning(){
-    $("#display-liste").toggle();
-    $("#display-planning").toggle();
-}
-
 function toggleRecurringOptions(){
     $("#recurring-options").toggle('600');
 }
