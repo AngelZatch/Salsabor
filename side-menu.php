@@ -12,7 +12,7 @@
       <li><a href="" class="main-option"><span class="glyphicon glyphicon-calendar"></span> Evènements</a></li>
       <li><a href="" class="main-option"><span class="glyphicon glyphicon-thumbs-up"></span> Réseaux Sociaux</a></li>
       <li><a href="stats.php" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='stats.php') echo "active";?>"><span class="glyphicon glyphicon-stats"></span> Statistiques</a></li>
-      <li><a href="" class="main-option"><span class="glyphicon glyphicon glyphicon-th-list"></span> Base de données</a></li>
+      <li><a href="../phpmyadmin" class="main-option"><span class="glyphicon glyphicon glyphicon-th-list"></span> Base de données</a></li>
       <li><a href="" class="main-option"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
    </ul>
 </div>
@@ -32,7 +32,7 @@
         <li><a href="dashboard.php" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Evènements"><span class="glyphicon glyphicon-calendar"></span></a></li>
         <li><a href="dashboard.php" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Réseaux Sociaux"><span class="glyphicon glyphicon-thumbs-up"></span></a></li>
         <li><a href="stats.php" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='stats.php') echo "active";?>" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Statistiques"><span class="glyphicon glyphicon-stats"></span></a></li>
-        <li><a href="dashboard.php" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Base de données"><span class="glyphicon glyphicon-th-list"></span></a></li>
+        <li><a href="../phpmyadmin" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Base de données"><span class="glyphicon glyphicon-th-list"></span></a></li>
         <li><a href="dashboard.php" class="main-option" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Déconnexion"><span class="glyphicon glyphicon-off"></span></a></li>
     </ul>
 </div>
