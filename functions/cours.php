@@ -25,7 +25,7 @@ function addCours(){
     /** Calculs automatiques de valeurs **/
     $unite = (strtotime($heure_fin) - strtotime($heure_debut))/3600;
     $cout_horaire = 0;
-    if(isset($_POST['paiement'])) $paiement = $_POST['paiement'];
+    if(isset($_POST['paiement'])) $paiement = $_POST['paiement']; else $paiement = 0;
 	
 	$db = PDOFactory::getConnection();
     

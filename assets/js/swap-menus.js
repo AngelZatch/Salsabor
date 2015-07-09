@@ -17,10 +17,6 @@ function toggleSideMenu(){
     }
 }
 
-function toggleRecurringOptions(){
-    $("#recurring-options").toggle('600');
-}
-
 function toggleWeekHours(){
     $("#week-hours").toggle('600');
 }
