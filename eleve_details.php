@@ -38,7 +38,7 @@ $queryHistory->execute();
                		<form action="">
 						<div class="container-fluid">
                				<div class="form-group col-sm-2 thumbnail" id="picture-container">
-								<img src="<?php echo $details["photo"];?>" alt="Pas de photo">
+								<img src="<?php echo $details["photo"];?>" alt="Pas de photo" style="max-height:100%; max-width:100%;">
 								<input type="file" class="form-control" name="photo_identite" style="display:none;">
 							</div>
 							<div class="form-group col-sm-10">
