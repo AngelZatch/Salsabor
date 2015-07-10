@@ -22,7 +22,6 @@ $data_prof = $queryProf->fetch(PDO::FETCH_ASSOC);
 $queryParticipants = $db->prepare('SELECT * FROM cours_participants JOIN adherents ON eleve_id_foreign=adherents.eleve_id WHERE cours_id_foreign=?');
 $queryParticipants->bindParam(1, $id);
 $queryParticipants->execute();
-
 $nombre_eleves = $queryParticipants->rowCount();
 
 $queryTarif = $db->prepare('SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=? AND type_prestation=?');
@@ -30,6 +29,8 @@ $queryTarif->bindParam(1, $row_data['prof_principal']);
 $queryTarif->bindParam(2, $row_data['cours_type']);
 $queryTarif->execute();
 $tarif = $queryTarif->fetch(PDO::FETCH_ASSOC);
+
+$types = $db->query('SELECT * FROM prestations WHERE est_cours=1');
 
 if(isset($_POST['editOne'])){
 	$db = PDOFactory::getConnection();
@@ -183,10 +184,13 @@ if(isset($_POST['deleteCoursAll'])){
                		<div class="form-group">
                			<select name="type" id="" class="form-control">
                				<?php
-							$types = $db->query('SELECT * FROM prestations WHERE est_cours=1');
-							while($row_types = $types->fetch(PDO::FETCH_ASSOC)){?>
+							while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
+								if($row_data["cours_type"] == $row_types["prestations_id"]) { ?>
+								<option selected="selected" value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>;
+							<?php } else { ?>
 								<option value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>;
-							<?php } ?>
+							<?php }
+							} ?>
                			</select>
                		</div>
                		<div class="form-group">
