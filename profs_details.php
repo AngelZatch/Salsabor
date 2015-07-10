@@ -21,6 +21,12 @@ $queryTarifs = $db->prepare('SELECT * FROM tarifs_professeurs JOIN prestations O
 $queryTarifs->bindValue(1, $data);
 $queryTarifs->execute();
 
+// Prestations
+$queryPrestations = $db->query('SELECT * FROM prestations WHERE est_cours=1');
+
+// Types de ratio multiplicatif
+$ratio = $db->query("SHOW COLUMNS FROM tarifs_professeurs LIKE 'ratio_multiplicatif'");
+
 // Prix de tous les cours
 $totalPrice = 0;
 $totalPaid = 0;
@@ -73,13 +79,15 @@ if(isset($_POST["edit"])){
               <div class="btn-toolbar" id="top-page-buttons">
                    <a href="profs_liste.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
                 </div> <!-- btn-toolbar -->
+				<div class="alert alert-success" id="tarif-added" style="display:none;">Tarif ajouté avec succès</div>
+				<div class="class alert alert-danger" id="tarif-error" style="display:none;">Erreur. Certains champs sont vides</div>
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span>
                    <?php echo $details['prenom']." ".$details['nom'];?>
                </h1>
                <ul class="nav nav-tabs">
                    <li role="presentation" id="infos-toggle"><a>Informations personnelles</a></li>
-                   <li role="presentation" id="history-toggle" class="active"><a>Historique des cours</a></li>
-                   <li role="presentation" id="tarifs-toggle"><a>Tarifs</a></li>
+                   <li role="presentation" id="history-toggle"><a>Historique des cours</a></li>
+                   <li role="presentation" id="tarifs-toggle" class="active"><a>Tarifs</a></li>
                </ul>
                <section id="infos">
                    <form method="post">
@@ -156,27 +164,101 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
                    <table class="table table-striped">
                        <thead>
                            <tr>
-                               <th>Intitulé</th>
-                               <th>Prix</th>
-                               <th>Coefficient</th>
+                               <th class="col-sm-3">Intitulé</th>
+                               <th class="col-sm-3">Prix</th>
+                               <th class="col-sm-3">Coefficient</th>
+                               <th class="col-sm-3"></th>
                            </tr>
                        </thead>
-                       <tbody>
-                           <?php while($tarifs = $queryTarifs->fetch(PDO::FETCH_ASSOC)){?>
+                       <tbody id="table-content">
+                          <!-- <?php //while($tarifs = $queryTarifs->fetch(PDO::FETCH_ASSOC)){?>
                            <tr>
-                               <td><?php echo $tarifs['prestations_name'];?></td>
-                               <td><?php echo $tarifs['tarif_prestation'];?> €</td>
-                               <td><?php echo $tarifs['ratio_multiplicatif'];?></td>
+                               <td class="col-sm-3" id="prestations_name"><?php //echo $tarifs['prestations_name'];?></td>
+                               <td class="col-sm-3" id="tarif_prestation"><?php// echo $tarifs['tarif_prestation'];?> €</td>
+                               <td class="col-sm-3" id=ratio_multiplicatif><?php //echo $tarifs['ratio_multiplicatif'];?></td>
+                               <td class="col-sm-3"><button class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Modifier</button></td>
                            </tr>
-                           <?php } ?>
+                           <?php //} ?>-->
+							<tr id="new-tarif" style="display:none;">
+								<td class="col-sm-3">
+									<select name="prestation" id="prestation" class="form-control">
+									<?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){ ?>
+										<option value="<?php echo $prestations["prestations_id"];?>"><?php echo $prestations["prestations_name"];?></option>
+									<?php } ?>
+									</select>
+								</td>
+								<td class="col-sm-3"><input type="text" name="tarif" id="tarif" class="form-control"></td>
+								<td class="col-sm-3">
+									<select name="ratio" id="ratio" class="form-control">
+									<?php
+									while ($row_ratio = $ratio->fetch(PDO::FETCH_ASSOC)){
+										$array_suffixes = preg_split("/','/", substr($row_ratio['Type'], 5, strlen($row_ratio['Type'])-7));
+										for($i = 0; $i < sizeof($array_suffixes); $i++){?>
+										<option value="<?php echo $array_suffixes[$i];?>"><?php echo $array_suffixes[$i];?></option>
+										<?php }
+									} ?>
+									</select>
+								</td>
+								<td class="col-sm-3"><button class="btn btn-default" onClick="addTarif()"><span class="glyphicon glyphicon-plus"></span> Valider</button><button class="btn btn-default" id="cancel"><span class="glyphicon glyphicon-cancel"></span> Annuler</button></td>
+							</tr>
+                     	<input type="hidden" name="prof_id" id="prof_id" value="<?php echo $data;?>">
                        </tbody>
                    </table>
-                   <!--<button class="btn btn-primary">AJOUTER UN TARIF</button>-->
+                   <button class="btn btn-primary" id="add-tarif">AJOUTER UN TARIF</button>
+                   <p id="json-output"></p>
                </section> <!-- Tarifs -->
            </div>
        </div>
    </div>
    <?php include "scripts.php";?>
    <script src="assets/js/nav-tabs.js"></script>  
+   <script>
+		$("#add-tarif").click(function(){
+			$("#new-tarif").show();
+		});
+	   
+	   $("#cancel").click(function(){
+		   $("#new-tarif").hide();
+	   });
+	   
+	   $(document).ready(function(){
+		   fetchTarifs();
+	   });
+	   
+	   function addTarif(){
+		   var prof_id = $("#prof_id").val();
+		   var prestation = $("#prestation").val();
+		   var tarif = $("#tarif").val();
+		   var ratio = $("#ratio").val();
+		   $.post("functions/add_tarif_prof.php", {prof_id, prestation, tarif, ratio}).success(function(data){
+			   $("#new-tarif").hide();
+			   $('#tarif-added').show('500').delay(3000).hide('3000');
+			   $(".fetched").remove();
+			   fetchTarifs();
+		   }).fail(function(data){
+			   $('#tarif-error').show('500').delay(3000).hide('3000');
+		   })
+	   };
+	   
+	   function fetchTarifs(){
+		   var id = $("#prof_id").val();
+		   $.post("functions/get_tarifs.php", {id}).done(function(data){
+			   var json = JSON.parse(data);
+			   for(var i = 0; i < json.length; i++){
+				   var line = "<tr class='fetched'>";
+				   line += "<td class='col-sm-3'>";
+				   line += json[i].prestation;
+				   line += "</td><td class='col-sm-3'>";
+				   line += json[i].tarif;
+				   line += " € </td><td class='col-sm-3'>";
+				   line += json[i].ratio;
+				   line += "</td><td class='col-sm-3'>";
+				   line += "<button class='btn btn-default'><span class='glyphicon glyphicon-edit'></span> Modifier</button>";
+				   line += "</td></tr>";
+				   $("#table-content").append(line);
+			   }
+		   });
+	   }
+	</script>
 </body>
 </html>

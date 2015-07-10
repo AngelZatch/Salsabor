@@ -241,3 +241,7 @@ body{
 #picture-container {
 	height: 230px;
 }
+
+.content-right {
+	float: right;
+}
