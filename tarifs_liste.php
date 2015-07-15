@@ -14,7 +14,7 @@ foreach ($lieux as $row => $lieu){
 	array_push($arrayLieux, $lieu["salle_id"]);
 }
 $periodes = $db->query("SELECT * FROM plages_reservations")->fetchAll(PDO::FETCH_ASSOC);
-$queryTarifs = $db->prepare("SELECT prix_resa FROM tarifs_reservations WHERE type_prestation=? AND plage_resa=? AND lieu_resa=?");
+$queryTarifs = $db->prepare("SELECT tarif_resa_id, prix_resa FROM tarifs_reservations WHERE type_prestation=? AND plage_resa=? AND lieu_resa=?");
 
 if(isset($_POST['addTarifResa'])){
 	addTarifResa();
@@ -36,6 +36,10 @@ if(isset($_POST['addTarifResa'])){
                <div class="btn-toolbar">
                    <a href="actions/tarifs_resa_add.php" role="button" class="btn btn-primary" data-title="Ajouter un tarif Réservation" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un tarif Réservation</a>
                </div> <!-- btn-toolbar -->
+				<div class="alert alert-success" id="tarif-added" style="display:none;">Tarif ajouté avec succès</div>
+				<div class="alert alert-success" id="tarif-updated" style="display:none;">Tarif modifié avec succès</div>
+				<div class="alert alert-success" id="tarif-deleted" style="display:none;">Tarif supprimé avec succès</div>
+				<div class="class alert alert-danger" id="tarif-error" style="display:none;">Erreur. Certains champs sont vides</div>
                <div class="panel-group" id="accordion">
                <?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){?>
                	<div class="panel panel-default">
@@ -56,7 +60,7 @@ if(isset($_POST['addTarifResa'])){
 									<?php foreach($periodes as $row => $periode){ ?>
 									<tr>
 										<td>
-											<?php echo $periode["plages_resa_id"];?>
+											<?php echo $periode["plage_resa_nom"];?>
 										</td>
 											<?php
 												 $queryTarifs->bindParam(1, $prestations["prestations_id"]);
@@ -65,10 +69,11 @@ if(isset($_POST['addTarifResa'])){
 													 $queryTarifs->bindParam(3, $arrayLieux[$i]);
 													 $queryTarifs->execute();
 													while($tarifs = $queryTarifs->fetch(PDO::FETCH_ASSOC)){ ?>
-											 <td><span contenteditable="true">
+											 <td><p><span contenteditable="true" id="tarif-<?php echo $tarifs["tarif_resa_id"];?>" onblur="updateTarif(<?php echo $tarifs["tarif_resa_id"];?>)">
 												<?php echo $tarifs["prix_resa"]; ?>
-												</span>
+												</span> € TTC</p>
 											</td>
+											<input type="hidden" value="<?php echo $tarifs["tarif_resa_id"];?>">
 										 <?php 
 											 }
 										 } ?>
@@ -96,6 +101,26 @@ if(isset($_POST['addTarifResa'])){
                 });
             });
         });
+		function updateTarif(id){
+			var update_id = id;
+			var tarif = $("#tarif-"+update_id).html();
+			$.post("functions/update_tarif_resa.php", {update_id, tarif}).done(function(data){
+				$('#tarif-updated').show('500').delay(3000).hide('3000');
+				var originalColor = $("#tarif-"+update_id).parent().parent().css("background-color");
+			   var styles = {
+				   backgroundColor : "#dff0d8",
+				   transition: "0s"
+			   };
+			   var next = {
+				   backgroundColor : originalColor,
+				   transition : "2s"
+			   };
+			   $("#tarif-"+update_id).parent().parent().css(styles);
+			   setTimeout(function(){ $("#tarif-"+update_id).parent().parent().css(next); },800);
+			}).fail(function(data){
+				$('#tarif-error').show('500').delay(3000).hide('3000');
+			});
+		}
     </script>
 </body>
 </html>
