@@ -8,6 +8,7 @@ $queryTarifs->execute();
 $result = array();
 while($tarifs = $queryTarifs->fetch(PDO::FETCH_ASSOC)){
 	$t = array();
+	$t["id"] = $tarifs["tarif_professeur_id"];
 	$t["prestation_id"] = $tarifs["type_prestation"];
 	$t["prestation"] = $tarifs["prestations_name"];
 	$t["tarif"] = $tarifs["tarif_prestation"];

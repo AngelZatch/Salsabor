@@ -80,6 +80,8 @@ if(isset($_POST["edit"])){
                    <a href="profs_liste.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
                 </div> <!-- btn-toolbar -->
 				<div class="alert alert-success" id="tarif-added" style="display:none;">Tarif ajouté avec succès</div>
+				<div class="alert alert-success" id="tarif-updated" style="display:none;">Tarif modifié avec succès</div>
+				<div class="alert alert-success" id="tarif-deleted" style="display:none;">Tarif supprimé avec succès</div>
 				<div class="class alert alert-danger" id="tarif-error" style="display:none;">Erreur. Certains champs sont vides</div>
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span>
                    <?php echo $details['prenom']." ".$details['nom'];?>
@@ -171,14 +173,6 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
                            </tr>
                        </thead>
                        <tbody id="table-content">
-                          <!-- <?php //while($tarifs = $queryTarifs->fetch(PDO::FETCH_ASSOC)){?>
-                           <tr>
-                               <td class="col-sm-3" id="prestations_name"><?php //echo $tarifs['prestations_name'];?></td>
-                               <td class="col-sm-3" id="tarif_prestation"><?php// echo $tarifs['tarif_prestation'];?> €</td>
-                               <td class="col-sm-3" id=ratio_multiplicatif><?php //echo $tarifs['ratio_multiplicatif'];?></td>
-                               <td class="col-sm-3"><button class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Modifier</button></td>
-                           </tr>
-                           <?php //} ?>-->
 							<tr id="new-tarif" style="display:none;">
 								<td class="col-sm-3">
 									<select name="prestation" id="prestation" class="form-control">
@@ -245,19 +239,51 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 		   $.post("functions/get_tarifs.php", {id}).done(function(data){
 			   var json = JSON.parse(data);
 			   for(var i = 0; i < json.length; i++){
-				   var line = "<tr class='fetched'>";
-				   line += "<td class='col-sm-3'>";
+				   var line = "<tr class='fetched' id='tarif-"+json[i].id+"'>";
+				   line += "<td class='col-sm-3 tarif-nom'>";
 				   line += json[i].prestation;
-				   line += "</td><td class='col-sm-3'>";
+				   line += "</td><td class='col-sm-3 tarif-prix'><span contenteditable='true' onblur='updateTarif("+json[i].id+")'>";
 				   line += json[i].tarif;
-				   line += " € </td><td class='col-sm-3'>";
+				   line += "</span> € </td><td class='col-sm-3 tarif-ratio'>";
 				   line += json[i].ratio;
 				   line += "</td><td class='col-sm-3'>";
-				   line += "<button class='btn btn-default'><span class='glyphicon glyphicon-edit'></span> Modifier</button>";
+				   line += "<button class='btn btn-default' onclick='deleteTarif("+json[i].id+")'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";
 				   line += "</td></tr>";
 				   $("#table-content").append(line);
 			   }
 		   });
+	   }
+	   
+	   function updateTarif(id){
+		   var update_id = id;
+		   var tarif = $("#tarif-"+update_id).children(".tarif-prix").children("span").html();
+		   $.post("functions/update_tarif_prof.php", {update_id, tarif}).done(function(data){
+			   $('#tarif-updated').show('500').delay(3000).hide('3000');
+			   var originalColor = $("#tarif-"+update_id).css("background-color");
+			   var styles = {
+				   backgroundColor : "#dff0d8"
+			   };
+			   var next = {
+				   backgroundColor : originalColor,
+				   transition : "2s"
+			   };
+			   $("#tarif-"+update_id).css(styles);
+			   setTimeout(function(){ $("#tarif-"+update_id).css(next); },800);
+		   }).fail(function(data){
+			   $('#tarif-error').show('500').delay(3000).hide('3000');
+		   });
+	   }
+	   
+	   function deleteTarif(id){
+		   var delete_id = id;
+		   alert(delete_id);
+		   $.post("functions/delete_tarif_prof.php", {delete_id}).done(function(data){
+			   $('#tarif-deleted').show('500').delay(3000).hide('3000');
+			   $(".fetched").remove();
+			   fetchTarifs();
+		   }).fail(function(data){
+			   $('#tarif-error').show('500').delay(3000).hide('3000');
+		   })
 	   }
 	</script>
 </body>
