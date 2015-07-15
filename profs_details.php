@@ -261,7 +261,8 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 			   $('#tarif-updated').show('500').delay(3000).hide('3000');
 			   var originalColor = $("#tarif-"+update_id).css("background-color");
 			   var styles = {
-				   backgroundColor : "#dff0d8"
+				   backgroundColor : "#dff0d8",
+				   transition: "0s"
 			   };
 			   var next = {
 				   backgroundColor : originalColor,

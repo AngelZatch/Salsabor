@@ -60,7 +60,7 @@ if(isset($_POST['addTarifResa'])){
 									<?php foreach($periodes as $row => $periode){ ?>
 									<tr>
 										<td>
-											<?php echo $periode["plage_resa_nom"];?>
+											<?php echo $periode["plage_resa_nom"]." (".date_create($periode["plages_resa_debut"])->format('H\hi')." - ".date_create($periode["plages_resa_fin"])->format('H\hi').")";?>
 										</td>
 											<?php
 												 $queryTarifs->bindParam(1, $prestations["prestations_id"]);
