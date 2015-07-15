@@ -48,7 +48,7 @@ if(isset($_POST["edit"])){
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Template - Salsabor</title>
+    <title>Editer - <?php echo $details["eleve_prenom"]." ".$details["eleve_nom"];?> | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>

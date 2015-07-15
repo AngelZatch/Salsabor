@@ -25,7 +25,7 @@ if(isset($_POST['deleteCoursAll'])){
 ?>
 <html>
 <head>
-    <title>Planning</title>
+    <title>Planning | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>

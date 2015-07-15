@@ -9,7 +9,7 @@
    <div class="container-fluid">
        <div class="row">
            <div class="col-sm-8 col-sm-offset-2 main">
-               <h1>Inscription à Salsabor</h1>
+               <h1>Inscription à Salsabor | Salsabor</h1>
                <fieldset>
                    <form action="" method="post">
                        <div class="form-group">

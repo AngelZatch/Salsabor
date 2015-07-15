@@ -5,7 +5,7 @@ $db = PDOFactory::getConnection();
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Template - Salsabor</title>
+    <title>Professeurs | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>

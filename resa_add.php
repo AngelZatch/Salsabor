@@ -14,7 +14,7 @@ if(isset($_POST['addResa'])){
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Template - Salsabor</title>
+    <title>Réserver une salle | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>

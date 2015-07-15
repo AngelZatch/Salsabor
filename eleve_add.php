@@ -49,7 +49,7 @@ if(isset($_POST['addAdherent'])){
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Template - Salsabor</title>
+    <title>Inscription d'un adhérent | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>

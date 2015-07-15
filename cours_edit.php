@@ -132,7 +132,7 @@ if(isset($_POST['deleteCoursAll'])){
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Template - Salsabor</title>
+    <title>Editer - <?php echo $row_data['cours_intitule'];?> (<?php echo date_create($row_data['cours_start'])->format('d/m/Y');?> : <?php echo date_create($row_data['cours_start'])->format('H:i')?> / <?php echo date_create($row_data['cours_end'])->format('H:i');?>) | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>

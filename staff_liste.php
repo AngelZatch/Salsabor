@@ -31,7 +31,7 @@ if(isset($_POST['addRank'])){
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Template - Salsabor</title>
+    <title>Staff | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>

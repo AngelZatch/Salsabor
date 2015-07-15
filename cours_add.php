@@ -30,7 +30,7 @@ if(isset($_POST['add'])){
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Template - Salsabor</title>
+    <title>Ajouter un cours | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>
