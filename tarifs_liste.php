@@ -6,7 +6,15 @@ include "functions/tarifs.php";
 $id_prestations = array();
 $id_horaires = array();
 
-$liste_types = $db->query('SELECT prestations_id, prestations_name FROM prestations WHERE est_resa=1');
+$arrayLieux = array(); 
+
+$queryPrestations = $db->query('SELECT prestations_id, prestations_name FROM prestations WHERE est_resa=1');
+$lieux = $db->query("SELECT * FROM salle")->fetchAll(PDO::FETCH_ASSOC);
+foreach ($lieux as $row => $lieu){
+	array_push($arrayLieux, $lieu["salle_id"]);
+}
+$periodes = $db->query("SELECT * FROM plages_reservations")->fetchAll(PDO::FETCH_ASSOC);
+$queryTarifs = $db->prepare("SELECT prix_resa FROM tarifs_reservations WHERE type_prestation=? AND plage_resa=? AND lieu_resa=?");
 
 if(isset($_POST['addTarifResa'])){
 	addTarifResa();
@@ -15,7 +23,7 @@ if(isset($_POST['addTarifResa'])){
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Template - Salsabor</title>
+    <title>Tarifs | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>
@@ -28,51 +36,52 @@ if(isset($_POST['addTarifResa'])){
                <div class="btn-toolbar">
                    <a href="actions/tarifs_resa_add.php" role="button" class="btn btn-primary" data-title="Ajouter un tarif Réservation" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un tarif Réservation</a>
                </div> <!-- btn-toolbar -->
-                <div class='table-responsive'>
-                    <table class='table table-striped table-hover'>
-                        <thead>
-                            <tr>
-                                <th class='col-sm-3'></th>
-                                <?php while($row_liste_types = $liste_types->fetch(PDO::FETCH_ASSOC)){?>
-                        <th class='col-sm-2'><?php echo $row_liste_types['prestations_name'];?></th>
-                        <?php array_push($id_prestations, $row_liste_types['prestations_id']);
-                    }?>
-                            </tr>
-                        </thead>
-                        <tbody>
-                    <?php for($i = 1; $i <= 3; $i++){
-                        /** Get les horaires et les id associés **/
-                        $liste_horaires = $db->prepare('SELECT * FROM plages_reservations WHERE plages_resa_jour=?');
-                        $liste_horaires->bindValue(1, $i);
-                        $liste_horaires->execute();
-                        while($row_liste_horaires = $liste_horaires->fetch(PDO::FETCH_ASSOC)){
-                            $id_horaires[] = array($row_liste_horaires['plages_resa_id'],
-                                                   $row_liste_horaires['plage_resa_nom'],
-                                                    date_create($row_liste_horaires['plages_resa_debut'])->format('H:i'),
-                                                   date_create($row_liste_horaires['plages_resa_fin'])->format('H:i'));
-                        }
-                    }
-                    for($j = 0; $j < sizeof($id_horaires); $j++){?>
-                            <tr>
-                                <td class='col-sm-2'><?php echo $id_horaires[$j][1]." (".$id_horaires[$j][2]." - ".$id_horaires[$j][3].")"?></td>
-                        <?php for($k = 0; $k < sizeof($id_prestations); $k++){
-                            /** Get les tarifs associés à l'id qu'on a **/
-                            $tarif = $db->prepare('SELECT prix_resa FROM tarifs_reservations WHERE type_prestation=? AND plage_resa=? AND lieu_resa=1');
-                            $tarif->bindValue(1, $id_prestations[$k]);
-                            $tarif->bindValue(2, $id_horaires[$j][0]);
-                            $tarif->execute();
-                            $row_tarifs = $tarif->fetch(PDO::FETCH_ASSOC);
-                            if(isset($row_tarifs['prix_resa'])){
-                                echo "<td class='col-sm-2'>".$row_tarifs['prix_resa']."€ TTC</td>";
-                            } else {
-                                echo "<td class='col-sm-2'> -- € TTC </td>";
-                            }
-                        }?>
-                            </tr>
-                <?php } ?>
-                        </tbody>
-                    </table>
-                </div>
+               <div class="panel-group" id="accordion">
+               <?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){?>
+               	<div class="panel panel-default">
+               		<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" id="heading-<?php echo $prestations["prestations_id"];?>" href="#collapse-<?php echo $prestations["prestations_id"];?>"><?php echo $prestations["prestations_name"];?> <span class="glyphicon glyphicon-collapse-down"></span></div>
+               		<div class="panel-collapse collapse in" id="collapse-<?php echo $prestations["prestations_id"];?>">
+               			<div class="panel-body">
+							<div class="table-responsive">
+								<table class="table table-striped table-hover">
+									<thead>
+										<tr>
+											<th>Période</th>
+											<?php foreach ($lieux as $row => $lieu){ ?>
+											<th><?php echo $lieu["salle_name"];?></th>
+											<?php }?>
+										</tr>
+									</thead>
+									<tbody>
+									<?php foreach($periodes as $row => $periode){ ?>
+									<tr>
+										<td>
+											<?php echo $periode["plages_resa_id"];?>
+										</td>
+											<?php
+												 $queryTarifs->bindParam(1, $prestations["prestations_id"]);
+												 $queryTarifs->bindParam(2, $periode["plages_resa_id"]);
+												 for($i = 0; $i < sizeof($arrayLieux); $i++){ 
+													 $queryTarifs->bindParam(3, $arrayLieux[$i]);
+													 $queryTarifs->execute();
+													while($tarifs = $queryTarifs->fetch(PDO::FETCH_ASSOC)){ ?>
+											 <td><span contenteditable="true">
+												<?php echo $tarifs["prix_resa"]; ?>
+												</span>
+											</td>
+										 <?php 
+											 }
+										 } ?>
+									</tr>
+									<?php } ?>
+									</tbody>
+								</table>
+							</div>
+               			</div>
+               		</div>
+               	</div>
+			   <?php } ?>
+          </div>
            </div>
        </div>
    </div>
