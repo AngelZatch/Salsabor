@@ -3,35 +3,6 @@ require_once "db_connect.php";
 include "librairies/fpdf/fpdf.php";
 include "librairies/fpdi/fpdi.php";
 
-class ReservationPDF extends FPDF
-{
-	var $col = 0;
-	var $y0;
-	
-	function Header(){
-		global $titre;
-		$this->setFont('Arial', 'B', 15);
-		$w = $this->GetStringWidth($titre)+6;
-		$this->SetX((210 - $w)/2);
-		$this->SetLineWidth(1);
-		$this->Cell($w,9,$titre,1,1,'C',false);
-		$this->Ln(10);
-		$this->y0 = $this->GetY();
-	}
-	
-	function PersonalInformation(){
-		$db = PDOFactory::getConnection();
-		$eleve = $db->prepare('SELECT * FROM adherents WHERE eleve_id=?');
-		$eleve->bindValue(1, 1);
-		$eleve->execute();
-		$res_eleve = $eleve->fetch(PDO::FETCH_ASSOC);
-	}
-	
-	function ReservationDetails(){
-		
-	}
-}
-
 function addResa(){
 	$db = PDOFactory::getConnection();
 	
@@ -62,6 +33,7 @@ function addResa(){
 	// Phrase de début
 	$pdf->setXY(21, 49);
 	$infos = $adherent['eleve_prenom']." ".$adherent['eleve_nom'];
+	$infos = iconv('UTF-8', 'windows-1252', $infos);
 	$pdf->Write(0, $infos);
 	$pdf->SetFont('Arial', '', 11);
 	// Informations
@@ -111,6 +83,7 @@ function addResa(){
 		
 		$db->commit();
 		// On génère le PDF "facture" une fois que la transaction est terminée
+		header("Location : planning.php");
 	} catch(PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());

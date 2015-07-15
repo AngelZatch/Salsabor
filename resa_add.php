@@ -25,7 +25,7 @@ if(isset($_POST['addResa'])){
            <div class="col-sm-10 main">
               <h1 class="page-title"><span class="glyphicon glyphicon-record"></span> Effectuer une réservation</h1>
                <div class="col-sm-9" id="solo-form">
-               	<form action="planning.php" method="post" class="form-horizontal" role="form" id="add_resa">
+               	<form action="resa_add.php" method="post" target="_blank" class="form-horizontal" role="form" id="add_resa">
 					 <div class="btn-toolbar">
 					   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
 					   <input type="submit" name="addResa" role="button" class="btn btn-primary" value="ENREGISTRER">
