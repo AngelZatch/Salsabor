@@ -14,6 +14,10 @@ $queryHistory = $db->prepare('SELECT * FROM cours_participants JOIN cours ON cou
 $queryHistory->bindValue(1, $data);
 $queryHistory->execute();
 
+$queryResa = $db->prepare('SELECT * FROM reservations JOIN adherents ON reservation_personne=adherents.eleve_id JOIN prestations ON type_prestation=prestations_id JOIN salle ON reservation_salle=salle.salle_id WHERE reservation_personne=?');
+$queryResa->bindValue(1, $data);
+$queryResa->execute();
+
 // Edit des informations
 if(isset($_POST["edit"])){
 	try{
@@ -64,6 +68,7 @@ if(isset($_POST["edit"])){
 			  <ul class="nav nav-tabs">
                    <li role="presentation" id="infos-toggle" class="active"><a>Informations personnelles</a></li>
                    <li role="presentation" id="history-toggle"><a>Historique des cours</a></li>
+                   <li role="presentation" id="resa-toggle"><a>Historique des réservations</a></li>
                </ul>
                <section id="infos">
                		<form method="post" role="form">
@@ -130,8 +135,30 @@ if(isset($_POST["edit"])){
                				<td><?php echo $history['salle_name'];?></td>
                				<td>A déterminer</td>
                			</tr>
-               		</tbody>
 					<?php } ?>
+               		</tbody>
+               	</table>
+               </section>
+               <section id="resa">
+               	<table class="table table-striped">
+               		<thead>
+               			<tr>
+               				<th>Plage horaire</th>
+               				<th>Lieu</th>
+               				<th>Activité</th>
+               				<th>Prix de la réservation</th>
+               			</tr>
+               		</thead>
+               		<tbody>
+               		<?php while($reservations = $queryResa->fetch(PDO::FETCH_ASSOC)){ ?>
+               			<tr>
+               				<td>Le <?php echo date_create($reservations["reservation_start"])->format('d/m/Y \d\e H\hi');?> à <?php echo date_create($reservations["reservation_end"])->format('H\hi');?></td>
+               				<td><?php echo $reservations["salle_name"];?></td>
+               				<td><?php echo $reservations["prestations_name"];?></td>
+               				<td><?php echo $reservations["reservation_prix"];?> €</td>
+               			</tr>
+					<?php } ?>
+               		</tbody>
                	</table>
                </section>
            </div>
