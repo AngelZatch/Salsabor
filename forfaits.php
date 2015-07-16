@@ -18,7 +18,7 @@ $queryForfaits = $db->query("SELECT * FROM produits");
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfaits</h1>
               <div class="btn-toolbar">
-                   <a href="" role="button" class="btn btn-primary disabled"><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait</a>
+                   <a href="forfait_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait</a>
                </div> <!-- btn-toolbar -->
                <div class="table-responsive">
                    <table class="table table-striped table-hover">
@@ -29,6 +29,7 @@ $queryForfaits = $db->query("SELECT * FROM produits");
                                <th>Durée de validité (jours)</th>
                                <th>Tarif horaire</th>
                                <th>Tarif global</th>
+                               <th></th>
                            </tr>
                        </thead>
                        <tbody>
@@ -39,6 +40,7 @@ $queryForfaits = $db->query("SELECT * FROM produits");
                                <td><?php echo $produits["validite_initiale"];?></td>
                                <td><?php echo $produits["tarif_horaire"];?> €</td>
                                <td><?php echo $produits["tarif_global"];?> €</td>
+               			       <td><a href="forfait_details.php?id=<?php echo $produits["produit_id"];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
                            </tr>
                            <?php } ?>
                        </tbody>
