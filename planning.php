@@ -34,7 +34,7 @@ if(isset($_POST['deleteCoursAll'])){
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
-               <h1 class="page-title"><span class="glyphicon glyphicon-time"></span> Planning des salles et Réservations</h1>
+               <h1 class="page-title"><span class="glyphicon glyphicon-time"></span> Planning des salles et locations</h1>
 			  <div class="btn-toolbar">
                    <a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a>
                    <a href="resa_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-record"></span> Réserver une salle</a>
