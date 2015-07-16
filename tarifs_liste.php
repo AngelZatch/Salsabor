@@ -32,9 +32,9 @@ if(isset($_POST['addTarifResa'])){
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
-               <h1 class="page-title"><span class="glyphicon glyphicon-scale"></span> Tarifs</h1>
+               <h1 class="page-title"><span class="glyphicon glyphicon-scale"></span> Tarifs de Location</h1>
                <div class="btn-toolbar">
-                   <a href="actions/tarifs_resa_add.php" role="button" class="btn btn-primary" data-title="Ajouter un tarif Réservation" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un tarif Réservation</a>
+                   <a href="actions/tarifs_resa_add.php" role="button" class="btn btn-primary" data-title="Ajouter un tarif Réservation" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un tarif de location</a>
                </div> <!-- btn-toolbar -->
 				<div class="alert alert-success" id="tarif-added" style="display:none;">Tarif ajouté avec succès</div>
 				<div class="alert alert-success" id="tarif-updated" style="display:none;">Tarif modifié avec succès</div>
