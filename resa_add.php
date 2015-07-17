@@ -78,7 +78,12 @@ if(isset($_POST['addResa'])){
                	    </div>
                	    <div class="form-group">
                	        <label for="date_debut" class="col-sm-3 control-label">Date <span class="mandatory">*</span></label>
-               	        <div class="col-sm-9"><input type="date" class="form-control" name="date_debut" id="date_debut" onChange="checkCalendar(true, false)"></div>
+               	        <div class="col-sm-9">
+               	        <div class="input-group">
+               	            <input type="date" class="form-control" name="date_debut" id="date_debut" onChange="checkCalendar(true, false)">
+               	            <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
+               	        </div>
+               	        </div>
                	    </div>
                	    <div class="form-group">
                	        <fieldset>

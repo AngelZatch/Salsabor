@@ -80,7 +80,10 @@ if(isset($_POST['add'])){
 						<div class="form-group">
 						   <label for="date_debut" class="col-sm-3 control-label">Date de Début<span class="mandatory">*</span></label>
 						   <div class="col-sm-9">
-						   <input type="date" class="form-control" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
+						   <div class="input-group">
+						       <input type="date" class="form-control" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
+                               <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
+						   </div>
 						   </div>
 						   <div class="col-sm-9 col-sm-offset-3">
 							   <input type="checkbox" name="recurrence" id="recurrence" value="1">Est récurrent

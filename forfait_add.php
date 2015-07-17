@@ -80,12 +80,18 @@ if(isset($_POST["add"])){
                           <input type="text" class="form-control" name="tarif_global">
                       </div>
                       <div class="form-group">
-                          <label for="date_activation">Date de mise à disposition à l'achat (laissez vide pour une activation dès la validation)</label>
-                          <input type="date" class="form-control" name="date_activation">
+                          <label for="date_activation">Date de mise à disposition à l'achat</label>
+                          <div class="input-group">
+                              <input type="date" class="form-control" name="date_activation">
+                              <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
+                          </div>
                       </div>
                       <div class="form-group">
-                          <label for="date_limite_achat">Date limite d'achat possible (laissez vide pour une activation pendant une durée indéfinie)</label>
-                          <input type="date" class="form-control" name="date_limite_achat">
+                          <label for="date_limite_achat">Date limite d'achat possible</label>
+                          <div class="input-group">
+                              <input type="date" class="form-control" name="date_limite_achat">
+                              <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
+                          </div>
                       </div>
                       <div class="form-group">
                           <label for="echeances">Nombre d'échéances de paiement autorisées</label>
@@ -100,6 +106,6 @@ if(isset($_POST["add"])){
            </div>
        </div>
    </div>
-   <?php include "scripts.php";?>    
+   <?php include "scripts.php";?>
 </body>
 </html>
