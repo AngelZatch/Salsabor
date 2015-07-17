@@ -1,8 +1,13 @@
 <?php
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
+include 'functions/ventes.php';
 
 $queryProduits = $db->query("SELECT * FROM produits");
+
+if(isset($_POST["submit"])){
+    vente();
+}
 ?>
 <html>
 <head>
@@ -20,7 +25,7 @@ $queryProduits = $db->query("SELECT * FROM produits");
                <form action="" method="post">
                  <div class="btn-toolbar">
                    <a href="dashboard.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Annuler et retourner au panneau d'administration</a>
-                   <input type="submit" name="buy" role="button" class="btn btn-primary" value="ENREGISTRER">
+                   <input type="submit" name="submit" role="button" class="btn btn-primary" value="ENREGISTRER">
                 </div> <!-- btn-toolbar -->   
                    <div class="form-group">
                        <label for="produit">Choisissez le forfait</label>
@@ -33,6 +38,8 @@ $queryProduits = $db->query("SELECT * FROM produits");
                            <span role="button" class="input-group-btn" >
                                <a href="#produit-details" class="btn btn-default" data-toggle="collapse" aria-expanded="false"><span class="glyphicon glyphicon-search"></span> Détails...</a>
                            </span>
+                           <input type="hidden" name="volume_horaire" value="">
+                           <input type="hidden" name="autorisation_report" value="">
                        </div>
                        <div id="produit-details" class="collapse">
                            <div id="produit-content" class="well"></div>
@@ -60,8 +67,8 @@ $queryProduits = $db->query("SELECT * FROM produits");
                        </div>
                    </div>
                    <div class="form-group">
-                       <label for="date_desactivation">Date prévue d'expiration (à titre indicatif, pas de modification possible)</label>
-                       <input type="date" name="date_desactivation" class="form-control" disabled>
+                       <label for="date_expiration">Date prévue d'expiration (à titre indicatif, pas de modification possible)</label>
+                       <input type="date" name="date_expiration" class="form-control">
                    </div>
                    <div class="form-group">
                        <label for="prix_achat">Prix du forfait souhaité</label>
@@ -90,6 +97,8 @@ $queryProduits = $db->query("SELECT * FROM produits");
                 $("#produit-content").append(line);
 
                 $("*[name='echeances']").attr('placeholder', 'Maximum : '+json.echeances_paiement);
+                $("*[name='volume_horaire']").val(json.volume_horaire);
+                $("*[name='autorisation_report']").val(json.autorisation_report);
                 evaluateExpirationDate();
                 calculatePrice();
             });
@@ -99,7 +108,7 @@ $queryProduits = $db->query("SELECT * FROM produits");
            var date_activation = new moment($("*[name='date_activation']").val());
            if(window.json){
                var date_desactivation = date_activation.add(window.json.validite_initiale, 'days').format('YYYY-MM-DD');
-               $("*[name='date_desactivation']").val(date_desactivation);
+               $("*[name='date_expiration']").val(date_desactivation);
            }
        }
        
