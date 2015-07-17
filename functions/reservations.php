@@ -2,6 +2,7 @@
 require_once "db_connect.php";
 include "librairies/fpdf/fpdf.php";
 include "librairies/fpdi/fpdi.php";
+require_once "tools.php";
 
 function addResa(){
 	$db = PDOFactory::getConnection();
@@ -104,23 +105,4 @@ function deleteResa(){
         var_dump($e->getMessage());
     }
     header('Location: planning.php');
-}
-
-function getAdherent($prenom, $nom){
-	$db = PDOFactory::getConnection();
-	$search = $db->prepare('SELECT * FROM adherents WHERE eleve_prenom=? AND eleve_nom=?');
-	$search->bindParam(1, $prenom);
-	$search->bindParam(2, $nom);
-	$search->execute();
-	$res = $search->fetch(PDO::FETCH_ASSOC);
-	return $res;
-}
-
-function getLieu($id){
-	$db = PDOFactory::getConnection();
-	$search = $db->prepare('SELECT * FROM salle WHERE salle_id=?');
-	$search->bindParam(1, $id);
-	$search->execute();
-	$res = $search->fetch(PDO::FETCH_ASSOC);
-	return $res;
 }
