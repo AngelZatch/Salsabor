@@ -261,7 +261,7 @@ body{
     color: #949494;
 }
 
-.alert {
+.alert-custom {
     z-index:100000000;
     position: fixed;
     top: 1%;
