@@ -258,7 +258,7 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 		   var update_id = id;
 		   var tarif = $("#tarif-"+update_id).children(".tarif-prix").children("span").html();
 		   $.post("functions/update_tarif_prof.php", {update_id, tarif}).done(function(data){
-			   $('#tarif-updated').show('500').delay(3000).hide('3000');
+			   $('#tarif-updated').show().delay('4000').hide('600');
 			   var originalColor = $("#tarif-"+update_id).css("background-color");
 			   var styles = {
 				   backgroundColor : "#dff0d8",
@@ -271,7 +271,7 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 			   $("#tarif-"+update_id).css(styles);
 			   setTimeout(function(){ $("#tarif-"+update_id).css(next); },800);
 		   }).fail(function(data){
-			   $('#tarif-error').show('500').delay(3000).hide('3000');
+			   $('#tarif-error').show().delay('4000').hide('600');
 		   });
 	   }
 	   
@@ -279,11 +279,11 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 		   var delete_id = id;
 		   alert(delete_id);
 		   $.post("functions/delete_tarif_prof.php", {delete_id}).done(function(data){
-			   $('#tarif-deleted').show('500').delay(3000).hide('3000');
+			   $('#tarif-deleted').show().delay('4000').hide('600');
 			   $(".fetched").remove();
 			   fetchTarifs();
 		   }).fail(function(data){
-			   $('#tarif-error').show('500').delay(3000).hide('3000');
+			   $('#tarif-error').show().delay('4000').hide('600');
 		   })
 	   }
 	</script>

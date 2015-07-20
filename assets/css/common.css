@@ -250,3 +250,22 @@ body{
     width: 300px !important;
     font-size: 15px;
 }
+
+.details-list {
+    display: flex;
+    border-top: 1px solid #C4C4C4;
+    padding: 10px;
+}
+
+.list-name {
+    color: #949494;
+}
+
+.alert {
+    z-index:100000000;
+    position: fixed;
+    top: 1%;
+    left: 40%;
+    width: 30%;
+    text-align: center;
+}
