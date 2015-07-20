@@ -36,10 +36,10 @@ if(isset($_POST['addTarifResa'])){
                <div class="btn-toolbar">
                    <a href="actions/tarifs_resa_add.php" role="button" class="btn btn-primary" data-title="Ajouter un tarif Réservation" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un tarif de location</a>
                </div> <!-- btn-toolbar -->
-				<div class="alert alert-success" id="tarif-added" style="display:none;">Tarif ajouté avec succès</div>
-				<div class="alert alert-success" id="tarif-updated" style="display:none;">Tarif modifié avec succès</div>
-				<div class="alert alert-success" id="tarif-deleted" style="display:none;">Tarif supprimé avec succès</div>
-				<div class="class alert alert-danger" id="tarif-error" style="display:none;">Erreur. Certains champs sont vides</div>
+				<div class="alert alert-custom alert-success" id="tarif-added" style="display:none;">Tarif ajouté avec succès</div>
+				<div class="alert alert-custom alert-success" id="tarif-updated" style="display:none;">Tarif modifié avec succès</div>
+				<div class="alert alert-custom alert-success" id="tarif-deleted" style="display:none;">Tarif supprimé avec succès</div>
+				<div class="alert alert-custom alert-danger" id="tarif-error" style="display:none;">Erreur. Certains champs sont vides</div>
                <div class="panel-group" id="accordion">
                <?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){?>
                	<div class="panel panel-default">

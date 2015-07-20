@@ -79,10 +79,10 @@ if(isset($_POST["edit"])){
               <div class="btn-toolbar" id="top-page-buttons">
                    <a href="profs_liste.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
                 </div> <!-- btn-toolbar -->
-				<div class="alert alert-success" id="tarif-added" style="display:none;">Tarif ajouté avec succès</div>
-				<div class="alert alert-success" id="tarif-updated" style="display:none;">Tarif modifié avec succès</div>
-				<div class="alert alert-success" id="tarif-deleted" style="display:none;">Tarif supprimé avec succès</div>
-				<div class="class alert alert-danger" id="tarif-error" style="display:none;">Erreur. Certains champs sont vides</div>
+				<div class="alert alert-custom alert-success" id="tarif-added" style="display:none;">Tarif ajouté avec succès</div>
+				<div class="alert alert-custom alert-success" id="tarif-updated" style="display:none;">Tarif modifié avec succès</div>
+				<div class="alert alert-custom alert-success" id="tarif-deleted" style="display:none;">Tarif supprimé avec succès</div>
+				<div class="class alert-custom alert alert-danger" id="tarif-error" style="display:none;">Erreur. Certains champs sont vides</div>
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span>
                    <?php echo $details['prenom']." ".$details['nom'];?>
                </h1>

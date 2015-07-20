@@ -98,7 +98,7 @@ if(isset($_POST["add"])){
                           <input type="text" class="form-control" name="echeances">
                       </div>
                       <div class="form-group">
-                          <label for="arep">Autoriser l'extension de validité ?</label>
+                          <label for="arep">Autoriser l'extension de validité ? (AREP)</label>
                           <input type="checkbox" value="1" name="arep">
                       </div>
                   </form>
