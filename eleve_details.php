@@ -18,6 +18,10 @@ $queryResa = $db->prepare('SELECT * FROM reservations JOIN adherents ON reservat
 $queryResa->bindValue(1, $data);
 $queryResa->execute();
 
+$queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation FROM produits_adherents JOIN adherents ON id_adherent=adherents.eleve_id JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=?');
+$queryForfaits->bindValue(1, $data);
+$queryForfaits->execute();
+
 // Edit des informations
 if(isset($_POST["edit"])){
 	try{
@@ -69,6 +73,7 @@ if(isset($_POST["edit"])){
                    <li role="presentation" id="infos-toggle" class="active"><a>Informations personnelles</a></li>
                    <li role="presentation" id="history-toggle"><a>Historique des cours</a></li>
                    <li role="presentation" id="resa-toggle"><a>Historique des réservations</a></li>
+                   <li role="presentation" id="forfaits-toggle"><a>Historique des forfaits</a></li>
                </ul>
                <section id="infos">
                		<form method="post" role="form">
@@ -160,6 +165,30 @@ if(isset($_POST["edit"])){
 					<?php } ?>
                		</tbody>
                	</table>
+               </section>
+               <section id="forfaits">
+                   <table class="table table-striped">
+                       <thead>
+                           <tr>
+                               <th>Type de forfait</th>
+                               <th>Date d'achat</th>
+                               <th>Période de validité</th>
+                               <th>Prix d'achat</th>
+                               <th></th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <?php while($forfaits = $queryForfaits->fetch(PDO::FETCH_ASSOC)){ ?>
+                           <tr>
+                               <td><?php echo $forfaits["produit_nom"];?></td>
+                               <td><?php echo date_create($forfaits["date_achat"])->format('d/m/Y');?></td>
+                               <td>Du <?php echo date_create($forfaits["dateActivation"])->format('d/m/Y');?> au <?php echo date_create($forfaits["date_expiration"])->format('d/m/Y');?></td>
+                               <td><?php echo $forfaits["prix_achat"];?> €</td>
+                               <td><a href="forfait_adherent_details.php?id=<?php echo $forfaits["id"];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
+                           </tr>
+                           <?php } ?>
+                       </tbody>
+                   </table>
                </section>
            </div>
        </div>
