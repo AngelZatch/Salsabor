@@ -40,6 +40,7 @@ if(isset($_POST['deleteCoursAll'])){
                    <a href="resa_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-record"></span> Réserver une salle</a>
                    <a href="actions/salle_add.php" role="button" class="btn btn-primary disabled" data-title="Ajouter une salle" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter une salle</a>
                    <a href="actions/niveau_add.php" role="button" class="btn btn-primary disabled" data-title="Ajouter un niveau" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un niveau</a>
+                   <a href="jours_chomes.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés...</a>
                </div> <!-- btn-toolbar -->
                <div id="display-planning" style="display:block;">
                     <div id="calendar" class="fc fc-ltr fc-unthemed"></div>
@@ -101,7 +102,17 @@ if(isset($_POST['deleteCoursAll'])){
 					error: function(){
 						console.log('Erreur pendant l\'obtention des réservations');
 					},
-				}
+				},
+                {
+                    url: 'functions/calendarfeed_holidays.php',
+                    type: 'POST',
+                    color: '#C4C4C4',
+                    textColor: 'black',
+                    rendering: 'background',
+                    error: function(){
+                        console.log('Erreur pendant l\'obtention des jours chômés');
+                    },
+                }
 			],
 			eventRender: function(calEvent, element){
 				element.attr('id', calEvent.type+'-'+calEvent.id);
@@ -116,6 +127,8 @@ if(isset($_POST['deleteCoursAll'])){
                     } else {
                         element.css('background-color', '#D21CFC');
                     }
+                }  else if(calEvent.type == 'holiday'){
+                    element.css('background-color', '#000');
                 } else {
 					switch(calEvent.prestation){
 						case '6':
