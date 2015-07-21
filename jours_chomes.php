@@ -21,7 +21,10 @@ $db = PDOFactory::getConnection();
 				<div class="alert alert-custom alert-success" id="holiday-deleted" style="display:none;">Tarif supprimé avec succès</div>
                <h1 class="page-title"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés</h1>
               <button class="btn btn-default" id="add-holiday"><span class="glyphicon glyphicon-plus"></span> Ajouter un jour / une période chômé(e)</button>
-              <button class="btn btn-default"><span class="glyphicon glyphicon-scale"></span> Appliquer les changements aux forfaits</button>
+              <a href="#affected-details" name="show-affected" class="btn btn-default" style="display:none;" data-toggle="collapse"></a>
+              <div id="affected-details" class="collapse">
+                  <div id="affected-content" class="well"></div>
+              </div>
                <table class="table table-striped">
                    <thead>
                        <tr>
@@ -75,6 +78,19 @@ $db = PDOFactory::getConnection();
                $("#holiday-added").show().delay('4000').hide('600');
                $(".fetched").remove();
                fetchHolidays();
+               var json = JSON.parse(data);
+               var lineTop = "Vos modifications ont affecté les forfaits suivants : ";
+                   lineTop += "<ul>";
+               $("#affected-content").append(lineTop);
+               for (var i = 0; i < json.length; i++){
+                   var affectedLine = "<li>";
+                   affectedLine += json[i].id+" : "+json[i].old_date+" => "+json[i].new_date;
+                   affectedLine += "</li>";
+                   $("#affected-content").append(affectedLine);
+               }
+               var lineBottom = "</ul>";
+               $("#affected-content").append(lineBottom);
+               $("*[name='show-affected']").click().delay(9000).click();
            }).fail(function(data){
               console.log(data);
            });
