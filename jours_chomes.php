@@ -17,8 +17,8 @@ $db = PDOFactory::getConnection();
 				<div class="btn-toolbar" id="top-page-buttons">
                    <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des adhérents</a>
                 </div> <!-- btn-toolbar -->
-                <div class="alert alert-custom alert-success" id="holiday-added" style="display:none;">Tarif ajouté avec succès</div>
-				<div class="alert alert-custom alert-success" id="holiday-deleted" style="display:none;">Tarif supprimé avec succès</div>
+                <div class="alert alert-custom alert-success" id="holiday-added" style="display:none;">Jour chômé ajouté avec succès</div>
+				<div class="alert alert-custom alert-success" id="holiday-deleted" style="display:none;">Jour chômé supprimé avec succès</div>
                <h1 class="page-title"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés</h1>
               <button class="btn btn-default" id="add-holiday"><span class="glyphicon glyphicon-plus"></span> Ajouter un jour / une période chômé(e)</button>
               <div id="affected-details" class="collapse">
@@ -93,7 +93,9 @@ $db = PDOFactory::getConnection();
                }
                var lineBottom = "</ul>";
                $("#affected-list").append(lineBottom);
-               $("*[name='show-affected']").click();
+               if(!$("#affected-details").hasClass("in")){
+                   $("*[name='show-affected']").click();
+               }
            }).fail(function(data){
               console.log(data);
            });
@@ -119,7 +121,9 @@ $db = PDOFactory::getConnection();
                }
                var lineBottom = "</ul>";
                $("#affected-list").append(lineBottom);
-               $("*[name='show-affected']").click();
+               if(!$("#affected-details").hasClass("in")){
+                   $("*[name='show-affected']").click();
+               }
            }).fail(function(data){
                console.log(data);
            });
