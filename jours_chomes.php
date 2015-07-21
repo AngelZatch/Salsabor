@@ -21,9 +21,11 @@ $db = PDOFactory::getConnection();
 				<div class="alert alert-custom alert-success" id="holiday-deleted" style="display:none;">Tarif supprimé avec succès</div>
                <h1 class="page-title"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés</h1>
               <button class="btn btn-default" id="add-holiday"><span class="glyphicon glyphicon-plus"></span> Ajouter un jour / une période chômé(e)</button>
-              <a href="#affected-details" name="show-affected" class="btn btn-default" style="display:none;" data-toggle="collapse"></a>
               <div id="affected-details" class="collapse">
-                  <div id="affected-content" class="well"></div>
+                  <div id="affected-content" class="well">
+                     <div id="affected-list"></div>
+                     <a href="#affected-details" name="show-affected" class="btn btn-default" data-toggle="collapse">Fermer</a>
+                  </div>
               </div>
                <table class="table table-striped">
                    <thead>
@@ -78,19 +80,20 @@ $db = PDOFactory::getConnection();
                $("#holiday-added").show().delay('4000').hide('600');
                $(".fetched").remove();
                fetchHolidays();
+               $("#affected-list").empty();
                var json = JSON.parse(data);
                var lineTop = "Vos modifications ont affecté les forfaits suivants : ";
                    lineTop += "<ul>";
-               $("#affected-content").append(lineTop);
+               $("#affected-list").append(lineTop);
                for (var i = 0; i < json.length; i++){
                    var affectedLine = "<li>";
                    affectedLine += json[i].id+" : "+json[i].old_date+" => "+json[i].new_date;
                    affectedLine += "</li>";
-                   $("#affected-content").append(affectedLine);
+                   $("#affected-list").append(affectedLine);
                }
                var lineBottom = "</ul>";
-               $("#affected-content").append(lineBottom);
-               $("*[name='show-affected']").click().delay(9000).click();
+               $("#affected-list").append(lineBottom);
+               $("*[name='show-affected']").click();
            }).fail(function(data){
               console.log(data);
            });
