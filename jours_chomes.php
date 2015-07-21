@@ -1,8 +1,6 @@
 <?php
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
-
-$queryHolidays = $db->query("SELECT * FROM jours_chomes");
 ?>
 <html>
 <head>
@@ -19,7 +17,11 @@ $queryHolidays = $db->query("SELECT * FROM jours_chomes");
 				<div class="btn-toolbar" id="top-page-buttons">
                    <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des adhérents</a>
                 </div> <!-- btn-toolbar -->
+                <div class="alert alert-custom alert-success" id="holiday-added" style="display:none;">Tarif ajouté avec succès</div>
+				<div class="alert alert-custom alert-success" id="holiday-deleted" style="display:none;">Tarif supprimé avec succès</div>
                <h1 class="page-title"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés</h1>
+              <button class="btn btn-default" id="add-holiday"><span class="glyphicon glyphicon-plus"></span> Ajouter un jour / une période chômé(e)</button>
+              <button class="btn btn-default"><span class="glyphicon glyphicon-scale"></span> Appliquer les changements aux forfaits</button>
                <table class="table table-striped">
                    <thead>
                        <tr>
@@ -27,19 +29,68 @@ $queryHolidays = $db->query("SELECT * FROM jours_chomes");
                            <th></th>
                        </tr>
                    </thead>
-                   <tbody>
-                       <?php while($holidays = $queryHolidays->fetch(PDO::FETCH_ASSOC)){ ?>
-                       <tr>
-                           <td><?php echo date_create($holidays["date_chomee"])->format('d/m/Y');?></td>
-                           <td><button class="btn btn-default"><span class="glyphicon glyphicon-trash"></span> Supprimer</button></td>
-                       </tr>
-                       <?php } ?>
+                   <tbody id="table-content">
+                        <tr id="new-holiday" style="display:none;">
+							<td class="col-sm-3">Début de la période / jour unique<input type="date" class="form-control" id="date-debut">Fin de la période<input type="date" class="form-control" id="date-fin"></td>
+							<td class="col-sm-6"><button class="btn btn-default" onclick="addHoliday()"><span class="glyphicon glyphicon-plus"></span> Valider</button><button class="btn btn-default" id="cancel"><span class="glyphicon glyphicon-cancel"></span> Annuler</button></td>
+                        </tr>
                    </tbody>
                </table>
-               <button class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Ajouter un jour / une période chômé(e)</button>
            </div>
        </div>
    </div>
-   <?php include "scripts.php";?>    
+   <?php include "scripts.php";?>
+   <script>
+        $("#add-holiday").click(function(){
+            $("#new-holiday").show();
+        });
+       
+       $("#cancel").click(function(){
+          $("#new-holiday").hide(); 
+       });
+       
+       $(document).ready(function(){
+          fetchHolidays(); 
+       });
+       
+       function fetchHolidays(){
+           $.post('functions/get_holiday.php').done(function(data){
+               var json = JSON.parse(data);
+               for (var i = 0; i < json.length; i++){
+                   var line = "<tr class='fetched' id ='holiday-"+json[i].id+"'>";
+                   line += "<td>";
+                   line += moment(json[i].date).lang('FR').format('ll');
+                   line += "</td><td>";
+                   line += "<button class='btn btn-default' onclick='deleteHoliday("+json[i].id+")'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";
+                   line += "</td></tr>";
+                   $("#table-content").append(line);
+               }
+           });
+       }
+       
+       function addHoliday(){
+           var start = $("#date-debut").val();
+           var end = $("#date-fin").val();
+           $.post('functions/add_holiday.php', {start, end}).done(function(data){
+               $("#holiday-added").show().delay('4000').hide('600');
+               $(".fetched").remove();
+               fetchHolidays();
+           }).fail(function(data){
+              console.log(data);
+           });
+           $("#new-holiday").hide();
+       }
+       
+       function deleteHoliday(id){
+           var delete_id = id;
+           $.post('functions/delete_holiday.php', {delete_id}).done(function(data){
+               $("#holiday-deleted").show().delay('4000').hide('600');
+               $(".fetched").remove();
+               fetchHolidays();
+           }).fail(function(data){
+               console.log(data);
+           });
+       }
+    </script>
 </body>
 </html>
