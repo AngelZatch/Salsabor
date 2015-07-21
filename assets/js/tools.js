@@ -36,3 +36,19 @@ function addAdherent(){
 		$('#user-error').show('500').delay(3000).hide('3000');
 	});
 }
+
+function checkHoliday(){
+   var date_debut = $('#date_debut').val();
+   $.post("functions/check_holiday.php", {date_debut}).done(function(data){
+       console.log(data);
+       if(data != "0"){
+           $("#holiday-alert").empty();
+           $("#holiday-alert").append("Ce jour est chômé. Impossible d'ajouter une réservation à cette date.");
+           $('.confirm-add').prop('disabled', true);
+       } else {
+           $('#holiday-alert').empty();
+           $('.confirm-add').prop('disabled', false);
+           checkCalendar(true, false);
+       }
+   });
+}    

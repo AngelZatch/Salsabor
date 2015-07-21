@@ -28,7 +28,7 @@ if(isset($_POST['addResa'])){
                	<form action="resa_add.php" method="post" target="_blank" class="form-horizontal" role="form" id="add_resa">
 					 <div class="btn-toolbar">
 					   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-					   <input type="submit" name="addResa" role="button" class="btn btn-primary" value="ENREGISTRER">
+					   <input type="submit" name="addResa" role="button" class="btn btn-primary confirm-add" value="ENREGISTRER">
               	    </div> <!-- btn-toolbar -->   
               	    <div class="alert alert-success" id="user-added" style="display:none;">Adhérent ajouté avec succès</div>
               	    <div class="class alert alert-danger" id="user-error" style="display:none;">Erreur. Certains champs sont vides</div>
@@ -79,10 +79,11 @@ if(isset($_POST['addResa'])){
                	    <div class="form-group">
                	        <label for="date_debut" class="col-sm-3 control-label">Date <span class="mandatory">*</span></label>
                	        <div class="col-sm-9">
-               	        <div class="input-group">
-               	            <input type="date" class="form-control" name="date_debut" id="date_debut" onChange="checkCalendar(true, false)">
-               	            <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
-               	        </div>
+                            <div class="input-group">
+                                <input type="date" class="form-control" name="date_debut" id="date_debut" onChange="checkHoliday()">
+                                <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
+                            </div>
+                            <p class="error-alert" id="holiday-alert"></p>
                	        </div>
                	    </div>
                	    <div class="form-group">
@@ -146,7 +147,7 @@ $('#paiement').change(function(){
 		$('#paiement-sub').val(0);
 	}
 });
-		  
+       
 function ifAdherentExists(){
 	var identite_prenom = $('#identite_prenom').val();
 	var identite_nom = $('#identite_nom').val();
