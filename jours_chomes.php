@@ -106,6 +106,20 @@ $db = PDOFactory::getConnection();
                $("#holiday-deleted").show().delay('4000').hide('600');
                $(".fetched").remove();
                fetchHolidays();
+               $("#affected-list").empty();
+               var json = JSON.parse(data);
+               var lineTop = "Vos modifications ont affecté les forfaits suivants : ";
+                   lineTop += "<ul>";
+               $("#affected-list").append(lineTop);
+               for (var i = 0; i < json.length; i++){
+                   var affectedLine = "<li>";
+                   affectedLine += json[i].id+" : "+json[i].old_date+" => "+json[i].new_date;
+                   affectedLine += "</li>";
+                   $("#affected-list").append(affectedLine);
+               }
+               var lineBottom = "</ul>";
+               $("#affected-list").append(lineBottom);
+               $("*[name='show-affected']").click();
            }).fail(function(data){
                console.log(data);
            });

@@ -14,7 +14,6 @@ if(isset($_POST["end"]) && $_POST["end"] != ""){
 
 // Forfaits possiblement modifiés par l'ajout d'un jour chômé
 $forfaits = $db->query("SELECT * FROM produits_adherents")->fetchAll(PDO::FETCH_ASSOC);
-
 $updated = array();
 
 try{
