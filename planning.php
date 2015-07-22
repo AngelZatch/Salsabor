@@ -57,7 +57,18 @@ if(isset($_POST['deleteCoursAll'])){
             <a class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Détails >></a>
         </div>
        </div>
-   </div>
+       <div id="add-options" class="popover popover-default">
+            <div class="arrow"></div>
+            <p style="font-weight:700;" id="popover-new-title">Ajouter</p>
+            <p id="popover-new-hours"></p>
+            <div class="btn-group col-sm-12" role="group">
+                <a class="btn btn-default" style="background-color:#0FC5F5;" href="cours_add.php?"><span class="glyphicon glyphicon-plus"></span> Cours</a>
+                <a class="btn btn-default" style="background-color:#ebb3f9;" href="resa_add.php"><span class="glyphicon glyphicon-record"></span> Location</a>
+            </div>
+            <input type="hidden" name="new_start">
+            <input type="hidden" name="new_end">
+        </div>
+       </div>
    <?php include "scripts.php";?>
    <script>
     $(document).ready(function ($) {
@@ -82,6 +93,7 @@ if(isset($_POST['deleteCoursAll'])){
             },
             defaultView: 'agendaWeek',
             lang:'fr',
+            timezone: 'local',
             editable: false,
             selectable: true,
             selectHelper: true,
@@ -163,13 +175,30 @@ if(isset($_POST['deleteCoursAll'])){
                 var pHeight = $('#'+calEvent.type+'-options').height();
                 $('#'+calEvent.type+'-options').on('shown.bs.modal', function(e){
                     $('#'+calEvent.type+'-options').offset({top: position.top - pHeight*1.4, left: position.left - 50});
-                    /*console.log($("#add-options").position());*/
                 });
                 $('#'+calEvent.type+'-options').popoverX('toggle');
 			},
             select: function(start, end, jsEvent, view){
-                console.log(jsEvent.pageX);
-                console.log(jsEvent.pageY);
+                var options = {
+                    target: "#undefined-undefined",
+                    placement: 'top',
+                    closeOtherPopovers: true,
+                };
+                var position = $("#undefined-undefined").offset();
+                var bWidth = $("#undefined-undefined").width();
+                $('#add-options').popoverX(options);
+                $('#add-options>#popover-new-hours').empty();
+                $('#popover-new-hours').append("Le "+moment(start).format('l')+" de "+moment(start).format('H:mm')+" à "+moment(end).format("H:mm"));
+                $('#add-options>a').attr('href', 'resa_add.php');
+                var pHeight = $('#add-options').height();
+                $('#add-options').on('shown.bs.modal', function(e){
+                    $('#add-options').offset({top: position.top - pHeight*1.4, left: position.left - 50});
+                });
+                $('#add-options').popoverX('toggle');
+                sessionStorage.removeItem('end');
+                sessionStorage.removeItem('start');
+                sessionStorage.setItem('start', start); 
+                sessionStorage.setItem('end', end);
             }
         });
         var $rows = $('#filter-enabled tr');

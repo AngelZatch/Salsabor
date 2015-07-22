@@ -180,6 +180,25 @@ function addAdherent(){
 		$('#user-error').show('500').delay(3000).hide('3000');
 	});
 }
+       
+       $(document).ready(function(){
+           var start = sessionStorage.getItem('start');
+           var end = sessionStorage.getItem('end');
+           
+           var format_start = new Date(start).toISOString();
+           var format_end = new Date(end).toISOString();
+           
+           var start_day = moment(format_start).format('YYYY-MM-DD');
+           var start_hour = moment(format_start).format('HH:mm');
+           var end_hour = moment(format_end).format('HH:mm');
+           
+           $("#date_debut").val(start_day);
+           $("#heure_debut").val(start_hour);
+           $("#heure_fin").val(end_hour);
+           
+           sessionStorage.removeItem('end');
+           sessionStorage.removeItem('start');
+       });
 	</script> 
 </body>
 </html>
