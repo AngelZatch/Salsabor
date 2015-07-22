@@ -38,8 +38,6 @@ if(isset($_POST['deleteCoursAll'])){
 			  <div class="btn-toolbar">
                    <a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a>
                    <a href="resa_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-record"></span> Réserver une salle</a>
-                   <a href="actions/salle_add.php" role="button" class="btn btn-primary disabled" data-title="Ajouter une salle" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter une salle</a>
-                   <a href="actions/niveau_add.php" role="button" class="btn btn-primary disabled" data-title="Ajouter un niveau" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un niveau</a>
                    <a href="jours_chomes.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés...</a>
                </div> <!-- btn-toolbar -->
                <div id="display-planning" style="display:block;">
@@ -85,6 +83,8 @@ if(isset($_POST['deleteCoursAll'])){
             defaultView: 'agendaWeek',
             lang:'fr',
             editable: false,
+            selectable: true,
+            selectHelper: true,
             minTime: '9:00',
             allDaySlot: false,
             handleWindowResize: true,
@@ -151,25 +151,26 @@ if(isset($_POST['deleteCoursAll'])){
                     target: '#'+$(this).attr('id'),
                     placement: 'top',
                     closeOtherPopovers: true,
-                    useOffsetForPos: true
+                    useOffsetForpos: true
                   };
+                var position = $(this).offset();
+                var bWidth = $(this).width();
                 $('#'+calEvent.type+'-options').popoverX(options);
                 $('#'+calEvent.type+'-options>p').empty();
                 $('#popover-'+calEvent.type+'-title').append(calEvent.title);
                 $('#popover-'+calEvent.type+'-hours').append("Le "+$.format.date(calEvent.start._i, "dd/MM/yyyy")+" de "+$.format.date(calEvent.start._i, "HH:mm")+" à "+$.format.date(calEvent.end._i, "HH:mm"));
                 $('#'+calEvent.type+'-options>a').attr('href', calEvent.type+'_edit.php?id='+calEvent.id);
+                var pHeight = $('#'+calEvent.type+'-options').height();
+                $('#'+calEvent.type+'-options').on('shown.bs.modal', function(e){
+                    $('#'+calEvent.type+'-options').offset({top: position.top - pHeight*1.4, left: position.left - 50});
+                    /*console.log($("#add-options").position());*/
+                });
                 $('#'+calEvent.type+'-options').popoverX('toggle');
 			},
-			dayClick: function(date, jsEvent, view){
-				//console.log(date._d);
-                //$(jsEvent.target).attr('id', 'click-id');
-				//$('#add-options').popoverX('toggle');
-/*				$(this).ekkoLightbox({
-					remote: 'actions/cours_add.php',
-					title: 'Ajouter un cours',
-					onNavigate: false
-				});*/
-			}
+            select: function(start, end, jsEvent, view){
+                console.log(jsEvent.pageX);
+                console.log(jsEvent.pageY);
+            }
         });
         var $rows = $('#filter-enabled tr');
         $('#search').keyup(function(){
