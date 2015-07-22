@@ -71,6 +71,10 @@ if(isset($_POST['deleteCoursAll'])){
             });
         });
         
+        var docHeight = $(document).height();
+        var xPos = $("#calendar").position();
+        var height = docHeight - xPos.top - 100;
+        
         // Full calendar
         $('#calendar').fullCalendar({
             header:{
@@ -83,7 +87,8 @@ if(isset($_POST['deleteCoursAll'])){
             editable: false,
             minTime: '9:00',
             allDaySlot: false,
-            height: 'auto',
+            handleWindowResize: true,
+            contentHeight: height,
             eventSources:[
 				{
 					url: 'functions/calendarfeed_cours.php',
@@ -176,6 +181,12 @@ if(isset($_POST['deleteCoursAll'])){
         });
         
         $('[data-toggle="popover"]').popover();
+        
+/*        $(window).resize(function(){
+            docHeight = $(document).height();
+            height = docHeight - xPos.top - 100;
+            $('#calendar').fullCalendar('option', 'contentHeight', 650);
+        });*/
 
     });
 
