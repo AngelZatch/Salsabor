@@ -49,7 +49,7 @@ if(isset($_POST['add'])){
 						<div class="form-group">
 							<label for="intitule" class="col-sm-3 control-label">Intitulé <span class="mandatory">*</span></label>
 							<div class="col-sm-9 ui-widget">
-								<input type="text" class="form-control" name="intitule" id="cours_tags" placeholder="Nom du cours">
+								<input type="text" class="form-control" name="intitule" id="cours_tags" placeholder="Nom du cours" mandatory="true">
 							</div>
 					   </div>
 					   <div class="form-group">
@@ -171,7 +171,8 @@ if(isset($_POST['add'])){
            </div>
        </div>
    </div>
-   <?php include "scripts.php";?>    
+   <?php include "scripts.php";?>
+   <script src="assets/js/check_calendar.js"></script>  
    <script>
 	$(document).ready(function(){
 		var coursNameTags = JSON.parse('<?php echo json_encode($arr_cours_name);?>');
@@ -199,6 +200,14 @@ if(isset($_POST['add'])){
 	$("#recurrence").click(function(){
 		$("#recurring-options").toggle('600');
 	});
+       
+       $("[mandatory='true']").blur(function(){
+           if($(this).val() != ''){
+               $(this).css('border-color', 'green');
+           } else {
+               $(this).css('border-color', 'red');
+           }
+       });
 	</script>
 </body>
 </html>

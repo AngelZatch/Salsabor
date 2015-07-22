@@ -34,7 +34,7 @@ body{
         display: block;
         position: fixed;
         background-color: #A9023A;
-        z-index: 1000;
+        z-index: 100;
         min-height: 100%;
         height: inherit;
         padding: 25px 0;
@@ -159,7 +159,7 @@ body{
 
 /** To be in front of the lightboxes **/
 .ui-widget{
-    z-index: 1051 !important;
+    z-index: 3 !important;
 }
 
 .level-display{
@@ -262,7 +262,7 @@ body{
 }
 
 .alert-custom {
-    z-index:100000000;
+    z-index:1031;
     position: fixed;
     top: 1%;
     left: 40%;
