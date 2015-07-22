@@ -2,11 +2,12 @@
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
-$queryCours = $db->query("SELECT * FROM cours WHERE paiement_effectue=0");
-$cours = $queryCours->rowCount();
+$queryCoursNotif = $db->query("SELECT * FROM cours WHERE paiement_effectue=0");
+$coursNotif = $queryCoursNotif->rowCount();
 
-$queryLocations = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0");
-$locations = $queryLocations->rowCount();
+
+$queryLocationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0");
+$locationsNotif = $queryLocationsNotif->rowCount();
 ?>
   
 
@@ -23,10 +24,10 @@ $locations = $queryLocations->rowCount();
                       <a href="" class="notification-icon"><span class="glyphicon glyphicon-folder-open"></span></a>
               </li>
               <li class="notification-option">
-                      <a href="" class="notification-icon"><span class="glyphicon glyphicon-calendar"></span><span class="badge"><?php echo $cours;?></span></a>
+                      <a href="" class="notification-icon"><span class="glyphicon glyphicon-calendar"></span><span class="badge"><?php echo $coursNotif;?></span></a>
               </li>
               <li class="notification-option">
-                      <a href="" class="notification-icon"><span class="glyphicon glyphicon-scale"></span><span class="badge"><?php echo $locations;?></span></a>
+                      <a href="" class="notification-icon"><span class="glyphicon glyphicon-scale"></span><span class="badge"><?php echo $locationsNotif;?></span></a>
               </li>
                <li><a href=""><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
            </ul>
