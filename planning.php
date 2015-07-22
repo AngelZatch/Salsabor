@@ -65,8 +65,6 @@ if(isset($_POST['deleteCoursAll'])){
                 <a class="btn btn-default" style="background-color:#0FC5F5;" href="cours_add.php?"><span class="glyphicon glyphicon-plus"></span> Cours</a>
                 <a class="btn btn-default" style="background-color:#ebb3f9;" href="resa_add.php"><span class="glyphicon glyphicon-record"></span> Location</a>
             </div>
-            <input type="hidden" name="new_start">
-            <input type="hidden" name="new_end">
         </div>
        </div>
    <?php include "scripts.php";?>

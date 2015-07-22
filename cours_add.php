@@ -178,6 +178,23 @@ if(isset($_POST['add'])){
 		$('#cours_tags').autocomplete({
 			source: coursNameTags
 		});
+        
+       var start = sessionStorage.getItem('start');
+       var end = sessionStorage.getItem('end');
+
+       var format_start = new Date(start).toISOString();
+       var format_end = new Date(end).toISOString();
+
+       var start_day = moment(format_start).format('YYYY-MM-DD');
+       var start_hour = moment(format_start).format('HH:mm');
+       var end_hour = moment(format_end).format('HH:mm');
+
+       $("#date_debut").val(start_day);
+       $("#heure_debut").val(start_hour);
+       $("#heure_fin").val(end_hour);
+
+       sessionStorage.removeItem('end');
+       sessionStorage.removeItem('start');
 	});
 	$("#recurrence").click(function(){
 		$("#recurring-options").toggle('600');
