@@ -15,7 +15,7 @@ $locations = $queryLocations->rowCount();
        <div class="navbar-header"><a href="" class="navbar-brand">Salsabor</a></div>
        <div id="navbar" class="navbar-collapse collapse">
            <ul class="nav navbar-nav navbar-right">
-             <li><a href=""><span class="glyphicon glyphicon-user"></span> Patrick</a></li>
+             <li><a href=""><span class="glyphicon glyphicon-user"></span> Dev_Version</a></li>
               <li class="notification-option">
                       <a href="" class="notification-icon"><span class="glyphicon glyphicon-bell"></span></a>
               </li>
