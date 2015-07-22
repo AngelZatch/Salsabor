@@ -21,7 +21,7 @@ body{
 }
 
 .navbar-brand{
-    color: #EFEFEF;
+    color: #FFF;
     font-weight: 800;
     font-size: 2em;
 }
@@ -268,4 +268,18 @@ body{
     left: 40%;
     width: 30%;
     text-align: center;
+}
+.notification-icon {
+    color: #4E001A !important;
+    font-size: 19px;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+}
+
+.notification-icon:hover{
+    color: #1B0009 !important;
+}
+
+.navbar-inverse .navbar-nav > li > a{
+    color: #FFF;
 }
