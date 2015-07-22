@@ -44,12 +44,15 @@ if(isset($_POST['add'])){
                	<form action="cours_add.php" method="post" class="form-horizontal" role="form">
 						 <div class="btn-toolbar">
 						   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-						   <input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER">
+						   <input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER" onClick="checkMandatory()" id="submit-button" disabled>
 						</div> <!-- btn-toolbar -->   
 						<div class="form-group">
 							<label for="intitule" class="col-sm-3 control-label">Intitulé <span class="mandatory">*</span></label>
 							<div class="col-sm-9 ui-widget">
 								<input type="text" class="form-control" name="intitule" id="cours_tags" placeholder="Nom du cours" mandatory="true">
+								<div class="float-right">
+								    <p id="intitule-error-message" class="error-messages"></p>
+								</div>
 							</div>
 					   </div>
 					   <div class="form-group">
@@ -70,7 +73,7 @@ if(isset($_POST['add'])){
 					   <div class="form-group">
 						   <label for="type" class="col-sm-3 control-label">Type de cours<span class="mandatory">*</span></label>
 							<div class="col-sm-9">
-								<select name="type" class="form-control">
+								<select name="type" class="form-control" mandatory="true">
 									<?php while($row_types = $types->fetch(PDO::FETCH_ASSOC)){ ?>
 										<option value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>
 									<?php } ?>
@@ -81,7 +84,7 @@ if(isset($_POST['add'])){
 						   <label for="date_debut" class="col-sm-3 control-label">Date de Début<span class="mandatory">*</span></label>
 						   <div class="col-sm-9">
 						   <div class="input-group">
-						       <input type="date" class="form-control" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
+						       <input type="date" class="form-control" name="date_debut" id="date_debut" mandatory="true" onChange="checkCalendar(false, false)">
                                <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
 						   </div>
 						   </div>
@@ -107,11 +110,11 @@ if(isset($_POST['add'])){
 						   <fieldset>
 						   <label for="herue_debut" class="col-sm-3 control-label">Début à <span class="mandatory">*</span></label>
 						   <div class="col-sm-9">
-							   <input type="time" class="form-control hasTimepicker" name="heure_debut" id="heure_debut" onChange="checkCalendar(false, false)">
+							   <input type="time" class="form-control hasTimepicker" name="heure_debut" id="heure_debut" mandatory="true" onChange="checkCalendar(false, false)">
 						   </div>
 						   <label for="heure_fin" class="col-sm-3 control-label">Fin à <span class="mandatory">*</span></label>
 						   <div class="col-sm-9">
-							   <input type="time" class="form-control hasTimepicker" name="heure_fin" id="heure_fin" onChange="checkCalendar(false, false)">
+							   <input type="time" class="form-control hasTimepicker" name="heure_fin" id="heure_fin" mandatory="true" onChange="checkCalendar(false, false)">
 						   </div>
 						   </fieldset>
 						</div>
@@ -119,7 +122,7 @@ if(isset($_POST['add'])){
 							<fieldset>
 							<label for="prof_principal" class="col-sm-3 control-label">Professeur <span class="mandatory">*</span></label>
 							<div class="col-sm-9">
-							   <select name="prof_principal" class="form-control">
+							   <select name="prof_principal" class="form-control" mandatory="true">
 								   <?php foreach ($row_profs as $r){ ?>
 										<option value="<?php echo $r['prof_id'];?>"><?php echo $r['prenom']." ".$r['nom'];?></option>
 									<?php } ?>
@@ -127,7 +130,7 @@ if(isset($_POST['add'])){
 							</div>
 							<label for="prof_remplacant" class="col-sm-3 control-label">Remplaçant <span class="mandatory">*</span></label>
 							<div class="col-sm-9">
-							   <select name="prof_remplacant" class="form-control">
+							   <select name="prof_remplacant" class="form-control" mandatory="true">
 								   <?php foreach ($row_profs as $r){ ?>
 										<option value="<?php echo $r['prof_id'];?>"><?php echo $r['prenom']." ".$r['nom'];?></option>
 									<?php } ?>
@@ -138,7 +141,7 @@ if(isset($_POST['add'])){
 						<div class="form-group">
 						   <label for="niveau" class="col-sm-3 control-label">Niveau<span class="mandatory">*</span></label>
 							<div class="col-sm-9">
-							<select name="niveau" class="form-control">
+							<select name="niveau" class="form-control" mandatory="true">
 							<?php while($row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC)){ ?>
 								<option value="<?php echo $row_niveaux['niveau_id'];?>"><?php echo $row_niveaux['niveau_name'];?></option>
 							<?php } ?>
@@ -148,7 +151,7 @@ if(isset($_POST['add'])){
 						<div class="form-group">
 						   <label for="lieu" class="col-sm-3 control-label">Lieu<span class="mandatory">*</span></label>
 						   <div class="col-sm-9">
-						   <select name="lieu" class="form-control" id="lieu" onChange="checkCalendar(false, false)">
+						   <select name="lieu" class="form-control" id="lieu" mandatory="true" onChange="checkCalendar(false, false)">
 						   <?php while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){ ?>
 								<option value="<?php echo $row_lieux['salle_id'];?>"><?php echo $row_lieux['salle_name'];?></option>
 							<?php } ?>
@@ -158,7 +161,7 @@ if(isset($_POST['add'])){
 					   <div class="form-group">
 						  <div class="col-sm-9 col-sm-offset-3">
 							  <label for="paiement" class="control-label">
-								  <input type="checkbox" name="paiement" id="paiement" class="checkbox-inline" value="1">Déjà payé<span class="mandatory">*</span>
+								  <input type="checkbox" name="paiement" id="paiement" class="checkbox-inline" value="1" mandatory="true">Déjà payé<span class="mandatory">*</span>
 							  </label>
 						  </div>
 					   </div>
@@ -201,13 +204,7 @@ if(isset($_POST['add'])){
 		$("#recurring-options").toggle('600');
 	});
        
-       $("[mandatory='true']").blur(function(){
-           if($(this).val() != ''){
-               $(this).css('border-color', 'green');
-           } else {
-               $(this).css('border-color', 'red');
-           }
-       });
+       $("[mandatory='true']").blur(checkMandatory);
 	</script>
 </body>
 </html>

@@ -283,3 +283,7 @@ body{
 .navbar-inverse .navbar-nav > li > a{
     color: #FFF;
 }
+
+.error-messages {
+    color: red !important;
+}

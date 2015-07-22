@@ -4,6 +4,7 @@ $("*[date-today='true']").click(function(){
     $(this).parent().prev().val(today);
 });
 
+// Vérifie si un adhérent existe dans la base de données
 function ifAdherentExists(){
 	var identite_prenom = $('#identite_prenom').val();
 	var identite_nom = $('#identite_nom').val();
@@ -19,6 +20,7 @@ function ifAdherentExists(){
 	});
 }
 
+// Effectue une inscription rapide dans le cas d'un adhérent inexistant à la réservation d'une salle ou l'achat d'un forfait
 function addAdherent(){
 	var identite_prenom = $('#identite_prenom').val();
 	var identite_nom = $('#identite_nom').val();
@@ -37,6 +39,7 @@ function addAdherent(){
 	});
 }
 
+// Vérifie l'existence de jours chômés à l'ajout d'un évènement
 function checkHoliday(){
    var date_debut = $('#date_debut').val();
    $.post("functions/check_holiday.php", {date_debut}).done(function(data){
@@ -51,4 +54,14 @@ function checkHoliday(){
            checkCalendar(true, false);
        }
    });
-}    
+}
+
+// Vérifie que les champs obligatoires sont renseignés.
+function checkMandatory(){
+  if($("[mandatory='true']").val() != '' || $("[mandatory='true']").html() != ''){
+      $("#submit-button").prop('disabled', false);
+   } else {
+       $(this).next().children('p').html("Ce champ est requis");
+       $("#submit-button").prop('disabled', true);
+   }
+}
