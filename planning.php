@@ -192,6 +192,7 @@ if(isset($_POST['deleteCoursAll'])){
                 $('#add-options').on('shown.bs.modal', function(e){
                     $('#add-options').offset({top: position.top - pHeight*1.4, left: position.left - 50});
                 });
+                $('#add-options').popoverX('hide');
                 $('#add-options').popoverX('toggle');
                 sessionStorage.removeItem('end');
                 sessionStorage.removeItem('start');
