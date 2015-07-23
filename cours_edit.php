@@ -4,18 +4,18 @@ $db = PDOFactory::getConnection();
 require_once 'functions/cours.php';
 /** Récupération des valeurs dans la base de données des champs **/
 $id = $_GET['id'];
-$data = $db->prepare('SELECT * FROM cours WHERE cours_id=?');
-$data->bindParam(1, $id);
-$data->execute();
-$row_data = $data->fetch(PDO::FETCH_ASSOC);
+$queryCours = $db->prepare('SELECT * FROM cours WHERE cours_id=?');
+$queryCours->bindParam(1, $id);
+$queryCours->execute();
+$cours = $queryCours->fetch(PDO::FETCH_ASSOC);
 
-$data = $db->prepare('SELECT recurrence, frequence_repetition, parent_end_date FROM cours_parent WHERE parent_id=?');
-$data->bindParam(1, $row_data['cours_parent_id']);
-$data->execute();
-$res_recurrence = $data->fetch(PDO::FETCH_ASSOC);
+$queryParent = $db->prepare('SELECT recurrence, frequence_repetition, parent_end_date FROM cours_parent WHERE parent_id=?');
+$queryParent->bindParam(1, $cours['cours_parent_id']);
+$queryParent->execute();
+$res_recurrence = $queryParent->fetch(PDO::FETCH_ASSOC);
 
 $queryProf = $db->prepare('SELECT * FROM professeurs WHERE prof_id=?');
-$queryProf->bindParam(1, $row_data['prof_principal']);
+$queryProf->bindParam(1, $cours['prof_principal']);
 $queryProf->execute();
 $data_prof = $queryProf->fetch(PDO::FETCH_ASSOC);
 
@@ -25,8 +25,8 @@ $queryParticipants->execute();
 $nombre_eleves = $queryParticipants->rowCount();
 
 $queryTarif = $db->prepare('SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=? AND type_prestation=?');
-$queryTarif->bindParam(1, $row_data['prof_principal']);
-$queryTarif->bindParam(2, $row_data['cours_type']);
+$queryTarif->bindParam(1, $cours['prof_principal']);
+$queryTarif->bindParam(2, $cours['cours_type']);
 $queryTarif->execute();
 $tarif = $queryTarif->fetch(PDO::FETCH_ASSOC);
 
@@ -92,7 +92,7 @@ if(isset($_POST['editNext'])){
             $edit->bindParam(':prix', $prix_final);
             $edit->bindParam(':edit_comment', $_POST['edit-comment']);
             $edit->bindParam(':paiement', $_POST['paiement']);
-			$edit->bindParam(':parent_id', $row_data['cours_parent_id']);
+			$edit->bindParam(':parent_id', $cours['cours_parent_id']);
 			$edit->bindParam(':id', $id);
 			$edit->execute();
 			
@@ -132,7 +132,7 @@ if(isset($_POST['deleteCoursAll'])){
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Editer - <?php echo $row_data['cours_intitule'];?> (<?php echo date_create($row_data['cours_start'])->format('d/m/Y');?> : <?php echo date_create($row_data['cours_start'])->format('H:i')?> / <?php echo date_create($row_data['cours_end'])->format('H:i');?>) | Salsabor</title>
+    <title>Editer - <?php echo $cours['cours_intitule'];?> (<?php echo date_create($cours['cours_start'])->format('d/m/Y');?> : <?php echo date_create($cours['cours_start'])->format('H:i')?> / <?php echo date_create($cours['cours_end'])->format('H:i');?>) | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>
@@ -171,21 +171,21 @@ if(isset($_POST['deleteCoursAll'])){
 					   </div>
 				   </div> <!-- btn-toolbar -->   		
 				   <br>
-              		<p id="last-edit"><?php if($row_data['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($row_data['derniere_modification'])->format('d/m/Y')." à ".date_create($row_data['derniere_modification'])->format('H:i');?></p>
+              		<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
                		<div class="form-group">
-               			<input type="text" class="form-control" name="intitule" style="font-size:30px; height:inherit;" value=<?php echo $row_data['cours_intitule'];?>>
+               			<input type="text" class="form-control" name="intitule" style="font-size:30px; height:inherit;" value=<?php echo $cours['cours_intitule'];?>>
                		</div>
                		<div class="form-group">
-               			<input type="date" class="col-sm-3" name="date_debut" id="date_debut" value=<?php echo date_create($row_data['cours_start'])->format('Y-m-d');?>>
-               			<input type="time" class="col-sm-3" name="heure_debut" id="heure_debut" value=<?php echo date_create($row_data['cours_start'])->format('H:i')?>>
-               			<input type="time" class="col-sm-3" name="heure_fin" id="heure_fin" value=<?php echo date_create($row_data['cours_end'])->format('H:i');?>>
-               			<input type="date" class="col-sm-3" name="date_fin" id="date_fin" value=<?php echo date_create($row_data['cours_end'])->format('Y-m-d');?>>
+               			<input type="date" class="col-sm-3" name="date_debut" id="date_debut" value=<?php echo date_create($cours['cours_start'])->format('Y-m-d');?>>
+               			<input type="time" class="col-sm-3" name="heure_debut" id="heure_debut" value=<?php echo date_create($cours['cours_start'])->format('H:i')?>>
+               			<input type="time" class="col-sm-3" name="heure_fin" id="heure_fin" value=<?php echo date_create($cours['cours_end'])->format('H:i');?>>
+               			<input type="date" class="col-sm-3" name="date_fin" id="date_fin" value=<?php echo date_create($cours['cours_end'])->format('Y-m-d');?>>
                		</div>
                		<div class="form-group">
                			<select name="type" id="" class="form-control">
                				<?php
 							while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
-								if($row_data["cours_type"] == $row_types["prestations_id"]) { ?>
+								if($cours["cours_type"] == $row_types["prestations_id"]) { ?>
 								<option selected="selected" value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>;
 							<?php } else { ?>
 								<option value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>;
@@ -212,21 +212,25 @@ if(isset($_POST['deleteCoursAll'])){
                             <li class="list-group-item" id="prix-calcul">Somme due à l'enseignant :
                             <?php
                             // Calcul de la somme due à l'enseignant en fonction de la table des tarifs
-                            if(isset($tarif['ratio_multiplicatif'])){
-                                if($tarif['ratio_multiplicatif'] == 'personne'){
-                                    $prix_final = $tarif['tarif_prestation'] * $nombre_eleves;
-                                } else if ($tarif['ratio_multiplicatif'] == 'prestation'){
-                                    $prix_final = $tarif['tarif_prestation'];
-                                } else{
-                                    $prix_final = $tarif['tarif_prestation'] * $row_data['cours_unite'];
-                                }
-                            } else{
-                                $prix_final = $tarif['cout_horaire'] * $tarif['cours_unite'];
-                            }?>
+							if($cours["paiement_effectue"] != 1){
+								if(isset($tarif['ratio_multiplicatif'])){
+									if($tarif['ratio_multiplicatif'] == 'personne'){
+										$prix_final = $tarif['tarif_prestation'] * $nombre_eleves;
+									} else if ($tarif['ratio_multiplicatif'] == 'prestation'){
+										$prix_final = $tarif['tarif_prestation'];
+									} else{
+										$prix_final = $tarif['tarif_prestation'] * $cours['cours_unite'];
+									}
+								} else{
+									$prix_final = $tarif['cout_horaire'] * $tarif['cours_unite'];
+								}
+							} else {
+								$prix_final = $cours["cours_prix"];
+							}?>
                             <span class='input-group-addon' id='currency-addon'>€</span>
                             <input type=text name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $prix_final?>" aria-describedby='currency-addon'>
-                            <input type="checkbox" <?php if($row_data['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
-                            <input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $row_data['paiement_effectue'];?>">
+                            <input type="checkbox" <?php if($cours['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
+                            <input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $cours['paiement_effectue'];?>">
                             </li>
                         </ul>
                			</div>
