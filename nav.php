@@ -13,7 +13,7 @@ $locationsNotif = $queryLocationsNotif->rowCount();
 
   <nav class="navbar navbar-inverse navbar-fixed-top">
    <div class="container-fluid">
-       <div class="navbar-header"><a href="" class="navbar-brand">Salsabor</a></div>
+       <div class="navbar-header"><a href="dashboard.php" class="navbar-brand"><img src="assets/images/logotest.png" alt="Salsabor Gestion" style="height:100%;"></a></div>
        <div id="navbar" class="navbar-collapse collapse">
            <ul class="nav navbar-nav navbar-right">
              <li><a href=""><span class="glyphicon glyphicon-user"></span> Dev_Version</a></li>
