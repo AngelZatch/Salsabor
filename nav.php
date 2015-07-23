@@ -2,12 +2,13 @@
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
-$queryCoursNotif = $db->query("SELECT * FROM cours WHERE paiement_effectue=0");
-$coursNotif = $queryCoursNotif->rowCount();
+$coursNotif = $db->query("SELECT * FROM cours WHERE paiement_effectue=0")->rowCount();
 
+$locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0 AND priorite=1")->rowCount();
 
-$queryLocationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0 AND priorite=1");
-$locationsNotif = $queryLocationsNotif->rowCount();
+$nombrePassages = $db->query("SELECT * FROM passages")->rowCount();
+
+$queryPassages = $db->query("SELECT * FROM passages JOIN adherents ON passage_eleve=adherents.eleve_id JOIN salle ON passage_salle=salle.salle_id");
 ?>
   
 
@@ -18,7 +19,7 @@ $locationsNotif = $queryLocationsNotif->rowCount();
            <ul class="nav navbar-nav navbar-right">
              <li><a href=""><span class="glyphicon glyphicon-user"></span> Dev_Version</a></li>
               <li class="notification-option">
-                      <a href="" class="notification-icon"><span class="glyphicon glyphicon-bell"></span></a>
+                      <a href="" class="notification-icon"><span class="glyphicon glyphicon-map-marker"></span><span class="badge"><?php echo $nombrePassages;?></span></a>
               </li>
               <li class="notification-option">
                       <a href="" class="notification-icon"><span class="glyphicon glyphicon-folder-open"></span></a>
