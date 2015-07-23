@@ -29,7 +29,7 @@ if(isset($_POST['edit'])){
 										justification_modification = :edit_comment,
 										derniere_modification = :derniere_modification
 										WHERE reservation_id = :id');
-		$edit->bindParam(':demandeur', $_POST['demandeur']);
+		$edit->bindParam(':demandeur', $reservation["reservation_personne"]);
 		$edit->bindParam(':prestation', $_POST['prestation']);
 		$edit->bindParam(':start', $start);
 		$edit->bindParam(':end', $end);
