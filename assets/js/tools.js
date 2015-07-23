@@ -62,7 +62,7 @@ function checkHoliday(){
 
 // Vérifie que les champs obligatoires sont renseignés.
 function checkMandatory(){
-  if($("[mandatory='true']").val() != '' || $("[mandatory='true']").html() != ''){
+  if($(".mandatory").val() != '' || $(".mandatory").html() != ''){
       $("#submit-button").prop('disabled', false);
    } else {
        $(this).next().children('p').html("Ce champ est requis");

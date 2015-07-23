@@ -5,7 +5,7 @@ $db = PDOFactory::getConnection();
 ?>
 <form action="tarifs_liste.php" method="post" class="form-horizontal" role="form">
     <div class="form-group">
-        <label for="type_prestation" class="col-sm-3 control-label">Type de prestation <span class="mandatory">*</span></label>
+        <label for="type_prestation" class="col-sm-3 control-label">Type de prestation <span class="span-mandatory">*</span></label>
         <div class="col-sm-9">
             <select name="type_prestation" class="form-control">
             <?php
@@ -18,11 +18,11 @@ $db = PDOFactory::getConnection();
         </div>
     </div>
     <div class="form-group">
-        <label for="jour" class="col-sm-3 control-label">Jours de réservation <span class="mandatory">*</span></label>
+        <label for="jour" class="col-sm-3 control-label">Jours de réservation <span class="span-mandatory">*</span></label>
         <div class="col-sm-9">
-            <input type="checkbox" name="jour-1" id="jour-1" class="checkbox-inline" value="1" onClick="toggleWeekHours()">Semaine</input>
-            <input type="checkbox" name="jour-2" id="jour-2" class="checkbox-inline" value="2">Samedi</input>
-            <input type="checkbox" name="jour-3" id="jour-3" class="checkbox-inline" value="3">Dimanche</input>
+            <input type="checkbox" name="jour-1" id="jour-1" class="checkbox-inline" value="1" onClick="toggleWeekHours()">Semaine
+            <input type="checkbox" name="jour-2" id="jour-2" class="checkbox-inline" value="2">Samedi
+            <input type="checkbox" name="jour-3" id="jour-3" class="checkbox-inline" value="3">Dimanche
         </div>
     </div>
     <div class="form-group" id="week-hours" style="display:none;">
@@ -37,7 +37,7 @@ $db = PDOFactory::getConnection();
     </div>
     </div>
     <div class="form-group">
-        <label for="lieu_resa" class="col-sm-3 control-label">Lieu réservé <span class="mandatory">*</span></label>
+        <label for="lieu_resa" class="col-sm-3 control-label">Lieu réservé <span class="span-mandatory">*</span></label>
         <div class="col-sm-9">
             <?php
             $lieux = $db->query('SELECT * FROM salle');
@@ -48,7 +48,7 @@ $db = PDOFactory::getConnection();
         </div>
     </div>
     <div class="form-group">
-        <label for="prix_resa" class="col-sm-3 control-label">Prix <span class="mandatory">*</span></label>
+        <label for="prix_resa" class="col-sm-3 control-label">Prix <span class="span-mandatory">*</span></label>
         <div class="col-sm-9 input-group">
             <input type="text" class="form-control" name="prix_resa"><span class="input-group-addon">€</span>
         </div>

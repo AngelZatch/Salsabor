@@ -59,7 +59,7 @@ body{
     font-family: 'globersemibold_free';
 }
 
-.mandatory {
+.span-mandatory {
     color: red;
 }
 

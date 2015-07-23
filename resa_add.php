@@ -28,15 +28,15 @@ if(isset($_POST['addResa'])){
                	<form action="resa_add.php" method="post" target="_blank" class="form-horizontal" role="form" id="add_resa">
 					 <div class="btn-toolbar">
 					   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-					   <input type="submit" name="addResa" role="button" class="btn btn-primary confirm-add" value="ENREGISTRER">
+					   <input type="submit" name="addResa" role="button" class="btn btn-primary confirm-add" value="ENREGISTRER" id="submit-button" disabled>
               	    </div> <!-- btn-toolbar -->   
               	    <div class="alert alert-success" id="user-added" style="display:none;">Adhérent ajouté avec succès</div>
               	    <div class="class alert alert-danger" id="user-error" style="display:none;">Erreur. Certains champs sont vides</div>
                	    <div class="form-group">
-               	        <label for="identite" class="col-sm-3 control-label">Demandeur <span class="mandatory">*</span></label>
+               	        <label for="identite" class="col-sm-3 control-label">Demandeur <span class="span-mandatory">*</span></label>
                	        <div class="col-sm-9">
-               	            <input type="text" name="identite_prenom" id="identite_prenom" class="form-control" placeholder="Prénom" onChange="ifAdherentExists()">
-               	            <input type="text" name="identite_nom" id="identite_nom" class="form-control" placeholder="Nom" onChange="ifAdherentExists()">
+               	            <input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory" placeholder="Prénom" onChange="ifAdherentExists()">
+               	            <input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory" placeholder="Nom" onChange="ifAdherentExists()">
                	        </div>
                	        <div class="align-right">
 							<p class="error-alert" id="err_adherent"></p>
@@ -67,7 +67,7 @@ if(isset($_POST['addResa'])){
                	        </div>
                	    </div>
                	    <div class="form-group">
-               	        <label for="prestation" class="col-sm-3 control-label">Activité <span class="mandatory">*</span></label>
+               	        <label for="prestation" class="col-sm-3 control-label">Activité <span class="span-mandatory">*</span></label>
                	        <div class="col-sm-9">
                	           <select name="prestation" id="prestation" class="form-control" onChange="checkCalendar(true, false)">
                	           <?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){?>
@@ -77,7 +77,7 @@ if(isset($_POST['addResa'])){
                	        </div>
                	    </div>
                	    <div class="form-group">
-               	        <label for="date_debut" class="col-sm-3 control-label">Date <span class="mandatory">*</span></label>
+               	        <label for="date_debut" class="col-sm-3 control-label">Date <span class="span-mandatory">*</span></label>
                	        <div class="col-sm-9">
                             <div class="input-group">
                                 <input type="date" class="form-control" name="date_debut" id="date_debut" onChange="checkHoliday()">
@@ -88,14 +88,14 @@ if(isset($_POST['addResa'])){
                	    </div>
                	    <div class="form-group">
                	        <fieldset>
-               	            <label for="heure_debut" class="col-sm-3 control-label">Début à <span class="mandatory">*</span></label>
+               	            <label for="heure_debut" class="col-sm-3 control-label">Début à <span class="span-mandatory">*</span></label>
                	            <div class="col-sm-9"><input type="time" class="form-control" id="heure_debut" name="heure_debut" onChange="checkCalendar(true, false)"></div>
-               	            <label for="heure_fin" class="col-sm-3 control-label">Fin à <span class="mandatory">*</span></label>
+               	            <label for="heure_fin" class="col-sm-3 control-label">Fin à <span class="span-mandatory">*</span></label>
                	            <div class="col-sm-9"><input type="time" class="form-control" id="heure_fin" name="heure_fin" onChange="checkCalendar(true, false)"></div>
                	        </fieldset>
                	    </div>
                	    <div class="form-group">
-               	        <label for="lieu" class="col-sm-3 control-label">Salle <span class="mandatory">*</span></label>
+               	        <label for="lieu" class="col-sm-3 control-label">Salle <span class="span-mandatory">*</span></label>
                	        <div class="col-sm-9">
                	           <select name="lieu" class="form-control" id="lieu" onChange="checkCalendar(true, false)">
                	           <?php while($lieux = $queryLieux->fetch(PDO::FETCH_ASSOC)){?>
@@ -133,53 +133,55 @@ if(isset($_POST['addResa'])){
    <?php include "scripts.php";?>
    <script src="assets/js/check_calendar.js"></script>
    <script>
-if($('#priorite').attr('value') == 0){
-	$('#prix_reservation').hide();
-}
-$('#priorite').change(function(){
-	$('#prix_reservation').toggle('600');
-});
-$('#paiement').change(function(){
-	var state = $('#paiement').prop('checked');
-	if(state){
-		$('#paiement-sub').val(1);
-	} else {
-		$('#paiement-sub').val(0);
-	}
-});
+        if($('#priorite').attr('value') == 0){
+            $('#prix_reservation').hide();
+        }
+        $('#priorite').change(function(){
+            $('#prix_reservation').toggle('600');
+        });
+        $('#paiement').change(function(){
+            var state = $('#paiement').prop('checked');
+            if(state){
+                $('#paiement-sub').val(1);
+            } else {
+                $('#paiement-sub').val(0);
+            }
+        });
        
-function ifAdherentExists(){
-	var identite_prenom = $('#identite_prenom').val();
-	var identite_nom = $('#identite_nom').val();
-	$.post("functions/check_adherent.php", {identite_prenom, identite_nom}).done(function(data){
-		if(data == 0){
-			$('#err_adherent').empty();
-			$('#err_adherent').append("Cet adhérent n'existe pas. Voulez-vous le créer ?");
-			$('#create-user').show();
-		} else {
-			$('#err_adherent').empty();
-			$('#create-user').hide();
-		}
-	});
-}
+       $(".mandatory").blur(checkMandatory);
+       
+        function ifAdherentExists(){
+            var identite_prenom = $('#identite_prenom').val();
+            var identite_nom = $('#identite_nom').val();
+            $.post("functions/check_adherent.php", {identite_prenom, identite_nom}).done(function(data){
+                if(data == 0){
+                    $('#err_adherent').empty();
+                    $('#err_adherent').append("Cet adhérent n'existe pas. Voulez-vous le créer ?");
+                    $('#create-user').show();
+                } else {
+                    $('#err_adherent').empty();
+                    $('#create-user').hide();
+                }
+            });
+        }
 
-function addAdherent(){
-	var identite_prenom = $('#identite_prenom').val();
-	var identite_nom = $('#identite_nom').val();
-	var rue = $('#rue').val();
-	var code_postal = $('#code_postal').val();
-	var ville = $('#ville').val();
-	var mail = $('#mail').val();
-	var telephone = $('#telephone').val();
-	var date_naissance = $('#date_naissance').val();
-	$.post("functions/add_adherent.php", {identite_prenom, identite_nom, rue, code_postal, ville, mail, telephone, date_naissance}).done(function(data){
-		$('#create-user').click();
-		$('#user-added').show('500').delay(3000).hide('3000');
-		ifAdherentExists();
-	}).fail(function(data){
-		$('#user-error').show('500').delay(3000).hide('3000');
-	});
-}
+        function addAdherent(){
+            var identite_prenom = $('#identite_prenom').val();
+            var identite_nom = $('#identite_nom').val();
+            var rue = $('#rue').val();
+            var code_postal = $('#code_postal').val();
+            var ville = $('#ville').val();
+            var mail = $('#mail').val();
+            var telephone = $('#telephone').val();
+            var date_naissance = $('#date_naissance').val();
+            $.post("functions/add_adherent.php", {identite_prenom, identite_nom, rue, code_postal, ville, mail, telephone, date_naissance}).done(function(data){
+                $('#create-user').click();
+                $('#user-added').show('500').delay(3000).hide('3000');
+                ifAdherentExists();
+            }).fail(function(data){
+                $('#user-error').show('500').delay(3000).hide('3000');
+            });
+        }
        
        $(document).ready(function(){
            var start = sessionStorage.getItem('start');
