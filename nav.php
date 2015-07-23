@@ -6,7 +6,7 @@ $queryCoursNotif = $db->query("SELECT * FROM cours WHERE paiement_effectue=0");
 $coursNotif = $queryCoursNotif->rowCount();
 
 
-$queryLocationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0");
+$queryLocationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0 AND priorite=1");
 $locationsNotif = $queryLocationsNotif->rowCount();
 ?>
   
