@@ -15,13 +15,26 @@ $db = PDOFactory::getConnection();
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-map-marker"></span> Passages</h1>
-               <p id="last-edit">Il y a actuellement <?php echo $nombrePassages;?> cours à venir ou déjà en cours.</p>
-               <?php while($passages = $queryPassages->fetch(PDO::FETCH_ASSOC)){ ?>
-               <p>Passage : <?php echo $passages["passage_date"];?></p>
-               <?php } ?>
+               <p id="current-time"></p>
+               <p id="last-edit">Aucun cours à venir pour le moment.</p>
+               <?php while($passages = $queryPassages->fetch(PDO::FETCH_ASSOC)) { ?>
+               <p><?php echo $passages["eleve_prenom"]." ".$passages["eleve_nom"]." enregistré à ".$passages["passage_date"];?></p>
+			   <?php } ?>
            </div>
        </div>
    </div>
-   <?php include "scripts.php";?>    
+   <?php include "scripts.php";?>
+   <script>
+	   var now;
+	   function update(){
+		   var now = moment().locale('fr').format("DD MMMM YYYY HH:mm:ss");
+		   $("#current-time").html(now);
+	   }
+	   
+	   $(document).ready(function(){
+		   update();
+		   setInterval(update, 1000);
+	   });
+	</script>
 </body>
 </html>

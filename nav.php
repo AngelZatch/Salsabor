@@ -8,7 +8,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 
 $nombrePassages = $db->query("SELECT * FROM passages")->rowCount();
 
-$queryPassages = $db->query("SELECT * FROM passages JOIN adherents ON passage_eleve=adherents.eleve_id JOIN salle ON passage_salle=salle.salle_id");
+$queryPassages = $db->query("SELECT * FROM passages JOIN adherents ON passage_eleve=adherents.numero_rfid");
 ?>
   
 
