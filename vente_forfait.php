@@ -54,6 +54,29 @@ if(isset($_POST["submit"])){
 							<p class="error-alert" id="err_adherent"></p>
 							<a href="#user-details" role="button" class="btn btn-primary" value="create-user" id="create-user" style="display:none;" data-toggle="collapse" aria-expanded="false" aria-controls="userDetails">Créer</a>
                	        </div>
+						<div id="user-details" class="collapse">
+               	        	<div class="well">
+               	        		<div class="form-group">
+               	        			<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control">
+								</div>
+								<div class="form-group">
+									<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control">
+								</div>
+								<div class="form-group">
+									<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control">
+								</div>
+								<div class="form-group">
+									<input type="text" name="mail" id="mail" placeholder="Adresse mail" class="form-control">
+								</div>
+								<div class="form-group">
+									<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control">
+								</div>
+								<div class="form-group">
+									<input type="date" name="date_naissance" id="date_naissance" class="form-control">
+								</div>
+               	        		<a class="btn btn-primary" onClick="addAdherent()">AJOUTER</a>
+               	        	</div>
+               	        </div>
                    </div>
                    <div class="form-group">
                        <label for="echeances">Nombre d'échéances mensuelles</label>
