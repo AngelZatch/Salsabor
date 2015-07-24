@@ -28,6 +28,7 @@ if(isset($_POST["edit"])){
 		$db->beginTransaction();
 		$edit = $db->prepare('UPDATE adherents SET eleve_prenom = :prenom,
 													eleve_nom = :nom,
+													numero_rfid = :rfid,
 													date_naissance = :date_naissance,
 													rue = :rue,
 													code_postal = :code_postal,
@@ -37,6 +38,7 @@ if(isset($_POST["edit"])){
 													WHERE eleve_id = :id');
 		$edit->bindParam(':prenom', $_POST["identite_prenom"]);
 		$edit->bindParam(':nom', $_POST["identite_nom"]);
+		$edit->bindParam(':rfid', $_POST["rfid"]);
 		$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
 		$edit->bindParam(':rue', $_POST["rue"]);
 		$edit->bindParam(':code_postal', $_POST["code_postal"]);
@@ -45,6 +47,11 @@ if(isset($_POST["edit"])){
 		$edit->bindParam(':telephone', $_POST["telephone"]);
 		$edit->bindParam(':id', $data);
 		$edit->execute();
+		if(isset($_POST["rfid"])){
+			$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
+			$delete->bindParam(1, $_POST["rfid"]);
+			$delete->execute();
+		}
 		$db->commit();
 		header("Location:eleve_details.php?id=$data");
 	} catch(PDOException $e){
@@ -95,6 +102,13 @@ if(isset($_POST["edit"])){
 								<input type="text" name="mail" id="mail" placeholder="Adresse mail" class="form-control" value="<?php echo $details["mail"];?>">
 							</div>
                			</div>
+               			<div class="form-group">
+               				<label for="rfid" class="control-label">Code carte</label>
+               				<div class="input-group">
+               					<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce puis appuyez sur le bouton" value="<?php echo $details["numero_rfid"];?>">
+               					<span role="buttton" class="input-group-btn"><a class="btn btn-primary" role="button" name="fetch-rfid">Récupérer le code RFID</a></span>
+               				</div>
+						</div>
 						<div class="form-group">
 						<label for="" class="control-label">Adresse postale</label>
 							<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control" value="<?php echo $details["rue"];?>">
@@ -195,5 +209,17 @@ if(isset($_POST["edit"])){
    </div>
    <?php include "scripts.php";?>    
    <script src="assets/js/nav-tabs.js"></script>
+   <script>
+	var tag;
+	   $("[name='fetch-rfid']").click(function(){
+		   $.post('functions/fetch_rfid.php').done(function(data){
+			  if(data != ""){
+				  $("[name='rfid']").val(data);
+			  } else {
+				  $("[name='rfid']").val("Aucun code n'a été trouvé. Veuillez réessayer.");
+			  }
+		   });
+	   });
+	</script>
 </body>
 </html>

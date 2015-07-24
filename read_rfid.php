@@ -6,14 +6,24 @@ if(isset($_GET["carte"])){
     $data = explode('*', $_GET["carte"]);
     $tag_rfid = $data[0];
     $ip_rfid = $data[1];
+	add($tag_rfid, $ip_rfid);
 }
 
 if(isset($_POST["add"])){
-    $new = $db->prepare("INSERT INTO passages(passage_eleve, passage_salle, passage_date)
-    VALUE(:tag, :salle, :date)");
-    $new->bindParam(':tag', $_POST["tag"]);
-    $new->bindParam(':salle', $_POST["salle"]);
+	$tag_rfid = $_POST["tag"];
+	$ip_rfid = $_POST["salle"];
+	add($tag_rfid, $ip_rfid);
+}
+
+function add($tag, $ip){
+	$db = PDOFactory::getConnection();
+	$new = $db->prepare("INSERT INTO passages(passage_eleve, passage_salle, passage_date, status)
+    VALUE(:tag, :salle, :date, :status)");
+    $new->bindParam(':tag', $tag);
+    $new->bindParam(':salle', $ip);
     $new->bindParam(':date', date_create('now')->format('Y-m-d H:i:s'));
+	$status = ($ip=="192.168.0.4")?"1":"0";
+	$new->bindParam(':status', $status);
     $new->execute();
     
     header('Location: passages.php');
