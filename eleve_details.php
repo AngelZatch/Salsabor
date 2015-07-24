@@ -105,8 +105,8 @@ if(isset($_POST["edit"])){
                			<div class="form-group">
                				<label for="rfid" class="control-label">Code carte</label>
                				<div class="input-group">
-               					<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce puis appuyez sur le bouton" value="<?php echo $details["numero_rfid"];?>">
-               					<span role="buttton" class="input-group-btn"><a class="btn btn-primary" role="button" name="fetch-rfid">Récupérer le code RFID</a></span>
+               					<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["numero_rfid"];?>">
+               					<span role="buttton" class="input-group-btn"><a class="btn btn-primary" role="button" name="fetch-rfid">Lancer la détection</a></span>
                				</div>
 						</div>
 						<div class="form-group">
@@ -210,16 +210,31 @@ if(isset($_POST["edit"])){
    <?php include "scripts.php";?>    
    <script src="assets/js/nav-tabs.js"></script>
    <script>
-	var tag;
+	   var listening = false;
+	   var wait;
 	   $("[name='fetch-rfid']").click(function(){
+		   if(!listening){
+			   wait = setInterval(function(){fetchRFID()}, 2000);
+			   $("[name='fetch-rfid']").html("Détection en cours...");
+			   listening = true;
+		   } else {
+			   clearInterval(wait);
+			   $("[name='fetch-rfid']").html("Lancer la détection");
+			   listening = false;
+		   }
+	   });
+	   function fetchRFID(){
 		   $.post('functions/fetch_rfid.php').done(function(data){
 			  if(data != ""){
 				  $("[name='rfid']").val(data);
+				  clearInterval(wait);
+				  $("[name='fetch-rfid']").html("Lancer la détection");
+				  listening = false;
 			  } else {
-				  $("[name='rfid']").val("Aucun code n'a été trouvé. Veuillez réessayer.");
+				  console.log("Aucun RFID détecté");
 			  }
 		   });
-	   });
+	   }
 	</script>
 </body>
 </html>

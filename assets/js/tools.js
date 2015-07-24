@@ -28,13 +28,14 @@ function ifAdherentExists(){
 function addAdherent(){
 	var identite_prenom = $('#identite_prenom').val();
 	var identite_nom = $('#identite_nom').val();
+	var rfid = $("[name='rfid']").val();
 	var rue = $('#rue').val();
 	var code_postal = $('#code_postal').val();
 	var ville = $('#ville').val();
 	var mail = $('#mail').val();
 	var telephone = $('#telephone').val();
 	var date_naissance = $('#date_naissance').val();
-	$.post("functions/add_adherent.php", {identite_prenom, identite_nom, rue, code_postal, ville, mail, telephone, date_naissance}).done(function(data){
+	$.post("functions/add_adherent.php", {identite_prenom, identite_nom, rfid, rue, code_postal, ville, mail, telephone, date_naissance}).done(function(data){
 		$('#create-user').click();
 		$('#user-added').show('500').delay(3000).hide('3000');
 		ifAdherentExists();

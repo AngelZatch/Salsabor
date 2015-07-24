@@ -25,10 +25,11 @@ if(isset($_POST['addAdherent'])){
 	print_r($_FILES);
 	try{
 		$db->beginTransaction();
-		$new = $db->prepare('INSERT INTO adherents(eleve_prenom, eleve_nom, date_naissance, date_inscription, rue, code_postal, ville, mail, telephone, photo)
-		VALUES(:prenom, :nom, :date_naissance, :date_inscription, :rue, :code_postal, :ville, :mail, :telephone, :photo)');
+		$new = $db->prepare('INSERT INTO adherents(eleve_prenom, eleve_nom, numero_rfid, date_naissance, date_inscription, rue, code_postal, ville, mail, telephone, photo)
+		VALUES(:prenom, :nom, :rfid, :date_naissance, :date_inscription, :rue, :code_postal, :ville, :mail, :telephone, :photo)');
 		$new->bindParam(':prenom', $_POST['identite_prenom']);
 		$new->bindParam(':nom', $_POST['identite_nom']);
+		$new->bindParam(':rfid', $_POST["rfid"]);
 		$new->bindParam(':date_naissance', $_POST['date_naissance']);
 		$new->bindParam(':date_inscription', date_create('now')->format('Y-m-d'));
 		$new->bindParam(':rue', $_POST['rue']);
@@ -38,8 +39,14 @@ if(isset($_POST['addAdherent'])){
 		$new->bindParam(':telephone', $_POST['telephone']);
 		$new->bindParam(':photo', $target_file);
 		$new->execute();
+		if(isset($_POST["rfid"])){
+			$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
+			$delete->bindParam(1, $_POST["rfid"]);
+			$delete->execute();
+		}
 		$db->commit();
 		echo "Succès lors de l'ajout";
+		header('Location: adherents.php');
 	} catch(PDOException $e){
 		$db->rollBack();
 		echo $e->getMessage();
@@ -60,7 +67,7 @@ if(isset($_POST['addAdherent'])){
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Inscrire un adhérent</h1>
 				<div class="col-sm-9" id="solo-form">
-					<form action="adherents.php" method="post" class="form-horizontal" role="form" id="add_adherent" enctype="multipart/form-data">
+					<form action="eleve_add.php" method="post" class="form-horizontal" role="form" id="add_adherent" enctype="multipart/form-data">
 					  <div class="btn-toolbar">
 					 	  <a href="adherents.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux adhérents</a>
 					 	  <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER">
@@ -103,12 +110,46 @@ if(isset($_POST['addAdherent'])){
 						<label for="date_naissance" class="control-label">Date de naissance</label>
 						<input type="date" name="date_naissance" id="date_naissance" class="form-control">
 					</div>
+					<div class="form-group">
+						<label for="rfid" class="control-label">Code carte</label>
+						<div class="input-group">
+							<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
+							<span role="buttton" class="input-group-btn"><a class="btn btn-primary" role="button" name="fetch-rfid">Lancer la détection</a></span>
+						</div>
+					</div>
 				  <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" style="width:100%;">
 				  </form>
 				</div>
            </div>
        </div>
    </div>
-   <?php include "scripts.php";?>    
+   <?php include "scripts.php";?>
+      <script>
+	   var listening = false;
+	   var wait;
+	   $("[name='fetch-rfid']").click(function(){
+		   if(!listening){
+			   wait = setInterval(function(){fetchRFID()}, 2000);
+			   $("[name='fetch-rfid']").html("Détection en cours...");
+			   listening = true;
+		   } else {
+			   clearInterval(wait);
+			   $("[name='fetch-rfid']").html("Lancer la détection");
+			   listening = false;
+		   }
+	   });
+	   function fetchRFID(){
+		   $.post('functions/fetch_rfid.php').done(function(data){
+			  if(data != ""){
+				  $("[name='rfid']").val(data);
+				  clearInterval(wait);
+				  $("[name='fetch-rfid']").html("Lancer la détection");
+				  listening = false;
+			  } else {
+				  console.log("Aucun RFID détecté");
+			  }
+		   });
+	   }
+	</script>    
 </body>
 </html>

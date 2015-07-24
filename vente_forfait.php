@@ -27,6 +27,7 @@ if(isset($_POST["submit"])){
                    <a href="dashboard.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Annuler et retourner au panneau d'administration</a>
                    <input type="submit" name="submit" role="button" class="btn btn-primary" value="ENREGISTRER">
                 </div> <!-- btn-toolbar -->   
+                  <div class="alert alert-custom alert-success" id="user-added" style="display:none;">Tarif ajouté avec succès</div>
                    <div class="form-group">
                        <label for="produit">Choisissez le forfait</label>
                         <div class="input-group">
@@ -57,6 +58,7 @@ if(isset($_POST["submit"])){
 						<div id="user-details" class="collapse">
                	        	<div class="well">
                	        		<div class="form-group">
+               	        			<label for="" class="control-label">Adresse postale</label>
                	        			<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control">
 								</div>
 								<div class="form-group">
@@ -66,13 +68,23 @@ if(isset($_POST["submit"])){
 									<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control">
 								</div>
 								<div class="form-group">
+									<label for="text" class="control-label">Adresse mail</label>
 									<input type="text" name="mail" id="mail" placeholder="Adresse mail" class="form-control">
 								</div>
 								<div class="form-group">
+									<label for="telephone" class="control-label">Numéro de téléphone</label>
 									<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control">
 								</div>
 								<div class="form-group">
+									<label for="date_naissance" class="control-label">Date de naissance</label>
 									<input type="date" name="date_naissance" id="date_naissance" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="rfid" class="control-label">Code carte</label>
+									<div class="input-group">
+										<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
+										<span role="buttton" class="input-group-btn"><a class="btn btn-primary" role="button" name="fetch-rfid">Lancer la détection</a></span>
+									</div>
 								</div>
                	        		<a class="btn btn-primary" onClick="addAdherent()">AJOUTER</a>
                	        	</div>
@@ -138,6 +150,32 @@ if(isset($_POST["submit"])){
        function calculatePrice(){
            $("#prix_calcul").val(window.json.tarif_global);
        }
-    </script>
+	   
+	   var listening = false;
+	   var wait;
+	   $("[name='fetch-rfid']").click(function(){
+		   if(!listening){
+			   wait = setInterval(function(){fetchRFID()}, 2000);
+			   $("[name='fetch-rfid']").html("Détection en cours...");
+			   listening = true;
+		   } else {
+			   clearInterval(wait);
+			   $("[name='fetch-rfid']").html("Lancer la détection");
+			   listening = false;
+		   }
+	   });
+	   function fetchRFID(){
+		   $.post('functions/fetch_rfid.php').done(function(data){
+			  if(data != ""){
+				  $("[name='rfid']").val(data);
+				  clearInterval(wait);
+				  $("[name='fetch-rfid']").html("Lancer la détection");
+				  listening = false;
+			  } else {
+				  console.log("Aucun RFID détecté");
+			  }
+		   });
+	   }
+    </script> 
 </body>
 </html>
