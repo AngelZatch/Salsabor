@@ -22,7 +22,7 @@ if(isset($_POST["submit"])){
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-road"></span> Vente d'un produit</h1>
-               <form action="" method="post">
+               <form action="" method="post" target="_blank">
                  <div class="btn-toolbar">
                    <a href="dashboard.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Annuler et retourner au panneau d'administration</a>
                    <input type="submit" name="submit" role="button" class="btn btn-primary" value="ENREGISTRER">

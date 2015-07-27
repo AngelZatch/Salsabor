@@ -37,7 +37,13 @@ function vente(){
 	
 	$echeances = $_POST["echeances"];
 	$montant_echeance = 0;
+	$prix_restant = $_POST["prix_achat"];
     
+	$queryProduit = $db->prepare("SELECT * FROM produits WHERE produit_id=?");
+	$queryProduit->bindParam(1, $_POST["produit"]);
+	$queryProduit->execute();
+	$produit = $queryProduit->fetch(PDO::FETCH_ASSOC);
+	
     try{
         $db->beginTransaction();
         $new = $db->prepare("INSERT INTO produits_adherents(id_transaction, id_adherent, id_produit, date_achat, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
@@ -53,21 +59,103 @@ function vente(){
         $new->bindParam(':actif', $actif);
         $new->bindParam(':arep', $_POST["autorisation_report"]);
         $new->execute();
+		
+		/**** PDF ****/
+		$pdf = new FPDI();
+		$pdf->AddPage();
+		$pdf->SetSourceFile("librairies/Salsabor-vente-facture.pdf");
+		$tplIdx = $pdf->importPage(1);
+		$pdf->useTemplate($tplIdx, 0, 0, 210);
+		// Référence
+		$pdf->SetFont('Arial', 'B', 18);
+		$pdf->setXY(120, 38.5);
+		$pdf->Write(0, $transaction);
+		// Phrase de début
+		$pdf->SetFont('Arial', '', 11);
+		$pdf->setXY(21, 49);
+		$infos = $prenom." ".$nom;
+		$infos = iconv('UTF-8', 'windows-1252', $infos);
+		$pdf->Write(0, $infos);
+		//Informations
+		$pdf->setXY(10, 74);
+		$infos = $adherent["eleve_prenom"]." ".$adherent["eleve_nom"]."\n".$adherent["rue"]." - ".$adherent["code_postal"]." ".$adherent["ville"]."\n".$adherent["mail"]."\nTél : ".$adherent["telephone"];
+		$infos = iconv('UTF-8', 'windows-1252', $infos);
+		$pdf->MultiCell(0, 7, $infos);
+		// Vente
+		$pdf->setXY(10, 117);
+		$infos = "Forfait ".$produit["produit_nom"]."\nValide du ".date_create($_POST["date_activation"])->format("d/m/Y")." au ".date_create($new_exp_date)->format("d/m/Y");
+		$infos = iconv('UTF-8', 'windows-1252', $infos);
+		$pdf->MultiCell(0, 7, $infos);
+		// Prix
+		$pdf->setXY(10, 135);
+		$pdf->setFont('Arial', 'B', 18);
+		$pdf->SetTextColor(169, 2, 58);
+		$infos = $_POST["prix_achat"]. "€ TTC";
+		$infos = iconv('UTF-8', 'windows-1252', $infos);
+		$pdf->Write(0, $infos);
+		// Echeances - En-tête
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->setFont('Arial', '', 10);
+		$pdf->Rect(10, 139, 35, 10);
+		$pdf->setXY(10, 144);
+		$infos = "Numéro d'écheance";
+		$infos = iconv('UTF-8', 'windows-1252', $infos);
+		$pdf->Write(0, $infos);
+		$pdf->Rect(45, 139, 50, 10);
+		$pdf->setXY(45, 144);
+		$infos = "Date d'encaissement";
+		$infos = iconv('UTF-8', 'windows-1252', $infos);
+		$pdf->Write(0, $infos);
+		$pdf->Rect(95, 139, 20, 10);
+		$pdf->setXY(95, 144);
+		$infos = "Montant";
+		$infos = iconv('UTF-8', 'windows-1252', $infos);
+		$pdf->Write(0, $infos);
+		$pdf->Rect(115, 139, 85, 10);
+		$pdf->setXY(115, 144);
+		$infos = "Méthode de paiement";
+		$infos = iconv('UTF-8', 'windows-1252', $infos);
+		$pdf->Write(0, $infos);
+
 		for($k = 0; $k < $echeances; $k++){
 			$new_echeance = $db->prepare("INSERT INTO produits_echeances(id_produit_adherent, date_echeance, montant)
 			VALUES(:transaction, :date_echeance, :prix)");
 			$new_echeance->bindParam(':transaction', $transaction);
 			$date_echeance = date("Y-m-d", strtotime($date_achat.'+'.(30*$k).'DAYS'));
 			$new_echeance->bindParam(':date_echeance', $date_echeance);
-			$prix_restant = $_POST["prix_achat"] - $montant_echeance;
+			
 			$montant_echeance = $_POST["prix_achat"]/$echeances;
-			if($prix_restant <= $montant_echeance){
-				$montant = $prix_restant;
+			if($k == $echeances - 1){
+				$montant_echeance = $prix_restant;
 			}
+			$montant_echeance = number_format($montant_echeance, 2);
+			$prix_restant -= $montant_echeance;
 			$new_echeance->bindParam(':prix', $montant_echeance);
 			$new_echeance->execute();
+			
+			//Echeances - Contenu du tableau
+			$pdf->Rect(10, 149 + (8*$k), 35, 8);
+			$pdf->setXY(10, 152 + (8*$k));
+			$infos = "Echéance ".($k+1);
+			$infos = iconv('UTF-8', 'windows-1252', $infos);
+			$pdf->Write(0, $infos);
+			$pdf->Rect(45, 149 + (8*$k), 50, 8);
+			$pdf->setXY(45, 152 + (8*$k));
+			$infos = date_create($date_echeance)->format("d/m/Y");
+			$infos = iconv('UTF-8', 'windows-1252', $infos);
+			$pdf->Write(0, $infos);
+			$pdf->Rect(95, 149 + (8*$k), 20, 8);
+			$pdf->setXY(95, 152 + (8*$k));
+			$infos = $montant_echeance;
+			$infos = iconv('UTF-8', 'windows-1252', $infos);
+			$pdf->Write(0, $infos);
+			$pdf->Rect(115, 149 + (8*$k), 85, 8);
+			$pdf->setXY(115, 152 + (8*$k));	
 		}
         $db->commit();
+		
+		$pdf->Output();
+		/**** /PDF ****/
 		header('Location: dashboard.php');
     }catch(PDOException $e){
         $db->rollBack();

@@ -19,7 +19,7 @@ function getLieu($id){
 }
 
 function generateReference() {
-	$length = 8;
+	$length = 10;
 	$characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	$chars_length = strlen($characters);
 	$reference = '';
