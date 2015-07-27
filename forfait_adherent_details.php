@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $data = $_GET["id"];
 
-$queryForfait = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation FROM produits_adherents JOIN adherents ON id_adherent=adherents.eleve_id JOIN produits ON id_produit=produits.produit_id WHERE id=?');
+$queryForfait = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation FROM produits_adherents JOIN adherents ON id_adherent=adherents.eleve_id JOIN produits ON id_produit=produits.produit_id WHERE id_transaction=?');
 $queryForfait->bindValue(1, $data);
 $queryForfait->execute();
 $forfait = $queryForfait->fetch(PDO::FETCH_ASSOC);
