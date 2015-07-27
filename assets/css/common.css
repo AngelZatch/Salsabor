@@ -289,3 +289,7 @@ body{
 .error-messages {
     color: red !important;
 }
+
+.list-item-option {
+	float: right;
+}
