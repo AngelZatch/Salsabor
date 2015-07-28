@@ -25,6 +25,7 @@ $queryNextCours->execute();
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-map-marker"></span> Passages</h1>
                <div class="alert alert-custom alert-success" id="passage-added" style="display:none;">Passage enregistré.</div>
+               <div class="alert alert-custom alert-success" id="cours-closed" style="display:none;">Cours fermé.</div>
                <p id="current-time"></p>
                <p id="last-edit"><?php echo ($queryNextCours->rowCount()!=0)?"Il y a ".$queryNextCours->rowCount()." cours à venir":"Aucun cours n'est à venir";?></p>
                <?php while($nextCours = $queryNextCours->fetch(PDO::FETCH_ASSOC)){ ?>
@@ -32,8 +33,7 @@ $queryNextCours->execute();
                	<div class="panel-heading">
                		<div class="panel-title">
                			<?php echo $nextCours["cours_intitule"]." (".$nextCours["salle_name"]." - de ".date_create($nextCours["cours_start"])->format("H:i")." à ".date_create($nextCours["cours_end"])->format("H:i").")";?>
-               			<input type="hidden" name="cours_id" value="<?php echo $nextCours["cours_id"];?>">
-               			<span class="list-item-option"><span class="glyphicon glyphicon-floppy-saved" title="Valider tous les enregistrements"></span></span>
+               			<span class="list-item-option close-cours glyphicon glyphicon-floppy-saved" title="Valider tous les enregistrements"><input type="hidden" id="eleve_id" value="<?php echo $nextCours["cours_id"];?>"></span>
 					</div>
                	</div>
                	<ul class="list-group">
@@ -48,8 +48,8 @@ $queryNextCours->execute();
 							<li class="list-group-item list-group-item-<?php echo $status;?> draggable col-sm-12">
 								<p class="col-sm-4"><?php echo $passages["eleve_prenom"]." ".$passages["eleve_nom"]." (".$passages["passage_eleve"].")";?></p>
 								<p class="col-sm-4">Enregsitré à <?php echo date_create($passages["passage_date"])->format("H:i:s");?></p>
-								<div class="col-sm-4">
-									<span class="list-item-option glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"><input type="hidden" id="eleve_id" value="<?php echo $passages["eleve_id"]."*".$nextCours["cours_id"]."*".$passages["passage_eleve"];?>"></span>
+								<div class="col-sm-4 <?php echo $status = ($passages["status"] == 0)?"record-waiting":"record-done";?>">
+									<span class="list-item-option validate-record glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"><input type="hidden" id="eleve_id" value="<?php echo $passages["eleve_id"]."*".$nextCours["cours_id"]."*".$passages["passage_eleve"];?>"></span>
 								</div>
 							</li>
 						<?php } ?></div>
@@ -72,7 +72,16 @@ $queryNextCours->execute();
 		   setInterval(update, 1000);
 	   });
 	   
-	   $(".list-item-option").click(function(){
+	   $(".close-cours").click(function(){
+		   var cours = $(this).children("input").val();
+		   var clicked = $(this);
+		   $.post("functions/validate_all_records.php", {cours}).done(function(data){
+			   clicked.parents("panel-default").hide();
+			   $('#cours-closed').show().delay('4000').hide('600');
+		   });
+	   });
+	   
+	   $(".validate_record").click(function(){
 		   var token = $(this).children("input").val().split("*");
 		   var eleve_id = token[0];
 		   var cours_id = token[1];
@@ -84,7 +93,7 @@ $queryNextCours->execute();
 			   clicked.closest("li").addClass("list-group-item-success");
 			   $('#passage-added').show().delay('4000').hide('600');
 		   });
-	   })
+	   });
 	</script>
 </body>
 </html>

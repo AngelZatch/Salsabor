@@ -299,3 +299,11 @@ body{
 .list-item-option:hover{
 	color: black;
 }
+
+.list-item-option-success {
+	color: green;
+}
+
+.record-done {
+	display: none;
+}
