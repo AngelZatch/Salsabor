@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $compare_start = date_create('now')->format('Y-m-d H:i:s');
 $compare_end = date("Y-m-d H:i:s", strtotime($compare_start.'+90MINUTES'));
-$queryNextCours = $db->prepare("SELECT * FROM cours JOIN salle ON cours_salle=salle.salle_id WHERE (cours_start>=? AND cours_start<=?) OR ouvert=1 ORDER BY cours_start ASC");
+$queryNextCours = $db->prepare("SELECT * FROM cours JOIN salle ON cours_salle=salle.salle_id WHERE (cours_start>=? AND cours_start<=? AND ouvert=1) OR ouvert=1 ORDER BY cours_start ASC");
 $queryNextCours->bindParam(1, $compare_start);
 $queryNextCours->bindParam(2, $compare_end);
 $queryNextCours->execute();
@@ -81,7 +81,7 @@ $queryNextCours->execute();
 		   });
 	   });
 	   
-	   $(".validate_record").click(function(){
+	   $(".validate-record").click(function(){
 		   var token = $(this).children("input").val().split("*");
 		   var eleve_id = token[0];
 		   var cours_id = token[1];
