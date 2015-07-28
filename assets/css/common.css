@@ -292,4 +292,10 @@ body{
 
 .list-item-option {
 	float: right;
+	color: #DBD9DA;
+	cursor: pointer;
+}
+
+.list-item-option:hover{
+	color: black;
 }

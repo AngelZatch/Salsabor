@@ -6,7 +6,7 @@ $coursNotif = $db->query("SELECT * FROM cours WHERE paiement_effectue=0")->rowCo
 
 $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0 AND priorite=1")->rowCount();
 
-$nombrePassages = $db->query("SELECT * FROM passages")->rowCount();
+$nombrePassages = $db->query("SELECT * FROM passages WHERE status=0")->rowCount();
 
 $queryPassages = $db->query("SELECT * FROM passages JOIN adherents ON passage_eleve=adherents.numero_rfid");
 ?>

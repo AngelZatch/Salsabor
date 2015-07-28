@@ -70,3 +70,9 @@ function checkMandatory(){
        $("#submit-button").prop('disabled', true);
    }
 }
+
+$(".draggable").draggable({
+	snap: ".list-group",
+	appendTo: ".list-group",
+	axis: "y"
+});
