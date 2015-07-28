@@ -9,7 +9,7 @@ $id_horaires = array();
 $arrayLieux = array(); 
 
 $queryPrestations = $db->query('SELECT prestations_id, prestations_name FROM prestations WHERE est_resa=1');
-$lieux = $db->query("SELECT * FROM salle")->fetchAll(PDO::FETCH_ASSOC);
+$lieux = $db->query("SELECT * FROM salle WHERE est_salle_cours=1")->fetchAll(PDO::FETCH_ASSOC);
 foreach ($lieux as $row => $lieu){
 	array_push($arrayLieux, $lieu["salle_id"]);
 }

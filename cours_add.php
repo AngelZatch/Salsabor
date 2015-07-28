@@ -20,7 +20,7 @@ $row_profs = $profs->fetchAll();
 
 $niveaux = $db->query('SELECT * FROM niveau');
 
-$lieux = $db->query('SELECT * FROM salle');
+$lieux = $db->query('SELECT * FROM salle WHERE est_salle_cours=1');
 
 // Ajout d'un cours
 if(isset($_POST['add'])){
