@@ -1,6 +1,8 @@
-$(function(){
-	$('[data-toggle="tooltip"]').tooltip()
-})
+$(document).ready(function(){
+	notifPassages();
+	setInterval(notifPassages, 5000);
+	$('[data-toggle="tooltip"]').tooltip();
+});
 
 // Insert la date d'aujourd'hui dans un input de type date supportant la fonctionnalité 
 $("*[date-today='true']").click(function(){
@@ -76,3 +78,14 @@ $(".draggable").draggable({
 	appendTo: ".list-group",
 	axis: "y"
 });
+
+function notifPassages(){
+	$.post("functions/watch_records.php").done(function(data){
+		if(data == 0){
+			$("#badge-passages").hide();
+		} else {
+			$("#badge-passages").show();
+			$("#badge-passages").html(data);
+		}
+	})
+}
