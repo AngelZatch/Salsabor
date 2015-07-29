@@ -25,7 +25,7 @@ $queryNextCours->execute();
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-map-marker"></span> Passages</h1>
                <p id="current-time"></p>
-               <p id="last-edit"><?php echo ($queryNextCours->rowCount()!=0)?"Il y a ".$queryNextCours->rowCount()." cours à venir":"Aucun cours n'est à venir";?></p>
+               <p id="last-edit"><?php echo ($queryNextCours->rowCount()!=0)?"".$queryNextCours->rowCount()." cours sont actuellement ouvert aux enregistrements":"Aucun cours n'est à venir";?></p>
                <?php while($nextCours = $queryNextCours->fetch(PDO::FETCH_ASSOC)){ ?>
                <div class="panel panel-default">
                	<div class="panel-heading">
