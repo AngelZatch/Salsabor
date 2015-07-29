@@ -15,7 +15,7 @@
 <script src="assets/js/js.cookie.js"></script>
 <script src="assets/js/Chart.js"></script>
 <script src="assets/js/checkbox-x.min.js"></script>
-<script src="assets/js/moment.min.js"></script>
+<script src="assets/js/notify.min.js"></script>
 
 <!-- custom -->
 <script src="assets/js/swap-menus.js"></script>
