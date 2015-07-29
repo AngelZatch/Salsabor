@@ -37,8 +37,9 @@ $queryNextCours->execute();
                	<ul class="list-group">
 					<div class="container-fluid row">
 					  <?php								
-						  $queryPassages = $db->prepare("SELECT * FROM passages JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip JOIN adherents ON passage_eleve=adherents.numero_rfid WHERE status!=1 AND lecteur_lieu=?");
+						  $queryPassages = $db->prepare("SELECT * FROM passages JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip JOIN adherents ON passage_eleve=adherents.numero_rfid WHERE status!=1 AND lecteur_lieu=? AND passage_date>=?");
 						  $queryPassages->bindParam(1, $nextCours["cours_salle"]);
+						  $queryPassages->bindParam(2, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'-60MINUTES')));
 						  $queryPassages->execute();
 						  while($passages = $queryPassages->fetch(PDO::FETCH_ASSOC)){
 							$status = ($passages["status"] == 0)?"warning":"success";
