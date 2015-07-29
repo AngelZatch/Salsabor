@@ -36,10 +36,6 @@ if(isset($_POST['addTarifResa'])){
                <div class="btn-toolbar">
                    <a href="actions/tarifs_resa_add.php" role="button" class="btn btn-primary" data-title="Ajouter un tarif Réservation" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un tarif de location</a>
                </div> <!-- btn-toolbar -->
-				<div class="alert alert-custom alert-success" id="tarif-added" style="display:none;">Tarif ajouté avec succès</div>
-				<div class="alert alert-custom alert-success" id="tarif-updated" style="display:none;">Tarif modifié avec succès</div>
-				<div class="alert alert-custom alert-success" id="tarif-deleted" style="display:none;">Tarif supprimé avec succès</div>
-				<div class="alert alert-custom alert-danger" id="tarif-error" style="display:none;">Erreur. Certains champs sont vides</div>
                <div class="panel-group" id="accordion">
                <?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){?>
                	<div class="panel panel-default">
@@ -105,7 +101,7 @@ if(isset($_POST['addTarifResa'])){
 			var update_id = id;
 			var tarif = $("#tarif-"+update_id).html();
 			$.post("functions/update_tarif_resa.php", {update_id, tarif}).done(function(data){
-				$('#tarif-updated').show().delay('4000').hide('600');
+				$.notify("Tarif mis à jour.", {globalPosition:"right bottom", className:"success"});
 				var originalColor = $("#tarif-"+update_id).parent().parent().css("background-color");
 			   var styles = {
 				   backgroundColor : "#dff0d8",
@@ -118,7 +114,7 @@ if(isset($_POST['addTarifResa'])){
 			   $("#tarif-"+update_id).parent().parent().css(styles);
 			   setTimeout(function(){ $("#tarif-"+update_id).parent().parent().css(next); },800);
 			}).fail(function(data){
-				$('#tarif-error').show().delay('4000').hide('600');
+				$.notify("Erreur dans la mise à jour.", {globalPosition:"right bottom", className:"alert"});
 			});
 		}
     </script>

@@ -79,9 +79,6 @@ if(isset($_POST["edit"])){
               <div class="btn-toolbar" id="top-page-buttons">
                    <a href="profs_liste.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
                 </div> <!-- btn-toolbar -->
-				<div class="alert alert-custom alert-success" id="tarif-added" style="display:none;">Tarif ajouté avec succès</div>
-				<div class="alert alert-custom alert-success" id="tarif-updated" style="display:none;">Tarif modifié avec succès</div>
-				<div class="alert alert-custom alert-success" id="tarif-deleted" style="display:none;">Tarif supprimé avec succès</div>
 				<div class="class alert-custom alert alert-danger" id="tarif-error" style="display:none;">Erreur. Certains champs sont vides</div>
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span>
                    <?php echo $details['prenom']." ".$details['nom'];?>
@@ -258,7 +255,7 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 		   var update_id = id;
 		   var tarif = $("#tarif-"+update_id).children(".tarif-prix").children("span").html();
 		   $.post("functions/update_tarif_prof.php", {update_id, tarif}).done(function(data){
-			   $('#tarif-updated').show().delay('4000').hide('600');
+			   $.notify("Tarif mis à jour.", {globalPosition:"right bottom", className:"success"});
 			   var originalColor = $("#tarif-"+update_id).css("background-color");
 			   var styles = {
 				   backgroundColor : "#dff0d8",
@@ -271,7 +268,7 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 			   $("#tarif-"+update_id).css(styles);
 			   setTimeout(function(){ $("#tarif-"+update_id).css(next); },800);
 		   }).fail(function(data){
-			   $('#tarif-error').show().delay('4000').hide('600');
+			   $.notify("Erreur dans la mise à jour.", {globalPosition:"right bottom", className:"alert"});
 		   });
 	   }
 	   
@@ -279,11 +276,11 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 		   var delete_id = id;
 		   alert(delete_id);
 		   $.post("functions/delete_tarif_prof.php", {delete_id}).done(function(data){
-			   $('#tarif-deleted').show().delay('4000').hide('600');
+			   $.notify("Tarif supprimé.", {globalPosition:"right bottom", className:"success"});
 			   $(".fetched").remove();
 			   fetchTarifs();
 		   }).fail(function(data){
-			   $('#tarif-error').show().delay('4000').hide('600');
+			   $.notify("Erreur dans la mise à jour.", {globalPosition:"right bottom", className:"alert"});
 		   })
 	   }
 	</script>

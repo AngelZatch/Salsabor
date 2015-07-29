@@ -24,8 +24,6 @@ $queryNextCours->execute();
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-map-marker"></span> Passages</h1>
-               <div class="alert alert-custom alert-success" id="passage-added" style="display:none;">Passage enregistré.</div>
-               <div class="alert alert-custom alert-success" id="cours-closed" style="display:none;">Cours fermé.</div>
                <p id="current-time"></p>
                <p id="last-edit"><?php echo ($queryNextCours->rowCount()!=0)?"Il y a ".$queryNextCours->rowCount()." cours à venir":"Aucun cours n'est à venir";?></p>
                <?php while($nextCours = $queryNextCours->fetch(PDO::FETCH_ASSOC)){ ?>
@@ -77,7 +75,7 @@ $queryNextCours->execute();
 		   var clicked = $(this);
 		   $.post("functions/validate_all_records.php", {cours}).done(function(data){
 			   clicked.parents("panel-default").hide();
-			   $('#cours-closed').show().delay('4000').hide('600');
+			   $.notify("Cours fermé.", {globalPosition:"right bottom", className:"success"});
 		   });
 	   });
 	   
@@ -91,7 +89,7 @@ $queryNextCours->execute();
 			   console.log(data);
 			   clicked.closest("li").removeClass('list-group-item-warning');
 			   clicked.closest("li").addClass("list-group-item-success");
-			   $('#passage-added').show().delay('4000').hide('600');
+			   $.notify("Passage validé.", {globalPosition:"right bottom", className:"success"});
 		   });
 	   });
 	</script>
