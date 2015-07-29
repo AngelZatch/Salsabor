@@ -3,6 +3,7 @@ $(document).ready(function(){
 	notifPassages(firstCount);
 	setInterval(notifPassages, 5000);
 	$('[data-toggle="tooltip"]').tooltip();
+    moment.locale("fra");
 });
 
 // Insert la date d'aujourd'hui dans un input de type date supportant la fonctionnalité 

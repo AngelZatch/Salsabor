@@ -307,3 +307,7 @@ body{
 .record-done {
 	display: none;
 }
+
+.relative-start {
+    font-style: italic;
+}

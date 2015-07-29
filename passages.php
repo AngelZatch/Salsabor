@@ -30,7 +30,9 @@ $queryNextCours->execute();
                <div class="panel panel-default">
                	<div class="panel-heading">
                		<div class="panel-title">
-               			<?php echo $nextCours["cours_intitule"]." (".$nextCours["salle_name"]." - de ".date_create($nextCours["cours_start"])->format("H:i")." à ".date_create($nextCours["cours_end"])->format("H:i").")";?>
+               			<?php echo $nextCours["cours_intitule"]." (".$nextCours["salle_name"];?>
+               			<?php echo "(".date_create($nextCours["cours_start"])->format("H:i")." - ".date_create($nextCours["cours_end"])->format("H:i").")";?>
+               			<span class="relative-start"><?php echo $nextCours["cours_start"];?></span>
                			<span class="list-item-option close-cours glyphicon glyphicon-floppy-saved" title="Valider tous les enregistrements"><input type="hidden" id="eleve_id" value="<?php echo $nextCours["cours_id"];?>"></span>
 					</div>
                	</div>
@@ -94,6 +96,10 @@ $queryNextCours->execute();
 			   $.notify("Passage validé.", {globalPosition:"right bottom", className:"success"});
 		   });
 	   });
+       
+       $(".relative-start").each(function(){
+           $(this).html(moment($(this).html(), "YYYY-MM-DD HH:ii:ss", 'fr').fromNow());
+       });
 	</script>
 </body>
 </html>
