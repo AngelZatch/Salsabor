@@ -22,7 +22,7 @@ function add($tag, $ip){
     $new->bindParam(':tag', $tag);
     $new->bindParam(':salle', $ip);
     $new->bindParam(':date', date_create('now')->format('Y-m-d H:i:s'));
-	$status = ($ip=="192.168.0.4")?"1":"0";
+	$status = ($ip=="192.168.0.3")?"1":"0";
 	$new->bindParam(':status', $status);
     $new->execute();
     
