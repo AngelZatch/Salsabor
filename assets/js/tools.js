@@ -1,5 +1,6 @@
 $(document).ready(function(){
-	notifPassages();
+	var firstCount = 0;
+	notifPassages(firstCount);
 	setInterval(notifPassages, 5000);
 	$('[data-toggle="tooltip"]').tooltip();
 });
@@ -79,13 +80,15 @@ $(".draggable").draggable({
 	axis: "y"
 });
 
-function notifPassages(){
+function notifPassages(firstCount){
 	$.post("functions/watch_records.php").done(function(data){
 		if(data == 0){
 			$("#badge-passages").hide();
 		} else {
+			if(data > $("#badge-passages").html() && firstCount!=0){$.notify("Nouveaux passages enregistrés", {globalPosition: "bottom right", className:"info"});}
 			$("#badge-passages").show();
 			$("#badge-passages").html(data);
 		}
+		firstCount = 1;
 	})
 }
