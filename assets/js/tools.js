@@ -104,6 +104,13 @@ function checkMandatory(){
 
 $(".draggable").draggable({
 	snap: ".list-group",
-	appendTo: ".list-group",
 	axis: "y"
+});
+$(".droppable").droppable({
+	drag: function(event, ui){
+		//$(this).height($(this).height + ui.draggable.height());
+	},
+	drop: function(event, ui){
+		ui.draggable.detach().appendTo($(this));
+	}
 });

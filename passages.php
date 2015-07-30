@@ -52,7 +52,7 @@ $queryNextCours->execute();
 			  $queryPassages->execute();
 			  ?>
                	<ul class="list-group">
-					<div class="container-fluid row">
+					<div class="container-fluid row droppable">
 					  <?php								
 						  while($passages = $queryPassages->fetch(PDO::FETCH_ASSOC)){
 							$status = ($passages["status"] == 0)?"warning":"success";
@@ -89,11 +89,15 @@ $queryNextCours->execute();
 	   });
 	   
 	   $(".close-cours").click(function(){
+		   $(this).closest(".panel").hide('200');
+		   $.notify("Cours fermé.", {globalPosition:"right bottom", className:"success"});
+	   });
+	   
+	   $(".validate-all").click(function(){
 		   var cours = $(this).children("input").val();
 		   var clicked = $(this);
 		   $.post("functions/validate_all_records.php", {cours}).done(function(data){
-			   clicked.parents("panel-default").hide();
-			   $.notify("Cours fermé.", {globalPosition:"right bottom", className:"success"});
+			   $.notify("Passages validés.", {globalPosition:"right bottom", className:"success"});
 		   });
 	   });
 	   
@@ -102,12 +106,13 @@ $queryNextCours->execute();
 		   var cours_id = clicked.closest(".panel").find("#cours-id").val();
 		   var eleve_id = clicked.parents().siblings(".eleve-infos").children("input").val();
 		   var rfid = clicked.parents().siblings(".eleve-tag").html();
-		   $.post("functions/validate_record.php", {cours_id, eleve_id, rfid}).done(function(data){
+		   console.log(cours_id);
+		   /*$.post("functions/validate_record.php", {cours_id, eleve_id, rfid}).done(function(data){
 			   console.log(data);
 			   clicked.closest("li").removeClass('list-group-item-warning');
 			   clicked.closest("li").addClass("list-group-item-success");
 			   $.notify("Passage validé.", {globalPosition:"right bottom", className:"success"});
-		   });
+		   });*/
 	   });
 	</script>
 </body>
