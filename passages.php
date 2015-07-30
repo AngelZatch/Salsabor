@@ -102,23 +102,13 @@ $queryNextCours->execute();
 		   var cours_id = clicked.closest(".panel").find("#cours-id").val();
 		   var eleve_id = clicked.parents().siblings(".eleve-infos").children("input").val();
 		   var rfid = clicked.parents().siblings(".eleve-tag").html();
-/*		   $.post("functions/validate_record.php", {cours_id, eleve_id, rfid}).done(function(data){
+		   $.post("functions/validate_record.php", {cours_id, eleve_id, rfid}).done(function(data){
 			   console.log(data);
 			   clicked.closest("li").removeClass('list-group-item-warning');
 			   clicked.closest("li").addClass("list-group-item-success");
 			   $.notify("Passage validé.", {globalPosition:"right bottom", className:"success"});
-		   });*/
+		   });
 	   });
-       
-       $(".relative-start").each(function(){
-           $(this).html(moment($(this).html(), "YYYY-MM-DD HH:ii:ss", 'fr').fromNow());
-       });
-	   
-	   $(".list-group-item").click(function(){
-		   var eleve_id = $(this).children(".eleve-tag").html();
-		   var cours_id = $(this).closest(".panel").find("#cours-id").val();
-		   //console.log(cours_id);
-	   })
 	</script>
 </body>
 </html>

@@ -1,15 +1,42 @@
+/*
+Le fichier tools.js contient toutes les fonctions javascript qui peuvent être utilisés par plusieurs fichiers, 
+qu'elles soient les fonctions de notification, ou des fonctions plus utilitaires.
+Dès que le document est prêt, tous les modaux et les fonctions qui doivent tourner de façon constantes sont lancées ici.
+*/
+
 $(document).ready(function(){
-	var firstCount = 0;
+	var firstCount = 0; // Pour éviter la notification dès le rafraîchissement de la page.
 	notifPassages(firstCount);
 	setInterval(notifPassages, 5000);
 	$('[data-toggle="tooltip"]').tooltip();
     moment.locale("fra");
 });
 
+// FONCTIONS NOTIFICATIONS //
+// Fonction de surveillance des passages enregistrés. Avertit l'utilisateur et met à jour le badge de notification en cas de nouveaux enregistrements.
+function notifPassages(firstCount){
+	$.post("functions/watch_records.php").done(function(data){
+		if(data == 0){
+			$("#badge-passages").hide();
+		} else {
+			if(data > $("#badge-passages").html() && firstCount!=0){$.notify("Nouveaux passages enregistrés", {globalPosition: "bottom right", className:"info"});}
+			$("#badge-passages").show();
+			$("#badge-passages").html(data);
+		}
+		firstCount = 1;
+	})
+}
+
+// FONCTIONS UTILITAIRES //
 // Insert la date d'aujourd'hui dans un input de type date supportant la fonctionnalité 
 $("*[date-today='true']").click(function(){
     var today = new moment().format("YYYY-MM-DD");
     $(this).parent().prev().val(today);
+});
+
+// Convertit une date en temps relatif. (ex: "il y a un jour")
+$(".relative-start").each(function(){
+   $(this).html(moment($(this).html(), "YYYY-MM-DD HH:ii:ss", 'fr').fromNow());
 });
 
 // Vérifie si un adhérent existe dans la base de données
@@ -80,16 +107,3 @@ $(".draggable").draggable({
 	appendTo: ".list-group",
 	axis: "y"
 });
-
-function notifPassages(firstCount){
-	$.post("functions/watch_records.php").done(function(data){
-		if(data == 0){
-			$("#badge-passages").hide();
-		} else {
-			if(data > $("#badge-passages").html() && firstCount!=0){$.notify("Nouveaux passages enregistrés", {globalPosition: "bottom right", className:"info"});}
-			$("#badge-passages").show();
-			$("#badge-passages").html(data);
-		}
-		firstCount = 1;
-	})
-}
