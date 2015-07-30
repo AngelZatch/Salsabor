@@ -292,8 +292,9 @@ body{
 
 .list-item-option {
 	float: right;
-	color: #DBD9DA;
+	color: #CBC9CA;
 	cursor: pointer;
+	padding: 0 10px;
 }
 
 .list-item-option:hover{
@@ -310,4 +311,16 @@ body{
 
 .relative-start {
     font-style: italic;
+}
+
+.cours-title {
+	font-weight: 800;
+}
+
+.cours-hours {
+	font-variant: small-caps;
+}
+
+#cours-people {
+	font-size: 13px;
 }

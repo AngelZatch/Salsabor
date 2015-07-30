@@ -30,28 +30,42 @@ $queryNextCours->execute();
                <div class="panel panel-default">
                	<div class="panel-heading">
                		<div class="panel-title">
-               			<?php echo $nextCours["cours_intitule"]." (".$nextCours["salle_name"];?>
-               			<?php echo "(".date_create($nextCours["cours_start"])->format("H:i")." - ".date_create($nextCours["cours_end"])->format("H:i").")";?>
-               			<span class="relative-start"><?php echo $nextCours["cours_start"];?></span>
-               			<span class="list-item-option close-cours glyphicon glyphicon-floppy-saved" title="Valider tous les enregistrements"><input type="hidden" id="eleve_id" value="<?php echo $nextCours["cours_id"];?>"></span>
+               			<div class="cours-infos">
+               				<span class="cours-title"><?php echo $nextCours["cours_intitule"];?></span>
+               				<span class="cours-hours">
+               					<span class="relative-start"><?php echo $nextCours["cours_start"];?></span>, de
+               					<?php echo date_create($nextCours["cours_start"])->format("H:i")." à ".date_create($nextCours["cours_end"])->format("H:i");?>
+							</span>
+               			</div>
+						<span class="list-item-option close-cours glyphicon glyphicon-ok-sign" title="Fermer le cours">
+              				<input type="hidden" id="cours-id" value="<?php echo $nextCours["cours_id"];?>">
+						</span>
+               			<span class="list-item-option validate-all glyphicon glyphicon-floppy-saved" title="Valider tous les enregistrements"></span>
+               			<p id="cours-people">Actuellement <span class="cours-count">0</span> participants, dont <span class="cours-count-checked">0</span> validés.</p>
 					</div>
                	</div>
+               	<?php
+			  $queryPassages = $db->prepare("SELECT * FROM passages JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip JOIN adherents ON passage_eleve=adherents.numero_rfid WHERE status!=1 AND lecteur_lieu=? AND passage_date>=? AND passage_date<=?");
+			  $queryPassages->bindParam(1, $nextCours["cours_salle"]);
+			  $queryPassages->bindParam(2, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'-60MINUTES')));
+			  $queryPassages->bindParam(3, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'+20MINUTES')));
+			  $queryPassages->execute();
+			  ?>
                	<ul class="list-group">
 					<div class="container-fluid row">
 					  <?php								
-						  $queryPassages = $db->prepare("SELECT * FROM passages JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip JOIN adherents ON passage_eleve=adherents.numero_rfid WHERE status!=1 AND lecteur_lieu=? AND passage_date>=? AND passage_date<=?");
-						  $queryPassages->bindParam(1, $nextCours["cours_salle"]);
-						  $queryPassages->bindParam(2, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'-60MINUTES')));
-					  	  $queryPassages->bindParam(3, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'+20MINUTES')));
-						  $queryPassages->execute();
 						  while($passages = $queryPassages->fetch(PDO::FETCH_ASSOC)){
 							$status = ($passages["status"] == 0)?"warning":"success";
 						?>
 							<li class="list-group-item list-group-item-<?php echo $status;?> draggable col-sm-12">
-								<p class="col-sm-4"><?php echo $passages["eleve_prenom"]." ".$passages["eleve_nom"]." (".$passages["passage_eleve"].")";?></p>
-								<p class="col-sm-4">Enregsitré à <?php echo date_create($passages["passage_date"])->format("H:i:s");?></p>
-								<div class="col-sm-4 <?php echo $status = ($passages["status"] == 0)?"record-waiting":"record-done";?>">
-									<span class="list-item-option validate-record glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"><input type="hidden" id="eleve_id" value="<?php echo $passages["eleve_id"]."*".$nextCours["cours_id"]."*".$passages["passage_eleve"];?>"></span>
+								<p class="col-sm-3 eleve-infos">
+									<?php echo $passages["eleve_prenom"]." ".$passages["eleve_nom"];?>
+									<input type="hidden" class="eleve-id" value="<?php echo $passages["eleve_id"];?>">
+								</p>
+								<p class="col-sm-3 eleve-tag"><?php echo $passages["passage_eleve"];?></p>
+								<p class="col-sm-3">Enregsitré à <?php echo date_create($passages["passage_date"])->format("H:i:s");?></p>
+								<div class="col-sm-3 <?php echo $status = ($passages["status"] == 0)?"record-waiting":"record-done";?>">
+									<span class="list-item-option validate-record glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"></span>
 								</div>
 							</li>
 						<?php } ?></div>
@@ -84,22 +98,27 @@ $queryNextCours->execute();
 	   });
 	   
 	   $(".validate-record").click(function(){
-		   var token = $(this).children("input").val().split("*");
-		   var eleve_id = token[0];
-		   var cours_id = token[1];
-		   var rfid = token[2];
 		   var clicked = $(this);
-		   $.post("functions/validate_record.php", {cours_id, eleve_id, rfid}).done(function(data){
+		   var cours_id = clicked.closest(".panel").find("#cours-id").val();
+		   var eleve_id = clicked.parents().siblings(".eleve-infos").children("input").val();
+		   var rfid = clicked.parents().siblings(".eleve-tag").html();
+/*		   $.post("functions/validate_record.php", {cours_id, eleve_id, rfid}).done(function(data){
 			   console.log(data);
 			   clicked.closest("li").removeClass('list-group-item-warning');
 			   clicked.closest("li").addClass("list-group-item-success");
 			   $.notify("Passage validé.", {globalPosition:"right bottom", className:"success"});
-		   });
+		   });*/
 	   });
        
        $(".relative-start").each(function(){
            $(this).html(moment($(this).html(), "YYYY-MM-DD HH:ii:ss", 'fr').fromNow());
        });
+	   
+	   $(".list-group-item").click(function(){
+		   var eleve_id = $(this).children(".eleve-tag").html();
+		   var cours_id = $(this).closest(".panel").find("#cours-id").val();
+		   //console.log(cours_id);
+	   })
 	</script>
 </body>
 </html>
