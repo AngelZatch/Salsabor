@@ -90,7 +90,7 @@ $dureeCours = 0;
                                    <td><?php echo $cours["salle_name"];?></td>
                                </tr>
                            <?php $dureeCours = (strtotime($cours["cours_end"]) - strtotime($cours["cours_start"]))/3600;
-                                $heuresCours += $dureeCours;                                                                                        } ?>
+                                $heuresCours += $dureeCours;} ?>
                        </tbody>
                        <input type="hidden" name="total-cours" value="<?php echo $heuresCours;?>">
                        <input type="hidden" name="id" value="<?php echo $data;?>">
@@ -104,7 +104,6 @@ $dureeCours = 0;
        var remainingHours;
         function calculateRemainingHours(){
             window.remainingHours = $("#initial-hours").html() - $("*[name='total-cours']").val();
-            console.log(window.remainingHours);
             $("#remaining-hours").html(window.remainingHours);
         }
        
