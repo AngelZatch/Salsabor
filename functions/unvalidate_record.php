@@ -9,18 +9,16 @@ $produit = $db->query("SELECT id_transaction FROM produits_adherents WHERE id_ad
 
 try{
 	$db->beginTransaction();
-	// Enregistrement du passage dans la table des participants
-	$new = $db->prepare('INSERT INTO cours_participants(cours_id_foreign, eleve_id_foreign, produit_adherent_id)
-	VALUES(:cours, :eleve, :produit)');
+	// Suppression du passage dans la table des participants
+	$new = $db->prepare('DELETE FROM cours_participants WHERE cours_id_foreign=:cours AND eleve_id_foreign=:eleve AND produit_adherent_id=:produit');
 	$new->bindParam(':cours', $cours);
 	$new->bindParam(':eleve', $eleve);
 	$new->bindParam(':produit', $produit["id_transaction"]);
 	$new->execute();
 	
-	// Validation de l'enregistrement dans la table passage (indiquera que le passage a déjà été traité)
-	$update = $db->prepare("UPDATE passages SET cours_id=?, status=2 WHERE passage_eleve=?");
-	$update->bindParam(1, $cours);
-	$update->bindParam(2, $rfid);
+	// Réinitilisation de l'enregistrement dans la table passage (indiquera que le passage est de nouveau en attente)
+	$update = $db->prepare("UPDATE passages SET cours_id=NULL, status=0 WHERE passage_eleve=?");
+	$update->bindParam(1, $rfid);
 	$update->execute();
 	
 	$db->commit();

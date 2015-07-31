@@ -45,10 +45,11 @@ $queryNextCours->execute();
 					</div>
                	</div>
                	<?php
-			  $queryPassages = $db->prepare("SELECT * FROM passages JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip JOIN adherents ON passage_eleve=adherents.numero_rfid WHERE status!=1 AND lecteur_lieu=? AND passage_date>=? AND passage_date<=?");
+			  $queryPassages = $db->prepare("SELECT * FROM passages JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip JOIN adherents ON passage_eleve=adherents.numero_rfid WHERE (status=0 AND lecteur_lieu=? AND passage_date>=? AND passage_date<=?) OR (status=2 AND cours_id=?)");
 			  $queryPassages->bindParam(1, $nextCours["cours_salle"]);
 			  $queryPassages->bindParam(2, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'-60MINUTES')));
 			  $queryPassages->bindParam(3, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'+20MINUTES')));
+			  $queryPassages->bindParam(4, $nextCours["cours_id"]);
 			  $queryPassages->execute();
 			  ?>
                	<ul class="list-group">
@@ -64,8 +65,27 @@ $queryNextCours->execute();
 								</p>
 								<p class="col-sm-3 eleve-tag"><?php echo $passages["passage_eleve"];?></p>
 								<p class="col-sm-3">Enregsitré à <?php echo date_create($passages["passage_date"])->format("H:i:s");?></p>
-								<div class="col-sm-3 <?php echo $status = ($passages["status"] == 0)?"record-waiting":"record-done";?>">
+								<?php
+							  switch($passages["status"]){
+								  case 0:
+									  $status = "waiting";
+									  break;
+									  
+								  case 2:
+									  $status = "done";
+									  break;
+									  
+								  case 3:
+									  $status = "error";
+									  break;
+							  };
+							  ?>
+								<div class="col-sm-3 record-<?php echo $status;?>">
+								<?php if ($passages["status"] == 0){?>
 									<span class="list-item-option validate-record glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"></span>
+								<?php } else if($passages["status"] == 2) {  ?>
+									<span class="list list-item-option unvalidate-record glyphicon glyphicon-remove" title="Annuler la validation de cet enregistrement"></span>
+								<?php } ?>
 								</div>
 							</li>
 						<?php } ?></div>
@@ -106,14 +126,24 @@ $queryNextCours->execute();
 		   var cours_id = clicked.closest(".panel").find("#cours-id").val();
 		   var eleve_id = clicked.parents().siblings(".eleve-infos").children("input").val();
 		   var rfid = clicked.parents().siblings(".eleve-tag").html();
-		   console.log(cours_id);
-		   /*$.post("functions/validate_record.php", {cours_id, eleve_id, rfid}).done(function(data){
-			   console.log(data);
+		   $.post("functions/validate_record.php", {cours_id, eleve_id, rfid}).done(function(data){
 			   clicked.closest("li").removeClass('list-group-item-warning');
 			   clicked.closest("li").addClass("list-group-item-success");
 			   $.notify("Passage validé.", {globalPosition:"right bottom", className:"success"});
-		   });*/
+		   });
 	   });
+	   
+	   $(".unvalidate-record").click(function(){
+		   var clicked = $(this);
+		   var cours_id = clicked.closest(".panel").find("#cours-id").val();
+		   var eleve_id = clicked.parents().siblings(".eleve-infos").children("input").val();
+		   var rfid = clicked.parents().siblings(".eleve-tag").html();
+		   $.post("functions/unvalidate_record.php", {cours_id, eleve_id, rfid}).done(function(data){
+			   clicked.closest("li").removeClass('list-group-item-success');
+			   clicked.closest("li").addClass("list-group-item-warning");
+			   $.notify(data, {globalPosition:"right bottom", className:"success"});
+		   });
+	   })
 	</script>
 </body>
 </html>
