@@ -41,7 +41,7 @@ $queryNextCours->execute();
               				<input type="hidden" id="cours-id" value="<?php echo $nextCours["cours_id"];?>">
 						</span>
                			<span class="list-item-option validate-all glyphicon glyphicon-floppy-saved" title="Valider tous les enregistrements"></span>
-               			<p id="cours-people">Actuellement <span class="cours-count">0</span> participants, dont <span class="cours-count-checked">0</span> validés.</p>
+               			<p id="cours-people">Actuellement <span class="cours-count"></span> participants, dont <span class="cours-count-checked">0</span> validés.</p>
 					</div>
                	</div>
                	<?php
@@ -98,6 +98,10 @@ $queryNextCours->execute();
 	   function update(){
 		   var now = moment().locale('fr').format("DD MMMM YYYY HH:mm:ss");
 		   $("#current-time").html(now);
+		   $(".panel").each(function(){
+			   $(this).find(".cours-count").html($(this).find(".list-group-item").length);
+			   $(this).find(".cours-count-checked").html($(this).find(".list-group-item-success").length);
+		   })
 	   }
 	   
 	   $(document).ready(function(){
