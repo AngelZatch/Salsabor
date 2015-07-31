@@ -329,3 +329,16 @@ body{
 	color: white;
 	font-weight: 700;
 }
+
+.main-section {
+	color: #252525 !important;
+    font-weight: 800;
+	text-transform: uppercase;
+    font-family: 'globersemibold_free';
+	cursor: default;
+}
+
+.main-section:hover{
+	background-color: #A9023A !important;
+	color: #111 !important;
+}
