@@ -320,3 +320,12 @@ body{
 #cours-people {
 	font-size: 13px;
 }
+
+#current-time {
+	float: right;
+	font-size: 15px;
+	background-color: #81002B;
+	padding: 10px;
+	color: white;
+	font-weight: 700;
+}

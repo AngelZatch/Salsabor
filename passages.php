@@ -23,9 +23,9 @@ $queryNextCours->execute();
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
+              <p id="current-time"></p>
                <h1 class="page-title"><span class="glyphicon glyphicon-map-marker"></span> Passages</h1>
-               <p id="current-time"></p>
-               <p id="last-edit"><?php echo ($queryNextCours->rowCount()!=0)?"".$queryNextCours->rowCount()." cours sont actuellement ouvert aux enregistrements":"Aucun cours n'est à venir";?></p>
+               <p id="last-edit"><?php echo ($queryNextCours->rowCount()!=0)?"".$queryNextCours->rowCount()." cours sont actuellement ouvert(s) aux enregistrements":"Aucun cours n'est à venir";?></p>
                <?php while($nextCours = $queryNextCours->fetch(PDO::FETCH_ASSOC)){ ?>
                <div class="panel panel-default">
                	<div class="panel-heading">
