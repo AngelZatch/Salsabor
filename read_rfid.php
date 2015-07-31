@@ -17,12 +17,25 @@ if(isset($_POST["add"])){
 
 function add($tag, $ip){
 	$db = PDOFactory::getConnection();
+	$today = date_create('now')->format('Y-m-d H:i:s');
+	
+	if($ip == "192.168.0.3"){
+		$status = "1";
+	} else {
+		$search = $db->query("SELECT * FROM adherents JOIN produits_adherents ON eleve_id=produits_adherents.id_adherent WHERE numero_rfid='$tag'");
+		$res = $search->fetch(PDO::FETCH_ASSOC);
+		if($search->rowCount() == 0 || $res["date_expiration"] <= $today){
+			$status = "3";
+		} else {
+			$status = "0";
+		}
+	}
+	
 	$new = $db->prepare("INSERT INTO passages(passage_eleve, passage_salle, passage_date, status)
     VALUE(:tag, :salle, :date, :status)");
     $new->bindParam(':tag', $tag);
     $new->bindParam(':salle', $ip);
-    $new->bindParam(':date', date_create('now')->format('Y-m-d H:i:s'));
-	$status = ($ip=="192.168.0.3")?"1":"0";
+    $new->bindParam(':date', $today);
 	$new->bindParam(':status', $status);
     $new->execute();
     

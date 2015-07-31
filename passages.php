@@ -45,7 +45,7 @@ $queryNextCours->execute();
 					</div>
                	</div>
                	<?php
-			  $queryPassages = $db->prepare("SELECT * FROM passages JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip JOIN adherents ON passage_eleve=adherents.numero_rfid WHERE (status=0 AND lecteur_lieu=? AND passage_date>=? AND passage_date<=?) OR (status=2 AND cours_id=?)");
+			  $queryPassages = $db->prepare("SELECT * FROM passages JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip JOIN adherents ON passage_eleve=adherents.numero_rfid WHERE ((status=0 OR status=3) AND lecteur_lieu=? AND passage_date>=? AND passage_date<=?) OR (status=2 AND cours_id=?)");
 			  $queryPassages->bindParam(1, $nextCours["cours_salle"]);
 			  $queryPassages->bindParam(2, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'-60MINUTES')));
 			  $queryPassages->bindParam(3, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'+20MINUTES')));
@@ -56,7 +56,19 @@ $queryNextCours->execute();
 					<div class="container-fluid row droppable">
 					  <?php								
 						  while($passages = $queryPassages->fetch(PDO::FETCH_ASSOC)){
-							$status = ($passages["status"] == 0)?"warning":"success";
+							  switch($passages["status"]){
+								  case 0:
+									  $status = "warning";
+									  break;
+									  
+								  case 2:
+									  $status = "success";
+									  break;
+									  
+								  case 3:
+									  $status = "danger";
+									  break;
+							  };
 						?>
 							<li class="list-group-item list-group-item-<?php echo $status;?> draggable col-sm-12">
 								<p class="col-sm-3 eleve-infos">
@@ -65,23 +77,8 @@ $queryNextCours->execute();
 								</p>
 								<p class="col-sm-3 eleve-tag"><?php echo $passages["passage_eleve"];?></p>
 								<p class="col-sm-3">Enregsitré à <?php echo date_create($passages["passage_date"])->format("H:i:s");?></p>
-								<?php
-							  switch($passages["status"]){
-								  case 0:
-									  $status = "waiting";
-									  break;
-									  
-								  case 2:
-									  $status = "done";
-									  break;
-									  
-								  case 3:
-									  $status = "error";
-									  break;
-							  };
-							  ?>
-								<div class="col-sm-3 record-<?php echo $status;?>">
-								<?php if ($passages["status"] == 0){?>
+								<div class="col-sm-3 record-options">
+								<?php if ($passages["status"] == 0 || $passages["status"] == 3){?>
 									<span class="list-item-option validate-record glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"></span>
 								<?php } else if($passages["status"] == 2) {  ?>
 									<span class="list list-item-option unvalidate-record glyphicon glyphicon-remove" title="Annuler la validation de cet enregistrement"></span>
