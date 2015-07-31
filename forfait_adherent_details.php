@@ -112,7 +112,7 @@ $dureeCours = 0;
            var update_id = $("*[name=id]").val();
            var remainingHours = window.remainingHours;
            $.post("functions/update_volume_cours.php", {update_id, remainingHours}).done(function(data){
-               $('#hours-updated').show().delay('4000').hide('600');
+               $.notify("Modifications enregistrées.", {globalPosition: "bottom right", className:"success"});
            })
        }
     </script>
