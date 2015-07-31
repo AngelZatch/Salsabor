@@ -207,7 +207,10 @@ if(isset($_POST['deleteCoursAll'])){
                         </div>
                         <ul class="list-group">
                             <?php while($participants = $queryParticipants->fetch(PDO::FETCH_ASSOC)){?>
-                                <li class='list-group-item'><?php echo $participants['eleve_prenom']." ".$participants['eleve_nom'];?></li>
+                                <li class='list-group-item'>
+                                	<?php echo $participants['eleve_prenom']." ".$participants['eleve_nom'];?>
+                                	<span class="list-item-option delete-record glyphicon glyphicon-trash" title="Supprimer l'élève de ce cours"><input type="hidden" value="<?php echo $participants["eleve_id"];?>"></span>
+								</li>
                             <?php } ?>
                             <li class="list-group-item" id="prix-calcul">Somme due à l'enseignant :
                             <?php
@@ -247,14 +250,23 @@ if(isset($_POST['deleteCoursAll'])){
    </div>
    <?php include "scripts.php";?>
    <script>
-	$('#paiement').change(function(){
-		var state = $('#paiement').prop('checked');
-		if(state){
-			$('#paiement-sub').val(1);
-		} else {
-			$('#paiement-sub').val(0);
-		}
-	});
+		$('#paiement').change(function(){
+			var state = $('#paiement').prop('checked');
+			if(state){
+				$('#paiement-sub').val(1);
+			} else {
+				$('#paiement-sub').val(0);
+			}
+		});
+	   
+	   $(".delete-record").click(function(){
+		   var clicked = $(this);
+		   var delete_id = clicked.children("input").val();
+		   $.post("functions/delete_record.php", {delete_id}).done(function(data){
+			   $.notify("Participation supprimée.", {globalPosition:"right bottom", className:"success"});
+			   clicked.parent(".list-group-item").hide('200');
+		   })
+	   });
 	</script>
 </body>
 </html>
