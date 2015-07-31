@@ -110,16 +110,21 @@ $queryNextCours->execute();
 	   });
 	   
 	   $(".close-cours").click(function(){
-		   $(this).closest(".panel").hide('200');
-		   $.notify("Cours fermé.", {globalPosition:"right bottom", className:"success"});
+		   var cours = $(this).closest(".panel").find("#cours-id").val();
+		   if($(this).closest(".panel").find(".cours-count").html() != $(this).closest(".panel").find(".cours-count-checked").html()){
+			   $.notify("Impossible de fermer un cours dont les passages n'ont pas tous été validés.", {globalPosition: "right bottom", className:"error"});
+		   } else {
+			   $.post("functions/close_cours.php", {cours}).done(function(data){
+				   $.notify("Cours fermé.", {globalPosition:"right bottom", className:"success"});
+			   });   
+			   $(this).closest(".panel").hide('200');
+		   }
 	   });
 	   
 	   $(".validate-all").click(function(){
 		   var cours = $(this).children("input").val();
 		   var clicked = $(this);
-		   $.post("functions/validate_all_records.php", {cours}).done(function(data){
-			   $.notify("Passages validés.", {globalPosition:"right bottom", className:"success"});
-		   });
+
 	   });
 	   
 	   $(".validate-record").click(function(){
