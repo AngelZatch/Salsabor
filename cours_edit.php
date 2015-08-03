@@ -32,6 +32,12 @@ $tarif = $queryTarif->fetch(PDO::FETCH_ASSOC);
 
 $types = $db->query('SELECT * FROM prestations WHERE est_cours=1');
 
+$queryEleves = $db->query("SELECT * FROM adherents ORDER BY eleve_nom ASC");
+$array_eleves = array();
+while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
+	array_push($array_eleves, $eleves["eleve_prenom"]." ".$eleves["eleve_nom"]);
+}
+
 if(isset($_POST['editOne'])){
 	$db = PDOFactory::getConnection();
 	$start = $_POST['date_debut']." ".$_POST['heure_debut'];
@@ -203,31 +209,23 @@ if(isset($_POST['deleteCoursAll'])){
 						</div>
                         <div class="panel-body">
                                 <label for="liste_participants">Participants enregistrés :</label>
-                                <input type="text" for="liste_participants" class="form-control" placeholder="Ajouter un participant">
+                                <div class="input-group">
+                                	<input type="text" for="liste_participants" class="form-control" id="liste-participants" placeholder="Ajouter un participant">
+                                	<span role="buttton" class="input-group-btn" id="add-eleve"><a class="btn btn-default" role="button">Ajouter l'élève</a></span>
+                                </div>
                         </div>
                         <ul class="list-group">
                             <?php while($participants = $queryParticipants->fetch(PDO::FETCH_ASSOC)){?>
                                 <li class='list-group-item'>
                                 	<?php echo $participants['eleve_prenom']." ".$participants['eleve_nom'];?>
-                                	<span class="list-item-option delete-record glyphicon glyphicon-trash" title="Supprimer l'élève de ce cours"><input type="hidden" value="<?php echo $participants["eleve_id"];?>"></span>
+                                	<span class="list-item-option delete-participant glyphicon glyphicon-trash" title="Supprimer l'élève de ce cours"><input type="hidden" value="<?php echo $participants["eleve_id"];?>"></span>
 								</li>
                             <?php } ?>
                             <li class="list-group-item" id="prix-calcul">Somme due à l'enseignant :
-                            <?php
-                            // Calcul de la somme due à l'enseignant en fonction de la table des tarifs
-							if($cours["paiement_effectue"] != 1){
-								if(isset($tarif['ratio_multiplicatif'])){
-									if ($tarif['ratio_multiplicatif'] == 'prestation'){
-										$prix_final = $tarif['tarif_prestation'];
-									} else if ($tarif['ratio_multiplicatif'] == 'heure'){
-										$prix_final = $tarif['tarif_prestation'] * $cours['cours_unite'];
-									} else {
-									$prix_final = $cours["cours_prix"];
-									}
-								}
-							}?>
-                            <span class='input-group-addon' id='currency-addon'>€</span>
-                            <input type=text name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $prix_final;?>" aria-describedby='currency-addon'>
+                            <div class="input-group">
+                            	<span class='input-group-addon' id='currency-addon'>€</span>
+                            	<input type=text name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $cours["cours_prix"];?>" aria-describedby='currency-addon'>
+							</div>
                             <input type="checkbox" <?php if($cours['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
                             <input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $cours['paiement_effectue'];?>">
                             </li>
@@ -246,6 +244,29 @@ if(isset($_POST['deleteCoursAll'])){
    </div>
    <?php include "scripts.php";?>
    <script>
+	   $(document).ready(function(){
+			 var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
+		   $("#liste-participants").autocomplete({
+			   source: listeAdherents
+		   });
+		   
+		   $("#add-eleve").click(function(){
+			   var adherent = $("#liste-participants").val();
+			   var cours_id = $("[name='id']").val();
+			   $.post("functions/add_participant.php", {cours_id, adherent}).done(function(data){
+				   $.notify("Elève ajouté au cours.", {globalPosition:"right bottom", className:"success"});
+				   var line = "<li class='list-group-item'>";
+				   line += adherent;
+				   line += "<span class='list-item-option delete-participant glyphicon glyphicon-trash' title='Supprimer l\'élève de ce cours'>";
+				   line += "<input type='hidden' value="+data+">";
+				   line += "</span>";
+				   line += "</li>";
+				   $(line).insertBefore($("#prix-calcul"));
+				   $("#liste-participants").empty();
+			   });
+		   })
+	   });
+	   
 		$('#paiement').change(function(){
 			var state = $('#paiement').prop('checked');
 			if(state){
@@ -255,10 +276,11 @@ if(isset($_POST['deleteCoursAll'])){
 			}
 		});
 	   
-	   $(".delete-record").click(function(){
+	   $(".delete-participant").click(function(){
 		   var clicked = $(this);
+		   var cours_id = $("[name='id']").val();
 		   var delete_id = clicked.children("input").val();
-		   $.post("functions/delete_record.php", {delete_id}).done(function(data){
+		   $.post("functions/delete_participant.php", {cours_id, delete_id}).done(function(data){
 			   $.notify("Participation supprimée.", {globalPosition:"right bottom", className:"success"});
 			   clicked.parent(".list-group-item").hide('200');
 		   })
