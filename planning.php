@@ -47,12 +47,14 @@ if(isset($_POST['deleteCoursAll'])){
 	    <div id="cours-options" class="popover popover-default">
 			<div class="arrow"></div>
 			<p style="font-weight:700;" id="popover-cours-title"></p>
+			<p id="popover-cours-type"></p>
 			<p id="popover-cours-hours"></p>
 			<a role="button" class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Détails >></a>
 		</div>
         <div id="reservation-options" class="popover popover-default">
             <div class="arrow"></div>
             <p style="font-weight:700;" id="popover-reservation-title"></p>
+            <p id="popover-reservation-type"></p>
             <p id="popover-reservation-hours"></p>
             <a class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Détails >></a>
         </div>
@@ -145,8 +147,10 @@ if(isset($_POST['deleteCoursAll'])){
                 }  else if(calEvent.type == 'holiday'){
                     element.css('background-color', '#000');
                 } else {
-					switch(calEvent.prestation){
+					switch(calEvent.prestation_id){
 						case '6':
+						case '7':
+						case '8':
 							element.css('background-color', '#2DF588');
 							element.css('border-color', '#28DB7A');
 							break;
@@ -168,6 +172,7 @@ if(isset($_POST['deleteCoursAll'])){
                 $('#'+calEvent.type+'-options').popoverX(options);
                 $('#'+calEvent.type+'-options>p').empty();
                 $('#popover-'+calEvent.type+'-title').append(calEvent.title);
+				$('#popover-'+calEvent.type+'-type').append(calEvent.prestation);
                 $('#popover-'+calEvent.type+'-hours').append("Le "+$.format.date(calEvent.start._i, "dd/MM/yyyy")+" de "+$.format.date(calEvent.start._i, "HH:mm")+" à "+$.format.date(calEvent.end._i, "HH:mm"));
                 $('#'+calEvent.type+'-options>a').attr('href', calEvent.type+'_edit.php?id='+calEvent.id);
                 var pHeight = $('#'+calEvent.type+'-options').height();

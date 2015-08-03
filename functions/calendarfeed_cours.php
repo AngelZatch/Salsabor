@@ -6,7 +6,7 @@ try
 	
 	$db = PDOFactory::getConnection();
     /** Obtention des cours **/
-    $calendar = $db->prepare('SELECT * FROM cours JOIN salle ON (cours_salle=salle.salle_id) JOIN niveau ON (cours_niveau=niveau.niveau_id)');
+    $calendar = $db->prepare('SELECT * FROM cours JOIN salle ON (cours_salle=salle.salle_id) JOIN niveau ON (cours_niveau=niveau.niveau_id) JOIN prestations ON (cours_type=prestations.prestations_id)');
     $calendar->execute();
     $events = array();
 
@@ -17,7 +17,8 @@ try
         $e['title'] = $row_calendar['cours_intitule']."\n".$row_calendar['salle_name']."\n".$row_calendar['niveau_name'];
         $e['start'] = $row_calendar['cours_start'];
         $e['end'] = $row_calendar['cours_end'];
-		$e['prestation'] = $row_calendar['cours_type'];
+		$e['prestation_id'] = $row_calendar['cours_type'];
+		$e['prestation'] = $row_calendar['prestations_name'];
 		$e['type'] = 'cours';
         // Paramètre propriétaire de Fullcalendar.js qui sert à délimiter un évènement
         // à ses heures de début et de fin.
