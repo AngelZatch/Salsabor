@@ -151,15 +151,18 @@ if(isset($_POST['addResa'])){
        $(".mandatory").blur(checkMandatory);
        
        $(document).ready(function(){
-           var start = sessionStorage.getItem('start');
-           var end = sessionStorage.getItem('end');
-           
-           var format_start = new Date(start).toISOString();
-           var format_end = new Date(end).toISOString();
-           
-           var start_day = moment(format_start).format('YYYY-MM-DD');
-           var start_hour = moment(format_start).format('HH:mm');
-           var end_hour = moment(format_end).format('HH:mm');
+       	var start = sessionStorage.getItem('start');
+		if(start != null){
+			var format_start = new Date(start).toISOString();
+			var end = sessionStorage.getItem('end');
+			var format_end = new Date(end).toISOString();
+		} else {
+			var format_start = new Date().toISOString();
+			var format_end = new Date().toISOString();
+		}
+		var start_day = moment(format_start).format('YYYY-MM-DD');
+		var start_hour = moment(format_start).startOf('hour').add(1, 'h').format('HH:mm');
+		var end_hour = moment(format_end).startOf('hour').add(2, 'h').format('HH:mm');
            
            $("#date_debut").val(start_day);
            $("#heure_debut").val(start_hour);
