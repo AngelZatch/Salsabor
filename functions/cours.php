@@ -2,6 +2,8 @@
 require_once "db_connect.php";
 /** ADD COURS **/
 function addCours(){
+	$db = PDOFactory::getConnection();
+	
     $intitule = $_POST['intitule'];
     $weekday = date('N', strtotime($_POST['date_debut']));
     $date_debut = $_POST['date_debut'];
@@ -24,10 +26,16 @@ function addCours(){
     
     /** Calculs automatiques de valeurs **/
     $unite = (strtotime($heure_fin) - strtotime($heure_debut))/3600;
-    $cout_horaire = 0;
+	
+	$prof = $db->query("SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=$prof_principal AND type_prestation=$type")->fetch(PDO::FETCH_ASSOC);
+	if($prof["ratio_multiplicatif"] == "heure"){
+		$cout_horaire = $unite * $prof["tarif_prestation"];
+	} else if($prof["ratio_multiplicatif"] == "prestation"){
+		$cout_horaire = $prof["tarif_prestation"];
+	}
+	
     if(isset($_POST['paiement'])) $paiement = $_POST['paiement']; else $paiement = 0;
 	
-	$db = PDOFactory::getConnection();
     
     /** Insertion du cours si pas de récurrence (cours ponctuel) **/
     if(!isset($_POST['recurrence'])){
