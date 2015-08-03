@@ -342,3 +342,8 @@ body{
 	background-color: #A9023A !important;
 	color: #111 !important;
 }
+
+.badge {
+	background-color: cornflowerblue;
+	display: inline-block !important;
+}
