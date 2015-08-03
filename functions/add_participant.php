@@ -19,10 +19,10 @@ try{
 												VALUES(:cours, :eleve, :produit)");
 	$add->bindParam(':cours', $cours);
 	$add->bindParam(':eleve', $adherent["eleve_id"]);
-	$add->bindParam(':produit', $forfait["id_transaction"]);
+	$add->bindParam(':produit', $produit["id_transaction"]);
 	$add->execute();
 	
-	if(isset($produit["id_transcation"])){
+	if(isset($produit["id_transaction"])){
 		// Déduction du volume horaire dans le forfait
 		$substract = $db->prepare("UPDATE produits_adherents SET volume_cours=? WHERE id_transaction=?");
 		$remainingHours = $produit["volume_cours"] - $detailCours["cours_unite"];

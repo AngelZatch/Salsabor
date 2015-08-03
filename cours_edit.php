@@ -217,6 +217,7 @@ if(isset($_POST['deleteCoursAll'])){
                         <ul class="list-group">
                             <?php while($participants = $queryParticipants->fetch(PDO::FETCH_ASSOC)){?>
                                 <li class='list-group-item'>
+                                	<span class="glyphicon glyphicon-<?php echo (isset($participants["produit_adherent_id"]))?"ok":"remove";?>"></span>
                                 	<?php echo $participants['eleve_prenom']." ".$participants['eleve_nom'];?>
                                 	<span class="list-item-option delete-participant glyphicon glyphicon-trash" title="Supprimer l'élève de ce cours"><input type="hidden" value="<?php echo $participants["eleve_id"];?>"></span>
 								</li>
