@@ -74,6 +74,7 @@ $queryNextCours->execute();
 								<p class="col-sm-3 eleve-infos">
 									<?php echo $passages["eleve_prenom"]." ".$passages["eleve_nom"];?>
 									<input type="hidden" class="eleve-id" value="<?php echo $passages["eleve_id"];?>">
+									<input type="hidden" class="passage-id" value="<?php echo $passages["passage_id"];?>">
 								</p>
 								<p class="col-sm-3 eleve-tag"><?php echo $passages["passage_eleve"];?></p>
 								<p class="col-sm-3">Enregsitré à <?php echo date_create($passages["passage_date"])->format("H:i:s");?></p>
@@ -130,9 +131,11 @@ $queryNextCours->execute();
 	   $(".validate-record").click(function(){
 		   var clicked = $(this);
 		   var cours_id = clicked.closest(".panel").find("#cours-id").val();
-		   var eleve_id = clicked.parents().siblings(".eleve-infos").children("input").val();
+		   var eleve_id = clicked.parents().siblings(".eleve-infos").children("input.eleve-id").val();
+		   var passage_id = clicked.parents().siblings(".eleve-infos").children("input.passage-id").val();
 		   var rfid = clicked.parents().siblings(".eleve-tag").html();
-		   $.post("functions/validate_record.php", {cours_id, eleve_id, rfid}).done(function(data){
+		   console.log(eleve_id);
+		   $.post("functions/validate_record.php", {cours_id, eleve_id, passage_id, rfid}).done(function(data){
 			   clicked.closest("li").removeClass('list-group-item-warning');
 			   clicked.closest("li").addClass("list-group-item-success");
 			   $.notify("Passage validé.", {globalPosition:"right bottom", className:"success"});
@@ -142,7 +145,7 @@ $queryNextCours->execute();
 	   $(".unvalidate-record").click(function(){
 		   var clicked = $(this);
 		   var cours_id = clicked.closest(".panel").find("#cours-id").val();
-		   var eleve_id = clicked.parents().siblings(".eleve-infos").children("input").val();
+		   var passage_id = clicked.parents().siblings(".eleve-infos").children("input").val();
 		   var rfid = clicked.parents().siblings(".eleve-tag").html();
 		   $.post("functions/unvalidate_record.php", {cours_id, eleve_id, rfid}).done(function(data){
 			   clicked.closest("li").removeClass('list-group-item-success');
