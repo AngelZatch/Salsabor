@@ -145,9 +145,10 @@ $queryNextCours->execute();
 	   $(".unvalidate-record").click(function(){
 		   var clicked = $(this);
 		   var cours_id = clicked.closest(".panel").find("#cours-id").val();
-		   var passage_id = clicked.parents().siblings(".eleve-infos").children("input").val();
+		   var eleve_id = clicked.parents().siblings(".eleve-infos").children("input.eleve-id").val();
+		   var passage_id = clicked.parents().siblings(".eleve-infos").children("input.passage-id").val();
 		   var rfid = clicked.parents().siblings(".eleve-tag").html();
-		   $.post("functions/unvalidate_record.php", {cours_id, eleve_id, rfid}).done(function(data){
+		   $.post("functions/unvalidate_record.php", {cours_id, eleve_id, passage_id, rfid}).done(function(data){
 			   clicked.closest("li").removeClass('list-group-item-success');
 			   clicked.closest("li").addClass("list-group-item-warning");
 			   $.notify(data, {globalPosition:"right bottom", className:"success"});
