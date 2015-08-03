@@ -217,21 +217,17 @@ if(isset($_POST['deleteCoursAll'])){
                             // Calcul de la somme due à l'enseignant en fonction de la table des tarifs
 							if($cours["paiement_effectue"] != 1){
 								if(isset($tarif['ratio_multiplicatif'])){
-									if($tarif['ratio_multiplicatif'] == 'personne'){
-										$prix_final = $tarif['tarif_prestation'] * $nombre_eleves;
-									} else if ($tarif['ratio_multiplicatif'] == 'prestation'){
+									if ($tarif['ratio_multiplicatif'] == 'prestation'){
 										$prix_final = $tarif['tarif_prestation'];
-									} else{
+									} else if ($tarif['ratio_multiplicatif'] == 'heure'){
 										$prix_final = $tarif['tarif_prestation'] * $cours['cours_unite'];
+									} else {
+									$prix_final = $cours["cours_prix"];
 									}
-								} else{
-									$prix_final = $tarif['cout_horaire'] * $tarif['cours_unite'];
 								}
-							} else {
-								$prix_final = $cours["cours_prix"];
 							}?>
                             <span class='input-group-addon' id='currency-addon'>€</span>
-                            <input type=text name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $prix_final?>" aria-describedby='currency-addon'>
+                            <input type=text name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $prix_final;?>" aria-describedby='currency-addon'>
                             <input type="checkbox" <?php if($cours['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
                             <input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $cours['paiement_effectue'];?>">
                             </li>

@@ -151,7 +151,7 @@ $queryNextCours->execute();
 		   $.post("functions/unvalidate_record.php", {cours_id, eleve_id, passage_id, rfid}).done(function(data){
 			   clicked.closest("li").removeClass('list-group-item-success');
 			   clicked.closest("li").addClass("list-group-item-warning");
-			   $.notify(data, {globalPosition:"right bottom", className:"success"});
+			   $.notify("Passage supprimé.", {globalPosition:"right bottom", className:"success"});
 		   });
 	   })
 	</script>
