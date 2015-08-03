@@ -17,14 +17,10 @@ include 'functions/reservations.php';
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Page Test !</h1>
                <?php
-	$length = 8;
-	$characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	$chars_length = strlen($characters);
-	$reference = '';
-	for ($i = 0; $i < $length; $i++) {
-		$reference .= $characters[rand(0, $chars_length - 1)];
-	}
-	echo $reference;
+			$search = $db->query("SELECT * FROM adherents JOIN produits_adherents ON eleve_id=produits_adherents.id_adherent WHERE numero_rfid='1A3CD4A2'");
+echo $search->rowCount();
+$search->fetch(PDO::FETCH_ASSOC);
+echo $search["eleve_id"];
 ?>
            </div>
        </div>
