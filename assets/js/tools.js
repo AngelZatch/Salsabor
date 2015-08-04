@@ -27,6 +27,10 @@ function notifPassages(firstCount){
 	})
 }
 
+function showSuccessNotif(data){
+	$.notify(data, {globalPosition:"right bottom", className:"success"});
+}
+
 // FONCTIONS UTILITAIRES //
 // Insert la date d'aujourd'hui dans un input de type date supportant la fonctionnalité 
 $("*[date-today='true']").click(function(){

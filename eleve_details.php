@@ -22,6 +22,10 @@ $queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS d
 $queryForfaits->bindValue(1, $data);
 $queryForfaits->execute();
 
+$queryForfaitsActifs = $db->prepare("SELECT * FROM produits_adherents JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=? AND produits_adherents.actif=1");
+$queryForfaitsActifs->bindParam(1, $data);
+$queryForfaitsActifs->execute();
+
 // Edit des informations
 if(isset($_POST["edit"])){
 	try{
@@ -138,21 +142,31 @@ if(isset($_POST["edit"])){
                	<table class="table table-striped">
                		<thead>
                			<tr>
-               				<th>Intitulé</th>
-               				<th>Jour</th>
-               				<th>Niveau</th>
-               				<th>Lieu</th>
-               				<th>Prix pondéré</th>
+               				<th class="col-lg-2">Intitulé</th>
+               				<th class="col-lg-3">Jour</th>
+               				<th class="col-lg-2">Détails</th>
+               				<th class="col-lg-3">Forfait</th>
+               				<th class="col-lg-2">Prix pondéré</th>
                			</tr>
                		</thead>
                		<tbody>
                		<?php while($history = $queryHistory->fetch(PDO::FETCH_ASSOC)){ ?>
-               			<tr>
-               				<td><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
-               				<td><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
-               				<td><?php echo $history['niveau_name'];?></td>
-               				<td><?php echo $history['salle_name'];?></td>
-               				<td>A déterminer</td>
+               			<tr <?php echo ($history["produit_adherent_id"]==null)?"class='warning'":"";?>>
+               				<td class="col-lg-2"><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
+               				<td class="col-lg-3"><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
+               				<td class="col-lg-2"><?php echo $history['niveau_name']."\n".$history['salle_name'];?></td>
+               				<td class="col-lg-3">
+               					<?php if($history["produit_adherent_id"]==null){?>
+               					<button class="btn btn-default" name="link-forfait"><span class="glyphicon glyphicon-link"></span> Associer un forfait</button>
+               					<input type="hidden" name="cours" value="<?php echo $history["cours_id"];?>">
+               					<select name="forfaits-actifs" style="display:none;" class="form-control">
+               						<?php while($forfaitsActifs = $queryForfaitsActifs->fetch(PDO::FETCH_ASSOC)){?>
+										<option value="<?php echo $forfaitsActifs["id_transaction"]?>"><?php echo $forfaitsActifs["produit_nom"];?></option>
+									<?php } ?>
+               					</select>
+								<?php } else echo $history["produit_adherent_id"];?>
+               				</td>
+               				<td class="col-lg-2">A déterminer</td>
                			</tr>
 					<?php } ?>
                		</tbody>
@@ -235,6 +249,24 @@ if(isset($_POST["edit"])){
 			  }
 		   });
 	   }
+	   
+	   $("[name='link-forfait']").click(function(){
+		   $("[name='forfaits-actifs']").show();
+		   $("[name='link-forfait']").hide();
+	   });
+	   
+	   $("[name='forfaits-actifs']").blur(function(){
+		   var clicked = $(this);
+		   var eleve_id = <?php echo $data;?>;
+		   var produit_id = clicked.val();
+		   var cours_id = clicked.prev().val();
+		  $.post("functions/link_forfait.php", {eleve_id, cours_id, produit_id}).done(function(data){
+			  showSuccessNotif(data);
+			  clicked.parents("tr.warning").removeClass('warning');
+			  clicked.hide();
+			  clicked.parent().html(produit_id);
+		  });
+	   });
 	</script>
 </body>
 </html>
