@@ -103,7 +103,7 @@ if(isset($_POST["submit"])){
                        <label for="date_activation">Date souhaitée d'activation</label>
                        <div class="input-group">
                            <input type="date" name="date_activation" class="form-control" onchange="evaluateExpirationDate()">
-                           <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true" onclick="evaluateExpirationDate()">Insérer aujourd'hui</a></span>
+                           <span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true" onclick="evaluateExpirationDate()">Insérer aujourd'hui</a></span>
                        </div>
                    </div>
                    <div class="form-group">

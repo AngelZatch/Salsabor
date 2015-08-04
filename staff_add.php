@@ -164,6 +164,15 @@ if(isset($_POST['addStaff'])){
 			  }
 		   });
 	   }*/
+		  $("[name='photo_identite']").fileinput({
+			  previewFileType: "image",
+			  showUpload: false,
+			  showCaption: false,
+			  showRemove: false,
+			  browseClass: "btn btn-info btn-block",
+			  browseLabel: " Sélectionnez une image",
+			  browseIcon: '<i class="glyphicon glyphicon-picture"></i>' 
+		  });
 	</script>    
 </body>
 </html>
