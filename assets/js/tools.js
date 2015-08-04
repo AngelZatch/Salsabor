@@ -11,6 +11,30 @@ $(document).ready(function(){
 	setInterval(notifPassages, 5000);
 	$('[data-toggle="tooltip"]').tooltip();
     moment.locale("fra");
+	
+	// Construit le tableau d'inputs obligatoires par formulaire
+	var mandatories = [];
+	$(".mandatory").each(function(){
+		var inputName = $(this).attr('name');
+		mandatories.push(inputName);
+	}).blur(function(){
+		var j = 0;
+		for(var i = 0; i < mandatories.length; i++){
+			if($("[name="+mandatories[i]+"]").val() != '' || $("[name="+mandatories[i]+"]").html() != ''){
+				j++; // Incrémente le compteur d'input remplis et vide les éventuels messages d'erreurs indiquant que le champ est obligatoire
+				$(this).next().children('p').empty();
+			} else {
+				// Affiche un message indiquant que le champ est obligatoire
+				$(this).next().children('p').html("Ce champ est requis");
+			}
+		}
+		// Si tous les inputs sont remplis, alors on autorise la soumission du formulaire
+		if(j == mandatories.length){
+			$("#submit-button").prop('disabled', false);
+		} else {
+			$("#submit-button").prop('disabled', true);
+		}
+	})
 });
 
 // FONCTIONS NOTIFICATIONS //
@@ -109,16 +133,6 @@ function checkHoliday(){
            checkCalendar(true, false);
        }
    });
-}
-
-// Vérifie que les champs obligatoires sont renseignés.
-function checkMandatory(){
-  if($(".mandatory").val() != '' || $(".mandatory").html() != ''){
-      $("#submit-button").prop('disabled', false);
-   } else {
-       $(this).next().children('p').html("Ce champ est requis");
-       $("#submit-button").prop('disabled', true);
-   }
 }
 
 $(".draggable").draggable({

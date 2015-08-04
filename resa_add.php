@@ -73,7 +73,7 @@ if(isset($_POST['addResa'])){
                	    <div class="form-group">
                	        <label for="prestation" class="col-sm-3 control-label">Activité <span class="span-mandatory">*</span></label>
                	        <div class="col-sm-9">
-               	           <select name="prestation" id="prestation" class="form-control" onChange="checkCalendar(true, false)">
+               	           <select name="prestation" id="prestation" class="form-control mandatory" onChange="checkCalendar(true, false)">
                	           <?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){?>
                	                <option value="<?php echo $prestations['prestations_id'];?>"><?php echo $prestations['prestations_name'];?></option>";
                	            <?php } ?>
@@ -84,7 +84,7 @@ if(isset($_POST['addResa'])){
                	        <label for="date_debut" class="col-sm-3 control-label">Date <span class="span-mandatory">*</span></label>
                	        <div class="col-sm-9">
                             <div class="input-group">
-                                <input type="date" class="form-control" name="date_debut" id="date_debut" onChange="checkHoliday()">
+                                <input type="date" class="form-control mandatory" name="date_debut" id="date_debut" onChange="checkHoliday()">
                                 <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
                             </div>
                             <p class="error-alert" id="holiday-alert"></p>
@@ -93,15 +93,15 @@ if(isset($_POST['addResa'])){
                	    <div class="form-group">
                	        <fieldset>
                	            <label for="heure_debut" class="col-sm-3 control-label">Début à <span class="span-mandatory">*</span></label>
-               	            <div class="col-sm-9"><input type="time" class="form-control" id="heure_debut" name="heure_debut" onChange="checkCalendar(true, false)"></div>
+               	            <div class="col-sm-9"><input type="time" class="form-control mandatory" id="heure_debut" name="heure_debut" onChange="checkCalendar(true, false)"></div>
                	            <label for="heure_fin" class="col-sm-3 control-label">Fin à <span class="span-mandatory">*</span></label>
-               	            <div class="col-sm-9"><input type="time" class="form-control" id="heure_fin" name="heure_fin" onChange="checkCalendar(true, false)"></div>
+               	            <div class="col-sm-9"><input type="time" class="form-control mandatory" id="heure_fin" name="heure_fin" onChange="checkCalendar(true, false)"></div>
                	        </fieldset>
                	    </div>
                	    <div class="form-group">
                	        <label for="lieu" class="col-sm-3 control-label">Salle <span class="span-mandatory">*</span></label>
                	        <div class="col-sm-9">
-               	           <select name="lieu" class="form-control" id="lieu" onChange="checkCalendar(true, false)">
+               	           <select name="lieu" class="form-control mandatory" id="lieu" onChange="checkCalendar(true, false)">
                	           <?php while($lieux = $queryLieux->fetch(PDO::FETCH_ASSOC)){?>
                	                <option value="<?php echo $lieux['salle_id'];?>"><?php echo $lieux['salle_name'];?></option>;
                	            <?php } ?>
@@ -151,8 +151,6 @@ if(isset($_POST['addResa'])){
                 $('#paiement-sub').val(0);
             }
         });
-       
-       $(".mandatory").blur(checkMandatory);
        
        $(document).ready(function(){
 		   var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');

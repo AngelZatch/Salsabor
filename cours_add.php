@@ -205,8 +205,6 @@ if(isset($_POST['add'])){
 	$("#recurrence").click(function(){
 		$("#recurring-options").toggle('600');
 	});
-       
-       $(".mandatory").blur(checkMandatory);
 	</script>
 </body>
 </html>

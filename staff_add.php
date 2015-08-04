@@ -72,15 +72,15 @@ if(isset($_POST['addStaff'])){
 					<form method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
 					  <div class="btn-toolbar">
 					 	  <a href="staff_liste.php?rank=0" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste du staff</a>
-					 	  <input type="submit" name="addStaff" role="button" class="btn btn-primary" value="ENREGISTRER">
+					 	  <input type="submit" name="addStaff" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
 					</div> <!-- btn-toolbar -->
 					<div class="form-group">
 						<label for="identite_prenom" class="control-label">Prénom</label>
-						<input type="text" name="identite_prenom" id="identite_prenom" class="form-control" placeholder="Prénom">
+						<input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory" placeholder="Prénom">
 					</div>
 					<div class="form-group">
 					<label for="identite_nom" class="control-label">Nom</label>
-						<input type="text" name="identite_nom" id="identite_nom" class="form-control" placeholder="Nom">
+						<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory" placeholder="Nom">
 					</div>
 					<div class="form-group">
 						<label for="profile_picture" class="control-label">Photo d'identité</label>
@@ -88,7 +88,7 @@ if(isset($_POST['addStaff'])){
 					</div>
 				   <div class="form-group">
 						<label for="rank" class="control-label">Rang</label>
-						<select class="form-control" name="rank">
+						<select class="form-control mandatory" name="rank">
 						<?php while($ranks = $queryRanks->fetch(PDO::FETCH_ASSOC)){ ?>
 						<option value="<?php echo $ranks['rank_id'];?>"><?php echo $ranks['rank_name'];?></option>
 						<?php } ?>
@@ -100,29 +100,29 @@ if(isset($_POST['addStaff'])){
 					</div>-->
 					<div class="form-group">
 					<label for="" class="control-label">Adresse postale</label>
-						<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control">
+						<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control mandatory">
 					</div>
 					<div class="form-group">
-						<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control">
+						<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control mandatory">
 					</div>
 					<div class="form-group">
-						<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control">
+						<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control mandatory">
 					</div>
 					<div class="form-group">
 					<label for="mail" class="control-label">Adresse mail</label>
-						<input type="text" name="mail" id="mail" placeholder="Adresse mail" class="form-control">
+						<input type="text" name="mail" id="mail" placeholder="Adresse mail" class="form-control mandatory">
 					</div>
 					<div class="form-group">
 					<label for="tel_fixe" class="control-label">Téléphone fixe</label>
-						<input type="text" name="tel_fixe" id="tel_fixe" placeholder="Numéro de téléphone fixe" class="form-control">
+						<input type="text" name="tel_fixe" id="tel_fixe" placeholder="Numéro de téléphone fixe" class="form-control mandatory">
 					</div>
 					<div class="form-group">
 					<label for="tel_port" class="control-label">Téléphone portable</label>
-						<input type="text" name="tel_port" id="tel_port" placeholder="Numéro de téléphone portable" class="form-control">
+						<input type="text" name="tel_port" id="tel_port" placeholder="Numéro de téléphone portable" class="form-control mandatory">
 					</div>
 					<div class="form-group">
 						<label for="date_naissance" class="control-label">Date de naissance</label>
-						<input type="date" name="date_naissance" id="date_naissance" class="form-control">
+						<input type="date" name="date_naissance" id="date_naissance" class="form-control mandatory">
 					</div>
 					<!--<div class="form-group">
 						<label for="rfid" class="control-label">Code carte</label>
