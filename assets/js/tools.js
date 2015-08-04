@@ -88,10 +88,8 @@ function addAdherent(){
 	var date_naissance = $('#date_naissance').val();
 	$.post("functions/add_adherent.php", {identite_prenom, identite_nom, rfid, rue, code_postal, ville, mail, telephone, date_naissance}).done(function(data){
 		$('#create-user').click();
-		$('#user-added').show('500').delay(3000).hide('3000');
+		showSuccessNotif(data);
 		ifAdherentExists();
-	}).fail(function(data){
-		$('#user-error').show('500').delay(3000).hide('3000');
 	});
 }
 

@@ -23,7 +23,7 @@ try{
 		$delete->execute();
 	}
 	$db->commit();
-	echo "Succès lors de l'ajout";
+	echo "Inscription réalisée.";
 } catch(PDOException $e){
 	$db->rollBack();
 	echo $e->getMessage();
