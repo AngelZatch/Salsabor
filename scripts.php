@@ -16,6 +16,8 @@
 <script src="assets/js/Chart.js"></script>
 <script src="assets/js/checkbox-x.min.js"></script>
 <script src="assets/js/notify.min.js"></script>
+<script src="assets/js/fileinput.min.js"></script>
+<script src="assets/js/fileinput_locale_fr.js"></script>
 
 <!-- custom -->
 <script src="assets/js/swap-menus.js"></script>

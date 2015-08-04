@@ -86,7 +86,7 @@ if(isset($_POST['addAdherent'])){
 					</div>
 					<div class="form-group">
 						<label for="certificat_medical" class="control-label">Certificat Médical</label>
-						<input type="file" class="form-control">
+						<input type="file" class="form-control" name="certificat_medical">
 					</div>
 					<div class="form-group">
 					<label for="" class="control-label">Adresse postale</label>
@@ -114,7 +114,7 @@ if(isset($_POST['addAdherent'])){
 						<label for="rfid" class="control-label">Code carte</label>
 						<div class="input-group">
 							<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
-							<span role="buttton" class="input-group-btn"><a class="btn btn-primary" role="button" name="fetch-rfid">Lancer la détection</a></span>
+							<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
 						</div>
 					</div>
 				  <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" style="width:100%;">
@@ -150,6 +150,25 @@ if(isset($_POST['addAdherent'])){
 			  }
 		   });
 	   }
+		  $("[name='photo_identite']").fileinput({
+			  previewFileType: "image",
+			  showUpload: false,
+			  showCaption: false,
+			  showRemove: false,
+			  browseClass: "btn btn-info btn-block",
+			  browseLabel: " Sélectionnez une image",
+			  browseIcon: '<i class="glyphicon glyphicon-picture"></i>' 
+		  });
+		  
+		  $("[name='certificat_medical']").fileinput({
+			  previewFileType: "image",
+			  showUpload: false,
+			  showCaption: false,
+			  showRemove: false,
+			  browseClass: "btn btn-info btn-block",
+			  browseLabel: " Sélectionnez un fichier",
+			  browseIcon: '<i class="glyphicon glyphicon-open-file"></i>' 
+		  });
 	</script>    
 </body>
 </html>

@@ -28,6 +28,26 @@ $queryForfaitsActifs->execute();
 
 // Edit des informations
 if(isset($_POST["edit"])){
+	// Upload de l'image
+	$target_dir = "assets/pictures/";
+	$target_file = $target_dir.basename($_FILES["photo_identite"]["name"]);
+	$uploadOk = 1;
+	//$imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+	/**$check = getimagesize($_FILES['photo_identite']['tmp_name']);
+	if(!$check){
+		$uploadOk = 1;
+	} else {
+		echo "Fichier non conforme";
+		$uploadOk = 0;
+	}**/
+	if($uploadOk == 1){
+		if(move_uploaded_file($_FILES["photo_identite"]["tmp_name"], $target_file)){
+			echo "Fichier uploadé avec succès.";
+		} else {
+			echo "Erreur au transfert du fichier.";
+		}
+	}
+	print_r($_FILES);
 	try{
 		$db->beginTransaction();
 		$edit = $db->prepare('UPDATE adherents SET eleve_prenom = :prenom,
@@ -38,7 +58,8 @@ if(isset($_POST["edit"])){
 													code_postal = :code_postal,
 													ville = :ville,
 													mail = :mail,
-													telephone = :telephone
+													telephone = :telephone,
+													photo = :photo
 													WHERE eleve_id = :id');
 		$edit->bindParam(':prenom', $_POST["identite_prenom"]);
 		$edit->bindParam(':nom', $_POST["identite_nom"]);
@@ -49,6 +70,7 @@ if(isset($_POST["edit"])){
 		$edit->bindParam(':ville', $_POST["ville"]);
 		$edit->bindParam(':mail', $_POST["mail"]);
 		$edit->bindParam(':telephone', $_POST["telephone"]);
+		$edit->bindParam(':photo', $target_file);
 		$edit->bindParam(':id', $data);
 		$edit->execute();
 		if(isset($_POST["rfid"])){
@@ -57,7 +79,7 @@ if(isset($_POST["edit"])){
 			$delete->execute();
 		}
 		$db->commit();
-		header("Location:eleve_details.php?id=$data");
+//		header("Location:eleve_details.php?id=$data");
 	} catch(PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());
@@ -87,11 +109,13 @@ if(isset($_POST["edit"])){
                    <li role="presentation" id="forfaits-toggle"><a>Historique des forfaits</a></li>
                </ul>
                <section id="infos">
-               		<form method="post" role="form">
+               		<form method="post" role="form" enctype="multipart/form-data">
 						<div class="container-fluid">
                				<div class="form-group col-sm-2 thumbnail" id="picture-container">
-								<img src="<?php echo $details["photo"];?>" alt="Pas de photo" style="max-height:100%; max-width:100%;">
-								<input type="file" class="form-control" name="photo_identite" style="display:none;">
+               					<label for="photo_identite">
+								<img src="<?php echo ($details["photo"])?$details["photo"]:"assets/images/logotype-white.png";?>" alt="" style="max-height:100%; max-width:100%;">
+								</label>
+								<input type="file" name="photo_identite">
 							</div>
 							<div class="form-group col-sm-10">
 								<label for="identite_prenom" class="control-label">Prénom</label>
@@ -110,7 +134,7 @@ if(isset($_POST["edit"])){
                				<label for="rfid" class="control-label">Code carte</label>
                				<div class="input-group">
                					<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["numero_rfid"];?>">
-               					<span role="buttton" class="input-group-btn"><a class="btn btn-primary" role="button" name="fetch-rfid">Lancer la détection</a></span>
+               					<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
                				</div>
 						</div>
 						<div class="form-group">
@@ -266,6 +290,16 @@ if(isset($_POST["edit"])){
 			  clicked.hide();
 			  clicked.parent().html(produit_id);
 		  });
+	   });
+	   
+	   $("[name='photo_identite']").fileinput({
+		   previewFileType: "image",
+		   showCaption: false,
+		   showRemove: false,
+		   showUpload: false,
+		   browseClass: "btn btn-info",
+		   browseLabel: "Photo",
+		   browseIcon: '<i class="glyphicon glyphicon-picture"></i>'
 	   });
 	</script>
 </body>
