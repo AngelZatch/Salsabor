@@ -23,7 +23,7 @@ $db = PDOFactory::getConnection();
             ?>
             </select>
             <br>
-            <input type="submit" name="addStaff" value="Ajouter" class="btn btn-default">
+            <input type="submit" name="addStaff" value="Ajouter" class="btn btn-primary">
         </div>
     </form>
 </div>

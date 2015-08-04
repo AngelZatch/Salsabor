@@ -83,14 +83,14 @@ if(isset($_POST["add"])){
                           <label for="date_activation">Date de mise à disposition à l'achat</label>
                           <div class="input-group">
                               <input type="date" class="form-control" name="date_activation">
-                              <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
+                              <span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
                           </div>
                       </div>
                       <div class="form-group">
                           <label for="date_limite_achat">Date limite d'achat possible</label>
                           <div class="input-group">
                               <input type="date" class="form-control" name="date_limite_achat">
-                              <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
+                              <span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
                           </div>
                       </div>
                       <div class="form-group">

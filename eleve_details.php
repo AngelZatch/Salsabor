@@ -183,7 +183,7 @@ if(isset($_POST["edit"])){
                				<td class="col-lg-2"><?php echo $history['niveau_name']."\n".$history['salle_name'];?></td>
                				<td class="col-lg-3">
                					<?php if($history["produit_adherent_id"]==null){?>
-               					<button class="btn btn-default" name="link-forfait"><span class="glyphicon glyphicon-link"></span> Associer un forfait</button>
+               					<button class="btn btn-info" name="link-forfait"><span class="glyphicon glyphicon-link"></span> Associer un forfait</button>
                					<input type="hidden" name="cours" value="<?php echo $history["cours_id"];?>">
                					<select name="forfaits-actifs" style="display:none;" class="form-control">
                						<?php while($forfaitsActifs = $queryForfaitsActifs->fetch(PDO::FETCH_ASSOC)){?>

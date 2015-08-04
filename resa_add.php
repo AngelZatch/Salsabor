@@ -85,7 +85,7 @@ if(isset($_POST['addResa'])){
                	        <div class="col-sm-9">
                             <div class="input-group">
                                 <input type="date" class="form-control mandatory" name="date_debut" id="date_debut" onChange="checkHoliday()">
-                                <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
+                                <span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
                             </div>
                             <p class="error-alert" id="holiday-alert"></p>
                	        </div>

@@ -211,7 +211,7 @@ if(isset($_POST['deleteCoursAll'])){
                                 <label for="liste_participants">Participants enregistrés :</label>
                                 <div class="input-group">
                                 	<input type="text" for="liste_participants" class="form-control" id="liste-participants" placeholder="Ajouter un participant">
-                                	<span role="buttton" class="input-group-btn" id="add-eleve"><a class="btn btn-default" role="button">Ajouter l'élève</a></span>
+                                	<span role="buttton" class="input-group-btn" id="add-eleve"><a class="btn btn-info" role="button">Ajouter l'élève</a></span>
                                 </div>
                         </div>
                         <ul class="list-group">

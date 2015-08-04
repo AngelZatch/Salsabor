@@ -20,7 +20,7 @@ $db = PDOFactory::getConnection();
                 <div class="alert alert-custom alert-success" id="holiday-added" style="display:none;">Jour chômé ajouté avec succès</div>
 				<div class="alert alert-custom alert-success" id="holiday-deleted" style="display:none;">Jour chômé supprimé avec succès</div>
                <h1 class="page-title"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés</h1>
-              <button class="btn btn-default" id="add-holiday"><span class="glyphicon glyphicon-plus"></span> Ajouter un jour / une période chômé(e)</button>
+              <button class="btn btn-info" id="add-holiday"><span class="glyphicon glyphicon-plus"></span> Ajouter un jour / une période chômé(e)</button>
               <div id="affected-details" class="collapse">
                   <div id="affected-content" class="well">
                      <div id="affected-list"></div>
@@ -37,7 +37,7 @@ $db = PDOFactory::getConnection();
                    <tbody id="table-content">
                         <tr id="new-holiday" style="display:none;">
 							<td class="col-sm-3">Début de la période / jour unique<input type="date" class="form-control" id="date-debut">Fin de la période<input type="date" class="form-control" id="date-fin"></td>
-							<td class="col-sm-6"><button class="btn btn-default" onclick="addHoliday()"><span class="glyphicon glyphicon-plus"></span> Valider</button><button class="btn btn-default" id="cancel"><span class="glyphicon glyphicon-cancel"></span> Annuler</button></td>
+							<td class="col-sm-6"><button class="btn btn-default" onclick="addHoliday()"><span class="glyphicon glyphicon-plus"></span> Valider</button><button class="btn btn-default" id="cancel"><span class="glyphicon glyphicon-minus"></span> Annuler</button></td>
                         </tr>
                    </tbody>
                </table>

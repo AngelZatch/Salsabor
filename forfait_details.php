@@ -102,14 +102,14 @@ if(isset($_POST["edit"])){
                           <label for="date_activation">Date de mise à disposition à l'achat (laissez vide pour une activation dès la validation)</label>
                             <div class="input-group">
                               <input type="date" class="form-control" name="date_activation" value="<?php echo $produit["date_activation"];?>">
-                              <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
+                              <span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
                           </div>
                       </div>
                       <div class="form-group">
                           <label for="date_limite_achat">Date limite d'achat possible (laissez vide pour une activation pendant une durée indéfinie)</label>
                         <div class="input-group">
                               <input type="date" class="form-control" name="date_limite_achat" value="<?php echo $produit["date_desactivation"];?>">
-                              <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
+                              <span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
                           </div>
                       </div>
                       <div class="form-group">

@@ -85,7 +85,7 @@ if(isset($_POST['add'])){
 						   <div class="col-sm-9">
 						   <div class="input-group">
 						       <input type="date" class="form-control mandatory" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
-                               <span role="buttton" class="input-group-btn"><a class="btn btn-default" role="button" date-today="true">Insérer aujourd'hui</a></span>
+                               <span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
 						   </div>
 						   </div>
 						   <div class="col-sm-9 col-sm-offset-3">
@@ -167,7 +167,6 @@ if(isset($_POST['add'])){
 					   </div>
 					   <div class="align-right">
 							<p id="error_message"></p>
-							<input type="submit" name="add" value="Ajouter" class="btn btn-default btn-primary confirm-add">
 					   </div>
 					</form>
                </div>
