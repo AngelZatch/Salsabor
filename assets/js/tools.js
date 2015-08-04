@@ -90,6 +90,7 @@ function addAdherent(){
 		$('#create-user').click();
 		showSuccessNotif(data);
 		ifAdherentExists();
+		$("#identite_nom").val(identite_prenom+" "+identite_nom);
 	});
 }
 

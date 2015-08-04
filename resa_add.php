@@ -6,6 +6,12 @@ require_once 'functions/reservations.php';
 $queryPrestations = $db->query('SELECT * FROM prestations WHERE est_resa=1');
 $queryLieux = $db->query('SELECT * FROM salle WHERE est_salle_cours=1');
 
+$queryAdherentsNom = $db->query("SELECT * FROM adherents ORDER BY eleve_nom ASC");
+$array_eleves = array();
+while($adherents = $queryAdherentsNom->fetch(PDO::FETCH_ASSOC)){
+	array_push($array_eleves, $adherents["eleve_prenom"]." ".$adherents["eleve_nom"]);
+}
+
 // Ajout d'une réservation
 if(isset($_POST['addResa'])){
 	addResa();
@@ -29,21 +35,19 @@ if(isset($_POST['addResa'])){
 					 <div class="btn-toolbar">
 					   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
 					   <input type="submit" name="addResa" role="button" class="btn btn-primary confirm-add" value="ENREGISTRER" id="submit-button" disabled>
-              	    </div> <!-- btn-toolbar -->   
-              	    <div class="alert alert-success" id="user-added" style="display:none;">Adhérent ajouté avec succès</div>
-              	    <div class="class alert alert-danger" id="user-error" style="display:none;">Erreur. Certains champs sont vides</div>
+              	    </div> <!-- btn-toolbar -->
                	    <div class="form-group">
                	        <label for="identite" class="col-sm-3 control-label">Demandeur <span class="span-mandatory">*</span></label>
                	        <div class="col-sm-9">
-               	            <input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory" placeholder="Prénom" onChange="ifAdherentExists()">
                	            <input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory" placeholder="Nom" onChange="ifAdherentExists()">
-               	        </div>
-               	        <div class="align-right">
 							<p class="error-alert" id="err_adherent"></p>
-							<a href="#user-details" role="button" class="btn btn-primary" value="create-user" id="create-user" style="display:none;" data-toggle="collapse" aria-expanded="false" aria-controls="userDetails">Créer</a>
+							<a href="#user-details" role="button" class="btn btn-info" value="create-user" id="create-user" style="display:none;" data-toggle="collapse" aria-expanded="false" aria-controls="userDetails">Ouvrir le formulaire de création</a>
                	        </div>
                	        <div id="user-details" class="collapse">
                	        	<div class="well">
+								<div class="form-group">
+									<input type="text" name="identite_prenom" id="identite_prenom" class="form-control" placeholder="Prénom">
+								</div>
                	        		<div class="form-group">
                	        			<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control">
 								</div>
@@ -151,6 +155,11 @@ if(isset($_POST['addResa'])){
        $(".mandatory").blur(checkMandatory);
        
        $(document).ready(function(){
+		   var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
+		   $("[name='identite_nom']").autocomplete({
+			   source: listeAdherents
+		   });
+		   
        	var start = sessionStorage.getItem('start');
 		if(start != null){
 			var format_start = new Date(start).toISOString();

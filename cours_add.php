@@ -200,7 +200,7 @@ if(isset($_POST['add'])){
 		$("#heure_fin").val(end_hour);
 
 		sessionStorage.removeItem('end');
-sessionStorage.removeItem('start');
+		sessionStorage.removeItem('start');
 	});
 	$("#recurrence").click(function(){
 		$("#recurring-options").toggle('600');

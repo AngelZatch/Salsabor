@@ -7,8 +7,9 @@ require_once "tools.php";
 function addResa(){
 	$db = PDOFactory::getConnection();
 	
-	$prenom = $_POST['identite_prenom'];
-	$nom = $_POST['identite_nom'];
+	$data = explode(' ', $_POST["identite_nom"]);
+	$prenom = $data[0];
+	$nom = $data[1];
 	$prestation = $_POST['prestation'];
 	$date_debut = $_POST['date_debut']." ".$_POST['heure_debut'];
 	$date_fin = $_POST['date_debut']." ".$_POST['heure_fin'];
