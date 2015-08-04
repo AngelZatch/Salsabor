@@ -14,9 +14,11 @@ $queryPassages = $db->query("SELECT * FROM passages JOIN adherents ON passage_el
        <div id="navbar" class="navbar-collapse collapse">
            <ul class="nav navbar-nav navbar-right">
              <li><a href=""><span class="glyphicon glyphicon-user"></span> Dev_Version</a></li>
-              <li class="notification-option"><a href="passages.php" class="notification-icon"><span class="glyphicon glyphicon-map-marker"></span><span class="badge" id="badge-passages"></span></a>
+              <li class="notification-option" title="Passages en attente de traitement"><a href="passages.php" class="notification-icon"><span class="glyphicon glyphicon-map-marker"></span><span class="badge" id="badge-passages"></span></a>
               </li>
-              <li class="notification-option">
+              <li class="notification-option" title="Participants à un cours non associées"><a href="passages.php" class="notification-icon"><span class="glyphicon glyphicon-ice-lolly-tasted"></span><span class="badge" id="badge-participants"></span></a>
+              </li>
+              <li class="notification-option" title="Réservations non réglées">
                       <a href="" class="notification-icon"><span class="glyphicon glyphicon-scale"></span><span class="badge"><?php echo $locationsNotif;?></span></a>
               </li>
                <li><a href=""><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>

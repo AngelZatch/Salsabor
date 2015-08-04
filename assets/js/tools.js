@@ -7,6 +7,7 @@ Dès que le document est prêt, tous les modaux et les fonctions qui doivent tou
 $(document).ready(function(){
 	var firstCount = 0; // Pour éviter la notification dès le rafraîchissement de la page.
 	notifPassages(firstCount);
+	notifCoursParticipants(firstCount);
 	setInterval(notifPassages, 5000);
 	$('[data-toggle="tooltip"]').tooltip();
     moment.locale("fra");
@@ -24,6 +25,21 @@ function notifPassages(firstCount){
 			$("#badge-passages").html(data);
 		}
 		firstCount = 1;
+	})
+}
+
+// Surveille les participations à un cours non associés à un produit (abonnement, vente spontanée, invitation...)
+function notifCoursParticipants(firstCount){
+	$.post("functions/watch_cours_participants.php").done(function(data){
+		if(data == 0){
+			$("#badge-participants").hide();
+		} else {
+			if(data > $("#badge-participants").html() && firstCount != 0){
+				$.notify("Nouvelles participations non associées.", {globalPosition: "bottom right", className:"info"});
+			}
+			$("#badge-participants").show();
+			$("#badge-participants").html(data);
+		}
 	})
 }
 
