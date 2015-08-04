@@ -9,6 +9,7 @@ $(document).ready(function(){
 	notifPassages(firstCount);
 	notifCoursParticipants(firstCount);
 	setInterval(notifPassages, 5000);
+	setInterval(notifCoursParticipants, 500);
 	$('[data-toggle="tooltip"]').tooltip();
     moment.locale("fra");
 	
