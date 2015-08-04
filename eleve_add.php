@@ -117,7 +117,6 @@ if(isset($_POST['addAdherent'])){
 							<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
 						</div>
 					</div>
-				  <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" style="width:100%;">
 				  </form>
 				</div>
            </div>

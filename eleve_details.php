@@ -161,7 +161,7 @@ if(isset($_POST["edit"])){
 							<label for="certificat_medical" class="control-label">Certificat Médical</label>
 							<input type="file" class="form-control">
 						</div>
-					  <input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER LES MODIFICATIONS" style="width:100%;">
+					  <input type="submit" name="edit" role="button" class="btn btn-primary btn-block" value="ENREGISTRER LES MODIFICATIONS">
 					  </form>
                </section>
                <section id="history">
