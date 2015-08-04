@@ -105,9 +105,32 @@ if(isset($_POST["submit"])){
                        <label for="date_expiration">Date prévue d'expiration (à titre indicatif, pas de modification possible)</label>
                        <input type="date" name="date_expiration" class="form-control">
                    </div>
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="promotion-e">Réduction (en €)</label>
+								<div class="input-group">
+									<span class="input-group-addon"><input type="radio" id="promotion-euros" name="promotion" class="checkbox-x">Réduction en €</span>
+									<input type="text" name="promotion-e" class="form-control" onchange="calculatePrice()">
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="promotion-p">Réduction (en %)</label>
+								<div class="input-group">
+									<span class="input-group-addon"><input type="radio" name="promotion" id="promotion-pourcent">Réduction en %</span>
+									<input type="text" name="promotion-p" class="form-control" onchange="calculatePrice()">
+								</div>
+							</div>
+					  </div>
+                   </div>
                    <div class="form-group">
                        <label for="prix_achat">Prix du forfait souhaité</label>
-                       <input type="text" name="prix_achat" id="prix_calcul" class="form-control">
+                       <div class="input-group">
+                       	<span class="input-group-addon">€</span>
+                       	<input type="text" name="prix_achat" id="prix_calcul" class="form-control">
+                       </div>
                    </div>
                </form>
            </div>
@@ -146,9 +169,23 @@ if(isset($_POST["submit"])){
                $("*[name='date_expiration']").val(date_desactivation);
            }
        }
+	   
+	   $("[name='promotion']").change(function(){
+		   calculatePrice();
+	   })
        
        function calculatePrice(){
-           $("#prix_calcul").val(window.json.tarif_global);
+		   var reductionEuros = $("[name='promotion-e']").val();
+		   var reductionPourcent = $("[name='promotion-p']").val();
+		   if(window.json != null){
+			   var prixInitial = window.json.tarif_global;
+			   if($("#promotion-euros").prop("checked")){
+				   prixInitial -= reductionEuros;
+			   } else if($("#promotion-pourcent").prop("checked")){
+				   prixInitial -= ((prixInitial * reductionPourcent)/100);
+			   }
+           $("#prix_calcul").val(prixInitial);
+		   }
        }
 	   
 	   var listening = false;
