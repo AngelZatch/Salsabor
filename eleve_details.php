@@ -29,25 +29,27 @@ $queryForfaitsActifs->execute();
 // Edit des informations
 if(isset($_POST["edit"])){
 	// Upload de l'image
-	$target_dir = "assets/pictures/";
-	$target_file = $target_dir.basename($_FILES["photo_identite"]["name"]);
-	$uploadOk = 1;
-	//$imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
-	/**$check = getimagesize($_FILES['photo_identite']['tmp_name']);
-	if(!$check){
+	if(isset($_FILES["photo_identite"]["name"])){
+		$target_dir = "assets/pictures/";
+		$target_file = $target_dir.basename($_FILES["photo_identite"]["name"]);
 		$uploadOk = 1;
-	} else {
-		echo "Fichier non conforme";
-		$uploadOk = 0;
-	}**/
-	if($uploadOk == 1){
-		if(move_uploaded_file($_FILES["photo_identite"]["tmp_name"], $target_file)){
-			echo "Fichier uploadé avec succès.";
+		//$imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+		/**$check = getimagesize($_FILES['photo_identite']['tmp_name']);
+		if(!$check){
+			$uploadOk = 1;
 		} else {
-			echo "Erreur au transfert du fichier.";
+			echo "Fichier non conforme";
+			$uploadOk = 0;
+		}**/
+		if($uploadOk == 1){
+			if(move_uploaded_file($_FILES["photo_identite"]["tmp_name"], $target_file)){
+				echo "Fichier uploadé avec succès.";
+			} else {
+				echo "Erreur au transfert du fichier.";
+			}
 		}
 	}
-	print_r($_FILES);
+	
 	try{
 		$db->beginTransaction();
 		$edit = $db->prepare('UPDATE adherents SET eleve_prenom = :prenom,
@@ -79,7 +81,7 @@ if(isset($_POST["edit"])){
 			$delete->execute();
 		}
 		$db->commit();
-//		header("Location:eleve_details.php?id=$data");
+		header("Location:eleve_details.php?id=$data");
 	} catch(PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());
