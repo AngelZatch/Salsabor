@@ -6,8 +6,9 @@ require_once "tools.php";
 
 function vente(){
     $db = PDOFactory::getConnection();
-    $prenom = $_POST["identite_prenom"];
-    $nom = $_POST["identite_nom"];
+	$data = explode(' ', $_POST["identite_nom"]);
+	$prenom = $data[0];
+	$nom = $data[1];
     $adherent = getAdherent($prenom, $nom);
 	
 	$transaction = generateReference();
