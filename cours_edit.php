@@ -255,7 +255,7 @@ if(isset($_POST['deleteCoursAll'])){
 			   var adherent = $("#liste-participants").val();
 			   var cours_id = $("[name='id']").val();
 			   $.post("functions/add_participant.php", {cours_id, adherent}).done(function(data){
-				   $.notify("Elève ajouté au cours.", {globalPosition:"right bottom", className:"success"});
+				   showSuccessNotif(data);
 				   var line = "<li class='list-group-item'>";
 				   line += adherent;
 				   line += "<span class='list-item-option delete-participant glyphicon glyphicon-trash' title='Supprimer l\'élève de ce cours'>";
