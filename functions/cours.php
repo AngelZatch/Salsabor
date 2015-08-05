@@ -32,6 +32,8 @@ function addCours(){
 		$cout_horaire = $unite * $prof["tarif_prestation"];
 	} else if($prof["ratio_multiplicatif"] == "prestation"){
 		$cout_horaire = $prof["tarif_prestation"];
+	} else {
+		$cout_horaire = 0;
 	}
 	
     if(isset($_POST['paiement'])) $paiement = $_POST['paiement']; else $paiement = 0;
