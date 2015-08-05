@@ -166,4 +166,46 @@ function vente(){
     }
 }
 
+function invitation(){
+    $db = PDOFactory::getConnection();
+	$data = explode(' ', $_POST["identite_nom"]);
+	$prenom = $data[0];
+	$nom = $data[1];
+    $adherent = getAdherent($prenom, $nom);
+	
+	$transaction = generateReference();
+    
+    $date_achat = date_create("now")->format('Y-m-d H:i:s');
+    
+	$actif = 1;
+	$volume_horaire = 0;
+	$prix_achat = 0;
+	$echeances = 0;
+	$montant_echeance = 0;
+	$arep = 0;
+	
+    try{
+        $db->beginTransaction();
+        $new = $db->prepare("INSERT INTO produits_adherents(id_transaction, id_adherent, id_produit, date_achat, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
+        VALUES(:transaction, :adherent, :produit_id, :date_achat, :date_activation, :date_expiration, :volume_horaire, :prix_achat, :actif, :arep)");
+		$new->bindParam(':transaction', $transaction);
+        $new->bindParam(':adherent', $adherent["eleve_id"]);
+        $new->bindParam(':produit_id', $_POST["produit"]);
+        $new->bindParam(':date_achat', $date_achat);
+        $new->bindParam(':date_activation', $_POST["date_activation"]);
+        $new->bindParam(':date_expiration', $_POST["date_expiration"]);
+        $new->bindParam(':volume_horaire', $volume_horaire);
+        $new->bindParam(':prix_achat', $prix_achat);
+        $new->bindParam(':actif', $actif);
+        $new->bindParam(':arep', $arep);
+        $new->execute();
+
+        $db->commit();
+		
+		header('Location: dashboard.php');
+    }catch(PDOException $e){
+        $db->rollBack();
+        var_dump($e->getMessage());
+    }
+}
 ?>
