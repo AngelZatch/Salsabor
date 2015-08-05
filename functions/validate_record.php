@@ -76,7 +76,7 @@ try{
 	}
 	
 	$db->commit();
-	echo "Passage enregistré."
+	echo "Passage enregistré.";
 } catch(PDOException $e){
 	$db->rollBack();
 	echo $e->getMessage();
