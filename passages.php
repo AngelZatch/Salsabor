@@ -138,7 +138,7 @@ $queryNextCours->execute();
 		   $.post("functions/validate_record.php", {cours_id, eleve_id, passage_id, rfid}).done(function(data){
 			   clicked.closest("li").removeClass('list-group-item-warning');
 			   clicked.closest("li").addClass("list-group-item-success");
-			   $.notify("Passage validé.", {globalPosition:"right bottom", className:"success"});
+			   showSuccessNotif(data);
 		   });
 	   });
 	   
