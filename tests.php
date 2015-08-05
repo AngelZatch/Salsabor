@@ -16,12 +16,16 @@ include 'functions/reservations.php';
           <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Page Test !</h1>
+               <form action="tests.php" method="post">
+               	<input type="date" name="date_test">
+               	<input type="submit">
+               </form>
                <?php
-			$search = $db->query("SELECT * FROM adherents JOIN produits_adherents ON eleve_id=produits_adherents.id_adherent WHERE numero_rfid='1A3CD4A2'");
-echo $search->rowCount();
-$search->fetch(PDO::FETCH_ASSOC);
-echo $search["eleve_id"];
-?>
+					echo $date_activation = date_create("now")->format("Y-m-d 00:00:00");
+echo "<br>";
+					$date_expiration = date("Y-m-d 00:00:00", strtotime($date_activation.'+30DAYS'));
+					echo $date_expiration;
+			   ?>
            </div>
        </div>
    </div>
