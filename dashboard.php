@@ -13,11 +13,18 @@ $db = PDOFactory::getConnection();
    <div class="container-fluid">
        <div class="row">
            <?php include "side-menu.php";?>
-           <div class="col-sm-9 main">
-           <h1><span class="glyphicon glyphicon-dashboard"></span> Bonjour !</h1>
-           <a class="btn btn-primary btn-big" href="eleve_add.php">INSCRIRE UN NOUVEL ADHERENT</a>
-           <a class="btn btn-primary btn-big" href="vente_forfait.php">REALISER UNE VENTE DE FORFAIT</a>
-           <a class="btn btn-primary btn-big" href="read_rfid.php">LIRE UNE CARTE ADHERENT</a>
+           <div class="col-sm-10 main">
+           <div class="jumbotron">
+           	<h1>Bonjour !</h1>
+           	<p>Bienvenue sur Salsabor Gestion. Que souhaitez-vous faire ?</p>
+           	<p><a class="btn btn-primary btn-lg" href="eleve_add.php"><span class="glyphicon glyphicon-user"></span> Réaliser une inscription</a>
+           <a class="btn btn-primary btn-lg" href="vente_forfait.php"><span class="glyphicon glyphicon-credit-card"></span> Vendre un forfait ou une invitation</a>
+           <a href="resa_add.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-record"></span> Réserver une salle</a>
+           <a class="btn btn-primary btn-lg" href="read_rfid.php"><span class="glyphicon glyphicon-qrcode"></span> Lire un RFID (Admin)</a>
+           <a href="eleve_inviter.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-heart-empty"></span> Inviter un élève</a></p>
+           </div>
+           
+           
            </div>
        </div>
    </div>

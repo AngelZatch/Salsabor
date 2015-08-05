@@ -346,3 +346,7 @@ body{
 .badge {
 	background-color: cornflowerblue;
 }
+
+.jumbotron {
+	text-align: center;
+}
