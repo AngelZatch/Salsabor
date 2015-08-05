@@ -15,27 +15,29 @@ function vente(){
     
     $date_achat = date_create("now")->format('Y-m-d H:i:s');
     
-    $actif = ($_POST["date_activation"]>$date_achat)?0:1;
-    
-    $queryHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= ? AND date_chomee <= ?");
-    $queryHoliday->bindParam(1, $_POST["date_activation"]);
-    $queryHoliday->bindParam(2, $_POST["date_expiration"]);
-    $queryHoliday->execute();
-    
-    $j = 0;
-    
-    for($i = 1; $i <= $queryHoliday->rowCount(); $i++){
-        $exp_date = date("Y-m-d 00:00:00",strtotime($_POST["date_expiration"].'+'.$i.'DAYS'));
-        $checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
-        $checkHoliday->bindParam(1, $exp_date);
-        $checkHoliday->execute();
-        if($checkHoliday->rowCount() != 0){
-            $j++;
-        }
-        $totalOffset = $i + $j;
-        $new_exp_date = date("Y-m-d 00:00:00",strtotime($_POST["date_expiration"].'+'.$totalOffset.'DAYS'));
-    }
-	
+	if($_POST["date_activation"] != ""){
+		$actif = 1;
+		$queryHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= ? AND date_chomee <= ?");
+		$queryHoliday->bindParam(1, $_POST["date_activation"]);
+		$queryHoliday->bindParam(2, $_POST["date_expiration"]);
+		$queryHoliday->execute();
+
+		$j = 0;
+
+		for($i = 1; $i <= $queryHoliday->rowCount(); $i++){
+			$exp_date = date("Y-m-d 00:00:00",strtotime($_POST["date_expiration"].'+'.$i.'DAYS'));
+			$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
+			$checkHoliday->bindParam(1, $exp_date);
+			$checkHoliday->execute();
+			if($checkHoliday->rowCount() != 0){
+				$j++;
+			}
+			$totalOffset = $i + $j;
+			$new_exp_date = date("Y-m-d 00:00:00",strtotime($_POST["date_expiration"].'+'.$totalOffset.'DAYS'));
+		}
+	} else {
+		$actif = 0;
+	}
 	$echeances = $_POST["echeances"];
 	$montant_echeance = 0;
 	$prix_restant = $_POST["prix_achat"];

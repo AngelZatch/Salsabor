@@ -9,6 +9,14 @@ $queryForfait->bindValue(1, $data);
 $queryForfait->execute();
 $forfait = $queryForfait->fetch(PDO::FETCH_ASSOC);
 
+if($forfait["dateActivation"] == "0000-00-00 00:00:00"){
+	$date_activation = "Activation en attente";
+	$date_expiration = "Déterminée à l'activation";
+} else {
+	$date_activation = date_create($forfait["dateActivation"])->format('d/m/Y');
+	$date_expiration = date_create($forfait["date_expiration"])->format('d/m/Y');
+}
+
 $queryCours = $db->prepare('SELECT * FROM cours_participants JOIN cours ON cours_id_foreign=cours.cours_id JOIN niveau ON cours_niveau=niveau.niveau_id JOIN salle ON cours_salle=salle.salle_id WHERE produit_adherent_id=?');
 $queryCours->bindValue(1, $data);
 $queryCours->execute();
@@ -46,11 +54,11 @@ $dureeCours = 0;
                     </li>
                     <li class="details-list">
                         <div class="col-sm-5 list-name">Date d'activation</div>
-                        <div class="col-sm-7"><strong><?php echo date_create($forfait["dateActivation"])->format('d/m/Y');?></strong> pour <?php echo $forfait["validite_initiale"]/7;?> semaines</div>
+                        <div class="col-sm-7"><strong><?php echo $date_activation;?></strong> pour <?php echo $forfait["validite_initiale"]/7;?> semaines</div>
                     </li>
                     <li class="details-list">
                         <div class="col-sm-5 list-name">Date d'expiration</div>
-                        <div class="col-sm-7"><?php echo date_create($forfait["date_expiration"])->format('d/m/Y');?></div>
+                        <div class="col-sm-7"><?php echo $date_expiration?></div>
                     </li>
                     <li class="details-list">
                         <div class="col-sm-5 list-name">Volume de cours initial</div>

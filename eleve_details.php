@@ -232,11 +232,17 @@ if(isset($_POST["edit"])){
                            </tr>
                        </thead>
                        <tbody>
-                           <?php while($forfaits = $queryForfaits->fetch(PDO::FETCH_ASSOC)){ ?>
+                           <?php while($forfaits = $queryForfaits->fetch(PDO::FETCH_ASSOC)){
+						   if($forfaits["dateActivation"] == "0000-00-00 00:00:00"){
+							   $periode_validite = "Activation en attente";
+						   } else {
+							   $periode_validite = "Du ".date_create($forfaits["dateActivation"])->format('d/m/Y')." au ".date_create($forfaits["date_expiration"])->format('d/m/Y');
+						   }
+						   ?>
                            <tr>
                                <td><?php echo $forfaits["produit_nom"];?></td>
                                <td><?php echo date_create($forfaits["date_achat"])->format('d/m/Y');?></td>
-                               <td>Du <?php echo date_create($forfaits["dateActivation"])->format('d/m/Y');?> au <?php echo date_create($forfaits["date_expiration"])->format('d/m/Y');?></td>
+                               <td><?php echo $periode_validite;?></td>
                                <td><?php echo $forfaits["prix_achat"];?> €</td>
                                <td><a href="forfait_adherent_details.php?id=<?php echo $forfaits["id_transaction"];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
                            </tr>
