@@ -79,14 +79,14 @@ if(isset($_POST["edit"])){
               <div class="btn-toolbar" id="top-page-buttons">
                    <a href="profs_liste.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
                 </div> <!-- btn-toolbar -->
-				<div class="class alert-custom alert alert-danger" id="tarif-error" style="display:none;">Erreur. Certains champs sont vides</div>
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span>
                    <?php echo $details['prenom']." ".$details['nom'];?>
                </h1>
                <ul class="nav nav-tabs">
                    <li role="presentation" id="infos-toggle"><a>Informations personnelles</a></li>
                    <li role="presentation" id="history-toggle"><a>Historique des cours</a></li>
-                   <li role="presentation" id="tarifs-toggle" class="active"><a>Tarifs</a></li>
+                   <li role="presentation" id="tarifs-toggle"><a>Tarifs</a></li>
+                   <li role="presentation" id="stats-toggle" class="active"><a>Statistiques</a></li>
                </ul>
                <section id="infos">
                    <form method="post">
@@ -128,6 +128,16 @@ if(isset($_POST["edit"])){
                    </form>
                </section> <!-- Informations personnelles -->
                <section id="history">
+                 <div class="filter-options col-lg-6">
+                 	<p class="section-title">Options de filtrage</p>
+                 </div>
+                  <div class="price-summary col-lg-6">
+                       <p class="section-title">TOTAL</p>
+                       <p>Nombre de cours : <?php echo $queryHistory->rowCount();?></p>
+                       <p>Somme totale : <?php echo $totalPrice;?> €</p>
+                       <p>Somme déjà réglée : <?php echo $totalPaid;?> €</p>
+                       <p>Somme restante : <?php echo $totalDue = $totalPrice - $totalPaid;?> €</p>
+                   </div>
                    <table class="table table-striped">
                        <thead>
                            <tr>
@@ -151,13 +161,6 @@ if(isset($_POST["edit"])){
 if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
                        </tbody>
                    </table>
-                    <div class="price-summary">
-                       <p>TOTAL</p>
-                       <p>Nombre de cours : <?php echo $queryHistory->rowCount();?></p>
-                       <p>Somme totale : <?php echo $totalPrice;?> €</p>
-                       <p>Somme déjà réglée : <?php echo $totalPaid;?> €</p>
-                       <p>Somme restante : <?php echo $totalDue = $totalPrice - $totalPaid;?> €</p>
-                   </div>
                </section><!-- Historique des cours -->
                <section id="tarifs">
                    <table class="table table-striped">
@@ -198,6 +201,12 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
                    <button class="btn btn-primary" id="add-tarif">AJOUTER UN TARIF</button>
                    <p id="json-output"></p>
                </section> <!-- Tarifs -->
+               <section id="stats">
+               <p>Nombre de cours par semaine</p>
+               	<canvas id="frequency-chart" width="500" height="200"></canvas>
+               	<p>Types de cours donnés</p>
+               	<canvas id="type-chart" width="500" height="200"></canvas>
+               </section> <!-- Statistiques -->
            </div>
        </div>
    </div>
@@ -325,11 +334,9 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 		   var ratio = $("#ratio").val();
 		   $.post("functions/add_tarif_prof.php", {prof_id, prestation, tarif, ratio}).success(function(data){
 			   $("#new-tarif").hide();
-			   $('#tarif-added').show('500').delay(3000).hide('3000');
+			   showSuccessNotif(data);
 			   $(".fetched").remove();
 			   fetchTarifs();
-		   }).fail(function(data){
-			   $('#tarif-error').show('500').delay(3000).hide('3000');
 		   })
 	   };
 	   
@@ -357,7 +364,7 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 		   var update_id = id;
 		   var tarif = $("#tarif-"+update_id).children(".tarif-prix").children("span").html();
 		   $.post("functions/update_tarif_prof.php", {update_id, tarif}).done(function(data){
-			   $.notify("Tarif mis à jour.", {globalPosition:"right bottom", className:"success"});
+			   showSuccessNotif(data);
 			   var originalColor = $("#tarif-"+update_id).css("background-color");
 			   var styles = {
 				   backgroundColor : "#dff0d8",
@@ -369,8 +376,6 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 			   };
 			   $("#tarif-"+update_id).css(styles);
 			   setTimeout(function(){ $("#tarif-"+update_id).css(next); },800);
-		   }).fail(function(data){
-			   $.notify("Erreur dans la mise à jour.", {globalPosition:"right bottom", className:"alert"});
 		   });
 	   }
 	   
@@ -378,12 +383,10 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 		   var delete_id = id;
 		   alert(delete_id);
 		   $.post("functions/delete_tarif_prof.php", {delete_id}).done(function(data){
-			   $.notify("Tarif supprimé.", {globalPosition:"right bottom", className:"success"});
+			   showSuccessNotif(data);
 			   $(".fetched").remove();
 			   fetchTarifs();
-		   }).fail(function(data){
-			   $.notify("Erreur dans la mise à jour.", {globalPosition:"right bottom", className:"alert"});
-		   })
+		   });
 	   }
 	</script>
 </body>
