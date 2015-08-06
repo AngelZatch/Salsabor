@@ -350,3 +350,7 @@ body{
 .jumbotron {
 	text-align: center;
 }
+
+.search-form {
+	margin-bottom: 10px;
+}

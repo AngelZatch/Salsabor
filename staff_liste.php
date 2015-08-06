@@ -38,12 +38,10 @@ if(isset($_POST['addRank'])){
                    <a href="staff_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un staff</a>
                    <a href="actions/rank_add.php" role="button" class="btn btn-primary" data-title="Ajouter un rang" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un rang</a>
                </div>
-               <br>
-               <div class="input-group input-group-lg">
-               <span class="glyphicon glyphicon-filter input-group-addon" id="basic-addon1"></span>
-               <input type="text" id="search" class="form-control" placeholder="Tapez n'importe quoi pour rechercher" aria-describedby="basic-addon1">
-               </div>
-               <br>
+				<div class="input-group input-group-lg search-form">
+					<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
+					<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">
+				</div>
                <ul class="nav nav-tabs">
                 	<li role="presentation" <?php echo ($rank_value==0)?"class='active'":"";?>><a href="<?php echo $_SERVER["PHP_SELF"];?>?rank=0">Tous</a></li>
                  <?php while($rank = $queryRanks->fetch(PDO::FETCH_ASSOC)){ ?>
@@ -107,15 +105,6 @@ if(isset($_POST['addRank'])){
                     onNavigate: false
                 });
             });
-            
-        var $rows = $('#filter-enabled tr');
-        $('#search').keyup(function(){
-            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
-            $rows.show().filter(function(){
-               var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
-                return !~text.indexOf(val);
-            }).hide();
-        });
         });
     </script>
 </body>

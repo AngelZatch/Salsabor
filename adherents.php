@@ -20,6 +20,10 @@ $queryAdherents = $db->query('SELECT * FROM adherents');
 			  <div class="btn-toolbar">
                    <a href="eleve_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Inscrire un adhérent</a>
                </div> <!-- btn-toolbar -->
+				<div class="input-group input-group-lg search-form">
+					<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
+					<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">
+				</div>
                <table class="table table-striped">
                	<thead>
                		<tr>
@@ -28,7 +32,7 @@ $queryAdherents = $db->query('SELECT * FROM adherents');
                			<th></th>
                		</tr>
                	</thead>
-               	<tbody>
+               	<tbody id="filter-enabled">
                		<?php while($adherents = $queryAdherents->fetch(PDO::FETCH_ASSOC)){ ?>
                		<tr>
                			<td><?php echo $adherents['eleve_prenom']." ".$adherents['eleve_nom'];?></td>

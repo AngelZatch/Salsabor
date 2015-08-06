@@ -18,6 +18,10 @@ $db = PDOFactory::getConnection();
                <div class="btn-toolbar">
                    <a href="" role="button" class="btn btn-primary disabled"><span class="glyphicon glyphicon-plus"></span> Ajouter un professeur</a>
                </div> <!-- btn-toolbar -->
+				<div class="input-group input-group-lg search-form">
+					<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
+					<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">
+				</div>
                <?php
                 $profs = $db->query('SELECT * FROM professeurs');
                 ?>
