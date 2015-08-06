@@ -12,6 +12,7 @@ try{
 	$new->bindParam(':ratio', $_POST["ratio"]);
 	$new->execute();
 	$db->commit();
+	echo "Tarif ajouté";
 } catch(PDOException $e){
 	$db->rollBack();
 	$message = var_dump($e->getMessage());
