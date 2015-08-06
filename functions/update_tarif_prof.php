@@ -9,6 +9,7 @@ try{
 	$update->bindParam(':update_id', $_POST["update_id"]);
 	$update->execute();
 	$db->commit();
+	echo "Tarif mis à jour.";
 } catch (PDOExecption $e) {
 	$db->rollBack();
 	$message = var_dump($e->getMessage());
