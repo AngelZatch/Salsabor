@@ -8,7 +8,6 @@ try{
 	$delete->bindParam(1, $_POST["delete_id"]);
 	$delete->execute();
 	$db->commit();
-	echo "Tarif supprimé.";
 } catch (PDOExecption $e) {
 	$db->rollBack();
 	$message = var_dump($e->getMessage());
