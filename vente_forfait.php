@@ -97,10 +97,6 @@ if(isset($_POST["submit"])){
                	        </div>
                    </div>
                    <div class="form-group">
-                       <label for="echeances">Nombre d'échéances mensuelles</label>
-                       <input type="text" name="echeances" class="form-control" placeholder="">
-                   </div>
-                   <div class="form-group">
                        <label for="date_activation">Date souhaitée d'activation (Laissez vide pour une activation au premier passage)</label>
                        <div class="input-group">
                            <input type="date" name="date_activation" class="form-control" onchange="evaluateExpirationDate()">
@@ -117,7 +113,7 @@ if(isset($_POST["submit"])){
 								<label for="promotion-e">Réduction (en €)</label>
 								<div class="input-group">
 									<span class="input-group-addon"><input type="radio" id="promotion-euros" name="promotion" class="checkbox-x">Réduction en €</span>
-									<input type="text" name="promotion-e" class="form-control" onchange="calculatePrice()">
+									<input type="text" name="promotion-e" class="form-control">
 								</div>
 							</div>
 						</div>
@@ -126,7 +122,7 @@ if(isset($_POST["submit"])){
 								<label for="promotion-p">Réduction (en %)</label>
 								<div class="input-group">
 									<span class="input-group-addon"><input type="radio" name="promotion" id="promotion-pourcent">Réduction en %</span>
-									<input type="text" name="promotion-p" class="form-control" onchange="calculatePrice()">
+									<input type="text" name="promotion-p" class="form-control">
 								</div>
 							</div>
 					  </div>
@@ -137,6 +133,24 @@ if(isset($_POST["submit"])){
                        	<span class="input-group-addon">€</span>
                        	<input type="text" name="prix_achat" id="prix_calcul" class="form-control">
                        </div>
+                   </div>
+                      <div class="form-group">
+                       <label for="echeances">Nombre d'échéances mensuelles</label>
+                       <input type="text" name="echeances" class="form-control" placeholder="">
+                   </div>
+                   <div class="form-group">
+                   		<label for="numero_echeance">Détail des échances</label>
+                   		<table class="table table-striped">
+                   			<thead>
+                   				<tr>
+                   					<th>Date de l'échéance</th>
+                   					<th>Montant de l'échéance</th>
+                   					<th>Méthode de règlement</th>
+                   				</tr>
+                   			</thead>
+                   			<tbody>
+                   			</tbody>
+                   		</table>
                    </div>
                </form>
            </div>
@@ -182,7 +196,10 @@ if(isset($_POST["submit"])){
            }
        }
 	   
-	   $("[name='promotion']").change(function(){
+	   $("[name^='promotion']").keyup(function(){
+		   if($(this).val().length != '0'){
+			  $(this).prev().children().prop("checked", true);
+		   }
 		   calculatePrice();
 	   })
        
@@ -199,6 +216,47 @@ if(isset($_POST["submit"])){
            $("#prix_calcul").val(prixInitial);
 		   }
        }
+	   
+	   	   
+	   $("[name='echeances']").keyup(function(){
+		   var nbEcheances = $(this).val();
+		   var i = 0;
+		   var start_date = moment();
+		   if(start_date.date() <= 10){
+			   start_date.dates(10);
+		   } else if(start_date.date() <= 20){
+			   start_date.dates(10);
+		   } else {
+			   start_date.dates(30);
+		   }
+		   var montant_total = $("#prix_calcul").val();
+		   if(montant_total != ''){
+			   var montant_echeance = montant_total/nbEcheances;
+		   }
+		   $("tbody").empty();
+		   for(i; i < nbEcheances; i++){
+			   // Construction du tableau des échéances
+			   var echeance = "<tr>";
+			   var current_date = start_date.add(1, 'month').format("YYYY-MM-DD");
+			   echeance += "<td><input type='date' class='form-control' value="+current_date+"></td>";
+			   echeance += "<td><input type='text' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance'></td>";
+			   echeance += "<td><input type='text' class='form-control' placeholder='Méthode de règlement'></td>";
+			   echeance += "</tr>";		   
+			   $("tbody").append(echeance);
+		   }
+	   })
+	   
+	   $("[name='montant-echeance']").keyup(function(){
+		   // Lorsqu'un montant est modifié.
+		   var montant_total = $("#prix_calcul").val();
+		   var echeance_fixe = $(this).val();
+		   var montant_restant = montant_total - echeance_fixe;
+		   console.log(echeance_fixe);
+		   $("[name='montant-echeance']").each(function(){
+			   console.log($(this).val());
+			   $(this).val(montant_restant/$("[name='montant-echeance']").length - 1);
+		   })
+	   })
 	   
 	   var listening = false;
 	   var wait;
