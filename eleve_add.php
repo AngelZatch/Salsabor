@@ -65,6 +65,7 @@ if(isset($_POST['addAdherent'])){
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
+              <p id="current-time"></p>
                <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Inscrire un adhérent</h1>
 				<div class="col-sm-9" id="solo-form">
 					<form action="eleve_add.php" method="post" class="form-horizontal" role="form" id="add_adherent" enctype="multipart/form-data">

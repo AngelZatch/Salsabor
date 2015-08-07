@@ -16,6 +16,7 @@ $queryAdherents = $db->query('SELECT * FROM adherents');
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
+              <p id="current-time"></p>
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span> Base Clients</h1>
 			  <div class="btn-toolbar">
                    <a href="eleve_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Inscrire un adhérent</a>

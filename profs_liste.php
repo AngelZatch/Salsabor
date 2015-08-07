@@ -14,6 +14,7 @@ $db = PDOFactory::getConnection();
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
+              <p id="current-time"></p>
                <h1 class="page-title"><span class="glyphicon glyphicon-blackboard"></span> Base Professeurs</h1>
                <div class="btn-toolbar">
                    <a href="" role="button" class="btn btn-primary disabled"><span class="glyphicon glyphicon-plus"></span> Ajouter un professeur</a>

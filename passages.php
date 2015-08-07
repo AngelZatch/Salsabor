@@ -8,8 +8,6 @@ $queryNextCours = $db->prepare("SELECT * FROM cours JOIN salle ON cours_salle=sa
 $queryNextCours->bindParam(1, $compare_start);
 $queryNextCours->bindParam(2, $compare_end);
 $queryNextCours->execute();
-
-
 ?>
 <html>
 <head>
@@ -94,22 +92,7 @@ $queryNextCours->execute();
        </div>
    </div>
    <?php include "scripts.php";?>
-   <script>
-	   var now;
-	   function update(){
-		   var now = moment().locale('fr').format("DD MMMM YYYY HH:mm:ss");
-		   $("#current-time").html(now);
-		   $(".panel").each(function(){
-			   $(this).find(".cours-count").html($(this).find(".list-group-item").length);
-			   $(this).find(".cours-count-checked").html($(this).find(".list-group-item-success").length);
-		   })
-	   }
-	   
-	   $(document).ready(function(){
-		   update();
-		   setInterval(update, 1000);
-	   });
-	   
+   <script>	   
 	   $(".close-cours").click(function(){
 		   var cours = $(this).closest(".panel").find("#cours-id").val();
 		   if($(this).closest(".panel").find(".cours-count").html() != $(this).closest(".panel").find(".cours-count-checked").html()){

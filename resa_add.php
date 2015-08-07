@@ -29,6 +29,7 @@ if(isset($_POST['addResa'])){
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
+             <p id="current-time"></p>
               <h1 class="page-title"><span class="glyphicon glyphicon-record"></span> Effectuer une réservation</h1>
                <div class="col-sm-9" id="solo-form">
                	<form action="resa_add.php" method="post" target="_blank" class="form-horizontal" role="form" id="add_resa">

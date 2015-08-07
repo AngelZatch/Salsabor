@@ -27,6 +27,7 @@ if(isset($_POST["submit"])){
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
+              <p id="current-time"></p>
                <h1 class="page-title"><span class="glyphicon glyphicon-road"></span> Vente d'un produit</h1>
                <form action="" method="post" target="_blank">
                  <div class="btn-toolbar">

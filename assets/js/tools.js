@@ -9,9 +9,13 @@ $(document).ready(function(){
 	notifPassages(firstCount);
 	notifCoursParticipants(firstCount);
 	setInterval(notifPassages, 5000);
-	setInterval(notifCoursParticipants, 500);
+	setInterval(notifCoursParticipants, 5000);
 	$('[data-toggle="tooltip"]').tooltip();
     moment.locale("fra");
+	
+	// Démarre l'horloge
+	tickClock();
+	setInterval(tickClock, 1000);
 	
 	// Construit le tableau d'inputs obligatoires par formulaire
 	var mandatories = [];
@@ -144,6 +148,16 @@ function checkHoliday(){
            checkCalendar(true, false);
        }
    });
+}
+
+// Afficher et met à jour l'horloge
+function tickClock(){
+   var now = moment().locale('fr').format("DD MMMM YYYY HH:mm:ss");
+   $("#current-time").html(now);
+   $(".panel").each(function(){
+	   $(this).find(".cours-count").html($(this).find(".list-group-item").length);
+	   $(this).find(".cours-count-checked").html($(this).find(".list-group-item-success").length);
+   })
 }
 
 $(".draggable").draggable({

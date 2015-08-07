@@ -14,6 +14,7 @@ $db = PDOFactory::getConnection();
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
+           <p id="current-time"></p>
            <div class="jumbotron">
            	<h1>Bonjour !</h1>
            	<p>Bienvenue sur Salsabor Gestion. Que souhaitez-vous faire ?</p>
