@@ -90,7 +90,7 @@ try{
 	$add->execute();
 	
 	$db->commit();
-	echo "Participation ajoutée."
+	echo "Participation ajoutée.";
 } catch (PDOExecption $e) {
 	$db->rollBack();
 	var_dump($e->getMessage());
