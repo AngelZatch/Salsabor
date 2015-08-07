@@ -67,59 +67,57 @@ if(isset($_POST['addAdherent'])){
            <div class="col-sm-10 main">
               <p id="current-time"></p>
                <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Inscrire un adhérent</h1>
-				<div class="col-sm-9" id="solo-form">
-					<form action="eleve_add.php" method="post" class="form-horizontal" role="form" id="add_adherent" enctype="multipart/form-data">
-					  <div class="btn-toolbar">
-					 	  <a href="adherents.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux adhérents</a>
-					 	  <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
-					</div> <!-- btn-toolbar -->
-					<div class="form-group">
-						<label for="identite_prenom" class="control-label">Prénom</label>
-						<input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory" placeholder="Prénom">
-					</div>
-					<div class="form-group">
-					<label for="identite_nom" class="control-label">Nom</label>
-						<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory" placeholder="Nom">
-					</div>
-					<div class="form-group">
-						<label for="profile_picture" class="control-label">Photo d'identité</label>
-						<input type="file" class="form-control" name="photo_identite">
-					</div>
-					<div class="form-group">
-						<label for="certificat_medical" class="control-label">Certificat Médical</label>
-						<input type="file" class="form-control" name="certificat_medical">
-					</div>
-					<div class="form-group">
-					<label for="" class="control-label">Adresse postale</label>
-						<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control mandatory">
-					</div>
-					<div class="form-group">
-						<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control mandatory">
-					</div>
-					<div class="form-group">
-						<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control mandatory">
-					</div>
-					<div class="form-group">
-					<label for="mail" class="control-label">Adresse mail</label>
-						<input type="text" name="mail" id="mail" placeholder="Adresse mail" class="form-control mandatory">
-					</div>
-					<div class="form-group">
-					<label for="telephone" class="control-label">Téléphone</label>
-						<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control mandatory">
-					</div>
-					<div class="form-group">
-						<label for="date_naissance" class="control-label">Date de naissance</label>
-						<input type="date" name="date_naissance" id="date_naissance" class="form-control mandatory">
-					</div>
-					<div class="form-group">
-						<label for="rfid" class="control-label">Code carte</label>
-						<div class="input-group">
-							<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
-							<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
-						</div>
-					</div>
-				  </form>
+				<form action="eleve_add.php" method="post" role="form" id="add_adherent" enctype="multipart/form-data">
+				  <div class="btn-toolbar">
+				 	  <a href="adherents.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux adhérents</a>
+				 	  <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
+				</div> <!-- btn-toolbar -->
+				<div class="form-group">
+					<label for="identite_prenom" class="control-label">Prénom</label>
+					<input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory" placeholder="Prénom">
 				</div>
+				<div class="form-group">
+				<label for="identite_nom" class="control-label">Nom</label>
+					<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory" placeholder="Nom">
+				</div>
+				<div class="form-group">
+					<label for="profile_picture" class="control-label">Photo d'identité</label>
+					<input type="file" class="form-control" name="photo_identite">
+				</div>
+				<div class="form-group">
+					<label for="certificat_medical" class="control-label">Certificat Médical</label>
+					<input type="file" class="form-control" name="certificat_medical">
+				</div>
+				<div class="form-group">
+				<label for="" class="control-label">Adresse postale</label>
+					<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control mandatory">
+				</div>
+				<div class="form-group">
+					<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control mandatory">
+				</div>
+				<div class="form-group">
+					<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control mandatory">
+				</div>
+				<div class="form-group">
+				<label for="mail" class="control-label">Adresse mail</label>
+					<input type="text" name="mail" id="mail" placeholder="Adresse mail" class="form-control mandatory">
+				</div>
+				<div class="form-group">
+				<label for="telephone" class="control-label">Téléphone</label>
+					<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control mandatory">
+				</div>
+				<div class="form-group">
+					<label for="date_naissance" class="control-label">Date de naissance</label>
+					<input type="date" name="date_naissance" id="date_naissance" class="form-control mandatory">
+				</div>
+				<div class="form-group">
+					<label for="rfid" class="control-label">Code carte</label>
+					<div class="input-group">
+						<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
+						<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
+					</div>
+				</div>
+								  </form>
            </div>
        </div>
    </div>
