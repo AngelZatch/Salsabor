@@ -110,7 +110,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
                    </table>
                </section>
                <section id="maturity">
-               	<table class="table table-striped">
+               	<table class="table">
                		<thead>
                			<tr>
                				<th>Date de l'échéance</th>
@@ -120,12 +120,28 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
                			</tr>
                		</thead>
                		<tbody>
-               			<?php while($echeances = $queryEcheances->fetch(PDO::FETCH_ASSOC)){ ?>
-               			<tr>
+               			<?php while($echeances = $queryEcheances->fetch(PDO::FETCH_ASSOC)){ 
+							switch($echeances["echeance_effectuee"]){
+								case 0:
+									$status = "En attente";
+									$statusClass = "default";
+									break;
+									
+								case 1:
+									$status = "Payée";
+									$statusClass = "success";
+									break;
+									
+								case 2:
+									$status = "En retard";
+									$statusClass = "danger";
+									break;
+							} ?>
+               			<tr class="alert alert-<?php echo $statusClass;?>">
                				<td><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
                				<td><?php echo $echeances["montant"];?> €</td>
                				<td>Méthode de paiement...</td>
-               				<td><?php echo $echeances["echeance_effectuee"];?></td>
+               				<td><?php echo $status?></td>
                			</tr>
                			<?php } ?>
                		</tbody>

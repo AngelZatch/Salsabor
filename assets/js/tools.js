@@ -8,8 +8,10 @@ $(document).ready(function(){
 	var firstCount = 0; // Pour éviter la notification dès le rafraîchissement de la page.
 	notifPassages(firstCount);
 	notifCoursParticipants(firstCount);
+	notifEcheancesDues(firstCount);
 	setInterval(notifPassages, 5000);
 	setInterval(notifCoursParticipants, 5000);
+	setInterval(notifEcheancesDues, 5000);
 	$('[data-toggle="tooltip"]').tooltip();
     moment.locale("fra");
 	
@@ -78,6 +80,21 @@ function notifCoursParticipants(firstCount){
 			}
 			$("#badge-participants").show();
 			$("#badge-participants").html(data);
+		}
+	})
+}
+
+// Surveille le nombre d'échéances qui ne sont pas réglées après leur date
+function notifEcheancesDues(firstCount){
+	$.post("functions/watch_maturities.php").done(function(data){
+		if(data == 0){
+			$("#badge-echeances").hide();
+		} else {
+			if(data > $("#badge-echeances").html() && firstCount != 0){
+				$.notify("De nouvelles échéances ont dépassé leur date.", {globalPosition: "bottom right", className:"info"});
+			}
+			$("#badge-echeances").show();
+			$("#badge-echeances").html(data);
 		}
 	})
 }
