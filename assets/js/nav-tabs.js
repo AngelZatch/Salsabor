@@ -8,7 +8,7 @@ function toggleNavTabs(){
 }
 
 $("li[id$=-toggle]").click(function(){
-    $("li").attr('class', '');
+    $("li[id$=-toggle]").attr('class', '');
     $(this).attr('class', 'active');
     toggleNavTabs();
 });

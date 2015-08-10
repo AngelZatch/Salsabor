@@ -23,6 +23,8 @@ $queryCours->execute();
 
 $heuresCours = 0;
 $dureeCours = 0;
+
+$queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_adherent='$data'");
 ?>
 <html>
 <head>
@@ -41,8 +43,12 @@ $dureeCours = 0;
                    <a href="eleve_details.php?id=<?php echo $forfait["id_adherent"];?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent (<?php echo $forfait["eleve_prenom"]." ".$forfait["eleve_nom"];?>)</a>
                 </div> <!-- btn-toolbar -->
                <h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["eleve_prenom"]." ".$forfait["eleve_nom"];?></h1>
-              <section>
-                   <h2>Détails du forfait adhérent</h2>
+			  <ul class="nav nav-tabs">
+                   <li role="presentation" id="infos-toggle" class="active"><a>Détails du forfait</a></li>
+                   <li role="presentation" id="history-toggle"><a>Liste des cours</a></li>
+                   <li role="presentation" id="maturity-toggle"><a>Echéances</a></li>
+               </ul>
+              <section id="infos">
                <ul style="padding-left:0 !important;">
                     <li class="details-list">
                         <div class="col-sm-5 list-name">Nom du produit</div>
@@ -78,8 +84,7 @@ $dureeCours = 0;
                     </li>
               </ul>
                </section>
-               <section>
-                   <h2>Liste des cours effectués avec ce forfait</h2>
+               <section id="history">
                    <table class="table table-striped">
                        <thead>
                            <tr>
@@ -104,10 +109,33 @@ $dureeCours = 0;
                        <input type="hidden" name="id" value="<?php echo $data;?>">
                    </table>
                </section>
+               <section id="maturity">
+               	<table class="table table-striped">
+               		<thead>
+               			<tr>
+               				<th>Date de l'échéance</th>
+               				<th>Montant de l'échéance</th>
+               				<th>Méthode de paiement</th>
+               				<th>Statut</th>
+               			</tr>
+               		</thead>
+               		<tbody>
+               			<?php while($echeances = $queryEcheances->fetch(PDO::FETCH_ASSOC)){ ?>
+               			<tr>
+               				<td><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
+               				<td><?php echo $echeances["montant"];?> €</td>
+               				<td>Méthode de paiement...</td>
+               				<td><?php echo $echeances["echeance_effectuee"];?></td>
+               			</tr>
+               			<?php } ?>
+               		</tbody>
+               	</table>
+               </section>
            </div>
        </div>
    </div>
    <?php include "scripts.php";?>
+   <script src="assets/js/nav-tabs.js"></script>
    <script>
        var remainingHours;
         function calculateRemainingHours(){
