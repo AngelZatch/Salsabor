@@ -15,6 +15,7 @@
       <ul class="nav nav-sidebar collapse" id="collapse-timetable">
       	<li><a href="passages.php" class="main-option"><span class="glyphicon glyphicon-map-marker"></span> Passages</a></li>
       	<li><a href="planning.php" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='planning.php') echo "active";?>"><span class="glyphicon glyphicon-time"></span> Planning et Réservations</a></li>
+      	<li><a href="echeances.php" class="main-option"><span class="glyphicon glyphicon-repeat"></span> Echéances</a></li>
       </ul>
       
       <li><a href="#collapse-data" class="main-section" data-toggle="collapse"><span class="glyphicon glyphicon-list"></span> Données</a></li>
