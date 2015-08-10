@@ -23,6 +23,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
+              <p id="current-time"></p>
                <h1 class="page-title"><span class="glyphicon glyphicon-repeat"></span> Echéances</h1>
 				<div class="input-group input-group-lg search-form">
 					<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
