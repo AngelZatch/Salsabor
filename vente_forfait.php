@@ -217,7 +217,7 @@ if(isset($_POST["submit"])){
 		   }
        }
 	   
-	   	   
+	   // Gestion des échéances (nombre et valeur)	   
 	   $("[name='echeances']").keyup(function(){
 		   var nbEcheances = $(this).val();
 		   var i = 0;
@@ -230,33 +230,56 @@ if(isset($_POST["submit"])){
 			   start_date.dates(30);
 		   }
 		   var montant_total = $("#prix_calcul").val();
+		   var montant_restant = montant_total;
 		   if(montant_total != ''){
-			   var montant_echeance = montant_total/nbEcheances;
+			   var montant_echeance = (montant_total/nbEcheances).toFixed(2);
 		   }
 		   $("tbody").empty();
 		   for(i; i < nbEcheances; i++){
+			   if(i == nbEcheances - 1){
+				   montant_echeance = (montant_restant).toFixed(2);
+			   }
 			   // Construction du tableau des échéances
 			   var echeance = "<tr>";
 			   var current_date = start_date.add(1, 'month').format("YYYY-MM-DD");
 			   echeance += "<td><input type='date' class='form-control' value="+current_date+"></td>";
 			   echeance += "<td><input type='text' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance'></td>";
-			   echeance += "<td><input type='text' class='form-control' placeholder='Méthode de règlement'></td>";
-			   echeance += "</tr>";		   
+			   echeance += "<td><input type='text' class='form-control' placeholder='CB / Numéro de chèque / Mandat / Espèces...'></td>";
+			   echeance += "</tr>";
+			   montant_restant -= montant_echeance;
 			   $("tbody").append(echeance);
 		   }
+		   $("[name='montant-echeance']").keyup(function(){
+			   // Lorsqu'un montant est modifié.
+			   var echeance_fixe = $(this).val();
+			   if(echeance_fixe != ''){
+				   $(this).addClass('fixed');
+			   } else {
+				   $(this).removeClass('fixed');
+			   }
+			   
+			   var montant_restant_auto = montant_total;
+			   $(".fixed").each(function(){
+				   montant_restant_auto -= $(this).val();
+			   })
+			   montant_restant = montant_restant_auto;
+			   var echeances_fixees = $(".fixed").length;
+			   var echeances_auto = $("[name='montant-echeance']:not(.fixed)").length;
+			   i = 0;
+			   $("[name='montant-echeance']:not(.fixed)").each(function(){
+				   if(i == echeances_auto - 1){
+					   montant_echeance = (montant_restant).toFixed(2);
+				   } else {
+					   montant_echeance = (montant_restant_auto/echeances_auto).toFixed(2);
+				   }
+				   $(this).val(montant_echeance);
+				   montant_restant -= montant_echeance;
+				   i++;
+			   })
+		   })
+	   
 	   })
 	   
-	   $("[name='montant-echeance']").keyup(function(){
-		   // Lorsqu'un montant est modifié.
-		   var montant_total = $("#prix_calcul").val();
-		   var echeance_fixe = $(this).val();
-		   var montant_restant = montant_total - echeance_fixe;
-		   console.log(echeance_fixe);
-		   $("[name='montant-echeance']").each(function(){
-			   console.log($(this).val());
-			   $(this).val(montant_restant/$("[name='montant-echeance']").length - 1);
-		   })
-	   })
 	   
 	   var listening = false;
 	   var wait;
