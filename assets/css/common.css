@@ -331,11 +331,11 @@ body{
 }
 
 .main-section {
-	color: #252525 !important;
+	color: #959595 !important;
     font-weight: 800;
 	text-transform: uppercase;
     font-family: 'globersemibold_free';
-	cursor: default;
+	background-color: #A9023A !important;
 }
 
 .main-section:hover{
