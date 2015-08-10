@@ -242,14 +242,14 @@ if(isset($_POST["submit"])){
 			   // Construction du tableau des échéances
 			   var echeance = "<tr>";
 			   var current_date = start_date.add(1, 'month').format("YYYY-MM-DD");
-			   echeance += "<td><input type='date' class='form-control' value="+current_date+"></td>";
-			   echeance += "<td><input type='text' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance'></td>";
+			   echeance += "<td><input type='date' class='form-control' value="+current_date+" name='date-echeance-"+i+"'></td>";
+			   echeance += "<td><input type='text' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance-"+i+"'></td>";
 			   echeance += "<td><input type='text' class='form-control' placeholder='CB / Numéro de chèque / Mandat / Espèces...'></td>";
 			   echeance += "</tr>";
 			   montant_restant -= montant_echeance;
 			   $("tbody").append(echeance);
 		   }
-		   $("[name='montant-echeance']").keyup(function(){
+		   $("[name^='montant-echeance']").keyup(function(){
 			   // Lorsqu'un montant est modifié.
 			   var echeance_fixe = $(this).val();
 			   if(echeance_fixe != ''){
@@ -264,9 +264,9 @@ if(isset($_POST["submit"])){
 			   })
 			   montant_restant = montant_restant_auto;
 			   var echeances_fixees = $(".fixed").length;
-			   var echeances_auto = $("[name='montant-echeance']:not(.fixed)").length;
+			   var echeances_auto = $("[name^='montant-echeance']:not(.fixed)").length;
 			   i = 0;
-			   $("[name='montant-echeance']:not(.fixed)").each(function(){
+			   $("[name^='montant-echeance']:not(.fixed)").each(function(){
 				   if(i == echeances_auto - 1){
 					   montant_echeance = (montant_restant).toFixed(2);
 				   } else {

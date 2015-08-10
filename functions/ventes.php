@@ -39,7 +39,6 @@ function vente(){
 		$actif = 0;
 	}
 	$echeances = $_POST["echeances"];
-	$montant_echeance = 0;
 	$prix_restant = $_POST["prix_achat"];
     
 	$queryProduit = $db->prepare("SELECT * FROM produits WHERE produit_id=?");
@@ -124,16 +123,8 @@ function vente(){
 			$new_echeance = $db->prepare("INSERT INTO produits_echeances(id_produit_adherent, date_echeance, montant)
 			VALUES(:transaction, :date_echeance, :prix)");
 			$new_echeance->bindParam(':transaction', $transaction);
-			$date_echeance = date("Y-m-d", strtotime($date_achat.'+'.(30*$k).'DAYS'));
-			$new_echeance->bindParam(':date_echeance', $date_echeance);
-			
-			$montant_echeance = $_POST["prix_achat"]/$echeances;
-			if($k == $echeances - 1){
-				$montant_echeance = $prix_restant;
-			}
-			$montant_echeance = number_format($montant_echeance, 2);
-			$prix_restant -= $montant_echeance;
-			$new_echeance->bindParam(':prix', $montant_echeance);
+			$new_echeance->bindParam(':date_echeance', $_POST["date-echeance-".$k]);
+			$new_echeance->bindParam(':prix', $_POST["montant-echeance-".$k]);
 			$new_echeance->execute();
 			
 			//Echeances - Contenu du tableau
@@ -144,12 +135,12 @@ function vente(){
 			$pdf->Write(0, $infos);
 			$pdf->Rect(45, 149 + (8*$k), 50, 8);
 			$pdf->setXY(45, 152 + (8*$k));
-			$infos = date_create($date_echeance)->format("d/m/Y");
+			$infos = $_POST["date-echeance-".$k];
 			$infos = iconv('UTF-8', 'windows-1252', $infos);
 			$pdf->Write(0, $infos);
 			$pdf->Rect(95, 149 + (8*$k), 20, 8);
 			$pdf->setXY(95, 152 + (8*$k));
-			$infos = $montant_echeance;
+			$infos = $_POST["montant-echeance-".$k];
 			$infos = iconv('UTF-8', 'windows-1252', $infos);
 			$pdf->Write(0, $infos);
 			$pdf->Rect(115, 149 + (8*$k), 85, 8);
