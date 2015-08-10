@@ -14,18 +14,18 @@ $db = PDOFactory::getConnection();
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
-           <p id="current-time"></p>
-           <div class="jumbotron">
-           	<h1>Bonjour !</h1>
-           	<p>Bienvenue sur Salsabor Gestion. Que souhaitez-vous faire ?</p>
-           	<p><a class="btn btn-primary btn-lg" href="eleve_add.php"><span class="glyphicon glyphicon-user"></span> Réaliser une inscription</a>
-           <a class="btn btn-primary btn-lg" href="vente_forfait.php"><span class="glyphicon glyphicon-credit-card"></span> Vendre un forfait ou une invitation</a>
-           <a href="resa_add.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-record"></span> Réserver une salle</a>
-           <a class="btn btn-primary btn-lg" href="read_rfid.php"><span class="glyphicon glyphicon-qrcode"></span> Lire un RFID (Admin)</a>
-           <a href="eleve_inviter.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-heart-empty"></span> Inviter un élève</a></p>
-           </div>
-           
-           
+			   <p id="current-time"></p>
+			   <div class="jumbotron">
+					<h1>Bonjour !</h1>
+					<p>Bienvenue sur Salsabor Gestion. Que souhaitez-vous faire ?</p>
+					<p>
+						<a class="btn btn-primary btn-lg" href="eleve_add.php"><span class="glyphicon glyphicon-user"></span> Réaliser une inscription</a>
+						<a class="btn btn-primary btn-lg" href="vente_forfait.php"><span class="glyphicon glyphicon-credit-card"></span> Vendre un forfait</a>
+						<a href="resa_add.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-record"></span> Réserver une salle</a>
+						<a href="eleve_inviter.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-heart-empty"></span> Inviter un élève</a>
+						<a class="btn btn-primary btn-lg" href="read_rfid.php"><span class="glyphicon glyphicon-qrcode"></span> Lire un RFID (Admin)</a>
+					</p>
+			   </div>
            </div>
        </div>
    </div>
