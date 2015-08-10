@@ -222,10 +222,10 @@ if(isset($_POST["submit"])){
 		   var nbEcheances = $(this).val();
 		   var i = 0;
 		   var start_date = moment();
-		   if(start_date.date() <= 10){
+		   if(start_date.date() < 10){
 			   start_date.dates(10);
-		   } else if(start_date.date() <= 20){
-			   start_date.dates(10);
+		   } else if(start_date.date() < 20){
+			   start_date.dates(20);
 		   } else {
 			   start_date.dates(30);
 		   }
