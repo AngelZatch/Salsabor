@@ -44,16 +44,19 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
 							case 0:
 								$status = "En attente";
 								$statusClass = "info";
+								$statusChecked = "unchecked";
 								break;
 
 							case 1:
 								$status = "Payée";
 								$statusClass = "success";
+								$statusChecked = "checked";
 								break;
 
 							case 2:
 								$status = "En retard";
 								$statusClass = "danger";
+								$statusChecked = "unchecked";
 								break;
 						}?>
                		<tr>
@@ -61,7 +64,8 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
 						<td><?php echo $echeances["produit_nom"];?></td>
 						<td><?php echo $echeances["eleve_prenom"]." ".$echeances["eleve_nom"];?></td>
 						<td><?php echo $echeances["montant"];?> €</td>
-						<td><input type="checkbox" unchecked data-toggle="toggle" data-on="Payée" data-off="<?php echo $status;?>" data-onstyle="success" data-offstyle="<?php echo $statusClass;?>" id="echeance"></td>
+						<td><input type="checkbox" class="toggle-maturity" <?php echo $statusChecked;?> data-toggle="toggle" data-on="Payée" data-off="<?php echo $status;?>" data-onstyle="success" data-offstyle="<?php echo $statusClass;?>">
+             		<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>"></td>
               		</tr>
                		<?php } ?>
                	</tbody>
@@ -69,6 +73,14 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
            </div>
        </div>
    </div>
-   <?php include "scripts.php";?>    
+   <?php include "scripts.php";?>
+   <script>
+	   $(".toggle-maturity").change(function(){
+		   var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
+		   $.post("functions/validate_echeance.php", {echeance_id}).done(function(data){
+			   showSuccessNotif(data);
+		   })
+	   })
+	</script>
 </body>
 </html>
