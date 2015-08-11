@@ -120,11 +120,12 @@ function vente(){
 		$pdf->Write(0, $infos);
 
 		for($k = 0; $k < $echeances; $k++){
-			$new_echeance = $db->prepare("INSERT INTO produits_echeances(id_produit_adherent, date_echeance, montant)
-			VALUES(:transaction, :date_echeance, :prix)");
+			$new_echeance = $db->prepare("INSERT INTO produits_echeances(id_produit_adherent, date_echeance, montant, methode_paiement)
+			VALUES(:transaction, :date_echeance, :prix, :methode)");
 			$new_echeance->bindParam(':transaction', $transaction);
 			$new_echeance->bindParam(':date_echeance', $_POST["date-echeance-".$k]);
 			$new_echeance->bindParam(':prix', $_POST["montant-echeance-".$k]);
+			$new_echeance->bindParam(':methode', $_POST["methode-paiement-".$k]);
 			$new_echeance->execute();
 			
 			//Echeances - Contenu du tableau

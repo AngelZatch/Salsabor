@@ -217,6 +217,12 @@ if(isset($_POST["submit"])){
 		   }
        }
 	   
+		var methods = [
+			"Carte bancaire",
+			"Chèque n°",
+			"Espèces",
+			"Mandat"
+		];
 	   // Gestion des échéances (nombre et valeur)	   
 	   $("[name='echeances']").keyup(function(){
 		   var nbEcheances = $(this).val();
@@ -244,7 +250,7 @@ if(isset($_POST["submit"])){
 			   var current_date = start_date.add(1, 'month').format("YYYY-MM-DD");
 			   echeance += "<td><input type='date' class='form-control' value="+current_date+" name='date-echeance-"+i+"'></td>";
 			   echeance += "<td><input type='text' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance-"+i+"'></td>";
-			   echeance += "<td><input type='text' class='form-control' placeholder='CB / Numéro de chèque / Mandat / Espèces...'></td>";
+			   echeance += "<td><input type='text' class='form-control' name='moyen-paiement-"+i+"' placeholder='CB / Numéro de chèque / Mandat / Espèces...'></td>";
 			   echeance += "</tr>";
 			   montant_restant -= montant_echeance;
 			   $("tbody").append(echeance);
@@ -276,6 +282,9 @@ if(isset($_POST["submit"])){
 				   montant_restant -= montant_echeance;
 				   i++;
 			   })
+		   })
+		   $("[name='moyen-paiement']").autocomplete({
+			  source: methods
 		   })
 	   
 	   })
