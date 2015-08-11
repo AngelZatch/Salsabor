@@ -55,8 +55,9 @@ if(isset($_POST["submit"])){
                    </div>
                    <div class="form-group">
                        <label for="personne">Acheteur du forfait</label>
-                       <input type="text" name="identite_nom" id="identite_nom" class="form-control" placeholder="Nom" onChange="ifAdherentExists()">
+                       <input type="text" name="identite_nom" id="identite_nom" class="form-control" placeholder="Nom">
                        <p class="error-alert" id="err_adherent"></p>
+                       <div class="alert alert-danger" id="unpaid" style="display:none;"><strong>Cet adhérent a des échéances impayées. Impossible de continuer la procédure</strong></div>
 						<a href="#user-details" role="button" class="btn btn-info" value="create-user" id="create-user" style="display:none;" data-toggle="collapse" aria-expanded="false" aria-controls="userDetails">Ouvrir le formulaire de création</a>
 						<div id="user-details" class="collapse">
                	        	<div class="well">
@@ -96,61 +97,63 @@ if(isset($_POST["submit"])){
                	        	</div>
                	        </div>
                    </div>
-                   <div class="form-group">
-                       <label for="date_activation">Date souhaitée d'activation (Laissez vide pour une activation au premier passage)</label>
-                       <div class="input-group">
-                           <input type="date" name="date_activation" class="form-control" onchange="evaluateExpirationDate()">
-                           <span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true" onclick="evaluateExpirationDate()">Insérer aujourd'hui</a></span>
-                       </div>
-                   </div>
-                   <div class="form-group">
-                       <label for="date_expiration">Date prévue d'expiration (à titre indicatif, pas de modification possible)</label>
-                       <input type="date" name="date_expiration" class="form-control">
-                   </div>
-					<div class="row">
-						<div class="col-lg-6">
-							<div class="form-group">
-								<label for="promotion-e">Réduction (en €)</label>
-								<div class="input-group">
-									<span class="input-group-addon"><input type="radio" id="promotion-euros" name="promotion" class="checkbox-x">Réduction en €</span>
-									<input type="text" name="promotion-e" class="form-control">
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-6">
-							<div class="form-group">
-								<label for="promotion-p">Réduction (en %)</label>
-								<div class="input-group">
-									<span class="input-group-addon"><input type="radio" name="promotion" id="promotion-pourcent">Réduction en %</span>
-									<input type="text" name="promotion-p" class="form-control">
-								</div>
-							</div>
-					  </div>
-                   </div>
-                   <div class="form-group">
-                       <label for="prix_achat">Prix du forfait souhaité</label>
-                       <div class="input-group">
-                       	<span class="input-group-addon">€</span>
-                       	<input type="text" name="prix_achat" id="prix_calcul" class="form-control">
-                       </div>
-                   </div>
-                      <div class="form-group">
-                       <label for="echeances">Nombre d'échéances mensuelles</label>
-                       <input type="text" name="echeances" class="form-control" placeholder="">
-                   </div>
-                   <div class="form-group">
-                   		<label for="numero_echeance">Détail des échances</label>
-                   		<table class="table table-striped">
-                   			<thead>
-                   				<tr>
-                   					<th>Date de l'échéance</th>
-                   					<th>Montant de l'échéance</th>
-                   					<th>Méthode de règlement</th>
-                   				</tr>
-                   			</thead>
-                   			<tbody>
-                   			</tbody>
-                   		</table>
+                   <div id="maturities-checked">
+                   	<div class="form-group">
+                   	    <label for="date_activation">Date souhaitée d'activation (Laissez vide pour une activation au premier passage)</label>
+                   	    <div class="input-group">
+                   	        <input type="date" name="date_activation" class="form-control" onchange="evaluateExpirationDate()">
+                   	        <span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true" onclick="evaluateExpirationDate()">Insérer aujourd'hui</a></span>
+                   	    </div>
+                   	</div>
+                   	<div class="form-group">
+                   	    <label for="date_expiration">Date prévue d'expiration (à titre indicatif, pas de modification possible)</label>
+                   	    <input type="date" name="date_expiration" class="form-control">
+                   	</div>
+                   						<div class="row">
+                   							<div class="col-lg-6">
+                   								<div class="form-group">
+                   									<label for="promotion-e">Réduction (en €)</label>
+                   									<div class="input-group">
+                   										<span class="input-group-addon"><input type="radio" id="promotion-euros" name="promotion" class="checkbox-x">Réduction en €</span>
+                   										<input type="text" name="promotion-e" class="form-control">
+                   									</div>
+                   								</div>
+                   							</div>
+                   							<div class="col-lg-6">
+                   								<div class="form-group">
+                   									<label for="promotion-p">Réduction (en %)</label>
+                   									<div class="input-group">
+                   										<span class="input-group-addon"><input type="radio" name="promotion" id="promotion-pourcent">Réduction en %</span>
+                   										<input type="text" name="promotion-p" class="form-control">
+                   									</div>
+                   								</div>
+                   						  </div>
+                   	</div>
+                   	<div class="form-group">
+                   	    <label for="prix_achat">Prix du forfait souhaité</label>
+                   	    <div class="input-group">
+                   	    	<span class="input-group-addon">€</span>
+                   	    	<input type="text" name="prix_achat" id="prix_calcul" class="form-control">
+                   	    </div>
+                   	</div>
+                   	   <div class="form-group">
+                   	    <label for="echeances">Nombre d'échéances mensuelles</label>
+                   	    <input type="text" name="echeances" class="form-control" placeholder="">
+                   	</div>
+                   	<div class="form-group">
+                   			<label for="numero_echeance">Détail des échances</label>
+                   			<table class="table table-striped">
+                   				<thead>
+                   					<tr>
+                   						<th>Date de l'échéance</th>
+                   						<th>Montant de l'échéance</th>
+                   						<th>Méthode de règlement</th>
+                   					</tr>
+                   				</thead>
+                   				<tbody>
+                   				</tbody>
+                   			</table>
+                   	</div>
                    </div>
                </form>
            </div>
@@ -163,6 +166,11 @@ if(isset($_POST["submit"])){
 		   $("[name='identite_nom']").autocomplete({
 			   source: listeAdherents
 		   });
+		   $("#identite_nom").keyup(function(){
+			   ifAdherentExists();
+		   }).blur(function(){
+			   ifAdherentExists();
+		   })
 	   })
        var json;
         function feedDetails(){
@@ -288,7 +296,6 @@ if(isset($_POST["submit"])){
 		   })
 	   
 	   })
-	   
 	   
 	   var listening = false;
 	   var wait;

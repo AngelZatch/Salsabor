@@ -117,18 +117,47 @@ $(".relative-start").each(function(){
 
 // Vérifie si un adhérent existe dans la base de données
 function ifAdherentExists(){
-	var identite_prenom = $('#identite_prenom').val();
-	var identite_nom = $('#identite_nom').val();
-	$.post("functions/check_adherent.php", {identite_prenom, identite_nom}).done(function(data){
-		if(data == 0){
+	var identite = $("#identite_nom").val().split(" ");
+	if(identite == ''){
+		$('#err_adherent').empty();
+		$('#unpaid').hide();
+		$('#create-user').hide();
+		$("#maturities-checked").show();
+	} else {
+		var identite_prenom = identite[0];
+		var identite_nom = identite[1];
+		$.post("functions/check_adherent.php", {identite_prenom, identite_nom}).done(function(data){
+			if(data == 0){
+				$('#err_adherent').empty();
+				$('#unpaid').hide();
+				$('#err_adherent').append("Cet adhérent n'existe pas. Voulez-vous le créer ?");
+				$('#create-user').show();
+				$("#maturities-checked").show();
+			} else {
+				$('#err_adherent').empty();
+				$('#unpaid').hide();
+				$('#create-user').hide();
+				$("#maturities-checked").show();
+				checkMaturities(data);
+			}
+		});
+	}
+}
+
+// Vérifie si un adhérent a des échéances impayées lors de la vente d'un forfait
+function checkMaturities(data){
+   var search_id = data;
+   $.post('functions/check_unpaid.php', {search_id}).done(function(maturities){
+	   if(maturities != 0){
 			$('#err_adherent').empty();
-			$('#err_adherent').append("Cet adhérent n'existe pas. Voulez-vous le créer ?");
-			$('#create-user').show();
+			$('#unpaid').show();
+		   $("#maturities-checked").hide();
 		} else {
 			$('#err_adherent').empty();
-			$('#create-user').hide();
+			$('#unpaid').hide();
+			$("#maturities-checked").show();
 		}
-	});
+   })
 }
 
 // Effectue une inscription rapide dans le cas d'un adhérent inexistant à la réservation d'une salle ou l'achat d'un forfait
