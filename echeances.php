@@ -63,7 +63,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
                		<tr>
 						<td><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
 						<td><?php echo $echeances["produit_nom"];?></td>
-						<td><?php echo $echeances["eleve_prenom"]." ".$echeances["eleve_nom"];?></td>
+						<td><?php echo $echeances["eleve_prenom"]." ".$echeances["eleve_nom"]." (".$echeances["telephone"].")";?></td>
 						<td><?php echo $echeances["montant"];?> €</td>
 						<td><input type="checkbox" class="toggle-maturity" <?php echo $statusChecked;?> data-toggle="toggle" data-on="Payée" data-off="<?php echo $status;?>" data-onstyle="success" data-offstyle="<?php echo $statusClass;?>">
              		<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>"></td>
