@@ -363,3 +363,15 @@ body{
 	font-weight: 800;
 	color: #a94442 !important;
 }
+
+.glyphicon-pending {
+	color: #f0ad4e !important;
+}
+
+.glyphicon-success {
+	color: #5cb85c !important;
+}
+
+.glyphicon-danger {
+	color: #d9534f !important;
+}

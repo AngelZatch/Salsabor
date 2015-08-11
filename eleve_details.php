@@ -18,7 +18,7 @@ $queryResa = $db->prepare('SELECT * FROM reservations JOIN adherents ON reservat
 $queryResa->bindValue(1, $data);
 $queryResa->execute();
 
-$queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation FROM produits_adherents JOIN adherents ON id_adherent=adherents.eleve_id JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=?');
+$queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation, produits_adherents.actif AS produitActif FROM produits_adherents JOIN adherents ON id_adherent=adherents.eleve_id JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=? ORDER BY produitActif DESC, date_achat ASC');
 $queryForfaits->bindValue(1, $data);
 $queryForfaits->execute();
 
@@ -229,11 +229,12 @@ if(isset($_POST["edit"])){
                    <table class="table table-striped">
                        <thead>
                            <tr>
-                               <th>Type de forfait</th>
-                               <th>Date d'achat</th>
-                               <th>Période de validité</th>
-                               <th>Prix d'achat</th>
-                               <th></th>
+                              <th></th>
+                              <th>Type de forfait</th>
+                              <th>Date d'achat</th>
+                              <th>Période de validité</th>
+                              <th>Prix d'achat</th>
+                              <th></th>
                            </tr>
                        </thead>
                        <tbody>
@@ -245,6 +246,15 @@ if(isset($_POST["edit"])){
 						   }
 						   ?>
                            <tr>
+                             <?php if($forfaits["produitActif"] == '1') { ?>
+                              <td><span class="glyphicon glyphicon-certificate glyphicon-success" title="Forfait/Invitation actif(ve)"></span></td>
+                              <?php } else {
+							   			if($forfaits["dateActivation"] != "0000-00-00 00:00:00") { ?>
+                              <td><span class="glyphicon glyphicon-certificate glyphicon-inactive" title="Forfait/Invitation inactif(ve)"></span></td>
+								  <?php } else { ?>
+							  <td><span class="glyphicon glyphicon-certificate glyphicon-inactive glyphicon-pending" title="Forfait/Invitation en attente"></span></td>
+								  <?php } 
+							   } ?>
                                <td><?php echo $forfaits["produit_nom"];?></td>
                                <td><?php echo date_create($forfaits["date_achat"])->format('d/m/Y');?></td>
                                <td><?php echo $periode_validite;?></td>

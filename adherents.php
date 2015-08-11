@@ -63,7 +63,7 @@ $queryAdherents = $db->query('SELECT * FROM adherents ORDER BY eleve_nom ASC');
 							<td class="col-lg-1"><span class="glyphicon glyphicon-map-marker glyphicon-inactive" title="Aucun passage en attente."></span></td>
                			<?php } ?>
 						<?php if($echeances != 0){ ?>
-							<td class="col-lg-1"><span class="glyphicon glyphicon-repeat" title="Echéances en retard."></span></td>
+							<td class="col-lg-1"><span class="glyphicon glyphicon-repeat glyphicon-danger" title="Echéances en retard."></span></td>
                			<?php } else { ?>
 							<td class="col-lg-1"><span class="glyphicon glyphicon-repeat glyphicon-inactive" title="Aucune échéance en retard."></span></td>
                			<?php } ?>
