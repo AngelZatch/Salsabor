@@ -354,3 +354,12 @@ body{
 .search-form {
 	margin-bottom: 10px;
 }
+
+.glyphicon-inactive {
+	color: #BBB !important;
+}
+
+.glypicon-danger {
+	font-weight: 800;
+	color: #a94442 !important;
+}

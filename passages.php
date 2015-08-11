@@ -67,6 +67,7 @@ $queryNextCours->execute();
 									  $status = "danger";
 									  break;
 							  };
+							  $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN produits_adherents ON id_produit_adherent=produits_adherents.id_transaction WHERE echeance_effectuee=2 AND id_adherent=$passages[eleve_id]")->rowCount();
 						?>
 							<li class="list-group-item list-group-item-<?php echo $status;?> draggable col-sm-12">
 								<p class="col-sm-3 eleve-infos">
@@ -74,9 +75,14 @@ $queryNextCours->execute();
 									<input type="hidden" class="eleve-id" value="<?php echo $passages["eleve_id"];?>">
 									<input type="hidden" class="passage-id" value="<?php echo $passages["passage_id"];?>">
 								</p>
-								<p class="col-sm-3 eleve-tag"><?php echo $passages["passage_eleve"];?></p>
+								<p class="col-sm-1 eleve-tag"><?php echo $passages["passage_eleve"];?></p>
 								<p class="col-sm-3">Enregsitré à <?php echo date_create($passages["passage_date"])->format("H:i:s");?></p>
-								<div class="col-sm-3 record-options">
+								<?php if($queryEcheances != 0){ ?>
+								<p class="col-sm-3"><span class="glyphicon glyphicon-repeat glypicon-danger"></span></p>
+								<div class="col-sm-2 record-options">
+								<?php } else { ?>
+								<div class="col-sm-5 record-options">
+								<?php } ?>
 								<?php if ($passages["status"] == 0 || $passages["status"] == 3){?>
 									<span class="list-item-option validate-record glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"></span>
 								<?php } else if($passages["status"] == 2) {  ?>

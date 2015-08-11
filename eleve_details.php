@@ -26,6 +26,8 @@ $queryForfaitsActifs = $db->prepare("SELECT * FROM produits_adherents JOIN produ
 $queryForfaitsActifs->bindParam(1, $data);
 $queryForfaitsActifs->execute();
 
+$queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN produits_adherents ON id_produit_adherent=produits_adherents.id_transaction WHERE echeance_effectuee=2 AND id_adherent=$data")->rowCount();
+
 // Edit des informations
 if(isset($_POST["edit"])){
 	// Upload de l'image
@@ -104,6 +106,9 @@ if(isset($_POST["edit"])){
                    <a href="adherents.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des adhérents</a>
                 </div> <!-- btn-toolbar -->
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span> <?php echo $details["eleve_prenom"]." ".$details["eleve_nom"];?></h1>
+               <?php if($queryEcheances != 0){ ?>
+               <div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
+               <?php } ?>
 			  <ul class="nav nav-tabs">
                    <li role="presentation" id="infos-toggle" class="active"><a>Informations personnelles</a></li>
                    <li role="presentation" id="history-toggle"><a>Historique des cours</a></li>
