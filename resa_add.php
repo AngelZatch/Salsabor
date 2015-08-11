@@ -155,13 +155,16 @@ if(isset($_POST['addResa'])){
 			var format_start = new Date(start).toISOString();
 			var end = sessionStorage.getItem('end');
 			var format_end = new Date(end).toISOString();
+			var start_hour = moment(format_start).format('HH:mm');
+			var end_hour = moment(format_end).format('HH:mm');
 		} else {
 			var format_start = new Date().toISOString();
+			console.log(format_start);
 			var format_end = new Date().toISOString();
+			var start_hour = moment(format_start).startOf('hour').add(1, 'h').format('HH:mm');
+			var end_hour = moment(format_end).startOf('hour').add(2, 'h').format('HH:mm');
 		}
 		var start_day = moment(format_start).format('YYYY-MM-DD');
-		var start_hour = moment(format_start).startOf('hour').add(1, 'h').format('HH:mm');
-		var end_hour = moment(format_end).startOf('hour').add(2, 'h').format('HH:mm');
            
            $("#date_debut").val(start_day);
            $("#heure_debut").val(start_hour);
