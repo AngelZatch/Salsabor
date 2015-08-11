@@ -42,7 +42,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
                 <div class="btn-toolbar" id="top-page-buttons">
                    <a href="eleve_details.php?id=<?php echo $forfait["id_adherent"];?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent (<?php echo $forfait["eleve_prenom"]." ".$forfait["eleve_nom"];?>)</a>
                 </div> <!-- btn-toolbar -->
-               <h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["eleve_prenom"]." ".$forfait["eleve_nom"];?></h1>
+               <h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["eleve_prenom"]." ".$forfait["eleve_nom"]." (transaction ".$forfait["id_transaction"].")";?></h1>
 			  <ul class="nav nav-tabs">
                    <li role="presentation" id="infos-toggle" class="active"><a>Détails du forfait</a></li>
                    <li role="presentation" id="history-toggle"><a>Liste des cours</a></li>
@@ -64,7 +64,8 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
                     </li>
                     <li class="details-list">
                         <div class="col-sm-5 list-name">Date d'expiration</div>
-                        <div class="col-sm-7"><?php echo $date_expiration?></div>
+                        <div class="col-sm-7"><?php echo $date_expiration;?>
+                        </div>
                     </li>
                     <li class="details-list">
                         <div class="col-sm-5 list-name">Volume de cours initial</div>
@@ -140,7 +141,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
                			<tr class="alert alert-<?php echo $statusClass;?>">
                				<td><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
                				<td><?php echo $echeances["montant"];?> €</td>
-               				<td>Méthode de paiement...</td>
+               				<td><?php echo $echeances["methode_paiement"];?></td>
                				<td><?php echo $status?></td>
                			</tr>
                			<?php } ?>
