@@ -85,7 +85,11 @@ function vente(){
 		$pdf->MultiCell(0, 7, $infos);
 		// Vente
 		$pdf->setXY(10, 117);
-		$infos = "Forfait ".$produit["produit_nom"]."\nValide du ".date_create($_POST["date_activation"])->format("d/m/Y")." au ".date_create($new_exp_date)->format("d/m/Y");
+		if($_POST["date_activation"] != ''){
+			$infos = "Forfait ".$produit["produit_nom"]."\nValide du ".date_create($_POST["date_activation"])->format("d/m/Y")." au ".date_create($new_exp_date)->format("d/m/Y");
+		} else {
+			$infos = "Activation au premier passage";
+		}
 		$infos = iconv('UTF-8', 'windows-1252', $infos);
 		$pdf->MultiCell(0, 7, $infos);
 		// Prix
