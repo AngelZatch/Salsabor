@@ -8,6 +8,12 @@ $queryNextCours = $db->prepare("SELECT * FROM cours JOIN salle ON cours_salle=sa
 $queryNextCours->bindParam(1, $compare_start);
 $queryNextCours->bindParam(2, $compare_end);
 $queryNextCours->execute();
+
+$queryEleves = $db->query("SELECT * FROM adherents ORDER BY eleve_nom ASC");
+$array_eleves = array();
+while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
+	array_push($array_eleves, $eleves["eleve_prenom"]." ".$eleves["eleve_nom"]);
+}
 ?>
 <html>
 <head>
@@ -90,15 +96,51 @@ $queryNextCours->execute();
 								<?php } ?>
 								</div>
 							</li>
-						<?php } ?></div>
+						<?php } ?>
+              		</div>
                	</ul>
+               	<div class="panel-footer">
+					<div class="input-group">
+						<input type="text" for="liste_participants" class="form-control liste-participants" placeholder="Ajouter un participant par passage">
+						<span role="buttton" class="input-group-btn add-eleve"><a class="btn btn-info" role="button">Ajouter l'élève</a></span>
+					</div>
+               	</div>
 			   </div>
 			   <?php } ?>
            </div>
        </div>
    </div>
    <?php include "scripts.php";?>
-   <script>	   
+   <script>
+	   $(document).ready(function(){
+			 var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
+		   $(".liste-participants").autocomplete({
+			   source: listeAdherents
+		   });
+		   
+		   $(".add-eleve").click(function(){
+			   var clicked = $(this);
+			   var adherent = clicked.prev().val();
+			   var cours_id = clicked.closest(".panel").find("#cours-id").val();
+			   $.post("functions/add_passage.php", {cours_id, adherent}).done(function(data){
+				   showSuccessNotif(data);
+				   var line = "<li class='list-group-item list-group-item-warning draggable col-sm-12 ui-draggable ui-draggable-handle'>";
+				   line += "<p class='col-sm-3 eleve-infos'>";
+				   line += adherent;
+				   line += "</p>";
+				   line += "<p class='col-sm-1 eleve-tag'>";
+				   line += "</p>";
+				   line += "<p class='col-sm-3'>"
+				   line += "Enregistré à ";
+				   line += moment().format('H:m:s');
+				   line += "</p>";
+				   line += "<div class='col-sm-5 record-options'><span class='list-item-option validate-record glyphicon glyphicon-ok' title='Valider l\'enregistrement comme étant bien pour ce cours'></span></div>";
+				   line += "</li>";
+				   $(line).appendTo(clicked.parent().parent().prev().children());
+				   clicked.prev().empty();
+			   });
+		   })
+	   });
 	   $(".close-cours").click(function(){
 		   var cours = $(this).closest(".panel").find("#cours-id").val();
 		   if($(this).closest(".panel").find(".cours-count").html() != $(this).closest(".panel").find(".cours-count-checked").html()){
