@@ -23,6 +23,8 @@ $db = PDOFactory::getConnection();
 						<a class="btn btn-primary btn-lg" href="vente_forfait.php"><span class="glyphicon glyphicon-credit-card"></span> Vendre un forfait</a>
 						<a href="resa_add.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-record"></span> Réserver une salle</a>
 						<a href="eleve_inviter.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-heart-empty"></span> Inviter un élève</a>
+						<a href="passages.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-map-marker"></span> Consulter les passages</a>
+						<a href="echeances.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-repeat"></span> Consulter les échéances</a>
 						<a class="btn btn-primary btn-lg" href="read_rfid.php"><span class="glyphicon glyphicon-qrcode"></span> Lire un RFID (Admin)</a>
 					</p>
 			   </div>
