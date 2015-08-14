@@ -202,10 +202,9 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
                    <p id="json-output"></p>
                </section> <!-- Tarifs -->
                <section id="stats">
-               <p>Nombre de cours par semaine</p>
-               	<canvas id="frequency-chart" width="500" height="200"></canvas>
+               	<p>Nombre de cours</p>
+               	<div id="nombre-cours" style="height: 250px;"></div>
                	<p>Types de cours donnés</p>
-               	<canvas id="type-chart" width="500" height="200"></canvas>
                </section> <!-- Statistiques -->
            </div>
        </div>
@@ -223,6 +222,35 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 	   
 	   $(document).ready(function(){
 		   fetchTarifs();
+		   var prof_id = <?php echo $data;?>;
+		   $.post('functions/compile_prof_cours.php', {prof_id}).done(function(data){
+			   var listeCours = JSON.parse(data);
+			   
+			   // Nombre de cours par jour
+			   var daysArray = [["lundi",0], ["mardi",0], ["mercredi",0], ["jeudi",0], ["vendredi",0], ["samedi",0]];
+			   var resDays = [];
+			   for (var j = 0; j < daysArray.length; j++){
+				   for (var i = 0; i < listeCours.length; i++){
+					   var date = moment(listeCours[i].day).locale('fr').format('dddd');
+					   if(daysArray[j][0] == date){
+						   daysArray[j][1]++;
+					   }
+				   }
+				   var graphBar = {};
+				   graphBar.d = daysArray[j][0];
+				   graphBar.a = daysArray[j][1];
+				   resDays.push(graphBar);
+			   }
+			   console.log(resDays);
+			   new Morris.Bar({
+				   element: 'nombre-cours',
+				   data : resDays,
+				   xkey: 'd',
+				   ykeys: ['a'],
+				   labels: ['Nombre de cours']
+			   });
+		   })
+		   
 	   });
 	   
 	   function addTarif(){

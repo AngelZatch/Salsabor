@@ -13,11 +13,12 @@
 <script src="assets/js/bootstrap-popover-x.min.js"></script>
 <script src="assets/js/bootstrap-toggle.min.js"></script>
 <script src="assets/js/js.cookie.js"></script>
-<script src="assets/js/Chart.js"></script>
 <script src="assets/js/checkbox-x.min.js"></script>
 <script src="assets/js/notify.min.js"></script>
 <script src="assets/js/fileinput.min.js"></script>
 <script src="assets/js/fileinput_locale_fr.js"></script>
+<script src="assets/js/raphael-min.js"></script>
+<script src="assets/js/morris.min.js"></script>
 
 <!-- custom -->
 <script src="assets/js/swap-menus.js"></script>
