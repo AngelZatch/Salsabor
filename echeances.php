@@ -29,48 +29,50 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
 					<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
 					<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">
 				</div>
-               <table class="table">
-               	<thead>
-               		<tr>
-               			<th>Date</th>
-               			<th>Forfait associé</th>
-               			<th>Détenteur</th>
-               			<th>Montant</th>
-               			<th>Statut</th>
-               		</tr>
-               	</thead>
-               	<tbody id="filter-enabled">
-               		<?php while($echeances = $queryEcheances->fetch(PDO::FETCH_ASSOC)) {
-						switch($echeances["echeance_effectuee"]){
-							case 0:
-								$status = "En attente";
-								$statusClass = "info";
-								$statusChecked = "unchecked";
-								break;
-
-							case 1:
-								$status = "Payée";
-								$statusClass = "success";
-								$statusChecked = "checked";
-								break;
-
-							case 2:
-								$status = "En retard";
-								$statusClass = "danger";
-								$statusChecked = "unchecked";
-								break;
-						}?>
-               		<tr>
-						<td><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
-						<td><?php echo $echeances["produit_nom"];?></td>
-						<td><?php echo $echeances["eleve_prenom"]." ".$echeances["eleve_nom"]." (".$echeances["telephone"].")";?></td>
-						<td><?php echo $echeances["montant"];?> €</td>
-						<td><input type="checkbox" class="toggle-maturity" <?php echo $statusChecked;?> data-toggle="toggle" data-on="Payée" data-off="<?php echo $status;?>" data-onstyle="success" data-offstyle="<?php echo $statusClass;?>">
-             		<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>"></td>
-              		</tr>
-               		<?php } ?>
-               	</tbody>
-               </table>
+               <div id="maturities-list">
+               	<table class="table">
+               		<thead>
+               			<tr>
+               				<th>Date</th>
+               				<th><button class="btn btn-default sort" data-sort="name"><span class="glyphicon glyphicon-sort"></span></button> Forfait associé </th>
+               				<th>Détenteur</th>
+               				<th>Montant</th>
+               				<th>Statut</th>
+               			</tr>
+               		</thead>
+               		<tbody id="filter-enabled" class="list">
+               			<?php while($echeances = $queryEcheances->fetch(PDO::FETCH_ASSOC)) {
+               							switch($echeances["echeance_effectuee"]){
+               								case 0:
+               									$status = "En attente";
+               									$statusClass = "info";
+               									$statusChecked = "unchecked";
+               									break;
+               	
+               								case 1:
+               									$status = "Payée";
+               									$statusClass = "success";
+               									$statusChecked = "checked";
+               									break;
+               	
+               								case 2:
+               									$status = "En retard";
+               									$statusClass = "danger";
+               									$statusChecked = "unchecked";
+               									break;
+               							}?>
+               			<tr>
+               							<td><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
+               							<td class="name"><?php echo $echeances["produit_nom"];?></td>
+               							<td><?php echo $echeances["eleve_prenom"]." ".$echeances["eleve_nom"]." (".$echeances["telephone"].")";?></td>
+               							<td><?php echo $echeances["montant"];?> €</td>
+               							<td class="status"><input type="checkbox" class="toggle-maturity" <?php echo $statusChecked;?> data-toggle="toggle" data-on="Payée" data-off="<?php echo $status;?>" data-onstyle="success" data-offstyle="<?php echo $statusClass;?>">
+               	             		<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>"></td>
+               	              		</tr>
+               			<?php } ?>
+               		</tbody>
+               	</table>
+               </div>
            </div>
        </div>
    </div>
@@ -82,6 +84,11 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
 			   showSuccessNotif(data);
 		   })
 	   })
+	   
+	   var options = {
+		   valueNames: ['name', 'status']
+	   };
+	   var maturitiesList = new List('maturities-list', options);
 	</script>
 </body>
 </html>
