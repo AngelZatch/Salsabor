@@ -19,6 +19,7 @@
 <script src="assets/js/fileinput_locale_fr.js"></script>
 <script src="assets/js/raphael-min.js"></script>
 <script src="assets/js/morris.min.js"></script>
+<script src="assets/js/list.min.js"></script>
 
 <!-- custom -->
 <script src="assets/js/swap-menus.js"></script>
