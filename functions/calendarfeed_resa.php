@@ -14,6 +14,7 @@ try
         $e = array();
         $e['id'] = $row_calendar['reservation_id'];
         $e['title'] = $row_calendar['prestations_name']." (".$row_calendar['eleve_prenom']." ".$row_calendar['eleve_nom']." - ".$row_calendar['salle_name'].")";
+		$e['lieu'] = $row_calendar['salle_id'];
         $e['start'] = $row_calendar['reservation_start'];
         $e['end'] = $row_calendar['reservation_end'];
 		$e['type'] = 'reservation';

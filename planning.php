@@ -41,6 +41,18 @@ if(isset($_POST['deleteCoursAll'])){
                    <a href="resa_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-record"></span> Réserver une salle</a>
                    <a href="jours_chomes.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés...</a>
                </div> <!-- btn-toolbar -->
+               <div class="filter-options">
+					<label for="" class="cbx-label">Salle 1</label>
+				   <input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-salle-1">
+              		<label for="" class="cbx-label">Salle 2</label>
+				   <input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-salle-2">
+              		<label for="" class="cbx-label">Salle 3</label>
+				   <input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-salle-3">
+              		<label for="" class="cbx-label">Cours</label>
+				   <input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-cours">
+              		<label for="" class="cbx-label">Réservations</label>
+				   <input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-reservation">
+               </div>
                <div id="display-planning" style="display:block;">
                     <div id="calendar" class="fc fc-ltr fc-unthemed"></div>
                </div> <!-- Display en Planning -->
@@ -134,8 +146,7 @@ if(isset($_POST['deleteCoursAll'])){
 			],
 			eventRender: function(calEvent, element){
 				element.attr('id', calEvent.type+'-'+calEvent.id);
-                //console.log(calEvent.type);
-                //console.log(calEvent.priorite);
+				element.attr('salle', calEvent.lieu);
                 if(calEvent.type == 'reservation'){
                     if (calEvent.priorite == 0){
                         element.css('background-color', '#ebb3f9');
@@ -206,14 +217,6 @@ if(isset($_POST['deleteCoursAll'])){
                 sessionStorage.setItem('end', end);
             }
         });
-        var $rows = $('#filter-enabled tr');
-        $('#search').keyup(function(){
-            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
-            $rows.show().filter(function(){
-               var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
-                return !~text.indexOf(val);
-            }).hide();
-        });
         
         $('[data-toggle="popover"]').popover();
         
@@ -222,7 +225,97 @@ if(isset($_POST['deleteCoursAll'])){
             height = docHeight - xPos.top - 100;
             $('#calendar').fullCalendar('option', 'contentHeight', 650);
         });*/
-
+		var filterOne = false, filterTwo = false, filterThree = false, filterCours = false, filterReservation = false;
+		$("#filter-salle-1").change(function(){
+			if(!filterOne){
+				$("[salle='1']").hide();
+				filterOne = true;
+			} else {
+				$("[salle='1']").show();
+				filterOne = false;
+				if(filterCours){
+					$(":regex(id,^cours)").hide();
+				}
+			}
+		});
+		$("#filter-salle-2").change(function(){
+			if(!filterTwo){
+				$("[salle='2']").hide();
+				filterTwo = true;
+			} else {
+				$("[salle='2']").show();
+				filterTwo = false;
+				if(filterCours){
+					$(":regex(id,^cours)").hide();
+				}
+			}
+		});
+		$("#filter-salle-3").change(function(){
+			if(!filterThree){
+				$("[salle='3']").hide();
+				filterThree = true;
+			} else {
+				$("[salle='3']").show();
+				filterThree = false;
+				if(filterCours){
+					$(":regex(id,^cours)").hide();
+				}
+			}
+		});
+		$("#filter-cours").change(function(){
+			if(!filterCours){
+				$(":regex(id,^cours)").hide();
+				if(filterOne){
+					$("[salle='1']").hide();
+				}
+				if(filterTwo){
+					$("[salle='2']").hide();
+				}
+				if(filterThree){
+					$("[salle='3']").hide();
+				}
+				filterCours = true;
+			} else {
+				$("[id^='cours']").show();
+				if(filterOne){
+					$("[salle='1']").hide();
+				}
+				if(filterTwo){
+					$("[salle='2']").hide();
+				}
+				if(filterThree){
+					$("[salle='3']").hide();
+				}
+				filterCours = false;
+			}
+		});
+		$("#filter-reservation").change(function(){
+			if(!filterReservation){
+				$(":regex(id,^reservation)").hide();
+				if(filterOne){
+					$("[salle='1']").hide();
+				}
+				if(filterTwo){
+					$("[salle='2']").hide();
+				}
+				if(filterThree){
+					$("[salle='3']").hide();
+				}
+				filterReservation = true;
+			} else {
+				$(":regex(id,^reservation)").show();
+				if(filterOne){
+					$("[salle='1']").hide();
+				}
+				if(filterTwo){
+					$("[salle='2']").hide();
+				}
+				if(filterThree){
+					$("[salle='3']").hide();
+				}
+				filterReservation = false;
+			}
+		});
     });
 
    /**$('#timepicker').timepicker({});

@@ -15,6 +15,7 @@ try
         $e = array();
         $e['id'] = $row_calendar['cours_id'];
         $e['title'] = $row_calendar['cours_intitule']."\n".$row_calendar['salle_name']."\n".$row_calendar['niveau_name'];
+		$e['lieu'] = $row_calendar['salle_id'];
         $e['start'] = $row_calendar['cours_start'];
         $e['end'] = $row_calendar['cours_end'];
 		$e['prestation_id'] = $row_calendar['cours_type'];
