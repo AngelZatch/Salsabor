@@ -375,3 +375,7 @@ body{
 .glyphicon-danger {
 	color: #d9534f !important;
 }
+
+.glyphicon-sort {
+	cursor: pointer;
+}

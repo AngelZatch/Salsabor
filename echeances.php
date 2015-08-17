@@ -33,11 +33,11 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
                	<table class="table">
                		<thead>
                			<tr>
-               				<th>Date</th>
-               				<th><button class="btn btn-default sort" data-sort="name"><span class="glyphicon glyphicon-sort"></span></button> Forfait associé </th>
-               				<th>Détenteur</th>
-               				<th>Montant</th>
-               				<th>Statut</th>
+               				<th>Date <span class="glyphicon glyphicon-sort sort" data-sort="date"></span></th>
+               				<th>Forfait associé <span class="glyphicon glyphicon-sort sort" data-sort="forfait-name"></span></th>
+               				<th>Détenteur <span class="glyphicon glyphicon-sort sort" data-sort="user-name"></span></th>
+               				<th>Montant <span class="glyphicon glyphicon-sort sort" data-sort="montant"></span></th>
+               				<th>Statut <span class="glyphicon glyphicon-sort sort" data-sort="status"></span></th>
                			</tr>
                		</thead>
                		<tbody id="filter-enabled" class="list">
@@ -62,10 +62,10 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
                									break;
                							}?>
                			<tr>
-               							<td><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
-               							<td class="name"><?php echo $echeances["produit_nom"];?></td>
-               							<td><?php echo $echeances["eleve_prenom"]." ".$echeances["eleve_nom"]." (".$echeances["telephone"].")";?></td>
-               							<td><?php echo $echeances["montant"];?> €</td>
+               							<td class="date"><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
+               							<td class="forfait-name"><?php echo $echeances["produit_nom"];?></td>
+               							<td class="user-name"><?php echo $echeances["eleve_prenom"]." ".$echeances["eleve_nom"]." (".$echeances["telephone"].")";?></td>
+               							<td class="montant"><?php echo $echeances["montant"];?> €</td>
                							<td class="status"><input type="checkbox" class="toggle-maturity" <?php echo $statusChecked;?> data-toggle="toggle" data-on="Payée" data-off="<?php echo $status;?>" data-onstyle="success" data-offstyle="<?php echo $statusClass;?>">
                	             		<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>"></td>
                	              		</tr>
@@ -86,7 +86,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
 	   })
 	   
 	   var options = {
-		   valueNames: ['name', 'status']
+		   valueNames: ['date', 'forfait-name', 'user-name', 'montant', 'status']
 	   };
 	   var maturitiesList = new List('maturities-list', options);
 	</script>
