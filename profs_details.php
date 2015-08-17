@@ -138,29 +138,31 @@ if(isset($_POST["edit"])){
                        <p>Somme déjà réglée : <?php echo $totalPaid;?> €</p>
                        <p>Somme restante : <?php echo $totalDue = $totalPrice - $totalPaid;?> €</p>
                    </div>
-                   <table class="table table-striped">
-                       <thead>
-                           <tr>
-                               <th>Intitulé</th>
-                               <th>Jour</th>
-                               <th>Niveau</th>
-                               <th>Lieu</th>
-                               <th>Somme</th>
-                           </tr>
-                       </thead>
-                       <tbody>
-                           <?php while ($history = $queryHistory->fetch(PDO::FETCH_ASSOC)){?>
-                           <tr>
-                               <td><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
-                               <td><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
-                               <td><?php echo $history['niveau_name'];?></td>
-                               <td><?php echo $history['salle_name'];?></td>
-                               <td class="<?php echo ($history['paiement_effectue'] != 0)?'payment-done':'payment-due';?>"><?php echo $history['cours_prix'];?> €</td>
-                           </tr>
-                           <?php $totalPrice += $history['cours_prix'];
-if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
-                       </tbody>
-                   </table>
+                   <div id="cours-list">
+                   	<table class="table table-striped">
+                   	    <thead>
+                   	        <tr>
+                   	            <th>Intitulé <span class="glyphicon glyphicon-sort sort" data-sort="cours-name"></span></th>
+                   	            <th>Jour <span class="glyphicon glyphicon-sort sort" data-sort="jour"></span></th>
+                   	            <th>Niveau <span class="glyphicon glyphicon-sort sort" data-sort="niveau"></span></th>
+                   	            <th>Lieu <span class="glyphicon glyphicon-sort sort" data-sort="lieu"></span></th>
+                   	            <th>Somme <span class="glyphicon glyphicon-sort sort" data-sort="montant"></span></th>
+                   	        </tr>
+                   	    </thead>
+                   	    <tbody class="list">
+                   	        <?php while ($history = $queryHistory->fetch(PDO::FETCH_ASSOC)){?>
+                   	        <tr>
+                   	            <td class="cours-name"><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
+                   	            <td class="jour"><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
+                   	            <td class="niveau"><?php echo $history['niveau_name'];?></td>
+                   	            <td class="lieu"><?php echo $history['salle_name'];?></td>
+                   	            <td class="<?php echo ($history['paiement_effectue'] != 0)?'payment-done':'payment-due';?> montant"><?php echo $history['cours_prix'];?> €</td>
+                   	        </tr>
+                   	        <?php $totalPrice += $history['cours_prix'];
+                   	if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
+                   	    </tbody>
+                   	</table>
+                   </div>
                </section><!-- Historique des cours -->
                <section id="tarifs">
                    <table class="table table-striped">
@@ -222,6 +224,12 @@ if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
 	   
 	   $(document).ready(function(){
 		   fetchTarifs();
+		   
+		   	var options = {
+			   valueNames: ['cours-name', 'jour', 'niveau', 'lieu', 'montant']
+		   };
+		   var coursList = new List('cours-list', options);
+		   
 		   var prof_id = <?php echo $data;?>;
 		   $.post('functions/compile_prof_cours.php', {prof_id}).done(function(data){
 			   var listeCours = JSON.parse(data);
