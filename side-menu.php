@@ -23,6 +23,7 @@
       	<li><a href="adherents.php" class="main-option"><span class="glyphicon glyphicon-user"></span> Base Client</a></li>
       	<li><a href="staff_liste.php?rank=0" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='staff_liste.php') echo "active";?>"><span class="glyphicon glyphicon-briefcase"></span> Gestion du staff</a></li>
       	<li><a href="profs_liste.php" class="main-option <?php if(basename($_SERVER['PHP_SELF']) == 'profs_liste.php') echo "active";?>"><span class="glyphicon glyphicon-blackboard"></span> Base Professeurs</a></li>
+      	<li><a href="salles.php" class="main-option"><span class="glyphicon glyphicon-pushpin"></span> Salles</a></li>
       </ul>
       
       <li><a href="#collapse-prices" class="main-section" data-toggle="collapse"><span class="glyphicon glyphicon-euro"></span> Tarifs</a></li>
