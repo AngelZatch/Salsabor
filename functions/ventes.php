@@ -129,7 +129,7 @@ function vente(){
 			$new_echeance->bindParam(':transaction', $transaction);
 			$new_echeance->bindParam(':date_echeance', $_POST["date-echeance-".$k]);
 			$new_echeance->bindParam(':prix', $_POST["montant-echeance-".$k]);
-			$new_echeance->bindParam(':methode', $_POST["methode-paiement-".$k]);
+			$new_echeance->bindParam(':methode', $_POST["moyen-paiement-".$k]);
 			$new_echeance->execute();
 			
 			//Echeances - Contenu du tableau
