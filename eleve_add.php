@@ -39,7 +39,7 @@ if(isset($_POST['addAdherent'])){
 												acces_web, est_eleve, est_adherent, est_professeur, est_staff, actif)
 										VALUES(:prenom, :nom, :rfid, :date_naissance,
 												:date_inscription, :rue, :code_postal, :ville, :mail,
-												:telephone, :tel_secondaire, :photo, :source_connaissance,
+												:telephone, :tel_secondaire, :photo, :sources_connaissance,
 												:acces_web, :est_eleve, :est_adherent, :est_professeur, :est_staff, :actif)');
 		$new->bindParam(':prenom', $_POST['identite_prenom']);
 		$new->bindParam(':nom', $_POST['identite_nom']);
@@ -53,7 +53,7 @@ if(isset($_POST['addAdherent'])){
 		$new->bindParam(':telephone', $_POST['telephone']);
 		$new->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
 		$new->bindParam(':photo', $target_file);
-		$new->bindParam(':source_connaissance', $_POST["source_connaissance"]);
+		$new->bindParam(':sources_connaissance', $_POST["sources_connaissance"]);
 		$new->bindParam(':acces_web', $acces_web);
 		$new->bindParam(':est_eleve', $_POST["est_eleve"]);
 		$new->bindParam(':est_adherent', $_POST["est_adherent"]);
