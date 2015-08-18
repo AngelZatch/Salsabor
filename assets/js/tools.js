@@ -36,6 +36,7 @@ $(document).ready(function(){
 	// Construit le tableau d'inputs obligatoires par formulaire
 	var mandatories = [];
 	$(".mandatory").each(function(){
+		$(this).prev("label").append(" <span class='span-mandatory' title='Ce champ est obligatoire'>*</span>");
 		var inputName = $(this).attr('name');
 		mandatories.push(inputName);
 	}).blur(function(){

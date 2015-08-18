@@ -379,3 +379,14 @@ body{
 .glyphicon-sort {
 	cursor: pointer;
 }
+
+.form-section {
+	font-size: 21px;
+	color: #a9023a;
+	font-weight: 900;
+}
+
+.label-tip {
+	color: grey;
+	font-size: 11px;
+}

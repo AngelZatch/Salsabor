@@ -2,6 +2,10 @@
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
+$now = date_create('now')->format('Y-m-d');
+
+$connaissances = $db->query("SELECT * FROM sources_connaissance");
+
 if(isset($_POST['addAdherent'])){
 	// Upload de l'image
 	$target_dir = "assets/pictures/";
@@ -23,21 +27,39 @@ if(isset($_POST['addAdherent'])){
 		}
 	}
 	print_r($_FILES);
+	
+	// Champs par défaut
+	$actif = 1;
+	$acces_web = 1;
 	try{
 		$db->beginTransaction();
-		$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance, date_inscription, rue, code_postal, ville, mail, telephone, photo)
-		VALUES(:prenom, :nom, :rfid, :date_naissance, :date_inscription, :rue, :code_postal, :ville, :mail, :telephone, :photo)');
+		$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
+												date_inscription, rue, code_postal, ville, mail,
+												telephone, tel_secondaire, photo, source_connaissance,
+												acces_web, est_eleve, est_adherent, est_professeur, est_staff, actif)
+										VALUES(:prenom, :nom, :rfid, :date_naissance,
+												:date_inscription, :rue, :code_postal, :ville, :mail,
+												:telephone, :tel_secondaire, :photo, :source_connaissance,
+												:acces_web, :est_eleve, :est_adherent, :est_professeur, :est_staff, :actif)');
 		$new->bindParam(':prenom', $_POST['identite_prenom']);
 		$new->bindParam(':nom', $_POST['identite_nom']);
 		$new->bindParam(':rfid', $_POST["rfid"]);
 		$new->bindParam(':date_naissance', $_POST['date_naissance']);
-		$new->bindParam(':date_inscription', date_create('now')->format('Y-m-d'));
+		$new->bindParam(':date_inscription', $_POST['date_inscription']);
 		$new->bindParam(':rue', $_POST['rue']);
 		$new->bindParam(':code_postal', $_POST['code_postal']);
 		$new->bindParam(':ville', $_POST['ville']);
 		$new->bindParam(':mail', $_POST['mail']);
 		$new->bindParam(':telephone', $_POST['telephone']);
+		$new->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
 		$new->bindParam(':photo', $target_file);
+		$new->bindParam(':source_connaissance', $_POST["source_connaissance"]);
+		$new->bindParam(':acces_web', $acces_web);
+		$new->bindParam(':est_eleve', $_POST["est_eleve"]);
+		$new->bindParam(':est_adherent', $_POST["est_adherent"]);
+		$new->bindParam(':est_professeur', $_POST["est_professeur"]);
+		$new->bindParam(':est_staff', $_POST["est_staff"]);
+		$new->bindParam(':actif', $actif);
 		$new->execute();
 		if(isset($_POST["rfid"])){
 			$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
@@ -72,12 +94,13 @@ if(isset($_POST['addAdherent'])){
 				 	  <a href="adherents.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux adhérents</a>
 				 	  <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
 				</div> <!-- btn-toolbar -->
+				<p class="form-section">Informations personnelles</p>
 				<div class="form-group">
 					<label for="identite_prenom" class="control-label">Prénom</label>
 					<input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory" placeholder="Prénom">
 				</div>
 				<div class="form-group">
-				<label for="identite_nom" class="control-label">Nom</label>
+					<label for="identite_nom" class="control-label">Nom</label>
 					<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory" placeholder="Nom">
 				</div>
 				<div class="form-group">
@@ -103,12 +126,25 @@ if(isset($_POST['addAdherent'])){
 					<input type="text" name="mail" id="mail" placeholder="Adresse mail" class="form-control mandatory">
 				</div>
 				<div class="form-group">
-				<label for="telephone" class="control-label">Téléphone</label>
-					<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control mandatory">
+				<label for="telephone" class="control-label">Téléphone principal</label>
+					<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control mandatory">
+				</div>
+				<div class="form-group">
+				<label for="tel_secondaire" class="control-label">Téléphone secondaire</label>
+				<input type="text" name="tel_secondaire" class="form-control" placeholder="Numéro de téléphone secondaire">
 				</div>
 				<div class="form-group">
 					<label for="date_naissance" class="control-label">Date de naissance</label>
 					<input type="date" name="date_naissance" id="date_naissance" class="form-control mandatory">
+				</div>
+				<p class="form-section">Informations Salsabor</p>
+				<div class="form-group">
+					<label for="date_inscription" class="control-label">Date d'inscription <span class="label-tip">Par défaut, aujourd'hui</span></label>
+					<input type="date" name="date_inscription" id="date_inscription" class="form-control mandatory" value="<?php echo $now;?>">
+				</div>
+				<div class="form-group">
+					<label for="parrain" class="control-label">Parrain</label>
+					<input type="text" name="parrain" class="form-control" placeholder="Tapez un nom pour rechercher">
 				</div>
 				<div class="form-group">
 					<label for="rfid" class="control-label">Code carte</label>
@@ -117,7 +153,26 @@ if(isset($_POST['addAdherent'])){
 						<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
 					</div>
 				</div>
-								  </form>
+				<div class="form-group">
+					<label for="statuts" class="control-label">Statut de l'adhérent <span class="label-tip">Cochez autant que nécessaire</span></label><br>
+					<label for="est_eleve" class="control-label">Elève</label>
+					<input name="est_eleve" id="est_eleve" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1">
+					<label for="est_adherent" class="control-label">Adhérent</label>
+					<input name="est_adherent" id="est_adherent" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+					<label for="est_professeur" class="control-label">Professeur</label>
+					<input name="est_professeur" id="est_professeur" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+					<label for="est_staff" class="control-label">Staff</label>
+					<input name="est_staff" id="est_staff" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+				</div>
+				<div class="form-group">
+					<label for="sources_connaissance" class="control-label">Par où avez vous connu Salsabor ? <span class="label-tip">Sélectionnez la source la plus influente</span></label>
+					<select name="sources_connaissance" class="form-control mandatory">
+						<?php while($sources = $connaissances->fetch(PDO::FETCH_ASSOC)){ ?>
+							<option value="<?php echo $sources["source_id"];?>"><?php echo $sources["source"];?></option>
+						<?php } ?>
+					</select>
+				</div>
+			  </form>
            </div>
        </div>
    </div>
