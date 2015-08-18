@@ -9,10 +9,10 @@ $queryNextCours->bindParam(1, $compare_start);
 $queryNextCours->bindParam(2, $compare_end);
 $queryNextCours->execute();
 
-$queryEleves = $db->query("SELECT * FROM adherents ORDER BY eleve_nom ASC");
+$queryEleves = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
 $array_eleves = array();
 while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
-	array_push($array_eleves, $eleves["eleve_prenom"]." ".$eleves["eleve_nom"]);
+	array_push($array_eleves, $eleves["user_prenom"]." ".$eleves["user_nom"]);
 }
 ?>
 <html>
@@ -49,7 +49,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 					</div>
                	</div>
                	<?php
-			  $queryPassages = $db->prepare("SELECT * FROM passages JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip JOIN adherents ON passage_eleve=adherents.numero_rfid WHERE ((status=0 OR status=3) AND lecteur_lieu=? AND passage_date>=? AND passage_date<=?) OR (status=2 AND cours_id=?)");
+			  $queryPassages = $db->prepare("SELECT * FROM passages JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip JOIN users ON passage_eleve=users.user_rfid WHERE ((status=0 OR status=3) AND lecteur_lieu=? AND passage_date>=? AND passage_date<=?) OR (status=2 AND cours_id=?)");
 			  $queryPassages->bindParam(1, $nextCours["cours_salle"]);
 			  $queryPassages->bindParam(2, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'-60MINUTES')));
 			  $queryPassages->bindParam(3, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'+20MINUTES')));
@@ -73,12 +73,12 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 									  $status = "danger";
 									  break;
 							  };
-							  $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN produits_adherents ON id_produit_adherent=produits_adherents.id_transaction WHERE echeance_effectuee=2 AND id_adherent=$passages[eleve_id]")->rowCount();
+							  $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN produits_adherents ON id_produit_adherent=produits_adherents.id_transaction WHERE echeance_effectuee=2 AND id_adherent=$passages[user_id]")->rowCount();
 						?>
 							<li class="list-group-item list-group-item-<?php echo $status;?> draggable col-sm-12">
 								<p class="col-sm-3 eleve-infos">
-									<?php echo $passages["eleve_prenom"]." ".$passages["eleve_nom"];?>
-									<input type="hidden" class="eleve-id" value="<?php echo $passages["eleve_id"];?>">
+									<?php echo $passages["user_prenom"]." ".$passages["user_nom"];?>
+									<input type="hidden" class="eleve-id" value="<?php echo $passages["user_id"];?>">
 									<input type="hidden" class="passage-id" value="<?php echo $passages["passage_id"];?>">
 								</p>
 								<p class="col-sm-1 eleve-tag"><?php echo $passages["passage_eleve"];?></p>

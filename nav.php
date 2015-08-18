@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0 AND priorite=1")->rowCount();
 
-$queryPassages = $db->query("SELECT * FROM passages JOIN adherents ON passage_eleve=adherents.numero_rfid");
+$queryPassages = $db->query("SELECT * FROM passages JOIN users ON passage_eleve=users.user_rfid");
 ?>
   
 

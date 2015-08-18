@@ -5,7 +5,7 @@ $db = PDOFactory::getConnection();
 $data = $_GET['id'];
 
 // On obtient les détails du professeur
-$queryDetails = $db->prepare('SELECT * FROM professeurs WHERE prof_id=?');
+$queryDetails = $db->prepare('SELECT * FROM users WHERE user_id=? AND est_professeur=1');
 $queryDetails->bindValue(1, $data);
 $queryDetails->execute();
 $details = $queryDetails->fetch(PDO::FETCH_ASSOC);
@@ -35,16 +35,16 @@ $totalDue = 0;
 if(isset($_POST["edit"])){
 	try{
 		$db->beginTransaction();
-		$edit = $db->prepare('UPDATE professeurs SET prenom = :prenom,
-													nom = :nom,
+		$edit = $db->prepare('UPDATE users SET user_prenom = :prenom,
+													user_nom = :nom,
 													date_naissance = :date_naissance,
 													rue = :rue,
 													code_postal = :code_postal,
 													ville = :ville,
 													mail = :mail,
-													tel_fixe = :tel_fixe,
-													tel_port = :tel_port
-													WHERE prof_id = :id');
+													telephone = :tel_fixe,
+													tel_secondaire = :tel_port
+													WHERE user_id = :id');
 		$edit->bindValue(':prenom', $_POST["prenom"]);
 		$edit->bindValue(':nom', $_POST["nom"]);
 		$edit->bindValue(':date_naissance', date_create($_POST["date_naissance"])->format('Y-m-d'));
@@ -67,7 +67,7 @@ if(isset($_POST["edit"])){
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Détails du professeur <?php echo $details['prenom']." ".$details['nom'];?> | Salsabor</title>
+    <title>Détails du professeur <?php echo $details['user_prenom']." ".$details['user_nom'];?> | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>
@@ -80,7 +80,7 @@ if(isset($_POST["edit"])){
                    <a href="profs_liste.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
                 </div> <!-- btn-toolbar -->
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span>
-                   <?php echo $details['prenom']." ".$details['nom'];?>
+                   <?php echo $details['user_prenom']." ".$details['user_nom'];?>
                </h1>
                <ul class="nav nav-tabs">
                    <li role="presentation" id="infos-toggle"><a>Informations personnelles</a></li>
@@ -92,11 +92,11 @@ if(isset($_POST["edit"])){
                    <form method="post">
                        <div class="form-group">
                           <label for="prenom" class="control-label">Prénom</label>
-                           <input type="text" name="prenom" class="form-control" value="<?php echo $details['prenom'];?>">
+                           <input type="text" name="prenom" class="form-control" value="<?php echo $details['user_prenom'];?>">
                        </div>
                        <div class="form-group">
                           <label for="" form="nom" class="control-label">Nom</label>
-                           <input type="text" name="nom" class="form-control" value="<?php echo $details['nom'];?>">
+                           <input type="text" name="nom" class="form-control" value="<?php echo $details['user_nom'];?>">
                        </div>
                        <div class="form-group">
                           <label for="mail" class="control-label">Adresse mail</label>
@@ -114,11 +114,11 @@ if(isset($_POST["edit"])){
 						</div>
                        <div class="form-group">
                           <label for="tel_fixe" class="control-label">Téléphone fixe</label>
-                           <input type="text" name="tel_fixe" class="form-control" value="<?php echo $details['tel_fixe'];?>">
+                           <input type="text" name="tel_fixe" class="form-control" value="<?php echo $details['telephone'];?>">
                        </div>
                        <div class="form-group">
                           <label for="tel_port" class="control-label">Téléphone portable</label>
-                           <input type="text" name="tel_port" class="form-control" value="<?php echo $details['tel_port'];?>">
+                           <input type="text" name="tel_port" class="form-control" value="<?php echo $details['tel_secondaire'];?>">
                        </div>
 						<div class="form-group">
 							<label for="date_naissance" class="control-label">Date de naissance</label>

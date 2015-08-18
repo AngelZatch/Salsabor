@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 require_once 'functions/reservations.php';
 /** Récupération des valeurs dans la base de données des champs **/
 $id = $_GET['id'];
-$queryReservation = $db->prepare('SELECT * FROM reservations JOIN adherents ON (reservation_personne=adherents.eleve_id) WHERE reservation_id=?');
+$queryReservation = $db->prepare('SELECT * FROM reservations JOIN users ON reservation_personne=users.user_id WHERE reservation_id=?');
 $queryReservation->bindParam(1, $id);
 $queryReservation->execute();
 $reservation = $queryReservation->fetch(PDO::FETCH_ASSOC);
@@ -55,7 +55,7 @@ if(isset($_POST['delete'])){
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Edit - Résevation par <?php echo $reservation['eleve_prenom']." ".$reservation['eleve_nom'];?> le <?php echo date_create($reservation['reservation_start'])->format('d/m/Y');?> de <?php echo date_create($reservation['reservation_start'])->format('H:i')?> à <?php echo date_create($reservation['reservation_end'])->format('H:i');?> | Salsabor</title>
+    <title>Edit - Résevation par <?php echo $reservation['user_prenom']." ".$reservation['user_nom'];?> le <?php echo date_create($reservation['reservation_start'])->format('d/m/Y');?> de <?php echo date_create($reservation['reservation_start'])->format('H:i')?> à <?php echo date_create($reservation['reservation_end'])->format('H:i');?> | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>
@@ -76,7 +76,7 @@ if(isset($_POST['delete'])){
 				   <br>
 				   <p id="last-edit"><?php if($reservation['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($reservation['derniere_modification'])->format('d/m/Y')." à ".date_create($reservation['derniere_modification'])->format('H:i');?></p>
 					<div class="form-group">
-						<input type="text" class="form-control" name="identite_prenom" style="font-size:30px; height:inherit;" value="<?php echo $reservation['eleve_prenom']." ".$reservation['eleve_nom'];?>">
+						<input type="text" class="form-control" name="identite_prenom" style="font-size:30px; height:inherit;" value="<?php echo $reservation['user_prenom']." ".$reservation['user_nom'];?>">
 					</div>
 					<div class="form-group">
 						<input type="date" class="col-sm-4" name="date_debut" id="date_debut" onChange="checkCalendar(true, false)" value=<?php echo date_create($reservation['reservation_start'])->format('Y-m-d');?>>

@@ -13,7 +13,7 @@ $suffixes = $db->query("SHOW COLUMNS FROM cours_parent LIKE 'parent_suffixe'");
 
 $types = $db->query('SELECT * FROM prestations WHERE est_cours=1');
 
-$profs = $db->prepare('SELECT * FROM professeurs WHERE actif=1');
+$profs = $db->prepare('SELECT * FROM users WHERE est_professeur=1');
 $profs->setFetchMode(PDO::FETCH_ASSOC);
 $profs->execute();
 $row_profs = $profs->fetchAll();
@@ -105,7 +105,7 @@ if(isset($_POST['add'])){
 						<label for="prof_principal" class="control-label">Professeur <span class="span-mandatory">*</span></label>
 						<select name="prof_principal" class="form-control mandatory">
 						<?php foreach ($row_profs as $r){ ?>
-							<option value="<?php echo $r['prof_id'];?>"><?php echo $r['prenom']." ".$r['nom'];?></option>
+							<option value="<?php echo $r['user_id'];?>"><?php echo $r['user_prenom']." ".$r['user_nom'];?></option>
 						<?php } ?>
 						</select>
 					</div>
@@ -113,7 +113,7 @@ if(isset($_POST['add'])){
 						<label for="prof_remplacant" class="control-label">Remplaçant <span class="span-mandatory">*</span></label>
 						<select name="prof_remplacant" class="form-control mandatory">
 						<?php foreach ($row_profs as $r){ ?>
-							<option value="<?php echo $r['prof_id'];?>"><?php echo $r['prenom']." ".$r['nom'];?></option>
+							<option value="<?php echo $r['user_id'];?>"><?php echo $r['user_prenom']." ".$r['user_nom'];?></option>
 						<?php } ?>
 						</select>
 					</div>

@@ -6,10 +6,10 @@ require_once 'functions/reservations.php';
 $queryPrestations = $db->query('SELECT * FROM prestations WHERE est_resa=1');
 $queryLieux = $db->query('SELECT * FROM salle WHERE est_salle_cours=1');
 
-$queryAdherentsNom = $db->query("SELECT * FROM adherents ORDER BY eleve_nom ASC");
+$queryAdherentsNom = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
 $array_eleves = array();
 while($adherents = $queryAdherentsNom->fetch(PDO::FETCH_ASSOC)){
-	array_push($array_eleves, $adherents["eleve_prenom"]." ".$adherents["eleve_nom"]);
+	array_push($array_eleves, $adherents["user_prenom"]." ".$adherents["user_nom"]);
 }
 
 // Ajout d'une réservation

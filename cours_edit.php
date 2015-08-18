@@ -14,12 +14,12 @@ $queryParent->bindParam(1, $cours['cours_parent_id']);
 $queryParent->execute();
 $res_recurrence = $queryParent->fetch(PDO::FETCH_ASSOC);
 
-$queryProf = $db->prepare('SELECT * FROM professeurs WHERE prof_id=?');
+$queryProf = $db->prepare('SELECT * FROM users WHERE user_id=? AND est_professeur=1');
 $queryProf->bindParam(1, $cours['prof_principal']);
 $queryProf->execute();
 $data_prof = $queryProf->fetch(PDO::FETCH_ASSOC);
 
-$queryParticipants = $db->prepare('SELECT * FROM cours_participants JOIN adherents ON eleve_id_foreign=adherents.eleve_id WHERE cours_id_foreign=?');
+$queryParticipants = $db->prepare('SELECT * FROM cours_participants JOIN users ON eleve_id_foreign=users.user_id WHERE cours_id_foreign=?');
 $queryParticipants->bindParam(1, $id);
 $queryParticipants->execute();
 $nombre_eleves = $queryParticipants->rowCount();
@@ -32,10 +32,10 @@ $tarif = $queryTarif->fetch(PDO::FETCH_ASSOC);
 
 $types = $db->query('SELECT * FROM prestations WHERE est_cours=1');
 
-$queryEleves = $db->query("SELECT * FROM adherents ORDER BY eleve_nom ASC");
+$queryEleves = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
 $array_eleves = array();
 while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
-	array_push($array_eleves, $eleves["eleve_prenom"]." ".$eleves["eleve_nom"]);
+	array_push($array_eleves, $eleves["user_prenom"]." ".$eleves["user_nom"]);
 }
 
 if(isset($_POST['editOne'])){
@@ -204,7 +204,7 @@ if(isset($_POST['deleteCoursAll'])){
                			<div class="panel-heading">               			
 							<label for="professeur">Professeur : </label>
 							<p>
-								<?php echo $data_prof['prenom']." ".$data_prof['nom'];?>
+								<?php echo $data_prof['user_prenom']." ".$data_prof['user_nom'];?>
 							</p>
 						</div>
                         <div class="panel-body">
@@ -218,8 +218,8 @@ if(isset($_POST['deleteCoursAll'])){
                             <?php while($participants = $queryParticipants->fetch(PDO::FETCH_ASSOC)){?>
                                 <li class='list-group-item'>
                                 	<span class="glyphicon glyphicon-<?php echo (isset($participants["produit_adherent_id"]))?"ok":"remove";?>"></span>
-                                	<?php echo $participants['eleve_prenom']." ".$participants['eleve_nom'];?>
-                                	<span class="list-item-option delete-participant glyphicon glyphicon-trash" title="Supprimer l'élève de ce cours"><input type="hidden" value="<?php echo $participants["eleve_id"];?>"></span>
+                                	<?php echo $participants['user_prenom']." ".$participants['user_nom'];?>
+                                	<span class="list-item-option delete-participant glyphicon glyphicon-trash" title="Supprimer l'élève de ce cours"><input type="hidden" value="<?php echo $participants["user_id"];?>"></span>
 								</li>
                             <?php } ?>
                             <li class="list-group-item" id="prix-calcul">Somme due à l'enseignant :

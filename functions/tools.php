@@ -1,7 +1,7 @@
 <?php
 function getAdherent($prenom, $nom){
 	$db = PDOFactory::getConnection();
-	$search = $db->prepare('SELECT * FROM adherents WHERE eleve_prenom=? AND eleve_nom=?');
+	$search = $db->prepare('SELECT * FROM users WHERE user_prenom=? AND user_nom=?');
 	$search->bindParam(1, $prenom);
 	$search->bindParam(2, $nom);
 	$search->execute();

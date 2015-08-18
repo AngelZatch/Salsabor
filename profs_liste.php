@@ -24,7 +24,7 @@ $db = PDOFactory::getConnection();
 					<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">
 				</div>
                <?php
-                $profs = $db->query('SELECT * FROM professeurs');
+                $profs = $db->query('SELECT * FROM users WHERE est_professeur=1');
                 ?>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover">
@@ -41,11 +41,11 @@ $db = PDOFactory::getConnection();
                             <tr>
                                 <td class="col-sm-4">
                                 <?php
-                                    echo $row_profs['prenom'].' '.$row_profs['nom'];
+                                    echo $row_profs['user_prenom'].' '.$row_profs['user_nom'];
                                 ?>
                                 </td>
                                 <td class="col-sm-3">
-                                    <a href="profs_details.php?id=<?php echo $row_profs['prof_id'];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a> 
+                                    <a href="profs_details.php?id=<?php echo $row_profs['user_id'];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a> 
                                 </td>
                             </tr>
                             <?php

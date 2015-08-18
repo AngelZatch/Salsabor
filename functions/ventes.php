@@ -51,7 +51,7 @@ function vente(){
         $new = $db->prepare("INSERT INTO produits_adherents(id_transaction, id_adherent, id_produit, date_achat, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
         VALUES(:transaction, :adherent, :produit_id, :date_achat, :date_activation, :date_expiration, :volume_horaire, :prix_achat, :actif, :arep)");
 		$new->bindParam(':transaction', $transaction);
-        $new->bindParam(':adherent', $adherent["eleve_id"]);
+        $new->bindParam(':adherent', $adherent["user_id"]);
         $new->bindParam(':produit_id', $_POST["produit"]);
         $new->bindParam(':date_achat', $date_achat);
         $new->bindParam(':date_activation', $_POST["date_activation"]);
@@ -80,7 +80,7 @@ function vente(){
 		$pdf->Write(0, $infos);
 		//Informations
 		$pdf->setXY(10, 74);
-		$infos = $adherent["eleve_prenom"]." ".$adherent["eleve_nom"]."\n".$adherent["rue"]." - ".$adherent["code_postal"]." ".$adherent["ville"]."\n".$adherent["mail"]."\nTél : ".$adherent["telephone"];
+		$infos = $adherent["user_prenom"]." ".$adherent["user_nom"]."\n".$adherent["rue"]." - ".$adherent["code_postal"]." ".$adherent["ville"]."\n".$adherent["mail"]."\nTél : ".$adherent["telephone"];
 		$infos = iconv('UTF-8', 'windows-1252', $infos);
 		$pdf->MultiCell(0, 7, $infos);
 		// Vente
@@ -185,7 +185,7 @@ function invitation(){
         $new = $db->prepare("INSERT INTO produits_adherents(id_transaction, id_adherent, id_produit, date_achat, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
         VALUES(:transaction, :adherent, :produit_id, :date_achat, :date_activation, :date_expiration, :volume_horaire, :prix_achat, :actif, :arep)");
 		$new->bindParam(':transaction', $transaction);
-        $new->bindParam(':adherent', $adherent["eleve_id"]);
+        $new->bindParam(':adherent', $adherent["user_id"]);
         $new->bindParam(':produit_id', $_POST["produit"]);
         $new->bindParam(':date_achat', $date_achat);
         $new->bindParam(':date_activation', $_POST["date_activation"]);

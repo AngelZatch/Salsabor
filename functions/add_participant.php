@@ -8,7 +8,7 @@ $data = explode(' ', $_POST["adherent"]);
 $prenom = $data[0];
 $nom = $data[1];
 
-$adherent = $db->query("SELECT * FROM adherents WHERE eleve_nom='$nom' AND eleve_prenom='$prenom'")->fetch(PDO::FETCH_ASSOC);
+$adherent = $db->query("SELECT * FROM users WHERE user_nom='$nom' AND user_prenom='$prenom'")->fetch(PDO::FETCH_ASSOC);
 $detailCours = $db->query("SELECT * FROM cours JOIN prestations ON cours_type=prestations.prestations_id WHERE cours_id=$cours")->fetch(PDO::FETCH_ASSOC);
 $prof = $db->query("SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=$detailCours[prof_principal] AND type_prestation=$detailCours[cours_type]")->fetch(PDO::FETCH_ASSOC);
 
@@ -18,7 +18,7 @@ try{
 	$db->beginTransaction();
 	
 	// Vérification de la présence d'une invitation
-	$queryInvitation = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=$adherent[eleve_id] AND produit_nom='Invitation' AND produits_adherents.actif='1'");
+	$queryInvitation = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=$adherent[user_id] AND produit_nom='Invitation' AND produits_adherents.actif='1'");
 	if($queryInvitation->rowCount() == '1'){
 		$produit = $queryInvitation->fetch(PDO::FETCH_ASSOC);
 		$actif = 0;
@@ -30,7 +30,7 @@ try{
 		$deactivate->bindParam(3, $produit["id_transaction"]);
 		$deactivate->execute();
 	} else {
-		$produit = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=$adherent[eleve_id] AND produit_nom!='Invitation'")->fetch(PDO::FETCH_ASSOC);
+		$produit = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=$adherent[user_id] AND produit_nom!='Invitation'")->fetch(PDO::FETCH_ASSOC);
 		// Vérification de la validité du forfait et activation si nécessaire
 		if($produit["produitActif"] == '0'){
 			$actif = 1;
@@ -85,7 +85,7 @@ try{
 	$add = $db->prepare("INSERT INTO cours_participants(cours_id_foreign, eleve_id_foreign, produit_adherent_id)
 												VALUES(:cours, :eleve, :produit)");
 	$add->bindParam(':cours', $cours);
-	$add->bindParam(':eleve', $adherent["eleve_id"]);
+	$add->bindParam(':eleve', $adherent["user_id"]);
 	$add->bindParam(':produit', $produit["id_transaction"]);
 	$add->execute();
 	

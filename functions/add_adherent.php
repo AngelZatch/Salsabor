@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 try{
 	$db->beginTransaction();
-	$new = $db->prepare('INSERT INTO adherents(eleve_prenom, eleve_nom, numero_rfid, date_naissance, date_inscription, rue, code_postal, ville, mail, telephone)
+	$new = $db->prepare('INSERT INTO adherents(user_prenom, user_nom, user_rfid, date_naissance, date_inscription, rue, code_postal, ville, mail, telephone)
 	VALUES(:prenom, :nom, :rfid, :date_naissance, :date_inscription, :rue, :code_postal, :ville, :mail, :telephone)');
 	$new->bindParam(':prenom', $_POST['identite_prenom']);
 	$new->bindParam(':nom', $_POST['identite_nom']);

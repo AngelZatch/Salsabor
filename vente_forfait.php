@@ -5,10 +5,10 @@ include 'functions/ventes.php';
 
 $queryProduits = $db->query("SELECT * FROM produits");
 
-$queryAdherentsNom = $db->query("SELECT * FROM adherents ORDER BY eleve_nom ASC");
+$queryAdherentsNom = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
 $array_eleves = array();
 while($adherents = $queryAdherentsNom->fetch(PDO::FETCH_ASSOC)){
-	array_push($array_eleves, $adherents["eleve_prenom"]." ".$adherents["eleve_nom"]);
+	array_push($array_eleves, $adherents["user_prenom"]." ".$adherents["user_nom"]);
 }
 
 if(isset($_POST["submit"])){

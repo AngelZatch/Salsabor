@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $data = $_GET["id"];
 
-$queryForfait = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation FROM produits_adherents JOIN adherents ON id_adherent=adherents.eleve_id JOIN produits ON id_produit=produits.produit_id WHERE id_transaction=?');
+$queryForfait = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation FROM produits_adherents JOIN users ON id_adherent=users.user_id JOIN produits ON id_produit=produits.produit_id WHERE id_transaction=?');
 $queryForfait->bindValue(1, $data);
 $queryForfait->execute();
 $forfait = $queryForfait->fetch(PDO::FETCH_ASSOC);
@@ -29,7 +29,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["eleve_prenom"]." ".$forfait["eleve_nom"];?> | Salsabor</title>
+    <title>Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["user_prenom"]." ".$forfait["user_nom"];?> | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>
@@ -40,9 +40,9 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
            <div class="alert alert-success" id="hours-updated" style="display:none;">Nombre d'heures restantes mis à jour.</div>
            <div class="col-sm-10 main">
                 <div class="btn-toolbar" id="top-page-buttons">
-                   <a href="eleve_details.php?id=<?php echo $forfait["id_adherent"];?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent (<?php echo $forfait["eleve_prenom"]." ".$forfait["eleve_nom"];?>)</a>
+                   <a href="eleve_details.php?id=<?php echo $forfait["id_adherent"];?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent (<?php echo $forfait["user_prenom"]." ".$forfait["user_nom"];?>)</a>
                 </div> <!-- btn-toolbar -->
-               <h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["eleve_prenom"]." ".$forfait["eleve_nom"]." (transaction ".$forfait["id_transaction"].")";?></h1>
+               <h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["user_prenom"]." ".$forfait["user_nom"]." (transaction ".$forfait["id_transaction"].")";?></h1>
 			  <ul class="nav nav-tabs">
                    <li role="presentation" id="infos-toggle" class="active"><a>Détails du forfait</a></li>
                    <li role="presentation" id="history-toggle"><a>Liste des cours</a></li>

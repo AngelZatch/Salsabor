@@ -34,13 +34,13 @@ function addResa(){
 	$pdf->SetFont('Arial', '', 10);
 	// Phrase de début
 	$pdf->setXY(21, 49);
-	$infos = $adherent['eleve_prenom']." ".$adherent['eleve_nom'];
+	$infos = $adherent['user_prenom']." ".$adherent['user_nom'];
 	$infos = iconv('UTF-8', 'windows-1252', $infos);
 	$pdf->Write(0, $infos);
 	$pdf->SetFont('Arial', '', 11);
 	// Informations
 	$pdf->setXY(10, 74);
-	$infos = $adherent['eleve_prenom']." ".$adherent['eleve_nom']."\n".$adherent['rue']." - ".$adherent['code_postal']." ".$adherent['ville']."\n".$adherent['mail']."\nTél : ".$adherent['telephone'];
+	$infos = $adherent['user_prenom']." ".$adherent['user_nom']."\n".$adherent['rue']." - ".$adherent['code_postal']." ".$adherent['ville']."\n".$adherent['mail']."\nTél : ".$adherent['telephone'];
 	$infos = iconv('UTF-8', 'windows-1252', $infos);
 	$pdf->MultiCell(0, 7, $infos);
 	
@@ -72,7 +72,7 @@ function addResa(){
 		$db->beginTransaction();
 		$insertResa = $db->prepare('INSERT INTO reservations(reservation_personne, type_prestation, reservation_start, reservation_end, reservation_salle, reservation_unite, reservation_prix, priorite, paiement_effectue)
 		VALUES(:reservation_personne, :type_prestation, :reservation_start, :reservation_end, :lieu, :unite, :prix, :priorite, :paiement_effectue)');
-		$insertResa->bindParam(':reservation_personne', $adherent['eleve_id']);
+		$insertResa->bindParam(':reservation_personne', $adherent['user_id']);
 		$insertResa->bindParam(':type_prestation', $prestation);
 		$insertResa->bindParam(':reservation_start', $date_debut);
 		$insertResa->bindParam(':reservation_end', $date_fin);

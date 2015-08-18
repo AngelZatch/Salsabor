@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 $data = $_GET['id'];
 
 // On obtient les détails de l'adhérent
-$queryDetails = $db->prepare('SELECT * FROM adherents WHERE eleve_id=?');
+$queryDetails = $db->prepare('SELECT * FROM users WHERE user_id=?');
 $queryDetails->bindValue(1, $data);
 $queryDetails->execute();
 $details = $queryDetails->fetch(PDO::FETCH_ASSOC);
@@ -14,11 +14,11 @@ $queryHistory = $db->prepare('SELECT * FROM cours_participants JOIN cours ON cou
 $queryHistory->bindValue(1, $data);
 $queryHistory->execute();
 
-$queryResa = $db->prepare('SELECT * FROM reservations JOIN adherents ON reservation_personne=adherents.eleve_id JOIN prestations ON type_prestation=prestations_id JOIN salle ON reservation_salle=salle.salle_id WHERE reservation_personne=?');
+$queryResa = $db->prepare('SELECT * FROM reservations JOIN users ON reservation_personne=users.user_id JOIN prestations ON type_prestation=prestations_id JOIN salle ON reservation_salle=salle.salle_id WHERE reservation_personne=?');
 $queryResa->bindValue(1, $data);
 $queryResa->execute();
 
-$queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation, produits_adherents.actif AS produitActif FROM produits_adherents JOIN adherents ON id_adherent=adherents.eleve_id JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=? ORDER BY produitActif DESC, date_achat ASC');
+$queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation, produits_adherents.actif AS produitActif FROM produits_adherents JOIN users ON id_adherent=users.user_id JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=? ORDER BY produitActif DESC, date_achat ASC');
 $queryForfaits->bindValue(1, $data);
 $queryForfaits->execute();
 
@@ -54,9 +54,9 @@ if(isset($_POST["edit"])){
 	
 	try{
 		$db->beginTransaction();
-		$edit = $db->prepare('UPDATE adherents SET eleve_prenom = :prenom,
-													eleve_nom = :nom,
-													numero_rfid = :rfid,
+		$edit = $db->prepare('UPDATE users SET user_prenom = :prenom,
+													user_nom = :nom,
+													user_rfid = :rfid,
 													date_naissance = :date_naissance,
 													rue = :rue,
 													code_postal = :code_postal,
@@ -64,7 +64,7 @@ if(isset($_POST["edit"])){
 													mail = :mail,
 													telephone = :telephone,
 													photo = :photo
-													WHERE eleve_id = :id');
+													WHERE user_id = :id');
 		$edit->bindParam(':prenom', $_POST["identite_prenom"]);
 		$edit->bindParam(':nom', $_POST["identite_nom"]);
 		$edit->bindParam(':rfid', $_POST["rfid"]);
@@ -93,7 +93,7 @@ if(isset($_POST["edit"])){
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Editer - <?php echo $details["eleve_prenom"]." ".$details["eleve_nom"];?> | Salsabor</title>
+    <title>Editer - <?php echo $details["user_prenom"]." ".$details["user_nom"];?> | Salsabor</title>
     <?php include "includes.php";?>
 </head>
 <body>
@@ -105,7 +105,7 @@ if(isset($_POST["edit"])){
 				<div class="btn-toolbar" id="top-page-buttons">
                    <a href="adherents.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des adhérents</a>
                 </div> <!-- btn-toolbar -->
-               <h1 class="page-title"><span class="glyphicon glyphicon-user"></span> <?php echo $details["eleve_prenom"]." ".$details["eleve_nom"];?></h1>
+               <h1 class="page-title"><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?></h1>
                <?php if($queryEcheances != 0){ ?>
                <div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
                <?php } ?>
@@ -126,11 +126,11 @@ if(isset($_POST["edit"])){
 							</div>
 							<div class="form-group col-sm-10">
 								<label for="identite_prenom" class="control-label">Prénom</label>
-								<input type="text" name="identite_prenom" id="identite_prenom" class="form-control" placeholder="Prénom" value="<?php echo $details["eleve_prenom"];?>">
+								<input type="text" name="identite_prenom" id="identite_prenom" class="form-control" placeholder="Prénom" value="<?php echo $details["user_prenom"];?>">
 							</div>
 							<div class="form-group col-sm-10">
 							<label for="identite_nom" class="control-label">Nom</label>
-								<input type="text" name="identite_nom" id="identite_nom" class="form-control" placeholder="Nom" value="<?php echo $details["eleve_nom"];?>">
+								<input type="text" name="identite_nom" id="identite_nom" class="form-control" placeholder="Nom" value="<?php echo $details["user_nom"];?>">
 							</div>
 							<div class="form-group col-sm-10">
 								<label for="mail" class="control-label">Adresse mail</label>
@@ -140,7 +140,7 @@ if(isset($_POST["edit"])){
                			<div class="form-group">
                				<label for="rfid" class="control-label">Code carte</label>
                				<div class="input-group">
-               					<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["numero_rfid"];?>">
+               					<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
                					<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
                				</div>
 						</div>

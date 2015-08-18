@@ -8,7 +8,7 @@ $time = $date->add(new DateInterval('P30D'))->format('Y-m-d');
 $queryEcheances = $db->query("SELECT * FROM produits_echeances
 										JOIN produits_adherents ON id_produit_adherent=produits_adherents.id_transaction
 										JOIN produits ON id_produit=produits.produit_id
-										JOIN adherents ON id_adherent=adherents.eleve_id
+										JOIN users ON id_adherent=users.user_id
 										WHERE date_echeance<='$time' ORDER BY date_echeance ASC");
 ?>
 <html>
@@ -64,7 +64,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
                			<tr>
                							<td class="date"><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
                							<td class="forfait-name"><?php echo $echeances["produit_nom"];?></td>
-               							<td class="user-name"><?php echo $echeances["eleve_prenom"]." ".$echeances["eleve_nom"]." (".$echeances["telephone"].")";?></td>
+               							<td class="user-name"><?php echo $echeances["user_prenom"]." ".$echeances["user_nom"]." (".$echeances["telephone"].")";?></td>
                							<td class="montant"><?php echo $echeances["montant"];?> €</td>
                							<td class="status"><input type="checkbox" class="toggle-maturity" <?php echo $statusChecked;?> data-toggle="toggle" data-on="Payée" data-off="<?php echo $status;?>" data-onstyle="success" data-offstyle="<?php echo $statusClass;?>">
                	             		<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>"></td>
