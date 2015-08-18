@@ -42,8 +42,8 @@ if(isset($_POST['add'])){
                <h1 class="page-title"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</h1>
                <form action="cours_add.php" method="post" role="form">
 				   <div class="btn-toolbar">
-               						   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-               						   <input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER" onClick="checkMandatory()" id="submit-button" disabled>
+					   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
+					   <input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER" onClick="checkMandatory()" id="submit-button" disabled>
                						</div> <!-- btn-toolbar -->   
 					<div class="form-group">
 						<label for="intitule" class="control-label">Intitulé <span class="span-mandatory">*</span></label>
@@ -68,7 +68,7 @@ if(isset($_POST['add'])){
 						?>
 				   </div>
 				   <div class="form-group">
-					   <label for="type" class="control-label">Type de cours<span class="span-mandatory">*</span></label>
+					   <label for="type" class="control-label">Type de cours</label>
 						<select name="type" class="form-control mandatory">
 							<?php while($row_types = $types->fetch(PDO::FETCH_ASSOC)){ ?>
 								<option value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>
@@ -76,7 +76,7 @@ if(isset($_POST['add'])){
 						</select>
 				   </div>
 					<div class="form-group">
-					   <label for="date_debut" class="control-label">Date de Début<span class="span-mandatory">*</span></label>
+					   <label for="date_debut" class="control-label">Date de Début</label>
 					   <div class="input-group">
 						   <input type="date" class="form-control mandatory" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
 						  <span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
@@ -84,7 +84,7 @@ if(isset($_POST['add'])){
 					   <input type="checkbox" name="recurrence" id="recurrence" value="1">Est récurrent
 					</div>
 					<div class="form-group" id="recurring-options" style="display:none;">
-					   <label for="date_fin" class="control-label">Date de Fin<span class="span-mandatory">*</span></label>
+					   <label for="date_fin" class="control-label">Date de Fin</label>
 					   <input type="date" class="form-control" name="date_fin" id="date_fin" onChange="checkCalendar(false, true)">
 						  <label for="frequence_repetition" class="control-label">Récurrence<span class="span-mandatory">*</span></label>
 						   <div id="options-recurrence">
@@ -94,15 +94,15 @@ if(isset($_POST['add'])){
 						   </div>
 					</div>
 					<div class="form-group">
-					   <label for="herue_debut" class="control-label">Début à <span class="span-mandatory">*</span></label>
+					   <label for="herue_debut" class="control-label">Début à</label>
 					   <input type="time" class="form-control hasTimepicker mandatory" name="heure_debut" id="heure_debut" onChange="checkCalendar(false, false)">
 				   </div>
 				   <div class="form-group">
-					   <label for="heure_fin" class="control-label">Fin à <span class="span-mandatory">*</span></label>
+					   <label for="heure_fin" class="control-label">Fin à</label>
 					   <input type="time" class="form-control hasTimepicker mandatory" name="heure_fin" id="heure_fin" onChange="checkCalendar(false, false)">
 					</div>
 					<div class="form-group">
-						<label for="prof_principal" class="control-label">Professeur <span class="span-mandatory">*</span></label>
+						<label for="prof_principal" class="control-label">Professeur principal</label>
 						<select name="prof_principal" class="form-control mandatory">
 						<?php foreach ($row_profs as $r){ ?>
 							<option value="<?php echo $r['user_id'];?>"><?php echo $r['user_prenom']." ".$r['user_nom'];?></option>
@@ -110,7 +110,7 @@ if(isset($_POST['add'])){
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="prof_remplacant" class="control-label">Remplaçant <span class="span-mandatory">*</span></label>
+						<label for="prof_remplacant" class="control-label">Professeur remplaçant</label>
 						<select name="prof_remplacant" class="form-control mandatory">
 						<?php foreach ($row_profs as $r){ ?>
 							<option value="<?php echo $r['user_id'];?>"><?php echo $r['user_prenom']." ".$r['user_nom'];?></option>
@@ -118,7 +118,7 @@ if(isset($_POST['add'])){
 						</select>
 					</div>
 					<div class="form-group">
-					   <label for="niveau" class="control-label">Niveau<span class="span-mandatory">*</span></label>
+					   <label for="niveau" class="control-label">Niveau</label>
 						<select name="niveau" class="form-control mandatory">
 						<?php while($row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC)){ ?>
 							<option value="<?php echo $row_niveaux['niveau_id'];?>"><?php echo $row_niveaux['niveau_name'];?></option>
@@ -126,7 +126,7 @@ if(isset($_POST['add'])){
 						</select>
 					</div>
 					<div class="form-group">
-					   <label for="lieu" class="control-label">Lieu<span class="span-mandatory">*</span></label>
+					   <label for="lieu" class="control-label">Lieu</label>
 					   <select name="lieu" class="form-control mandatory" id="lieu" onChange="checkCalendar(false, false)">
 					   <?php while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){ ?>
 							<option value="<?php echo $row_lieux['salle_id'];?>"><?php echo $row_lieux['salle_name'];?></option>
@@ -135,7 +135,7 @@ if(isset($_POST['add'])){
 					</div>
 				   <div class="form-group">
 					  <label for="paiement" class="control-label">
-					  <input type="checkbox" name="paiement" id="paiement" class="checkbox-inline mandatory" value="1">Déjà payé<span class="span-mandatory">*</span>
+					  <input type="checkbox" name="paiement" id="paiement" class="checkbox-inline mandatory" value="1">Déjà payé <span class="span-mandatory">*</span>
 					  </label>
 				   </div>
 				   <div class="align-right">

@@ -37,10 +37,10 @@ if(isset($_POST['addResa'])){
                					   <input type="submit" name="addResa" role="button" class="btn btn-primary confirm-add" value="ENREGISTRER" id="submit-button" disabled>
                              	    </div> <!-- btn-toolbar -->
                    <div class="form-group">
-                       <label for="identite" class="control-label">Demandeur <span class="span-mandatory">*</span></label>
+                       <label for="identite" class="control-label">Demandeur</label>
                        <input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory" placeholder="Nom" onChange="ifAdherentExists()">
-                                      							<p class="error-alert" id="err_adherent"></p>
-                                      							<a href="#user-details" role="button" class="btn btn-info" value="create-user" id="create-user" style="display:none;" data-toggle="collapse" aria-expanded="false" aria-controls="userDetails">Ouvrir le formulaire de création</a>
+						<p class="error-alert" id="err_adherent"></p>
+						<a href="#user-details" role="button" class="btn btn-info" value="create-user" id="create-user" style="display:none;" data-toggle="collapse" aria-expanded="false" aria-controls="userDetails">Ouvrir le formulaire de création</a>
                        <div id="user-details" class="collapse">
                        	<div class="well">
 							<div class="form-group">
@@ -74,7 +74,7 @@ if(isset($_POST['addResa'])){
                        </div>
                    </div>
                    <div class="form-group">
-                       <label for="prestation" class="control-label">Activité <span class="span-mandatory">*</span></label>
+                       <label for="prestation" class="control-label">Activité</label>
                        <select name="prestation" id="prestation" class="form-control mandatory" onChange="checkCalendar(true, false)">
                        <?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){?>
                             <option value="<?php echo $prestations['prestations_id'];?>"><?php echo $prestations['prestations_name'];?></option>";
@@ -91,14 +91,14 @@ if(isset($_POST['addResa'])){
                    </div>
                    <div class="form-group">
                        <fieldset>
-                           <label for="heure_debut" class="control-label">Début à <span class="span-mandatory">*</span></label>
+                           <label for="heure_debut" class="control-label">Début à</label>
                            <input type="time" class="form-control mandatory" id="heure_debut" name="heure_debut" onChange="checkCalendar(true, false)">
-                           <label for="heure_fin" class="control-label">Fin à <span class="span-mandatory">*</span></label>
+                           <label for="heure_fin" class="control-label">Fin à</label>
                            <input type="time" class="form-control mandatory" id="heure_fin" name="heure_fin" onChange="checkCalendar(true, false)">
                        </fieldset>
                    </div>
                    <div class="form-group">
-                       <label for="lieu" class="control-label">Salle <span class="span-mandatory">*</span></label>
+                       <label for="lieu" class="control-label">Salle</label>
                        <select name="lieu" class="form-control mandatory" id="lieu" onChange="checkCalendar(true, false)">
                        <?php while($lieux = $queryLieux->fetch(PDO::FETCH_ASSOC)){?>
                             <option value="<?php echo $lieux['salle_id'];?>"><?php echo $lieux['salle_name'];?></option>;

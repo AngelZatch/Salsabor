@@ -14,13 +14,11 @@ $db = PDOFactory::getConnection();
        <div class="row">
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
-				<div class="btn-toolbar" id="top-page-buttons">
-                   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des adhérents</a>
-                </div> <!-- btn-toolbar -->
-                <div class="alert alert-custom alert-success" id="holiday-added" style="display:none;">Jour chômé ajouté avec succès</div>
-				<div class="alert alert-custom alert-success" id="holiday-deleted" style="display:none;">Jour chômé supprimé avec succès</div>
                <h1 class="page-title"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés</h1>
-              <button class="btn btn-info" id="add-holiday"><span class="glyphicon glyphicon-plus"></span> Ajouter un jour / une période chômé(e)</button>
+               <div class="btn-toolbar">
+                   <a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
+                   <button class="btn btn-info" id="add-holiday"><span class="glyphicon glyphicon-plus"></span> Ajouter un jour / une période chômé(e)</button>
+                </div> <!-- btn-toolbar -->
               <div id="affected-details" class="collapse">
                   <div id="affected-content" class="well">
                      <div id="affected-list"></div>
