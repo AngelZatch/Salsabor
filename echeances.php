@@ -37,7 +37,8 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
                				<th>Forfait associé <span class="glyphicon glyphicon-sort sort" data-sort="forfait-name"></span></th>
                				<th>Détenteur <span class="glyphicon glyphicon-sort sort" data-sort="user-name"></span></th>
                				<th>Montant <span class="glyphicon glyphicon-sort sort" data-sort="montant"></span></th>
-               				<th>Statut <span class="glyphicon glyphicon-sort sort" data-sort="status"></span></th>
+               				<th>Statut Salsabor <span class="glyphicon glyphicon-sort sort" data-sort="status"></span></th>
+               				<th>Statut Bancaire <span class="glyphicon glyphicon-sort sort" data-sort="bank"></span></th>
                			</tr>
                		</thead>
                		<tbody id="filter-enabled" class="list">
@@ -50,7 +51,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
                									break;
                	
                								case 1:
-               									$status = "Payée";
+               									$status = "Reçue";
                									$statusClass = "success";
                									$statusChecked = "checked";
                									break;
@@ -63,11 +64,13 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
                							}?>
                			<tr>
                							<td class="date"><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
-               							<td class="forfait-name"><?php echo $echeances["produit_nom"];?></td>
-               							<td class="user-name"><?php echo $echeances["user_prenom"]." ".$echeances["user_nom"]." (".$echeances["telephone"].")";?></td>
+               							<td class="forfait-name"><a href="forfait_adherent_details.php?id=<?php echo $echeances["id_transaction"];?>"><?php echo $echeances["produit_nom"];?></a></td>
+               							<td class="user-name"><a href="eleve_details.php?id=<?php echo $echeances["user_id"];?>"><?php echo $echeances["user_prenom"]." ".$echeances["user_nom"]." (".$echeances["telephone"].")";?></a></td>
                							<td class="montant"><?php echo $echeances["montant"];?> €</td>
-               							<td class="status"><input type="checkbox" class="toggle-maturity" <?php echo $statusChecked;?> data-toggle="toggle" data-on="Payée" data-off="<?php echo $status;?>" data-onstyle="success" data-offstyle="<?php echo $statusClass;?>">
-               	             		<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>"></td>
+               							<td class="status">
+             	             				<input type="checkbox" class="toggle-maturity" <?php echo $statusChecked;?> data-toggle="toggle" data-on="Reçue" data-off="<?php echo $status;?>" data-onstyle="success" data-offstyle="<?php echo $statusClass;?>">
+               	             				<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>"></td>
+               	             			<td class="bank">Encaissé <input name="statut_bank" id="statut-bank" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $echeances["statut_banque"];?>"></td>
                	              		</tr>
                			<?php } ?>
                		</tbody>
@@ -86,7 +89,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
 	   })
 	   
 	   var options = {
-		   valueNames: ['date', 'forfait-name', 'user-name', 'montant', 'status']
+		   valueNames: ['date', 'forfait-name', 'user-name', 'montant', 'status', 'bank']
 	   };
 	   var maturitiesList = new List('maturities-list', options);
 	</script>
