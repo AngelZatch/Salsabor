@@ -61,16 +61,16 @@ if(isset($_POST['addRank'])){
                        <tbody id="filter-enabled">
                        <?php
                         /** Affichage de tous les membres du staff possédant le rang administratif correspondant **/
-                        if($rank_value==0) $queryStaff = $db->query('SELECT * FROM staff JOIN rank ON rank_id_foreign=rank.rank_id ORDER BY nom ASC');
+                        if($rank_value==0) $queryStaff = $db->query('SELECT * FROM users JOIN rank ON est_staff=rank.rank_id WHERE est_staff!=0 ORDER BY user_nom ASC');
                                 else {
-                                    $queryStaff = $db->prepare('SELECT * FROM staff JOIN rank ON rank_id_foreign=rank.rank_id WHERE rank_id_foreign=? ORDER BY nom ASC');
+                                    $queryStaff = $db->prepare('SELECT * FROM users JOIN rank ON est_staff=rank.rank_id WHERE est_staff=? ORDER BY user_nom ASC');
                                     $queryStaff->bindParam(1, $rank_value);
                                     $queryStaff->execute();
                                 }
                         while($staff = $queryStaff->fetch(PDO::FETCH_ASSOC)){?>
                             <tr>
-                                <td class='col-sm-4'><?php echo $staff['prenom']." ".$staff['nom'];?></td>
-                                <td class='col-sm-4'><?php echo $staff['mail']."<br>".$staff['tel_fixe']." / ".$staff['tel_port'];?></td>
+                                <td class='col-sm-4'><?php echo $staff['user_prenom']." ".$staff['user_nom'];?></td>
+                                <td class='col-sm-4'><?php echo $staff['mail']."<br>".$staff['telephone']." / ".$staff['tel_secondaire'];?></td>
                                 <td class='col-sm-2'><?php echo $staff['rank_name'];?></td>
                             <td class='col-sm-2'>
                             <form method='post' action='staff_liste.php?rank=0'>
@@ -79,7 +79,7 @@ if(isset($_POST['addRank'])){
                                 <button type='submit' class='btn btn-default'><span class='glyphicon glyphicon-send' title="Contacter par mail"></span></button>
                                 <button type='submit' class='btn btn-default'><span class='glyphicon glyphicon-ok' title="Indiquer comme actif"></span></button>
                             </div>
-                            <input type='hidden' name='id' value="<?php echo $staff['staff_id'];?>">
+                            <input type='hidden' name='id' value="<?php echo $staff['user_id'];?>">
                             </form>
                             </td>
                             </tr>

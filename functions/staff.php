@@ -25,7 +25,7 @@ function editStaff(){
 /** DELETE STAFF **/
 function deleteStaff(){
     $db = PDOFactory::getConnection();
-    $deleteStaff = $db->prepare('DELETE FROM staff WHERE staff_id=?');
+    $deleteStaff = $db->prepare('DELETE FROM users WHERE user_id=?');
     $deleteStaff->bindValue(1,$_POST['id'], PDO::PARAM_INT);
     $deleteStaff->execute();
 }
