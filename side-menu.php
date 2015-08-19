@@ -5,7 +5,7 @@
       
       <li><a class="main-section" data-toggle="collapse" href="#collapse-actions" aria-expanded="false"><span class="glyphicon glyphicon-star"></span> Actions</a></li>
       <ul class="nav nav-sidebar collapse" id="collapse-actions">
-      	<li><a href="eleve_add.php" class="main-option"><span class="glyphicon glyphicon-user"></span> Inscriptions</a></li>
+      	<li><a href="new_user.php?status=eleve" class="main-option"><span class="glyphicon glyphicon-user"></span> Inscriptions</a></li>
       	<li><a href="vente_forfait.php" class="main-option"><span class="glyphicon glyphicon-credit-card"></span> Vente d'abonnement</a></li>
       	<li><a href="resa_add.php" class="main-option"><span class="glyphicon glyphicon-record"></span> Réservation de salle</a></li>
       	<li><a href="eleve_inviter.php" class="main-option"><span class="glyphicon glyphicon-heart-empty"></span> Invitation</a></li>
@@ -23,7 +23,7 @@
       <ul class="nav nav-sidebar collapse" id="collapse-data">
       	<li><a href="adherents.php" class="main-option"><span class="glyphicon glyphicon-user"></span> Base Client</a></li>
       	<li><a href="staff_liste.php?rank=0" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='staff_liste.php') echo "active";?>"><span class="glyphicon glyphicon-briefcase"></span> Gestion du staff</a></li>
-      	<li><a href="profs_liste.php" class="main-option <?php if(basename($_SERVER['PHP_SELF']) == 'profs_liste.php') echo "active";?>"><span class="glyphicon glyphicon-blackboard"></span> Base Professeurs</a></li>
+      	<li><a href="professeurs.php" class="main-option <?php if(basename($_SERVER['PHP_SELF']) == 'professeurs.php') echo "active";?>"><span class="glyphicon glyphicon-blackboard"></span> Base Professeurs</a></li>
       	<li><a href="salles.php" class="main-option"><span class="glyphicon glyphicon-pushpin"></span> Salles</a></li>
       </ul>
       
@@ -53,7 +53,7 @@
         
         <li><a href="adherents.php" class="main-option" data-toggle="tooltip" data-placement="right" title="Base client"><span class="glyphicon glyphicon-user"></span></a></li>
         <li><a href="staff_liste.php?rank=0" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='staff_liste.php') echo "active";?>" data-toggle="tooltip"  data-placement="right" title="Gestion du staff"><span class="glyphicon glyphicon-briefcase"></span></a></li>
-        <li><a href="profs_liste.php?rank=0" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='profs_liste.php') echo "active";?>" data-toggle="tooltip"  data-placement="right" title="Base Professeurs"><span class="glyphicon glyphicon-blackboard"></span></a></li>
+        <li><a href="professeurs.php?rank=0" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='professeurs.php') echo "active";?>" data-toggle="tooltip"  data-placement="right" title="Base Professeurs"><span class="glyphicon glyphicon-blackboard"></span></a></li>
         
         <li><a href="forfaits.php" class="main-option" data-toggle="tooltip" data-placement="right" title="Forfaits et abonnements"><span class="glyphicon glyphicon-credit-card"></span></a></li>
         <li><a href="tarifs_liste.php" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='tarifs_liste.php') echo "active";?>" data-toggle="tooltip"  data-placement="right" title="Tarifs Location"><span class="glyphicon glyphicon-scale"></span></a></li>

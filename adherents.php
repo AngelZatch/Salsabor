@@ -19,7 +19,7 @@ $queryAdherents = $db->query('SELECT * FROM users ORDER BY user_nom ASC');
               <p id="current-time"></p>
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span> Base Clients</h1>
 			  <div class="btn-toolbar">
-                   <a href="eleve_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Inscrire un adhérent</a>
+                   <a href="new_user.php?status=eleve" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Inscrire un adhérent</a>
                </div> <!-- btn-toolbar -->
 				<div class="input-group input-group-lg search-form">
 					<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
@@ -68,7 +68,7 @@ $queryAdherents = $db->query('SELECT * FROM users ORDER BY user_nom ASC');
                				<?php } else { ?>
                								<td class="col-lg-1"><span class="glyphicon glyphicon-repeat glyphicon-inactive" title="Aucune échéance en retard."></span></td>
                				<?php } ?>
-               				<td class="col-lg-1"><a href="eleve_details.php?id=<?php echo $adherents['user_id'];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
+               				<td class="col-lg-1"><a href="user_details.php?id=<?php echo $adherents['user_id'];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
                			</tr>
                						<?php } ?>
                		</tbody>

@@ -77,7 +77,7 @@ if(isset($_POST["edit"])){
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
               <div class="btn-toolbar" id="top-page-buttons">
-                   <a href="profs_liste.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
+                   <a href="professeurs.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
                 </div> <!-- btn-toolbar -->
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span>
                    <?php echo $details['user_prenom']." ".$details['user_nom'];?>

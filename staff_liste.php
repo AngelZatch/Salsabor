@@ -35,7 +35,7 @@ if(isset($_POST['addRank'])){
            <div class="col-sm-10 main">
                <h1 class="page-title"><span class="glyphicon glyphicon-briefcase"></span> Gestion du staff</h1>
                <div class="btn-toolbar">
-                   <a href="staff_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un staff</a>
+                   <a href="new_user.php?status=staff" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un staff</a>
                    <a href="actions/rank_add.php" role="button" class="btn btn-primary" data-title="Ajouter un rang" data-toggle="lightbox" data-gallery="remoteload"><span class="glyphicon glyphicon-plus"></span> Ajouter un rang</a>
                </div>
 				<div class="input-group input-group-lg search-form">
