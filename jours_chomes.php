@@ -75,7 +75,8 @@ $db = PDOFactory::getConnection();
            var start = $("#date-debut").val();
            var end = $("#date-fin").val();
            $.post('functions/add_holiday.php', {start, end}).done(function(data){
-               $("#holiday-added").show().delay('4000').hide('600');
+               var message = "Jour(s) chômé(s) ajouté(s).";
+               showSuccessNotif(message);
                $(".fetched").remove();
                fetchHolidays();
                $("#affected-list").empty();
@@ -103,7 +104,8 @@ $db = PDOFactory::getConnection();
        function deleteHoliday(id){
            var delete_id = id;
            $.post('functions/delete_holiday.php', {delete_id}).done(function(data){
-               $("#holiday-deleted").show().delay('4000').hide('600');
+               var message = "Jour chômé supprimé.";
+               showSuccessNotif(message);
                $(".fetched").remove();
                fetchHolidays();
                $("#affected-list").empty();

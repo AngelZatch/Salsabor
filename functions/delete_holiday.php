@@ -21,12 +21,12 @@ try{
         if($forfait["date_activation"] <= $holiday["date_chomee"] && $forfait["date_expiration"] >= $holiday["date_chomee"]){
             $u = array();
             $new_exp_date = date("Y-m-d 00:00:00",strtotime($forfait["date_expiration"].'-1DAYS'));
-            $u["id"] = $forfait["id"];
+            $u["id"] = $forfait["id_transaction"];
             $u["old_date"] = $forfait["date_expiration"];
             $u["new_date"] = $new_exp_date;
-            $update = $db->prepare("UPDATE produits_adherents SET date_expiration =:date_expiration WHERE id=:id");
+            $update = $db->prepare("UPDATE produits_adherents SET date_expiration =:date_expiration WHERE id_transaction=:id");
             $update->bindParam(':date_expiration', $new_exp_date);
-            $update->bindParam(':id', $forfait["id"]);
+            $update->bindParam(':id', $forfait["id_transaction"]);
             $update->execute();
             array_push($updated, $u);
         }
