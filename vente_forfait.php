@@ -229,16 +229,17 @@ if(isset($_POST["submit"])){
 			"Carte bancaire",
 			"Chèque n°",
 			"Espèces",
-			"Mandat"
+			"Virement compte à compte",
+            "Chèques vacances"
 		];
 	   // Gestion des échéances (nombre et valeur)	   
 	   $("[name='echeances']").keyup(function(){
 		   var nbEcheances = $(this).val();
 		   var i = 0;
 		   var start_date = moment();
-		   if(start_date.date() < 10){
+		   if(start_date.date() < 8){
 			   start_date.dates(10);
-		   } else if(start_date.date() < 20){
+		   } else if(start_date.date() < 18){
 			   start_date.dates(20);
 		   } else {
 			   start_date.dates(30);
