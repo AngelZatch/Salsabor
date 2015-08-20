@@ -14,6 +14,8 @@ while($adherents = $queryAdherentsNom->fetch(PDO::FETCH_ASSOC)){
 $date_activation = date_create("now")->format("Y-m-d");
 $date_expiration = date("Y-m-d", strtotime($date_activation.'+'.$invitation["validite_initiale"].'DAYS'));
 
+$coursAVenir = $db->query("SELECT * FROM cours WHERE cours_start >= '$date_activation 00:00:00' ORDER BY cours_start ASC");
+	
 if(isset($_POST["submit"])){
     invitation();
 }
@@ -80,13 +82,41 @@ if(isset($_POST["submit"])){
                	        	</div>
                	        </div>
                    </div>
-                   <div class="form-group">
-                       <label for="date_activation">Date d'activation</label>
-                       <input type="date" name="date_activation" class="form-control" value="<?php echo $date_activation?>">
+                   <div class="form-group" id="association">
+                   		<label for="cours">Associer un cours ? <span class="label-tip">L'invitation sera alors restreinte à ce cours et seulement celui-ci</span></label>
+                   		<div class="input-group">
+                   			<input type="text" name="cours" class="form-control" id="search" placeholder="Tapez pour filtrer">
+                   			<span class="input-group-btn"><a href="#liste-cours" class="btn btn-default" data-toggle="collapse" aria-expanded="false" id="open-liste-cours">Liste des cours à venir</a></span>
+                   		</div>
+                   		<div class="collapse" id="liste-cours">
+                   			<div class="well">
+								<table class="table">
+									<thead>
+										<tr>
+											<th>Liste des cours à venir</th>
+										</tr>
+									</thead>
+									<tbody id="filter-enabled">
+										<?php while($listeCours = $coursAVenir->fetch(PDO::FETCH_ASSOC)){ ?>
+											<tr class="associable" value="<?php echo $listeCours["cours_id"];?>" style="cursor:pointer;">
+												<td><?php echo $listeCours["cours_intitule"]." de ".$listeCours["cours_start"]." à ".$listeCours["cours_end"];?></td>
+											</tr>
+										<?php } ?>
+									</tbody>
+								</table>
+							</div>
+                   		</div>
+                   		<input type="hidden" name="id-cours">
                    </div>
-                   <div class="form-group">
-                       <label for="date_expiration">Date prévue d'expiration</label>
-                       <input type="date" name="date_expiration" class="form-control" value="<?php echo $date_expiration;?>">
+                   <div id="unassociated-invitation">
+						<div class="form-group">
+							<label for="date_activation">Date d'activation</label>
+							<input type="date" name="date_activation" class="form-control" value="<?php echo $date_activation?>">
+						</div>
+						<div class="form-group">
+							<label for="date_expiration">Date prévue d'expiration</label>
+							<input type="date" name="date_expiration" class="form-control" value="<?php echo $date_expiration;?>">
+						</div>
                    </div>
                </form>
            </div>
@@ -99,6 +129,21 @@ if(isset($_POST["submit"])){
 			$("[name='identite_nom']").autocomplete({
 			   source: listeAdherents
 			});
+		   
+		   $("#association").keyup(function(){
+			   if($("#search").val() != ''){
+				   if(!$(".collapse").hasClass('in')){
+					  $("#open-liste-cours").click();
+				  }
+				   $("#unassociated-invitation").hide();
+			   }
+		   })
+		   
+		   $(".associable").click(function(){
+			   $("#search").val($(this).children("td").html());
+			   $("[name=id-cours]").val($(this).attr("value"));
+			   $("#open-liste-cours").click();
+		   })
 	   })
 	   var listening = false;
 	   var wait;
