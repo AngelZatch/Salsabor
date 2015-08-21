@@ -17,7 +17,7 @@ $db = PDOFactory::getConnection();
               <p id="current-time"></p>
                <h1 class="page-title"><span class="glyphicon glyphicon-blackboard"></span> Base Professeurs</h1>
                <div class="btn-toolbar">
-                   <a href="new_user.php?status=teacher" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Inscrire un professeur</a>
+                   <a href="inscription.php?status=teacher" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Inscrire un professeur</a>
                </div> <!-- btn-toolbar -->
 				<div class="input-group input-group-lg search-form">
 					<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>

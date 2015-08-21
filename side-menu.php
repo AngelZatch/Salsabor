@@ -5,7 +5,7 @@
       
       <li><a class="main-section" data-toggle="collapse" href="#collapse-actions" aria-expanded="false"><span class="glyphicon glyphicon-star"></span> Actions</a></li>
       <ul class="nav nav-sidebar collapse" id="collapse-actions">
-      	<li><a href="new_user.php?status=eleve" class="main-option"><span class="glyphicon glyphicon-user"></span> Inscriptions</a></li>
+      	<li><a href="inscription.php?status=contact" class="main-option"><span class="glyphicon glyphicon-user"></span> Inscriptions</a></li>
       	<li><a href="vente_forfait.php" class="main-option"><span class="glyphicon glyphicon-credit-card"></span> Vente d'abonnement</a></li>
       	<li><a href="resa_add.php" class="main-option"><span class="glyphicon glyphicon-record"></span> Réservation de salle</a></li>
       	<li><a href="eleve_inviter.php" class="main-option"><span class="glyphicon glyphicon-heart-empty"></span> Invitation</a></li>

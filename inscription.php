@@ -22,6 +22,12 @@ switch($status){
     $buttonText = "Retour aux élèves";
     $titleText .= "élève";
     break;
+		
+	case "contact":
+    $backLink = "dashboard.php";
+    $buttonText = "Retour au panneau d'administration";
+    $titleText .= "contact";
+    break;
     
     case "staff":
     $valueStaff = 1;
@@ -66,11 +72,13 @@ if(isset($_POST['addAdherent'])){
 		$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
 												date_inscription, rue, code_postal, ville, mail,
 												telephone, tel_secondaire, photo, source_connaissance,
-												acces_web, est_eleve, est_adherent, est_professeur, est_staff, actif)
+												acces_web, est_membre, est_professeur, est_staff, est_prestataire,
+												est_autre, autre_statut, user_rib, actif)
 										VALUES(:prenom, :nom, :rfid, :date_naissance,
 												:date_inscription, :rue, :code_postal, :ville, :mail,
 												:telephone, :tel_secondaire, :photo, :sources_connaissance,
-												:acces_web, :est_eleve, :est_adherent, :est_professeur, :est_staff, :actif)');
+												:acces_web, :est_membre, :est_professeur, :est_staff, :est_prestataire,
+												:est_autre, :autre_statut, :user_rib, :actif)');
 		$new->bindParam(':prenom', $_POST['identite_prenom']);
 		$new->bindParam(':nom', $_POST['identite_nom']);
 		$new->bindParam(':rfid', $_POST["rfid"]);
@@ -85,10 +93,13 @@ if(isset($_POST['addAdherent'])){
 		$new->bindParam(':photo', $target_file);
 		$new->bindParam(':sources_connaissance', $_POST["sources_connaissance"]);
 		$new->bindParam(':acces_web', $acces_web);
-		$new->bindParam(':est_eleve', $_POST["est_eleve"]);
-		$new->bindParam(':est_adherent', $_POST["est_adherent"]);
+		$new->bindParam(':est_membre', $_POST["est_membre"]);
 		$new->bindParam(':est_professeur', $_POST["est_professeur"]);
 		$new->bindParam(':est_staff', $_POST["est_staff"]);
+		$new->bindParam(':est_prestataire', $_POST["est_prestataire"]);
+		$new->bindParam(':est_autre', $_POST["est_autre"]);
+		$new->bindParam(':autre_statut', $_POST["est_statut"]);
+		$new->bindParam(':user_rib', $_POST["user_rib"]);
 		$new->bindParam(':actif', $actif);
 		$new->execute();
 		if(isset($_POST["rfid"])){
@@ -119,7 +130,7 @@ if(isset($_POST['addAdherent'])){
            <div class="col-sm-10 main">
               <p id="current-time"></p>
                <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> <?php echo $titleText;?></h1>
-				<form action="new_user.php" method="post" role="form" id="add_adherent" enctype="multipart/form-data">
+				<form action="inscription.php" method="post" role="form" id="add_adherent" enctype="multipart/form-data">
 				  <div class="btn-toolbar">
 				 	  <a href="<?php echo $backLink;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <?php echo $buttonText;?></a>
 				 	  <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
@@ -184,15 +195,25 @@ if(isset($_POST['addAdherent'])){
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="statuts" class="control-label">Statut de l'adhérent <span class="label-tip">Cochez autant que nécessaire</span></label><br>
-					<label for="est_eleve" class="control-label">Elève</label>
-					<input name="est_eleve" id="est_eleve" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueEleve;?>">
-					<label for="est_adherent" class="control-label">Adhérent</label>
-					<input name="est_adherent" id="est_adherent" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+					<label for="statuts" class="control-label">Statut du contact <span class="label-tip">Cochez autant que nécessaire</span></label><br>
+					<label for="est_membre" class="control-label">Membre</label>
+					<input name="est_membre" id="est_membre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueEleve;?>">
 					<label for="est_professeur" class="control-label">Professeur</label>
-                    <input name="est_professeur" id="est_professeur" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueTeacher;?>">
+                    <input name="est_professeur" id="est_professeur" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueTeacher;?>">
 					<label for="est_staff" class="control-label">Staff</label>
-					<input name="est_staff" id="est_staff" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueStaff;?>">
+					<input name="est_staff" id="est_staff" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueStaff;?>">
+					<label for="est_prestataire" class="control-label">Prestataire</label>
+					<input name="est_prestataire" id="est_prestataire" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+					<label for="est_autre" class="contorl-label">Autre <span class="label-tip">Spécifiez ci-dessous</span></label>
+					<input type="text" name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+				</div>
+				<div class="form-group" id="autre" style="display:none;">
+					<label for="autre_statut" class="control-label">Autre statut</label>
+					<input type="text" name="autre_statut" class="form-control">
+				</div>
+				<div class="form-group" id="rib-data" style="display:none;">
+					<label for="rib" class="control-label">Informations bancaires <span class="label-tip">Pour un professeur, un staff ou un prestataire</span></label>
+					<input type="text" name="rib" class="form-control">
 				</div>
 				<div class="form-group">
 					<label for="sources_connaissance" class="control-label">Par où avez vous connu Salsabor ? <span class="label-tip">Sélectionnez la source la plus influente</span></label>
@@ -208,6 +229,24 @@ if(isset($_POST['addAdherent'])){
    </div>
    <?php include "scripts.php";?>
       <script>
+		  $(document).ready(function(){
+			  $("#est_autre").change(function(){
+				  if($(this).val() == '1'){
+					  $("#autre").show('600');
+				  } else {
+					  $("#autre").hide('600');
+				  }
+			  });
+			  
+			  $(".rib-toggle").change(function(){
+				  if($("#est_staff").val() == '0' && $("#est_professeur").val() == '0' && $("#est_prestataire").val() == '0'){
+					  $("#rib-data").hide('600');
+				  } else {
+					  $("#rib-data").show('600');
+				  }
+			  })
+			 
+		  });
 	   var listening = false;
 	   var wait;
 	   $("[name='fetch-rfid']").click(function(){

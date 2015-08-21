@@ -19,7 +19,7 @@ $queryAdherents = $db->query('SELECT * FROM users ORDER BY user_nom ASC');
               <p id="current-time"></p>
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span> Base Clients</h1>
 			  <div class="btn-toolbar">
-                   <a href="new_user.php?status=eleve" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Inscrire un adhérent</a>
+                   <a href="inscription.php?status=eleve" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Inscrire un nouvel élève</a>
                </div> <!-- btn-toolbar -->
 				<div class="input-group input-group-lg search-form">
 					<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>

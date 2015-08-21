@@ -34,7 +34,7 @@ if($details["est_professeur"] == 1){
     $totalDue = 0;
 }
 
-if($details["est_eleve"] == 1){
+if($details["est_membre"] == 1){
     // On obtient l'historique de ses cours
     $queryHistoryRecus = $db->prepare('SELECT * FROM cours_participants JOIN cours ON cours_id_foreign=cours.cours_id JOIN niveau ON cours.cours_niveau=niveau.niveau_id JOIN salle ON cours.cours_salle=salle.salle_id WHERE eleve_id_foreign=?');
     $queryHistoryRecus->bindValue(1, $data);
@@ -137,12 +137,12 @@ if(isset($_POST["edit"])){
                    <a href="adherents.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des adhérents</a>
                 </div> <!-- btn-toolbar -->
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?></h1>
-               <?php if($details["est_eleve"] == 1 && $queryEcheances != 0){ ?>
+               <?php if($details["est_membre"] == 1 && $queryEcheances != 0){ ?>
                <div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
                <?php } ?>
 			  <ul class="nav nav-tabs">
                    <li role="presentation" id="infos-toggle" class="active"><a>Informations personnelles</a></li>
-                   <?php if($details["est_eleve"] == 1){ ?>
+                   <?php if($details["est_membre"] == 1){ ?>
                    <li role="presentation" id="history-suivis-toggle"><a>Cours suivis</a></li>
                    <li role="presentation" id="resa-toggle"><a>Réservations</a></li>
                    <li role="presentation" id="forfaits-toggle"><a>Forfaits/Abonnements</a></li>
@@ -206,7 +206,7 @@ if(isset($_POST["edit"])){
 					  <input type="submit" name="edit" role="button" class="btn btn-primary btn-block" value="ENREGISTRER LES MODIFICATIONS">
 					  </form>
                </section>
-               <?php if($details["est_eleve"] == 1){ ?>
+               <?php if($details["est_membre"] == 1){ ?>
                <section id="history-suivis">
                	<table class="table table-striped">
                		<thead>
