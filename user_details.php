@@ -2,6 +2,7 @@
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 $data = $_GET['id'];
+$status = $_GET['status'];
 
 // On obtient les détails de l'adhérent
 $queryDetails = $db->prepare('SELECT * FROM users WHERE user_id=?');
@@ -134,7 +135,13 @@ if(isset($_POST["edit"])){
            <?php include "side-menu.php";?>
            <div class="col-sm-10 main">
 				<div class="btn-toolbar" id="top-page-buttons">
+                  <?php if($status == 'professeur'){ ?>
+                  <a href="professeurs.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
+					<?php } if($status == 'membre'){ ?>
                    <a href="adherents.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des adhérents</a>
+                   <?php } if($status == 'staff'){ ?>
+					<a href="staff_liste.php?rank=0" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste du staff</a>
+               <?php } ?>
                 </div> <!-- btn-toolbar -->
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?></h1>
                <?php if($details["est_membre"] == 1 && $queryEcheances != 0){ ?>

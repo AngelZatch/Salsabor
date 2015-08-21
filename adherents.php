@@ -68,7 +68,7 @@ $queryAdherents = $db->query('SELECT * FROM users ORDER BY user_nom ASC');
                				<?php } else { ?>
                								<td class="col-lg-1"><span class="glyphicon glyphicon-repeat glyphicon-inactive" title="Aucune échéance en retard."></span></td>
                				<?php } ?>
-               				<td class="col-lg-1"><a href="user_details.php?id=<?php echo $adherents['user_id'];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
+               				<td class="col-lg-1"><a href="user_details.php?id=<?php echo $adherents['user_id'];?>&status=membre" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
                			</tr>
                						<?php } ?>
                		</tbody>

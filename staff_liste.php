@@ -72,16 +72,9 @@ if(isset($_POST['addRank'])){
                                 <td class='col-sm-4'><?php echo $staff['user_prenom']." ".$staff['user_nom'];?></td>
                                 <td class='col-sm-4'><?php echo $staff['mail']."<br>".$staff['telephone']." / ".$staff['tel_secondaire'];?></td>
                                 <td class='col-sm-2'><?php echo $staff['rank_name'];?></td>
-                            <td class='col-sm-2'>
-                            <form method='post' action='staff_liste.php?rank=0'>
-                            <div class='btn-group' role='group'>
-                                <a type='button' role='button' class='btn btn-default' title="Détails"><span class='glyphicon glyphicon-search'></span></a>
-                                <button type='submit' class='btn btn-default'><span class='glyphicon glyphicon-send' title="Contacter par mail"></span></button>
-                                <button type='submit' class='btn btn-default'><span class='glyphicon glyphicon-ok' title="Indiquer comme actif"></span></button>
-                            </div>
-                            <input type='hidden' name='id' value="<?php echo $staff['user_id'];?>">
-                            </form>
-                            </td>
+								<td class='col-sm-2'>
+								<a href="user_details.php?id=<?php echo $staff['user_id'];?>&status=staff" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a>
+								</td>
                             </tr>
                         <?php } ?>
                        </tbody>

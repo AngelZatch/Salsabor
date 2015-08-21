@@ -45,7 +45,7 @@ $db = PDOFactory::getConnection();
                                 ?>
                                 </td>
                                 <td class="col-sm-3">
-                                    <a href="profs_details.php?id=<?php echo $row_profs['user_id'];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a> 
+                                    <a href="user_details.php?id=<?php echo $row_profs['user_id'];?>&status=professeur" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a> 
                                 </td>
                             </tr>
                             <?php
