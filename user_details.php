@@ -304,7 +304,7 @@ if(isset($_POST["edit"])){
                                <td><?php echo date_create($forfaits["date_achat"])->format('d/m/Y');?></td>
                                <td><?php echo $periode_validite;?></td>
                                <td><?php echo $forfaits["prix_achat"];?> €</td>
-                               <td><a href="forfait_adherent_details.php?id=<?php echo $forfaits["id_transaction"];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
+                               <td><a href="forfait_adherent_details.php?id=<?php echo $forfaits["id_transaction"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
                            </tr>
                            <?php } ?>
                        </tbody>

@@ -3,6 +3,7 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
 $data = $_GET["id"];
+$status = $_GET["status"];
 
 $queryForfait = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation FROM produits_adherents JOIN users ON id_adherent=users.user_id JOIN produits ON id_produit=produits.produit_id WHERE id_transaction=?');
 $queryForfait->bindValue(1, $data);
@@ -40,7 +41,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
            <div class="alert alert-success" id="hours-updated" style="display:none;">Nombre d'heures restantes mis à jour.</div>
            <div class="col-sm-10 main">
                 <div class="btn-toolbar" id="top-page-buttons">
-                   <a href="user_details.php?id=<?php echo $forfait["id_adherent"];?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent (<?php echo $forfait["user_prenom"]." ".$forfait["user_nom"];?>)</a>
+                   <a href="user_details.php?id=<?php echo $forfait["id_adherent"];?>&status=<?php echo $status;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent (<?php echo $forfait["user_prenom"]." ".$forfait["user_nom"];?>)</a>
                 </div> <!-- btn-toolbar -->
                <h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["user_prenom"]." ".$forfait["user_nom"]." (transaction ".$forfait["id_transaction"].")";?></h1>
 			  <ul class="nav nav-tabs">
