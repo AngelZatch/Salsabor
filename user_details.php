@@ -115,7 +115,7 @@ if(isset($_POST["edit"])){
 			$delete->execute();
 		}
 		$db->commit();
-		header("Location:user_details.php?id=$data");
+		header("Location:user_details.php?id=$data&status=$status");
 	} catch(PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());
