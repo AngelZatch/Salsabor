@@ -47,19 +47,16 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
                								case 0:
                									$status = "En attente";
                									$statusClass = "info";
-               									$statusChecked = "unchecked";
                									break;
                	
                								case 1:
-               									$status = "Reçue";
+               									$status = "Réceptionnée";
                									$statusClass = "success";
-               									$statusChecked = "checked";
                									break;
                	
                								case 2:
                									$status = "En retard";
                									$statusClass = "danger";
-               									$statusChecked = "unchecked";
                									break;
                							}?>
                			<tr>
@@ -68,9 +65,20 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
 							<td class="user-name"><a href="user_details.php?id=<?php echo $echeances["user_id"];?>"><?php echo $echeances["user_prenom"]." ".$echeances["user_nom"]." (".$echeances["telephone"].")";?></a></td>
 							<td class="montant"><?php echo $echeances["montant"];?> €</td>
 							<td class="status">
-								<input type="checkbox" class="toggle-maturity" <?php echo $statusChecked;?> data-toggle="toggle" data-on="Reçue" data-off="<?php echo $status;?>" data-onstyle="success" data-offstyle="<?php echo $statusClass;?>">
+							<?php if($status == "Réceptionnée"){ ?>
+								<span class="label label-<?php echo $statusClass;?>"><?php echo $status;?></span>
+								<?php } else { ?>
+								<span class="label label-<?php echo $statusClass;?>"><?php echo $status;?></span>
+								<br>Réception <input name="statut_bank" id="statut-bank" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $echeances["echeance_effectuee"];?>">
+								<?php } ?>
 								<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>"></td>
-							<td class="bank">Encaissé <input name="statut_bank" id="statut-bank" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $echeances["statut_banque"];?>"></td>
+							<td class="bank">
+							<?php if($echeances["statut_banque"] == '1'){ ?>
+								<span class="label label-success">Encaissée</span>
+							<?php } else { ?>
+								<span class="label label-info">Dépôt à venir</span>
+							<br>Encaissement <input name="statut_bank" id="statut-bank" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $echeances["statut_banque"];?>"></td>
+							<?php } ?>
 						</tr>
                			<?php } ?>
                		</tbody>
