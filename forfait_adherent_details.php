@@ -20,8 +20,8 @@ if($forfait["dateActivation"] == "0000-00-00 00:00:00"){
 
 $queryCours = $db->prepare('SELECT * FROM cours_participants JOIN cours ON cours_id_foreign=cours.cours_id JOIN niveau ON cours_niveau=niveau.niveau_id JOIN salle ON cours_salle=salle.salle_id WHERE produit_adherent_id=?');
 $queryCours->bindValue(1, $data);
-$nombreCours = $queryCours->rowCount();
 $queryCours->execute();
+$nombreCours = $queryCours->rowCount();
 
 $heuresCours = 0;
 $dureeCours = 0;
@@ -88,7 +88,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
                         <div class="col-sm-5 list-name">Prix moyen du cours</div>
                         <div class="col-sm-7">
                         <?php if($nombreCours > 0){
-							echo $forfait["prix_achat"]/$nombreCours;
+							echo $forfait["prix_achat"]/$nombreCours." €";
                         } else { ?>
                         	Aucun cours effectué pour le moment.
                         <?php } ?>
