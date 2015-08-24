@@ -40,6 +40,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
                					<span class="relative-start"><?php echo $nextCours["cours_start"];?></span>, de
                					<?php echo date_create($nextCours["cours_start"])->format("H:i")." à ".date_create($nextCours["cours_end"])->format("H:i");?>
 							</span>
+              			, en <?php echo $nextCours["salle_name"];?>
                			</div>
 						<span class="list-item-option close-cours glyphicon glyphicon-ok-sign" title="Fermer le cours">
               				<input type="hidden" id="cours-id" value="<?php echo $nextCours["cours_id"];?>">
