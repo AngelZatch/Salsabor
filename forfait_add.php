@@ -3,8 +3,10 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
 if(isset($_POST["add"])){
-    if(isset($_POST["volume_horaire"])){
+	$volume_horaire = 0;
+    if($_POST["volume_horaire"] != 0){
         $tarif_horaire = $_POST["tarif_global"]/$_POST["volume_horaire"];
+		$volume_horaire = $_POST["volume_horaire"];
     } else {
         $tarif_horaire = 0;
     }
@@ -68,6 +70,10 @@ if(isset($_POST["add"])){
                           <textarea rows="5" class="form-control" name="description" placeholder="Facultatif. Tentez d'être succinct !"></textarea>
                       </div>
                       <div class="form-group">
+                      	<label for="offre_illimitee">Offre Illimitée ?</label>
+                      	<input name="offre_illimitee" id="offre_illimitee" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+                      </div>
+                      <div class="form-group" id="volume_horaire">
                           <label for="volume_horaire">Volume de cours (en heures)</label>
                           <input type="text" class="form-control" name="volume_horaire" placeholder="Exemple : 10">
                       </div>
@@ -107,5 +113,14 @@ if(isset($_POST["add"])){
        </div>
    </div>
    <?php include "scripts.php";?>
+   <script>
+	  $("#offre_illimitee").change(function(){
+		  if($(this).val() == '1'){
+			  $("#volume_horaire").hide('600');
+		  } else {
+			  $("#volume_horaire").show('600');
+		  }
+	  });
+	</script>
 </body>
 </html>

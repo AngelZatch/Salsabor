@@ -150,6 +150,9 @@ function vente(){
 			$pdf->Write(0, $infos);
 			$pdf->Rect(115, 149 + (8*$k), 85, 8);
 			$pdf->setXY(115, 152 + (8*$k));	
+			$infos = $_POST["moyen-paiement-".$k];
+			$infos = iconv('UTF-8', 'windows-1252', $infos);
+			$pdf->Write(0, $infos);
 		}
         $db->commit();
 		

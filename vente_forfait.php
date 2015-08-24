@@ -109,25 +109,25 @@ if(isset($_POST["submit"])){
                    	    <label for="date_expiration">Date prévue d'expiration (à titre indicatif, pas de modification possible)</label>
                    	    <input type="date" name="date_expiration" class="form-control">
                    	</div>
-                   						<div class="row">
-                   							<div class="col-lg-6">
-                   								<div class="form-group">
-                   									<label for="promotion-e">Réduction (en €)</label>
-                   									<div class="input-group">
-                   										<span class="input-group-addon"><input type="radio" id="promotion-euros" name="promotion" class="checkbox-x">Réduction en €</span>
-                   										<input type="text" name="promotion-e" class="form-control">
-                   									</div>
-                   								</div>
-                   							</div>
-                   							<div class="col-lg-6">
-                   								<div class="form-group">
-                   									<label for="promotion-p">Réduction (en %)</label>
-                   									<div class="input-group">
-                   										<span class="input-group-addon"><input type="radio" name="promotion" id="promotion-pourcent">Réduction en %</span>
-                   										<input type="text" name="promotion-p" class="form-control">
-                   									</div>
-                   								</div>
-                   						  </div>
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="promotion-e">Réduction (en €)</label>
+								<div class="input-group">
+									<span class="input-group-addon"><input type="radio" id="promotion-euros" name="promotion" class="checkbox-x">Réduction en €</span>
+									<input type="text" name="promotion-e" class="form-control">
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="promotion-p">Réduction (en %)</label>
+								<div class="input-group">
+									<span class="input-group-addon"><input type="radio" name="promotion" id="promotion-pourcent">Réduction en %</span>
+									<input type="text" name="promotion-p" class="form-control">
+								</div>
+							</div>
+					  </div>
                    	</div>
                    	<div class="form-group">
                    	    <label for="prix_achat">Prix du forfait souhaité</label>
@@ -292,7 +292,7 @@ if(isset($_POST["submit"])){
 				   i++;
 			   })
 		   })
-		   $("[name='moyen-paiement']").autocomplete({
+		   $("[name^='moyen-paiement']").autocomplete({
 			  source: methods
 		   })
 	   

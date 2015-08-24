@@ -20,6 +20,7 @@ if($forfait["dateActivation"] == "0000-00-00 00:00:00"){
 
 $queryCours = $db->prepare('SELECT * FROM cours_participants JOIN cours ON cours_id_foreign=cours.cours_id JOIN niveau ON cours_niveau=niveau.niveau_id JOIN salle ON cours_salle=salle.salle_id WHERE produit_adherent_id=?');
 $queryCours->bindValue(1, $data);
+$nombreCours = $queryCours->rowCount();
 $queryCours->execute();
 
 $heuresCours = 0;
@@ -68,10 +69,12 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
                         <div class="col-sm-7"><?php echo $date_expiration;?>
                         </div>
                     </li>
+					<?php if($forfait["volume_horaire"] != 0){?>
                     <li class="details-list">
                         <div class="col-sm-5 list-name">Volume de cours initial</div>
                         <div class="col-sm-7"><span id="initial-hours"><?php echo $forfait["volume_horaire"];?></span> heures</div>
                     </li>
+                    <?php } ?>
                     <li class="details-list">
                         <div class="col-sm-5 list-name">Prix d'achat</div>
                         <div class="col-sm-7"><?php echo $forfait["prix_achat"];?> €</div>
@@ -80,10 +83,23 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
                         <div class="col-sm-5 list-name">AREP utilisable ?</div>
                         <div class="col-sm-7"><strong><?php echo $forfait["autorisation_report"]=="0"?"non":"oui";?></strong></div>
                     </li>
+                    <?php if($forfait["volume_horaire"] == 0 && strstr($forfait["produit_nom"], "Illimité")){?>
                     <li class="details-list">
+                        <div class="col-sm-5 list-name">Prix moyen du cours</div>
+                        <div class="col-sm-7">
+                        <?php if($nombreCours > 0){
+							echo $forfait["prix_achat"]/$nombreCours;
+                        } else { ?>
+                        	Aucun cours effectué pour le moment.
+                        <?php } ?>
+                        </div>
+                    </li>
+                    <?php } else { ?>
+					<li class="details-list">
                         <div class="col-sm-5 list-name">Volume de cours restant</div>
                         <div class="col-sm-7"><span id="remaining-hours"><?php echo $forfait["volume_cours"];?></span> heures <div class="btn-group" role="group"><button type="button" class="btn btn-info" onclick="calculateRemainingHours()"><span class="glyphicon glyphicon-scale"></span> Recalculer</button><button type="button" class="btn btn-primary" onclick="updateRemainingHours()"><span class="glyphicon glyphicon-save"></span> Valider le calcul</button></div></div>
                     </li>
+                    <?php } ?>
               </ul>
                </section>
                <section id="history">
