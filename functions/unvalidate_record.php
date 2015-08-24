@@ -6,7 +6,7 @@ $cours = $_POST["cours_id"];
 $eleve = $_POST["eleve_id"];
 $passage = $_POST["passage_id"];
 $rfid = $_POST["rfid"];
-$produit = $db->query("SELECT id_transaction, volume_cours FROM produits_adherents WHERE id_adherent=$eleve")->fetch(PDO::FETCH_ASSOC);
+$produit = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=$eleve")->fetch(PDO::FETCH_ASSOC);
 $detailCours = $db->query("SELECT * FROM cours JOIN prestations ON cours_type=prestations.prestations_id WHERE cours_id=$cours")->fetch(PDO::FETCH_ASSOC);
 $prof = $db->query("SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=$detailCours[prof_principal] AND type_prestation=$detailCours[cours_type]")->fetch(PDO::FETCH_ASSOC);
 
@@ -25,11 +25,13 @@ try{
 	$update->execute();
 	
 	// Rajout du volume horaire dans le forfait
-	$restore = $db->prepare("UPDATE produits_adherents SET volume_cours=? WHERE id_transaction=?");
-	$remainingHours = $produit["volume_cours"] + $detailCours["cours_unite"];
-	$restore->bindParam(1, $remainingHours);
-	$restore->bindParam(2, $produit["id_transaction"]);
-	$restore->execute();
+	if(!strstr($produit["produit_nom"], "Illimité")){
+		$restore = $db->prepare("UPDATE produits_adherents SET volume_cours=? WHERE id_transaction=?");
+		$remainingHours = $produit["volume_cours"] + $detailCours["cours_unite"];
+		$restore->bindParam(1, $remainingHours);
+		$restore->bindParam(2, $produit["id_transaction"]);
+		$restore->execute();
+	}
 	
 	// Mise à jour de la rémunération du professeur
 	if($prof["ratio_multiplicatif"] == "personne"){

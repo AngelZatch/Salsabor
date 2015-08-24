@@ -62,11 +62,13 @@ try{
 		
 		// Déduction du volume horaire dans le forfait
 		if(isset($produit["id_transaction"])){
-			$substract = $db->prepare("UPDATE produits_adherents SET volume_cours=? WHERE id_transaction=?");
-			$remainingHours = $produit["volume_cours"] - $detailCours["cours_unite"];
-			$substract->bindParam(1, $remainingHours);
-			$substract->bindParam(2, $produit["id_transaction"]);
-			$substract->execute();
+			if(!strstr($produit["produit_nom"], "Illimité")){
+				$substract = $db->prepare("UPDATE produits_adherents SET volume_cours=? WHERE id_transaction=?");
+				$remainingHours = $produit["volume_cours"] - $detailCours["cours_unite"];
+				$substract->bindParam(1, $remainingHours);
+				$substract->bindParam(2, $produit["id_transaction"]);
+				$substract->execute();
+			}
 		}
 		
 		// Mise à jour de la rémunération du professeur

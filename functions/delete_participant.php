@@ -18,11 +18,13 @@ try{
 	
 	if(isset($produit["id_transcation"])){
 		// Rajout du volume horaire dans le forfait
-		$restore = $db->prepare("UPDATE produits_adherents SET volume_cours=? WHERE id_transaction=?");
-		$remainingHours = $produit["volume_cours"] + $detailCours["cours_unite"];
-		$restore->bindParam(1, $remainingHours);
-		$restore->bindParam(2, $produit["id_transaction"]);
-		$restore->execute();
+		if(!strstr($produit["produit_nom"], "Illimité")){
+			$restore = $db->prepare("UPDATE produits_adherents SET volume_cours=? WHERE id_transaction=?");
+			$remainingHours = $produit["volume_cours"] + $detailCours["cours_unite"];
+			$restore->bindParam(1, $remainingHours);
+			$restore->bindParam(2, $produit["id_transaction"]);
+			$restore->execute();
+		}
 	}
 	
 	// Mise à jour de la rémunération du professeur
