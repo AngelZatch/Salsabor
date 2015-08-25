@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $compare_start = date_create('now')->format('Y-m-d H:i:s');
 $compare_end = date("Y-m-d H:i:s", strtotime($compare_start.'+90MINUTES'));
-$queryNextCours = $db->prepare("SELECT * FROM cours JOIN salle ON cours_salle=salle.salle_id WHERE (cours_start>=? AND cours_start<=? AND ouvert=1) OR ouvert=1 ORDER BY cours_start ASC");
+$queryNextCours = $db->prepare("SELECT * FROM cours JOIN salle ON cours_salle=salle.salle_id JOIN users ON prof_principal=users.user_id WHERE (cours_start>=? AND cours_start<=? AND ouvert=1) OR ouvert=1 ORDER BY cours_start ASC");
 $queryNextCours->bindParam(1, $compare_start);
 $queryNextCours->bindParam(2, $compare_end);
 $queryNextCours->execute();
@@ -35,12 +35,18 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
                	<div class="panel-heading">
                		<div class="panel-title">
                			<div class="cours-infos">
-               				<span class="cours-title"><?php echo $nextCours["cours_intitule"];?></span>
-               				<span class="cours-hours">
-               					<span class="relative-start"><?php echo $nextCours["cours_start"];?></span>, de
-               					<?php echo date_create($nextCours["cours_start"])->format("H:i")." à ".date_create($nextCours["cours_end"])->format("H:i");?>
-							</span>
-              			, en <?php echo $nextCours["salle_name"];?>
+               				<p class="cours-title"><?php echo $nextCours["cours_intitule"];?></p>
+               				<div class="row">
+               				    <p class="cours-hours col-lg-4">
+               				        <span class="glyphicon glyphicon-time"></span> <?php echo date_create($nextCours["cours_start"])->format("H:i")." - ".date_create($nextCours["cours_end"])->format("H:i");?> (<span class="relative-start"><?php echo $nextCours["cours_start"];?></span>)
+               				    </p>
+               				    <p class="cours-salle col-lg-4">
+               				        <span class="glyphicon glyphicon-pushpin"></span> <?php echo $nextCours["salle_name"];?>
+               				    </p>
+               				    <p class="cours-professeur col-lg-4">
+               				        <span class="glyphicon glyphicon-user"></span> <?php echo $nextCours["user_prenom"]." ".$nextCours["user_nom"];?>
+               				    </p>
+               				</div>
                			</div>
 						<span class="list-item-option close-cours glyphicon glyphicon-ok-sign" title="Fermer le cours">
               				<input type="hidden" id="cours-id" value="<?php echo $nextCours["cours_id"];?>">

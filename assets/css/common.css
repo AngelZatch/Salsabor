@@ -168,7 +168,7 @@ body{
     text-align: center;
 }
 
-.popover-x{
+#cours-options{
     padding: 15px !important;
 }
 
@@ -389,4 +389,25 @@ body{
 .label-tip {
 	color: grey;
 	font-size: 11px;
+}
+
+.thumbnail-title {
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.shopping-section {
+    z-index: 100;
+    min-height: 100%;
+    height: inherit;
+}
+
+.produit-title {
+    font-size: 26px;
+    font-weight: 800;
+    text-align: center;
+}
+#right-bordered {
+    border-right: 1px solid black;
 }

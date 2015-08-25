@@ -47,17 +47,22 @@ if($details["est_membre"] == 1){
     $queryResa->execute();
 
     // On obtient l'historique de ses forfaits
-    $queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation, produits_adherents.actif AS produitActif FROM produits_adherents JOIN users ON id_adherent=users.user_id JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=? ORDER BY produitActif DESC, date_achat ASC');
+    $queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation, produits_adherents.actif AS produitActif FROM produits_adherents JOIN users ON id_user_foreign=users.user_id JOIN produits ON id_produit_foreign=produits.produit_id JOIN transactions ON id_transaction_foreign=transactions.id_transaction WHERE id_user_foreign=? ORDER BY produitActif DESC');
     $queryForfaits->bindValue(1, $data);
     $queryForfaits->execute();
 
     // Ainsi que les forfaits actifs
-    $queryForfaitsActifs = $db->prepare("SELECT * FROM produits_adherents JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=? AND produits_adherents.actif=1");
+    $queryForfaitsActifs = $db->prepare("SELECT * FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=? AND produits_adherents.actif=1");
     $queryForfaitsActifs->bindParam(1, $data);
     $queryForfaitsActifs->execute();
 
     // Et on cherche à savoir si des échéances sont en retard
-    $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN produits_adherents ON id_produit_adherent=produits_adherents.id_transaction WHERE echeance_effectuee=2 AND id_adherent=$data")->rowCount();   
+    $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN produits_adherents ON id_produit_adherent=produits_adherents.id_transaction_foreign WHERE echeance_effectuee=2 AND id_user_foreign=$data")->rowCount(); 
+    
+    //Enfin, on obtient l'historique de tous les achats (mêmes les forfaits d'autres personnes)
+    $queryAchats = $db->prepare("SELECT * FROM transactions WHERE payeur_transaction=?");
+    $queryAchats->bindParam(1, $data);
+    $queryAchats->execute();
 }
 
 // Edit des informations
@@ -152,7 +157,8 @@ if(isset($_POST["edit"])){
                    <?php if($details["est_membre"] == 1){ ?>
                    <li role="presentation" id="history-suivis-toggle"><a>Cours suivis</a></li>
                    <li role="presentation" id="resa-toggle"><a>Réservations</a></li>
-                   <li role="presentation" id="forfaits-toggle"><a>Forfaits/Abonnements</a></li>
+                   <li role="presentation" id="forfaits-toggle"><a>Abonnements</a></li>
+                   <li role="presentation" id="achats-toggle"><a>Achats</a></li>
                     <?php } if($details["est_professeur"] == 1){ ?>
                    <li role="presentation" id="history-donnes-toggle"><a>Cours donnés</a></li>
                    <li role="presentation" id="tarifs-toggle"><a>Tarifs</a></li>
@@ -305,6 +311,28 @@ if(isset($_POST["edit"])){
                                <td><?php echo $periode_validite;?></td>
                                <td><?php echo $forfaits["prix_achat"];?> €</td>
                                <td><a href="forfait_adherent_details.php?id=<?php echo $forfaits["id_transaction"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
+                           </tr>
+                           <?php } ?>
+                       </tbody>
+                   </table>
+               </section>
+               <section id="achats">
+                  <table class="table table-striped">
+                       <thead>
+                           <tr>
+                              <th>Transaction</th>
+                              <th>Date d'achat</th>
+                              <th>Prix total</th>
+                              <th></th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <?php while($achats = $queryAchats->fetch(PDO::FETCH_ASSOC)){ ?>
+                           <tr>
+                               <td><?php echo $achats["id_transaction"];?></td>
+                               <td><?php echo date_create($achats["date_achat"])->format('d/m/Y');?></td>                          
+                               <td><?php echo $achats["prix_total"];?> €</td>
+                               <td><a href="#" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
                            </tr>
                            <?php } ?>
                        </tbody>

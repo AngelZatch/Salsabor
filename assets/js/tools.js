@@ -23,9 +23,11 @@ $(document).ready(function(){
 	notifPassages(firstCount);
 	notifCoursParticipants(firstCount);
 	notifEcheancesDues(firstCount);
-	setInterval(notifPassages, 5000);
-	setInterval(notifCoursParticipants, 5000);
-	setInterval(notifEcheancesDues, 5000);
+    notifPanier();
+	setInterval(notifPassages, 15000);
+	setInterval(notifCoursParticipants, 30000);
+	setInterval(notifEcheancesDues, 30000);
+    setInterval(notifPanier, 5000);
 	$('[data-toggle="tooltip"]').tooltip();
     moment.locale("fra");
 	
@@ -112,6 +114,18 @@ function notifEcheancesDues(firstCount){
 			$("#badge-echeances").html(data);
 		}
 	})
+}
+
+// Affiche en direct le nombre d'éléments dans le panier
+function notifPanier(){
+    $.post("functions/watch_panier.php").done(function(data){
+        if(data == 0){
+            $("#badge-panier").hide();
+        } else {
+            $("#badge-panier").show();
+            $("#badge-panier").html(data);
+        }
+    })
 }
 
 function showSuccessNotif(data){
