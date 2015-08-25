@@ -134,7 +134,8 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
                				<th>Date de l'échéance</th>
                				<th>Montant de l'échéance</th>
                				<th>Méthode de paiement</th>
-               				<th>Statut</th>
+               				<th>Statut Salsabor</th>
+               				<th>Statut Banque</th>
                			</tr>
                		</thead>
                		<tbody>
@@ -146,7 +147,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
 									break;
 									
 								case 1:
-									$status = "Payée";
+									$status = "Réceptionnée";
 									$statusClass = "success";
 									break;
 									
@@ -155,11 +156,28 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
 									$statusClass = "danger";
 									break;
 							} ?>
-               			<tr class="alert alert-<?php echo $statusClass;?>">
+               			<tr>
                				<td><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
                				<td><?php echo $echeances["montant"];?> €</td>
                				<td><?php echo $echeances["methode_paiement"];?></td>
-               				<td><?php echo $status?></td>
+               				<td class="status">
+							<?php if($status == "Réceptionnée"){ ?>
+								<span class="label label-<?php echo $statusClass;?>"><?php echo $status;?></span>
+								<?php } else { ?>
+								<span class="label label-info"><?php echo $status;?></span>
+								<button class="btn btn-default statut-salsabor"><span class="glyphicon glyphicon-download-alt"></span> Recevoir</button>
+								<?php } ?>
+								<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>">
+							</td>
+               				<td class="bank">
+							<?php if($echeances["statut_banque"] == '1'){ ?>
+								<span class="label label-success">Encaissée</span>
+							<?php } else { ?>
+								<span class="label label-info">Dépôt à venir</span>
+							<button class="btn btn-default statut-banque"><span class="glyphicon glyphicon-download-alt"></span> Encaisser</button>
+							<?php } ?>
+							<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>">
+							</td>
                			</tr>
                			<?php } ?>
                		</tbody>
@@ -171,6 +189,28 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
    <?php include "scripts.php";?>
    <script src="assets/js/nav-tabs.js"></script>
    <script>
+	   $(document).ready(function(){
+		   $(".statut-salsabor").click(function(){
+			   var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
+			   var container = $(this).parents("td");
+			   $.post("functions/validate_echeance.php", {echeance_id}).done(function(data){
+				   showSuccessNotif(data);
+				   container.empty();
+				   container.html("<span class='label label-success'>Réceptionnée</span>");
+			   })
+		   })
+		   
+		   $(".statut-banque").click(function(){
+			   var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
+			   var container = $(this).parents("td");
+			   $.post("functions/encaisser_echeance.php", {echeance_id}).done(function(data){
+				   showSuccessNotif(data);
+				   container.empty();
+				   container.html("<span class='label label-success'>Encaissée</span>");
+			   })
+		   })
+	   })
+	   
        var remainingHours;
         function calculateRemainingHours(){
             window.remainingHours = $("#initial-hours").html() - $("*[name='total-cours']").val();
