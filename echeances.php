@@ -3,13 +3,14 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
 $date = new DateTime('now');
+$now = $date->format('Y-m-d');
 $time = $date->add(new DateInterval('P30D'))->format('Y-m-d');
 
 $queryEcheances = $db->query("SELECT * FROM produits_echeances
 										JOIN produits_adherents ON id_produit_adherent=produits_adherents.id_transaction
 										JOIN produits ON id_produit=produits.produit_id
 										JOIN users ON id_adherent=users.user_id
-										WHERE date_echeance<='$time' ORDER BY date_echeance ASC");
+										WHERE date_echeance<='$time' AND date_echeance>='$now' AND statut_banque = 0 ORDER BY date_echeance ASC");
 ?>
 <html>
 <head>
@@ -69,16 +70,19 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
 								<span class="label label-<?php echo $statusClass;?>"><?php echo $status;?></span>
 								<?php } else { ?>
 								<span class="label label-<?php echo $statusClass;?>"><?php echo $status;?></span>
-								<br>Réception <input name="statut_bank" id="statut-bank" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $echeances["echeance_effectuee"];?>">
+								<button class="btn btn-default statut-salsabor"><span class="glyphicon glyphicon-download-alt"></span> Recevoir</button>
 								<?php } ?>
-								<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>"></td>
+								<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>">
+							</td>
 							<td class="bank">
 							<?php if($echeances["statut_banque"] == '1'){ ?>
 								<span class="label label-success">Encaissée</span>
 							<?php } else { ?>
 								<span class="label label-info">Dépôt à venir</span>
-							<br>Encaissement <input name="statut_bank" id="statut-bank" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $echeances["statut_banque"];?>"></td>
+							<button class="btn btn-default statut-banque"><span class="glyphicon glyphicon-download-alt"></span> Encaisser</button>
 							<?php } ?>
+							<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>">
+							</td>
 						</tr>
                			<?php } ?>
                		</tbody>
@@ -89,10 +93,25 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
    </div>
    <?php include "scripts.php";?>
    <script>
-	   $(".toggle-maturity").change(function(){
-		   var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
-		   $.post("functions/validate_echeance.php", {echeance_id}).done(function(data){
-			   showSuccessNotif(data);
+	   $(document).ready(function(){
+		   $(".statut-salsabor").click(function(){
+			   var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
+			   var container = $(this).parents("td");
+			   $.post("functions/validate_echeance.php", {echeance_id}).done(function(data){
+				   showSuccessNotif(data);
+				   container.empty();
+				   container.html("<span class='label label-success'>Réceptionnée</span>");
+			   })
+		   })
+		   
+		   $(".statut-banque").click(function(){
+			   var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
+			   var container = $(this).parents("td");
+			   $.post("functions/encaisser_echeance.php", {echeance_id}).done(function(data){
+				   showSuccessNotif(data);
+				   container.empty();
+				   container.html("<span class='label label-success'>Encaissée</span>");
+			   })
 		   })
 	   })
 	   
