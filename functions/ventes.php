@@ -5,65 +5,103 @@ include "librairies/fpdi/fpdi.php";
 require_once "tools.php";
 
 function vente(){
-    $db = PDOFactory::getConnection();
-	$data = explode(' ', $_POST["identite_nom"]);
+	$db = PDOFactory::getConnection();
+
+	/** La fonction vente réalise plusieurs actions. Elle :
+	- Identifie le payeur
+	- Crée une transaction en base
+	- Crée tous les produits adhérents
+	- Les associe à cette transaction
+	- Crée toutes les échéances de la transaction
+	**/
+
+	// Obtention de l'identité du payeur
+	$data = explode(' ', $_POST["payeur"]);
 	$prenom = $data[0];
 	$nom = $data[1];
-    $adherent = getAdherent($prenom, $nom);
-	
+	$payeur = getAdherent($prenom, $nom);
+
+	// Génération d'un identifiant unique désignant la transaction
 	$transaction = generateReference();
-    
-    $date_achat = date_create("now")->format('Y-m-d H:i:s');
-    
-	if($_POST["date_activation"] != ""){
-		$actif = 1;
-		$queryHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= ? AND date_chomee <= ?");
-		$queryHoliday->bindParam(1, $_POST["date_activation"]);
-		$queryHoliday->bindParam(2, $_POST["date_expiration"]);
-		$queryHoliday->execute();
 
-		$j = 0;
+	// Date de l'achat
+	$date_achat = date_create("now")->format('Y-m-d H:i:s');
 
-		for($i = 1; $i <= $queryHoliday->rowCount(); $i++){
-			$exp_date = date("Y-m-d 00:00:00",strtotime($_POST["date_expiration"].'+'.$i.'DAYS'));
-			$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
-			$checkHoliday->bindParam(1, $exp_date);
-			$checkHoliday->execute();
-			if($checkHoliday->rowCount() != 0){
-				$j++;
-			}
-			$totalOffset = $i + $j;
-			$new_exp_date = date("Y-m-d 00:00:00",strtotime($_POST["date_expiration"].'+'.$totalOffset.'DAYS'));
-		}
-	} else {
-		$actif = 0;
-	}
+	// Obtention du nombre d'échéances pour la transaction
 	$echeances = $_POST["echeances"];
-	$prix_restant = $_POST["prix_achat"];
-    
-	$queryProduit = $db->prepare("SELECT * FROM produits WHERE produit_id=?");
-	$queryProduit->bindParam(1, $_POST["produit"]);
-	$queryProduit->execute();
-	$produit = $queryProduit->fetch(PDO::FETCH_ASSOC);
-	
-    try{
-        $db->beginTransaction();
-        $new = $db->prepare("INSERT INTO produits_adherents(id_transaction, id_adherent, id_produit, date_achat, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
-        VALUES(:transaction, :adherent, :produit_id, :date_achat, :date_activation, :date_expiration, :volume_horaire, :prix_achat, :actif, :arep)");
-		$new->bindParam(':transaction', $transaction);
-        $new->bindParam(':adherent', $adherent["user_id"]);
-        $new->bindParam(':produit_id', $_POST["produit"]);
-        $new->bindParam(':date_achat', $date_achat);
-        $new->bindParam(':date_activation', $_POST["date_activation"]);
-        $new->bindParam(':date_expiration', $new_exp_date);
-        $new->bindParam(':volume_horaire', $_POST["volume_horaire"]);
-        $new->bindParam(':prix_achat', $_POST["prix_achat"]);
-        $new->bindParam(':actif', $actif);
-        $new->bindParam(':arep', $_POST["autorisation_report"]);
-        $new->execute();
-		
+
+	// Prix total à payer
+	$prix_restant = $_POST["prix_total"];
+
+	try{
+		$db->beginTransaction();
+		// Création de la transaction
+		$new_transaction = $db->prepare("INSERT INTO transactions(id_transaction, payeur_transaction, date_achat, prix_total) VALUES(:transaction, :payeur, :date_achat, :prix_total)");
+		$new_transaction->bindParam(':transaction', $transaction);
+		$new_transaction->bindParam(':payeur', $payeur["user_id"]);
+		$new_transaction->bindParam(':date_achat', $date_achat);
+		$new_transaction->bindParam(':prix_total', $prix_restant);
+		$new_transaction->execute();
+
+		// Création de tous les produits associés à la transaction
+		// LES ETAPES SUIVANTES SONT REPETEES POUR CHAQUE PRODUIT
+		$l = 1;
+		for($l; $l <= $_POST["nombre_produits"]; $l++){
+			// Retrouver le produit à partir de son nom
+			$queryProduit = $db->prepare("SELECT * FROM produits WHERE produit_nom=?");
+			$nomProduit = $_POST["nom-produit-".$l];
+			$queryProduit->bindParam(1, $nomProduit);
+			$queryProduit->execute();
+			$produit = $queryProduit->fetch(PDO::FETCH_ASSOC);
+
+			// Si le forfait a une date d'activation
+			if($_POST["activation-".$l] != "0"){
+				$actif = 1;
+				$date_expiration = date("Y-m-d 00:00:00",strtotime($_POST["activation-".$l].'+'.$produit["validite_initiale"].'DAYS'));
+				$queryHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= ? AND date_chomee <= ?");
+				$queryHoliday->bindParam(1, $_POST["date_activation"]);
+				$queryHoliday->bindParam(2, $date_expiration);
+				$queryHoliday->execute();
+
+				$j = 0;
+
+				for($i = 1; $i <= $queryHoliday->rowCount(); $i++){
+					$exp_date = date("Y-m-d 00:00:00",strtotime($_POST["date_expiration"].'+'.$i.'DAYS'));
+					$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
+					$checkHoliday->bindParam(1, $exp_date);
+					$checkHoliday->execute();
+					if($checkHoliday->rowCount() != 0){
+						$j++;
+					}
+					$totalOffset = $i + $j;
+					$new_exp_date = date("Y-m-d 00:00:00",strtotime($_POST["date_expiration"].'+'.$totalOffset.'DAYS'));
+				}
+			} else {
+				$actif = 0;
+			}
+
+			// Retrouver l'adhérent à partir de son nom
+			$dataBeneficiaire = explode(' ', $_POST["beneficiaire-".$l]);
+			$prenomBeneficiaire = $data[0];
+			$nomBeneficiaire = $data[1];
+			$adherent = getAdherent($prenomBeneficiaire, $nomBeneficiaire);
+
+			$new = $db->prepare("INSERT INTO produits_adherents(id_transaction_foreign, id_user_foreign, id_produit_foreign, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
+		VALUES(:transaction, :adherent, :produit, :date_activation, :date_expiration, :volume_horaire, :prix_achat, :actif, :arep)");
+			$new->bindParam(':transaction', $transaction);
+			$new->bindParam(':adherent', $adherent["user_id"]);
+			$new->bindParam(':produit', $produit["produit_id"]);
+			$new->bindParam(':date_activation', $_POST["date_activation"]);
+			$new->bindParam(':date_expiration', $new_exp_date);
+			$new->bindParam(':volume_horaire', $produit["volume_horaire"]);
+			$new->bindParam(':prix_achat', $_POST["prix-produit-".$l]);
+			$new->bindParam(':actif', $actif);
+			$new->bindParam(':arep', $produit["autorisation_report"]);
+			$new->execute();
+		}
+
 		/**** PDF ****/
-		$pdf = new FPDI();
+		/*$pdf = new FPDI();
 		$pdf->AddPage();
 		$pdf->SetSourceFile("librairies/Salsabor-vente-facture.pdf");
 		$tplIdx = $pdf->importPage(1);
@@ -121,19 +159,21 @@ function vente(){
 		$pdf->setXY(115, 144);
 		$infos = "Méthode de paiement";
 		$infos = iconv('UTF-8', 'windows-1252', $infos);
-		$pdf->Write(0, $infos);
+		$pdf->Write(0, $infos);*/
 
-		for($k = 0; $k < $echeances; $k++){
-			$new_echeance = $db->prepare("INSERT INTO produits_echeances(id_produit_adherent, date_echeance, montant, methode_paiement)
-			VALUES(:transaction, :date_echeance, :prix, :methode)");
+		// Création de toutes les échéances associées à la transaction
+		for($k = 1; $k <= $echeances; $k++){
+			$new_echeance = $db->prepare("INSERT INTO produits_echeances(reference_achat, date_echeance, montant, payeur_echeance, methode_paiement)
+			VALUES(:transaction, :date_echeance, :prix, :payeur, :methode)");
 			$new_echeance->bindParam(':transaction', $transaction);
 			$new_echeance->bindParam(':date_echeance', $_POST["date-echeance-".$k]);
 			$new_echeance->bindParam(':prix', $_POST["montant-echeance-".$k]);
+			$new_echeance->bindParam(':payeur', $_POST["titulaire-paiement-".$k]);
 			$new_echeance->bindParam(':methode', $_POST["moyen-paiement-".$k]);
 			$new_echeance->execute();
-			
+
 			//Echeances - Contenu du tableau
-			$pdf->Rect(10, 149 + (8*$k), 35, 8);
+/*			$pdf->Rect(10, 149 + (8*$k), 35, 8);
 			$pdf->setXY(10, 152 + (8*$k));
 			$infos = "Echéance ".($k+1);
 			$infos = iconv('UTF-8', 'windows-1252', $infos);
@@ -149,46 +189,46 @@ function vente(){
 			$infos = iconv('UTF-8', 'windows-1252', $infos);
 			$pdf->Write(0, $infos);
 			$pdf->Rect(115, 149 + (8*$k), 85, 8);
-			$pdf->setXY(115, 152 + (8*$k));	
+			$pdf->setXY(115, 152 + (8*$k));
 			$infos = $_POST["moyen-paiement-".$k];
 			$infos = iconv('UTF-8', 'windows-1252', $infos);
-			$pdf->Write(0, $infos);
+			$pdf->Write(0, $infos);*/
 		}
-        $db->commit();
-		
-		$pdf->Output();
+		$db->commit();
+
+//		$pdf->Output();
 		/**** /PDF ****/
 		header('Location: dashboard.php');
-    }catch(PDOException $e){
-        $db->rollBack();
-        var_dump($e->getMessage());
-    }
+	}catch(PDOException $e){
+		$db->rollBack();
+		var_dump($e->getMessage());
+	}
 }
 
 function invitation(){
-    $db = PDOFactory::getConnection();
+	$db = PDOFactory::getConnection();
 	$data = explode(' ', $_POST["identite_nom"]);
 	$prenom = $data[0];
 	$nom = $data[1];
-    $adherent = getAdherent($prenom, $nom);
-	
+	$adherent = getAdherent($prenom, $nom);
+
 	$transaction = generateReference();
-    
-    $date_achat = date_create("now")->format('Y-m-d H:i:s');
-    
+
+	$date_achat = date_create("now")->format('Y-m-d H:i:s');
+
 	$actif = 0;
 	$volume_horaire = 0;
 	$prix_achat = 0;
 	$echeances = 0;
 	$montant_echeance = 0;
 	$arep = 0;
-	
-    try{
-        $db->beginTransaction();
-		
+
+	try{
+		$db->beginTransaction();
+
 		if($_POST["id-cours"] != ''){
-			$new = $db->prepare("INSERT INTO produits_adherents(id_transaction, id_adherent, id_produit, date_achat, volume_cours, prix_achat, actif, arep)
-        VALUES(:transaction, :adherent, :produit_id, :date_achat, :volume_horaire, :prix_achat, :actif, :arep)");
+			$new = $db->prepare("INSERT INTO produits_adherents(id_transaction, id_user_foreign, id_produit, date_achat, volume_cours, prix_achat, actif, arep)
+		VALUES(:transaction, :adherent, :produit_id, :date_achat, :volume_horaire, :prix_achat, :actif, :arep)");
 			$new->bindParam(':transaction', $transaction);
 			$new->bindParam(':adherent', $adherent["user_id"]);
 			$new->bindParam(':produit_id', $_POST["produit"]);
@@ -198,7 +238,7 @@ function invitation(){
 			$new->bindParam(':actif', $actif);
 			$new->bindParam(':arep', $arep);
 			$new->execute();
-			
+
 			$passage = $db->prepare("INSERT INTO cours_participants(cours_id_foreign, eleve_id_foreign, produit_adherent_id) VALUES(:cours, :eleve, :transaction)");
 			$passage->bindParam(':cours', $_POST["id-cours"]);
 			$passage->bindParam(':eleve', $adherent["user_id"]);
@@ -206,9 +246,9 @@ function invitation(){
 			$passage->execute();
 		} else {
 			$actif = 1;
-			
-			$new = $db->prepare("INSERT INTO produits_adherents(id_transaction, id_adherent, id_produit, date_achat, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
-        VALUES(:transaction, :adherent, :produit_id, :date_achat, :date_activation, :date_expiration, :volume_horaire, :prix_achat, :actif, :arep)");
+
+			$new = $db->prepare("INSERT INTO produits_adherents(id_transaction, id_user_foreign, id_produit, date_achat, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
+		VALUES(:transaction, :adherent, :produit_id, :date_achat, :date_activation, :date_expiration, :volume_horaire, :prix_achat, :actif, :arep)");
 			$new->bindParam(':transaction', $transaction);
 			$new->bindParam(':adherent', $adherent["user_id"]);
 			$new->bindParam(':produit_id', $_POST["produit"]);
@@ -222,12 +262,12 @@ function invitation(){
 			$new->execute();
 		}
 
-        $db->commit();
-		
+		$db->commit();
+
 		header('Location: dashboard.php');
-    }catch(PDOException $e){
-        $db->rollBack();
-        var_dump($e->getMessage());
-    }
+	}catch(PDOException $e){
+		$db->rollBack();
+		var_dump($e->getMessage());
+	}
 }
 ?>

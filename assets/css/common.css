@@ -1,98 +1,98 @@
 *{
-    font-family: 'Open Sans' sans-serif;
+	font-family: 'Open Sans' sans-serif;
 }
 
 .form-horizontal .control-label{
-    text-align: right;
+	text-align: right;
 }
-    
+
 body{
-    padding-top: 50px;
-    /**background-color: #ECECEC;**/
+	padding-top: 50px;
+	/**background-color: #ECECEC;**/
 }
 
 .nav-tabs{
-    margin-bottom: 10px !important;
+	margin-bottom: 10px !important;
 }
 
 .navbar{
-    background-color: #81002B;
-    border: 0;
+	background-color: #81002B;
+	border: 0;
 }
 
 .navbar-brand{
-    color: #FFF;
-    font-weight: 800;
-    font-size: 2em;
+	color: #FFF;
+	font-weight: 800;
+	font-size: 2em;
 	padding-top: 3px;
 	padding-bottom: 3px;
 }
 
 .sidebar{
-    display: none;
+	display: none;
 }
 @media(min-width:768px){
-    .sidebar{
-        display: block;
-        position: fixed;
-        background-color: #A9023A;
-        z-index: 100;
-        min-height: 100%;
-        height: inherit;
-        padding: 25px 0;
-    }
+	.sidebar{
+		display: block;
+		position: fixed;
+		background-color: #A9023A;
+		z-index: 100;
+		min-height: 100%;
+		height: inherit;
+		padding: 25px 0;
+	}
 }
 
 .main-option{
-    color: white !important;
-    font-weight: 600;
-    font-family: 'globersemibold_free';
+	color: white !important;
+	font-weight: 600;
+	font-family: 'globersemibold_free';
 }
 
 .main-option:hover,
 .main-option.active{
-    background-color: #720026 !important;
-    color: #FAB913 !important;
+	background-color: #720026 !important;
+	color: #FAB913 !important;
 }
 
 .page-title{
-    font-family: 'globersemibold_free';
+	font-family: 'globersemibold_free';
 }
 
 .span-mandatory {
-    color: red;
+	color: red;
 }
 
 .lightbox-form {
-    padding: 15px !important;
+	padding: 15px !important;
 }
 
 .btn-primary{
-    background-color: #FAB913 !important;
-    border-color: #E5A910 !important;
-    color: #000 !important;
+	background-color: #FAB913 !important;
+	border-color: #E5A910 !important;
+	color: #000 !important;
 }
 
 .btn-primary:hover{
-    background-color: #E5A910 !important;
+	background-color: #E5A910 !important;
 }
 
 .nav-tabs>li>a{
-    color: #81002B;
+	color: #81002B;
 }
 
 #tri-cours{
-    float: right;
+	float: right;
 }
 
 #tri-cours>li>a{
-    border-radius: 35px;
-    line-height: 30px;
-    padding: 0 15px;
+	border-radius: 35px;
+	line-height: 30px;
+	padding: 0 15px;
 }
 
 .nav-pills > li{
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .nav-pills > li.active > a{
@@ -107,79 +107,85 @@ body{
 	color: #FAB913;
 }
 #small-menu {
-    width: 4.1666666667%;
+	width: 4.1666666667%;
 }
 
 #small-menu>ul>li {
-    font-size: 1.4em;
+	font-size: 1.4em;
 }
 
 .main{
-    margin-left: 16.66666667%;
+	margin-left: 16.66666667%;
 }
 
 .main.large {
-    width: 95.833333335%;
-    margin-left: 4.1666666667%;
+	width: 95.833333335%;
+	margin-left: 4.1666666667%;
 }
 
 #close {
-    border-radius: 2px;
-    right: 25px;
-    top: 2px;
-    z-index: 2;
-    position: absolute;
-    cursor: pointer;
+	border-radius: 2px;
+	right: 25px;
+	top: 2px;
+	z-index: 2;
+	position: absolute;
+	cursor: pointer;
 }
 
 #open {
-    border-radius: 2px;
-    right: 15px;
-    top: 2px;
-    z-index: 2;
-    position: absolute;
-    cursor: pointer;
+	border-radius: 2px;
+	right: 15px;
+	top: 2px;
+	z-index: 2;
+	position: absolute;
+	cursor: pointer;
 }
 
 #close:before, #close:after{
-    content: " ";
-    position: absolute;
-    border: 10px solid white;
-    border-top-color: transparent;
-    border-left-color: transparent;
-    border-bottom-color: transparent;
+	content: " ";
+	position: absolute;
+	border: 10px solid white;
+	border-top-color: transparent;
+	border-left-color: transparent;
+	border-bottom-color: transparent;
 }
 
 #open:before, #open:after{
-    content: " ";
-    position: absolute;
-    border: 10px solid white;
-    border-top-color: transparent;
-    border-right-color: transparent;
-    border-bottom-color: transparent;
+	content: " ";
+	position: absolute;
+	border: 10px solid white;
+	border-top-color: transparent;
+	border-right-color: transparent;
+	border-bottom-color: transparent;
 }
 
 /** To be in front of the lightboxes **/
 .ui-widget{
-    z-index: 3 !important;
+	z-index: 3 !important;
 }
 
 .level-display{
-    text-align: center;
+	text-align: center;
 }
 
 #cours-options{
-    padding: 15px !important;
+	padding: 15px !important;
 }
 
 .table-responsive{
-    overflow-x: visible;
+	overflow-x: visible;
 }
 .align-right {
 	text-align:right;
 }
 
 #prix_calcul{
+	font-size: 25px;
+	color: #a9023a;
+	height: inherit;
+}
+
+.prix-display{
 	font-size: 25px;
 	color: #a9023a;
 	height: inherit;
@@ -202,39 +208,39 @@ body{
 }
 
 .btn-cours{
-    background-color: #0FC5F5;
+	background-color: #0FC5F5;
 }
 
 .btn-resa{
-    background-color: #D21CFC;
+	background-color: #D21CFC;
 }
 #last-edit {
 	font-style: italic;
 }
 
 .payment-done{
-    color: green;
+	color: green;
 }
 
 .payment-due{
-    color: red;
+	color: red;
 }
 
 #top-page-buttons {
-    margin-top: 10px;
+	margin-top: 10px;
 }
 
 .sort-icon {
-    float: right;
-    cursor: pointer;
+	float: right;
+	cursor: pointer;
 }
 
 #display-planning {
-    margin-top: 10px;
+	margin-top: 10px;
 }
 
 #solo-form {
-    margin-top: 10px !important;
+	margin-top: 10px !important;
 }
 
 .btn-toolbar {
@@ -248,46 +254,46 @@ body{
 	float: right;
 }
 .btn-big {
-    height: 300px !important;
-    width: 300px !important;
-    font-size: 15px;
+	height: 300px !important;
+	width: 300px !important;
+	font-size: 15px;
 }
 
 .details-list {
-    display: flex;
-    border-top: 1px solid #C4C4C4;
-    padding: 10px;
+	display: flex;
+	border-top: 1px solid #C4C4C4;
+	padding: 10px;
 }
 
 .list-name {
-    color: #949494;
+	color: #949494;
 }
 
 .alert-custom {
-    z-index:1031;
-    position: fixed;
-    top: 1%;
-    left: 40%;
-    width: 30%;
-    text-align: center;
+	z-index:1031;
+	position: fixed;
+	top: 1%;
+	left: 40%;
+	width: 30%;
+	text-align: center;
 }
 .notification-icon {
-    color: #4E001A !important;
-    font-size: 19px;
-    padding-left: 8px !important;
-    padding-right: 8px !important;
+	color: #4E001A !important;
+	font-size: 19px;
+	padding-left: 8px !important;
+	padding-right: 8px !important;
 }
 
 .notification-icon:hover{
-    color: #1B0009 !important;
+	color: #1B0009 !important;
 }
 
 .navbar-inverse .navbar-nav > li > a{
-    color: #FFF;
+	color: #FFF;
 }
 
 .error-messages {
-    color: red !important;
+	color: red !important;
 }
 
 .list-item-option {
@@ -306,7 +312,7 @@ body{
 }
 
 .relative-start {
-    font-style: italic;
+	font-style: italic;
 }
 
 .cours-title {
@@ -332,9 +338,9 @@ body{
 
 .main-section {
 	color: #959595 !important;
-    font-weight: 800;
+	font-weight: 800;
 	text-transform: uppercase;
-    font-family: 'globersemibold_free';
+	font-family: 'globersemibold_free';
 	background-color: #A9023A !important;
 }
 
@@ -392,22 +398,22 @@ body{
 }
 
 .thumbnail-title {
-    font-size: 18px;
-    font-weight: 800;
-    text-align: center;
+	font-size: 18px;
+	font-weight: 800;
+	text-align: center;
 }
 
 .shopping-section {
-    z-index: 100;
-    min-height: 100%;
-    height: inherit;
+	z-index: 100;
+	min-height: 100%;
+	height: inherit;
 }
 
 .produit-title {
-    font-size: 26px;
-    font-weight: 800;
-    text-align: center;
+	font-size: 26px;
+	font-weight: 800;
+	text-align: center;
 }
 #right-bordered {
-    border-right: 1px solid black;
+	border-right: 1px solid black;
 }
