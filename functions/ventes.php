@@ -194,6 +194,8 @@ function vente(){
 			$infos = iconv('UTF-8', 'windows-1252', $infos);
 			$pdf->Write(0, $infos);*/
 		}
+
+		$emptyPanier = $db->query("TRUNCATE panier");
 		$db->commit();
 
 //		$pdf->Output();
