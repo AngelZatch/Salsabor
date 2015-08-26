@@ -334,7 +334,7 @@ if(isset($_POST["edit"])){
 									<td><?php echo $achats["id_transaction"];?></td>
 									<td><?php echo date_create($achats["date_achat"])->format('d/m/Y');?></td>
 									<td><?php echo $achats["prix_total"];?> €</td>
-									<td><a href="echeance_details.php?id=<?php echo $achats["id_transaction"];?> " class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
+									<td><a href="transaction_details.php?id=<?php echo $achats["id_transaction"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
 								</tr>
 								<?php } ?>
 							</tbody>

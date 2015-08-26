@@ -62,7 +62,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
 	}?>
 								<tr>
 									<td class="date"><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
-									<td class="forfait-name"><a href="echeance_details.php?id=<?php echo $echeances["id_transaction_foreign"];?>"><?php echo $echeances["id_transaction_foreign"];?></a></td>
+									<td class="forfait-name"><a href="transaction_details.php?id=<?php echo $echeances["id_transaction_foreign"];?>"><?php echo $echeances["id_transaction_foreign"];?></a></td>
 									<td class="user-name"><a href="user_details.php?id=<?php echo $echeances["user_id"];?>&status=echeances"><?php echo $echeances["user_prenom"]." ".$echeances["user_nom"]." (".$echeances["telephone"].")";?></a></td>
 									<td class="montant"><?php echo $echeances["montant"];?> €</td>
 									<td class="status">
