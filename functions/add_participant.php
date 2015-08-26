@@ -18,7 +18,7 @@ try{
 	$db->beginTransaction();
 	
 	// Vérification de la présence d'une invitation
-	$queryInvitation = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=$adherent[user_id] AND produit_nom='Invitation' AND produits_adherents.actif='1'");
+	$queryInvitation = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=$adherent[user_id] AND produit_nom='Invitation' AND produits_adherents.actif='1'");
 	if($queryInvitation->rowCount() == '1'){
 		$produit = $queryInvitation->fetch(PDO::FETCH_ASSOC);
 		$actif = 0;
@@ -30,7 +30,7 @@ try{
 		$deactivate->bindParam(3, $produit["id_transaction"]);
 		$deactivate->execute();
 	} else {
-		$produit = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit=produits.produit_id WHERE id_adherent=$adherent[user_id] AND produit_nom!='Invitation'")->fetch(PDO::FETCH_ASSOC);
+		$produit = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=$adherent[user_id] AND produit_nom!='Invitation'")->fetch(PDO::FETCH_ASSOC);
 		// Vérification de la validité du forfait et activation si nécessaire
 		if($produit["produitActif"] == '0'){
 			$actif = 1;
@@ -55,21 +55,21 @@ try{
 				$new_exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$totalOffset.'DAYS'));
 			}
 
-			$activate = $db->prepare("UPDATE produits_adherents SET date_activation=?, date_expiration=?, actif=? WHERE id_transaction=?");
+			$activate = $db->prepare("UPDATE produits_adherents SET date_activation=?, date_expiration=?, actif=? WHERE id_produit_adherent=?");
 			$activate->bindParam(1, $date_activation);
 			$activate->bindParam(2, $new_exp_date);
 			$activate->bindParam(3, $actif);
-			$activate->bindParam(4, $produit["id_transaction"]);
+			$activate->bindParam(4, $produit["id_produit_adherent"]);
 			$activate->execute();
 		}
 		
-		if(isset($produit["id_transaction"])){
+		if(isset($produit["id_produit_adherent"])){
 			// Déduction du volume horaire dans le forfait (s'il n'est pas un illimité)
-			if(!strstr($forfait["produit_nom"], "Illimité")){
-				$substract = $db->prepare("UPDATE produits_adherents SET volume_cours=? WHERE id_transaction=?");
+			if(!strstr($produit["produit_nom"], "Illimité")){
+				$substract = $db->prepare("UPDATE produits_adherents SET volume_cours=? WHERE id_produit_adherent=?");
 				$remainingHours = $produit["volume_cours"] - $detailCours["cours_unite"];
 				$substract->bindParam(1, $remainingHours);
-				$substract->bindParam(2, $produit["id_transaction"]);
+				$substract->bindParam(2, $produit["id_produit_adherent"]);
 				$substract->execute();
 			}
 		}
@@ -88,7 +88,7 @@ try{
 												VALUES(:cours, :eleve, :produit)");
 	$add->bindParam(':cours', $cours);
 	$add->bindParam(':eleve', $adherent["user_id"]);
-	$add->bindParam(':produit', $produit["id_transaction"]);
+	$add->bindParam(':produit', $produit["id_produit_adherent"]);
 	$add->execute();
 	
 	$db->commit();
