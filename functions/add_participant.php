@@ -27,7 +27,7 @@ try{
 		$deactivate = $db->prepare("UPDATE produits_adherents SET date_fin_utilisation=?, actif=? WHERE id_transaction=?");
 		$deactivate->bindParam(1, $date_now);
 		$deactivate->bindParam(2, $actif);
-		$deactivate->bindParam(3, $produit["id_transaction"]);
+		$deactivate->bindParam(3, $produit["id_produit_adherent"]);
 		$deactivate->execute();
 	} else {
 		$produit = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=$adherent[user_id] AND produit_nom!='Invitation'")->fetch(PDO::FETCH_ASSOC);
