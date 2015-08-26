@@ -5,7 +5,11 @@ $db = PDOFactory::getConnection();
 $data = $_GET["id"];
 $status = $_GET["status"];
 
-$queryForfait = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation FROM produits_adherents JOIN users ON id_adherent=users.user_id JOIN produits ON id_produit=produits.produit_id WHERE id_transaction=?');
+$queryForfait = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation FROM produits_adherents
+                                JOIN users ON id_user_foreign=users.user_id
+                                JOIN produits ON id_produit_foreign=produits.produit_id
+                                JOIN transactions ON id_transaction_foreign=transactions.id_transaction
+                                WHERE id_produit_adherent=?');
 $queryForfait->bindValue(1, $data);
 $queryForfait->execute();
 $forfait = $queryForfait->fetch(PDO::FETCH_ASSOC);
@@ -26,7 +30,9 @@ $nombreCours = $queryCours->rowCount();
 $heuresCours = 0;
 $dureeCours = 0;
 
-$queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_adherent='$data'");
+$queryEcheances = $db->prepare("SELECT * FROM produits_echeances WHERE reference_achat=?");
+$queryEcheances->bindValue(1, $forfait["id_transaction_foreign"]);
+$queryEcheances->execute();
 ?>
 <html>
 <head>
@@ -39,16 +45,15 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances WHERE id_produit_
    <div class="container-fluid">
        <div class="row">
            <?php include "side-menu.php";?>
-           <div class="alert alert-success" id="hours-updated" style="display:none;">Nombre d'heures restantes mis à jour.</div>
            <div class="col-sm-10 main">
                 <div class="btn-toolbar" id="top-page-buttons">
-                   <a href="user_details.php?id=<?php echo $forfait["id_adherent"];?>&status=<?php echo $status;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent (<?php echo $forfait["user_prenom"]." ".$forfait["user_nom"];?>)</a>
+                   <a href="user_details.php?id=<?php echo $forfait["id_user_foreign"];?>&status=<?php echo $status;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent (<?php echo $forfait["user_prenom"]." ".$forfait["user_nom"];?>)</a>
                 </div> <!-- btn-toolbar -->
-               <h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["user_prenom"]." ".$forfait["user_nom"]." (transaction ".$forfait["id_transaction"].")";?></h1>
+               <h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["user_prenom"]." ".$forfait["user_nom"]." (transaction ".$forfait["id_transaction_foreign"].")";?></h1>
 			  <ul class="nav nav-tabs">
                    <li role="presentation" id="infos-toggle" class="active"><a>Détails du forfait</a></li>
                    <li role="presentation" id="history-toggle"><a>Liste des cours</a></li>
-                   <li role="presentation" id="maturity-toggle"><a>Echéances</a></li>
+                   <li role="presentation" id="maturity-toggle"><a>Echéances de la transaction <?php echo $forfait["id_transaction_foreign"];?></a></li>
                </ul>
               <section id="infos">
                <ul style="padding-left:0 !important;">

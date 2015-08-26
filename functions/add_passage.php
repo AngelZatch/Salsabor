@@ -12,7 +12,7 @@ $date = date_create('now')->format('Y-m-d H:i:s');
 
 $salle = $db->query("SELECT * FROM cours JOIN lecteurs_rfid ON cours_salle = lecteurs_rfid.lecteur_lieu WHERE cours_id=$_POST[cours_id]")->fetch(PDO::FETCH_ASSOC);
 
-$search = $db->query("SELECT * FROM users JOIN produits_adherents ON user_id=produits_adherents.id_adherent WHERE user_rfid='$adherent[user_rfid]'");
+$search = $db->query("SELECT * FROM users JOIN produits_adherents ON user_id=produits_adherents.id_user_foreign WHERE user_rfid='$adherent[user_rfid]'");
 $res = $search->fetch(PDO::FETCH_ASSOC);
 if($search->rowCount() == 0 || $res["date_expiration"] <= $date){
 	$status = "3";

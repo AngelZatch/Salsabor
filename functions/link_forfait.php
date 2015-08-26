@@ -5,7 +5,7 @@ $db = PDOFactory::getConnection();
 $eleve = $_POST["eleve_id"];
 $cours = $_POST["cours_id"];
 $forfait = $_POST["produit_id"];
-$produit = $db->query("SELECT id_transaction, volume_cours FROM produits_adherents WHERE id_adherent=$eleve")->fetch(PDO::FETCH_ASSOC);
+$produit = $db->query("SELECT id_transaction, volume_cours FROM produits_adherents WHERE id_user_foreign=$eleve")->fetch(PDO::FETCH_ASSOC);
 $detailCours = $db->query("SELECT * FROM cours JOIN prestations ON cours_type=prestations.prestations_id WHERE cours_id=$cours")->fetch(PDO::FETCH_ASSOC);
 $prof = $db->query("SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=$detailCours[prof_principal] AND type_prestation=$detailCours[cours_type]")->fetch(PDO::FETCH_ASSOC);
 

@@ -40,10 +40,10 @@ $queryAdherents = $db->query('SELECT * FROM users ORDER BY user_nom ASC');
                		</thead>
                		<tbody id="filter-enabled" class="list">
                			<?php while($adherents = $queryAdherents->fetch(PDO::FETCH_ASSOC)){
-               							$produits = $db->query("SELECT * FROM produits_adherents JOIN produits ON id_produit=produits.produit_id WHERE produits_adherents.actif=1 AND id_adherent=$adherents[user_id] AND produit_nom!='Invitation'")->rowCount();
-               							$invitation = $db->query("SELECT * FROM produits_adherents JOIN produits ON id_produit=produits.produit_id WHERE produits_adherents.actif=1 AND id_adherent=$adherents[user_id] AND produit_nom='Invitation'")->rowCount();
+               							$produits = $db->query("SELECT * FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE produits_adherents.actif=1 AND id_user_foreign=$adherents[user_id] AND produit_nom!='Invitation'")->rowCount();
+               							$invitation = $db->query("SELECT * FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE produits_adherents.actif=1 AND id_user_foreign=$adherents[user_id] AND produit_nom='Invitation'")->rowCount();
                							$passages = $db->query("SELECT * FROM passages WHERE (status=0 OR status=3) AND passage_eleve='$adherents[user_rfid]'")->rowCount();
-               							$echeances = $db->query("SELECT * FROM produits_echeances JOIN produits_adherents ON id_produit_adherent=produits_adherents.id_transaction WHERE echeance_effectuee=2 AND id_adherent=$adherents[user_id]")->rowCount();
+               							$echeances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$adherents[user_id]")->rowCount();
                						?>
                			<tr>
                				<td class="col-lg-3 user-name"><?php echo $adherents['user_prenom']." ".$adherents['user_nom'];?></td>

@@ -22,7 +22,7 @@ function add($tag, $ip){
 	if($ip == "192.168.0.3"){
 		$status = "1";
 	} else {
-		$search = $db->query("SELECT * FROM users JOIN produits_adherents ON user_id=produits_adherents.id_adherent WHERE user_rfid='$tag'");
+		$search = $db->query("SELECT * FROM users JOIN produits_adherents ON user_id=produits_adherents.id_user_foreign WHERE user_rfid='$tag'");
 		$res = $search->fetch(PDO::FETCH_ASSOC);
 		if($search->rowCount() == 0 || $res["date_expiration"] <= $today){
 			$status = "3";

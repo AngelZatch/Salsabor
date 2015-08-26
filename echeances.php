@@ -7,9 +7,9 @@ $now = $date->format('Y-m-d');
 $time = $date->add(new DateInterval('P30D'))->format('Y-m-d');
 
 $queryEcheances = $db->query("SELECT * FROM produits_echeances
-										JOIN produits_adherents ON id_produit_adherent=produits_adherents.id_transaction
-										JOIN produits ON id_produit=produits.produit_id
-										JOIN users ON id_adherent=users.user_id
+										JOIN produits_adherents ON reference_achat=produits_adherents.id_transaction_foreign
+										JOIN produits ON id_produit_foreign=produits.produit_id
+										JOIN users ON id_user_foreign=users.user_id
 										WHERE date_echeance<='$time' AND date_echeance>='$now' AND statut_banque = 0 ORDER BY date_echeance ASC");
 ?>
 <html>
@@ -35,7 +35,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
                		<thead>
                			<tr>
                				<th>Date <span class="glyphicon glyphicon-sort sort" data-sort="date"></span></th>
-               				<th>Forfait associé <span class="glyphicon glyphicon-sort sort" data-sort="forfait-name"></span></th>
+               				<th>Transaction associée <span class="glyphicon glyphicon-sort sort" data-sort="forfait-name"></span></th>
                				<th>Détenteur <span class="glyphicon glyphicon-sort sort" data-sort="user-name"></span></th>
                				<th>Montant <span class="glyphicon glyphicon-sort sort" data-sort="montant"></span></th>
                				<th>Statut Salsabor <span class="glyphicon glyphicon-sort sort" data-sort="status"></span></th>
@@ -62,8 +62,8 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
                							}?>
                			<tr>
 							<td class="date"><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
-							<td class="forfait-name"><a href="forfait_adherent_details.php?id=<?php echo $echeances["id_transaction"];?>"><?php echo $echeances["produit_nom"];?></a></td>
-							<td class="user-name"><a href="user_details.php?id=<?php echo $echeances["user_id"];?>"><?php echo $echeances["user_prenom"]." ".$echeances["user_nom"]." (".$echeances["telephone"].")";?></a></td>
+							<td class="forfait-name"><a href="echeance_details.php?id=<?php echo $echeances["id_transaction_foreign"];?>"><?php echo $echeances["id_transaction_foreign"];?></a></td>
+							<td class="user-name"><a href="user_details.php?id=<?php echo $echeances["user_id"];?>&status=echeances"><?php echo $echeances["user_prenom"]." ".$echeances["user_nom"]." (".$echeances["telephone"].")";?></a></td>
 							<td class="montant"><?php echo $echeances["montant"];?> €</td>
 							<td class="status">
 							<?php if($status == "Réceptionnée"){ ?>

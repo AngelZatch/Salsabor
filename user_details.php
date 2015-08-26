@@ -57,7 +57,7 @@ if($details["est_membre"] == 1){
     $queryForfaitsActifs->execute();
 
     // Et on cherche à savoir si des échéances sont en retard
-    $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN produits_adherents ON id_produit_adherent=produits_adherents.id_transaction_foreign WHERE echeance_effectuee=2 AND id_user_foreign=$data")->rowCount(); 
+    $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$data")->rowCount(); 
     
     //Enfin, on obtient l'historique de tous les achats (mêmes les forfaits d'autres personnes)
     $queryAchats = $db->prepare("SELECT * FROM transactions WHERE payeur_transaction=?");
@@ -146,6 +146,8 @@ if(isset($_POST["edit"])){
                    <a href="adherents.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des adhérents</a>
                    <?php } if($status == 'staff'){ ?>
 					<a href="staff_liste.php?rank=0" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste du staff</a>
+                    <?php } if($status == 'echeances'){ ?>
+                    <a href="echeances.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux échéances</a>
                <?php } ?>
                 </div> <!-- btn-toolbar -->
                <h1 class="page-title"><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?></h1>
@@ -310,7 +312,7 @@ if(isset($_POST["edit"])){
                                <td><?php echo date_create($forfaits["date_achat"])->format('d/m/Y');?></td>
                                <td><?php echo $periode_validite;?></td>
                                <td><?php echo $forfaits["prix_achat"];?> €</td>
-                               <td><a href="forfait_adherent_details.php?id=<?php echo $forfaits["id_transaction"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
+                               <td><a href="forfait_adherent_details.php?id=<?php echo $forfaits["id_produit_adherent"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
                            </tr>
                            <?php } ?>
                        </tbody>
@@ -332,7 +334,7 @@ if(isset($_POST["edit"])){
                                <td><?php echo $achats["id_transaction"];?></td>
                                <td><?php echo date_create($achats["date_achat"])->format('d/m/Y');?></td>                          
                                <td><?php echo $achats["prix_total"];?> €</td>
-                               <td><a href="#" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
+                               <td><a href="echeance_details.php?id=<?php echo $achats["id_transaction"];?> " class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
                            </tr>
                            <?php } ?>
                        </tbody>

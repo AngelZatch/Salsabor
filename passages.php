@@ -80,7 +80,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 									  $status = "danger";
 									  break;
 							  };
-							  $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN produits_adherents ON id_produit_adherent=produits_adherents.id_transaction WHERE echeance_effectuee=2 AND id_adherent=$passages[user_id]")->rowCount();
+							  $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$passages[user_id]")->rowCount();
 						?>
 							<li class="list-group-item list-group-item-<?php echo $status;?> draggable col-sm-12">
 								<p class="col-sm-3 eleve-infos">
