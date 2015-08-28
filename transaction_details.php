@@ -31,7 +31,11 @@ $queryProduits->execute();
 				<?php include "side-menu.php";?>
 				<div class="col-sm-10 main">
 					<div class="btn-toolbar" id="top-page-buttons">
+						<?php if($status == "transactions"){ ?>
+						<a href="transactions.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux transactions</a>
+						<?php } else { ?>
 						<a href="user_details.php?id=<?php echo $transaction["payeur_transaction"];?>&status=<?php echo $status;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent</a>
+						<?php } ?>
 					</div> <!-- btn-toolbar -->
 					<h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Transaction <?php echo $transaction["id_transaction"]?></h1>
 					<ul class="nav nav-tabs">

@@ -2,7 +2,7 @@
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
-$queryTransactions = $db->prepare("SELECT * FROM transactions");
+$queryTransactions = $db->query("SELECT * FROM transactions JOIN users ON payeur_transaction=users.user_id");
 ?>
 <html>
 	<head>
@@ -19,7 +19,7 @@ $queryTransactions = $db->prepare("SELECT * FROM transactions");
 					<p id="current-time"></p>
 					<h1 class="page-title"><span class="glyphicon glyphicon-piggy-bank"></span> Transactions</h1>
 					<div id="echeances-list">
-						<table class="table">
+						<table class="table table-hover">
 							<thead>
 								<tr>
 									<th>Transaction</th>
@@ -31,12 +31,12 @@ $queryTransactions = $db->prepare("SELECT * FROM transactions");
 							</thead>
 							<tbody>
 								<?php while($transactions = $queryTransactions->fetch(PDO::FETCH_ASSOC)){ ?>
-								<tr>
+								<tr onclick="window.location.href='transaction_details.php?id=<?php echo $transactions["id_transaction"];?>&status=transactions'" style="cursor:default;">
 									<td><?php echo $transactions["id_transaction"];?></td>
 									<td><?php echo $transactions["date_achat"];?></td>
-									<td></td>
+									<td><?php echo $transactions["user_prenom"]." ".$transactions["user_nom"];?></td>
 									<td><?php echo $transactions["prix_total"];?></td>
-									<td></td>
+									<td><a href="transaction_details.php?id=<?php echo $transactions["id_transaction"];?>&status=transactions" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
 								</tr>
 								<?php } ?>
 							</tbody>

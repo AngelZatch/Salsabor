@@ -125,7 +125,8 @@ $queryEcheances->execute();
 									<td><?php echo $cours["niveau_name"];?></td>
 									<td><?php echo $cours["salle_name"];?></td>
 								</tr>
-								<?php $dureeCours = (strtotime($cours["cours_end"]) - strtotime($cours["cours_start"]))/3600;
+								<?php
+																						   $dureeCours = (strtotime($cours["cours_end"]) - strtotime($cours["cours_start"]))/3600;
 																						   $heuresCours += $dureeCours;} ?>
 							</tbody>
 							<input type="hidden" name="total-cours" value="<?php echo $heuresCours;?>">
