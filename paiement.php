@@ -89,7 +89,6 @@ if(isset($_POST["submit"])){
 				$("[name='payeur']").autocomplete({
 					source: listeAdherents
 				});
-				console.log(sessionStorage);
 				var i = 1;
 				var recap;
 				var nombreProduits = sessionStorage.getItem('numberProduits');
@@ -145,8 +144,8 @@ if(isset($_POST["submit"])){
 						var current_date = start_date.add(1, 'month').format("YYYY-MM-DD");
 						echeance += "<td class='col-lg-2'><input type='date' class='form-control' value="+current_date+" name='date-echeance-"+i+"'></td>";
 						echeance += "<td class='col-lg-2'><div class='input-group'><input type='text' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance-"+i+"'><span class='input-group-addon'>€</span></div></td>";
-						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='moyen-paiement-"+i+"' placeholder='CB / Numéro de chèque / Mandat / Espèces...'><span role='buttton' class='input-group-btn'><a class='btn btn-info' role='button'>Propager</a></span></div></td>";
-						echeance += "<td class='col-lg-6'><div class='input-group'><input type='text' class='form-control' name='titulaire-paiement-"+i+"' placeholder='Prénom Nom'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button'>Propager</a></span></div></td>";
+						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='moyen-paiement-"+i+"' placeholder='CB / Numéro de chèque / Mandat / Espèces...'><span role='buttton' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-methode-"+i+"'>Propager</a></span></div></td>";
+						echeance += "<td class='col-lg-6'><div class='input-group'><input type='text' class='form-control' name='titulaire-paiement-"+i+"' placeholder='Prénom Nom'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-titulaire-"+i+"'>Propager</a></span></div></td>";
 						echeance += "</tr>";
 						montant_restant -= montant_echeance;
 						$(".maturities-table").append(echeance);
@@ -182,6 +181,23 @@ if(isset($_POST["submit"])){
 					$("[name^='moyen-paiement']").autocomplete({
 						source: methods
 					})
+					$("[name^='propagation-methode']").click(function(){
+						var clicked = $(this);
+						var methode = clicked.parent().prev().val();
+						if(methode.indexOf("Chèque") != -1){
+							var token = "Chèque n°";
+							$("[name^='propagation-methode']").parent().prev().val(token);
+							clicked.parent().prev().val(methode);
+						} else {
+							$("[name^='propagation-methode']").parent().prev().val(methode);
+						}
+
+					})
+					$("[name^='propagation-titulaire']").click(function(){
+						var titulaire = $(this).parent().prev().val();
+						console.log(titulaire);
+						$("[name^='propagation-titulaire']").parent().prev().val(titulaire);
+					});
 				})
 			})
 		</script>
