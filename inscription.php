@@ -130,7 +130,7 @@ if(isset($_POST['addAdherent'])){
 		   <div class="col-sm-10 main">
 			  <p id="current-time"></p>
 			   <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> <?php echo $titleText;?></h1>
-				<form action="inscription.php" method="post" role="form" id="add_adherent" enctype="multipart/form-data">
+				<form action="adherents.php" method="post" role="form" id="add_adherent" enctype="multipart/form-data">
 				  <div class="btn-toolbar">
 					   <a href="<?php echo $backLink;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <?php echo $buttonText;?></a>
 					   <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
