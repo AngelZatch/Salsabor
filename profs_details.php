@@ -66,115 +66,115 @@ if(isset($_POST["edit"])){
 ?>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Détails du professeur <?php echo $details['user_prenom']." ".$details['user_nom'];?> | Salsabor</title>
-    <?php include "includes.php";?>
+	<meta charset="UTF-8">
+	<title>Détails du professeur <?php echo $details['user_prenom']." ".$details['user_nom'];?> | Salsabor</title>
+	<?php include "includes.php";?>
 </head>
 <body>
   <?php include "nav.php";?>
    <div class="container-fluid">
-       <div class="row">
-           <?php include "side-menu.php";?>
-           <div class="col-sm-10 main">
-              <div class="btn-toolbar" id="top-page-buttons">
-                   <a href="professeurs.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
-                </div> <!-- btn-toolbar -->
-               <h1 class="page-title"><span class="glyphicon glyphicon-user"></span>
-                   <?php echo $details['user_prenom']." ".$details['user_nom'];?>
-               </h1>
-               <ul class="nav nav-tabs">
-                   <li role="presentation" id="infos-toggle"><a>Informations personnelles</a></li>
-                   <li role="presentation" id="history-toggle"><a>Historique des cours</a></li>
-                   <li role="presentation" id="tarifs-toggle"><a>Tarifs</a></li>
-                   <li role="presentation" id="stats-toggle" class="active"><a>Statistiques</a></li>
-               </ul>
-               <section id="infos">
-                   <form method="post">
-                       <div class="form-group">
-                          <label for="prenom" class="control-label">Prénom</label>
-                           <input type="text" name="prenom" class="form-control" value="<?php echo $details['user_prenom'];?>">
-                       </div>
-                       <div class="form-group">
-                          <label for="" form="nom" class="control-label">Nom</label>
-                           <input type="text" name="nom" class="form-control" value="<?php echo $details['user_nom'];?>">
-                       </div>
-                       <div class="form-group">
-                          <label for="mail" class="control-label">Adresse mail</label>
-                           <input type="text" name="mail" class="form-control" value="<?php echo $details['mail'];?>">
-                       </div>
-                       <div class="form-group">
-                       		<label for="" class="control-label">Adresse postale</label>
-                       		<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control" value="<?php echo $details["rue"];?>">
-                       </div>
+	   <div class="row">
+		   <?php include "side-menu.php";?>
+		   <div class="col-sm-10 main">
+			  <div class="btn-toolbar" id="top-page-buttons">
+				   <a href="professeurs.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
+				</div> <!-- btn-toolbar -->
+			   <h1 class="page-title"><span class="glyphicon glyphicon-user"></span>
+				   <?php echo $details['user_prenom']." ".$details['user_nom'];?>
+			   </h1>
+			   <ul class="nav nav-tabs">
+				   <li role="presentation" id="infos-toggle"><a>Informations personnelles</a></li>
+				   <li role="presentation" id="history-toggle"><a>Historique des cours</a></li>
+				   <li role="presentation" id="tarifs-toggle"><a>Tarifs</a></li>
+				   <li role="presentation" id="stats-toggle" class="active"><a>Statistiques</a></li>
+			   </ul>
+			   <section id="infos">
+				   <form method="post">
+					   <div class="form-group">
+						  <label for="prenom" class="control-label">Prénom</label>
+						   <input type="text" name="prenom" class="form-control" value="<?php echo $details['user_prenom'];?>">
+					   </div>
+					   <div class="form-group">
+						  <label for="" form="nom" class="control-label">Nom</label>
+						   <input type="text" name="nom" class="form-control" value="<?php echo $details['user_nom'];?>">
+					   </div>
+					   <div class="form-group">
+						  <label for="mail" class="control-label">Adresse mail</label>
+						   <input type="mail" name="mail" class="form-control" value="<?php echo $details['mail'];?>">
+					   </div>
+					   <div class="form-group">
+							   <label for="" class="control-label">Adresse postale</label>
+							   <input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control" value="<?php echo $details["rue"];?>">
+					   </div>
 						<div class="form-group">
 							<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control" value="<?php echo $details["code_postal"];?>">
 						</div>
 						<div class="form-group">
 							<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control" value="<?php echo $details["ville"];?>">
 						</div>
-                       <div class="form-group">
-                          <label for="tel_fixe" class="control-label">Téléphone fixe</label>
-                           <input type="text" name="tel_fixe" class="form-control" value="<?php echo $details['telephone'];?>">
-                       </div>
-                       <div class="form-group">
-                          <label for="tel_port" class="control-label">Téléphone portable</label>
-                           <input type="text" name="tel_port" class="form-control" value="<?php echo $details['tel_secondaire'];?>">
-                       </div>
+					   <div class="form-group">
+						  <label for="tel_fixe" class="control-label">Téléphone fixe</label>
+						   <input type="text" name="tel_fixe" class="form-control" value="<?php echo $details['telephone'];?>">
+					   </div>
+					   <div class="form-group">
+						  <label for="tel_port" class="control-label">Téléphone portable</label>
+						   <input type="text" name="tel_port" class="form-control" value="<?php echo $details['tel_secondaire'];?>">
+					   </div>
 						<div class="form-group">
 							<label for="date_naissance" class="control-label">Date de naissance</label>
 							<input type="date" name="date_naissance" id="date_naissance" class="form-control" value=<?php echo $details["date_naissance"];?>>
 						</div>
 					  <input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER LES MODIFICATIONS" style="width:100%;">
-                   </form>
-               </section> <!-- Informations personnelles -->
-               <section id="history">
-                 <div class="filter-options col-lg-6">
-                 	<p class="section-title">Options de filtrage</p>
-                 </div>
-                  <div class="price-summary col-lg-6">
-                       <p class="section-title">TOTAL</p>
-                       <p>Nombre de cours : <?php echo $queryHistory->rowCount();?></p>
-                       <p>Somme totale : <?php echo $totalPrice;?> €</p>
-                       <p>Somme déjà réglée : <?php echo $totalPaid;?> €</p>
-                       <p>Somme restante : <?php echo $totalDue = $totalPrice - $totalPaid;?> €</p>
-                   </div>
-                   <div id="cours-list">
-                   	<table class="table table-striped">
-                   	    <thead>
-                   	        <tr>
-                   	            <th>Intitulé <span class="glyphicon glyphicon-sort sort" data-sort="cours-name"></span></th>
-                   	            <th>Jour <span class="glyphicon glyphicon-sort sort" data-sort="jour"></span></th>
-                   	            <th>Niveau <span class="glyphicon glyphicon-sort sort" data-sort="niveau"></span></th>
-                   	            <th>Lieu <span class="glyphicon glyphicon-sort sort" data-sort="lieu"></span></th>
-                   	            <th>Somme <span class="glyphicon glyphicon-sort sort" data-sort="montant"></span></th>
-                   	        </tr>
-                   	    </thead>
-                   	    <tbody class="list">
-                   	        <?php while ($history = $queryHistory->fetch(PDO::FETCH_ASSOC)){?>
-                   	        <tr>
-                   	            <td class="cours-name"><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
-                   	            <td class="jour"><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
-                   	            <td class="niveau"><?php echo $history['niveau_name'];?></td>
-                   	            <td class="lieu"><?php echo $history['salle_name'];?></td>
-                   	            <td class="<?php echo ($history['paiement_effectue'] != 0)?'payment-done':'payment-due';?> montant"><?php echo $history['cours_prix'];?> €</td>
-                   	        </tr>
-                   	        <?php $totalPrice += $history['cours_prix'];
-                   	if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
-                   	    </tbody>
-                   	</table>
-                   </div>
-               </section><!-- Historique des cours -->
-               <section id="tarifs">
-                   <table class="table table-striped">
-                       <thead>
-                           <tr>
-                               <th class="col-sm-3">Intitulé</th>
-                               <th class="col-sm-3">Prix</th>
-                               <th class="col-sm-3">Coefficient</th>
-                               <th class="col-sm-3"></th>
-                           </tr>
-                       </thead>
-                       <tbody id="table-content">
+				   </form>
+			   </section> <!-- Informations personnelles -->
+			   <section id="history">
+				 <div class="filter-options col-lg-6">
+					 <p class="section-title">Options de filtrage</p>
+				 </div>
+				  <div class="price-summary col-lg-6">
+					   <p class="section-title">TOTAL</p>
+					   <p>Nombre de cours : <?php echo $queryHistory->rowCount();?></p>
+					   <p>Somme totale : <?php echo $totalPrice;?> €</p>
+					   <p>Somme déjà réglée : <?php echo $totalPaid;?> €</p>
+					   <p>Somme restante : <?php echo $totalDue = $totalPrice - $totalPaid;?> €</p>
+				   </div>
+				   <div id="cours-list">
+					   <table class="table table-striped">
+						   <thead>
+							   <tr>
+								   <th>Intitulé <span class="glyphicon glyphicon-sort sort" data-sort="cours-name"></span></th>
+								   <th>Jour <span class="glyphicon glyphicon-sort sort" data-sort="jour"></span></th>
+								   <th>Niveau <span class="glyphicon glyphicon-sort sort" data-sort="niveau"></span></th>
+								   <th>Lieu <span class="glyphicon glyphicon-sort sort" data-sort="lieu"></span></th>
+								   <th>Somme <span class="glyphicon glyphicon-sort sort" data-sort="montant"></span></th>
+							   </tr>
+						   </thead>
+						   <tbody class="list">
+							   <?php while ($history = $queryHistory->fetch(PDO::FETCH_ASSOC)){?>
+							   <tr>
+								   <td class="cours-name"><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
+								   <td class="jour"><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
+								   <td class="niveau"><?php echo $history['niveau_name'];?></td>
+								   <td class="lieu"><?php echo $history['salle_name'];?></td>
+								   <td class="<?php echo ($history['paiement_effectue'] != 0)?'payment-done':'payment-due';?> montant"><?php echo $history['cours_prix'];?> €</td>
+							   </tr>
+							   <?php $totalPrice += $history['cours_prix'];
+					   if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
+						   </tbody>
+					   </table>
+				   </div>
+			   </section><!-- Historique des cours -->
+			   <section id="tarifs">
+				   <table class="table table-striped">
+					   <thead>
+						   <tr>
+							   <th class="col-sm-3">Intitulé</th>
+							   <th class="col-sm-3">Prix</th>
+							   <th class="col-sm-3">Coefficient</th>
+							   <th class="col-sm-3"></th>
+						   </tr>
+					   </thead>
+					   <tbody id="table-content">
 							<tr id="new-tarif" style="display:none;">
 								<td class="col-sm-3">
 									<select name="prestation" id="prestation" class="form-control">
@@ -197,43 +197,43 @@ if(isset($_POST["edit"])){
 								</td>
 								<td class="col-sm-3"><button class="btn btn-default" onClick="addTarif()"><span class="glyphicon glyphicon-plus"></span> Valider</button><button class="btn btn-default" id="cancel"><span class="glyphicon glyphicon-cancel"></span> Annuler</button></td>
 							</tr>
-                     	<input type="hidden" name="prof_id" id="prof_id" value="<?php echo $data;?>">
-                       </tbody>
-                   </table>
-                   <button class="btn btn-primary" id="add-tarif">AJOUTER UN TARIF</button>
-                   <p id="json-output"></p>
-               </section> <!-- Tarifs -->
-               <section id="stats">
-               	<p>Nombre de cours</p>
-               	<div id="nombre-cours" style="height: 250px;"></div>
-               	<p>Types de cours donnés</p>
-               </section> <!-- Statistiques -->
-           </div>
-       </div>
+						 <input type="hidden" name="prof_id" id="prof_id" value="<?php echo $data;?>">
+					   </tbody>
+				   </table>
+				   <button class="btn btn-primary" id="add-tarif">AJOUTER UN TARIF</button>
+				   <p id="json-output"></p>
+			   </section> <!-- Tarifs -->
+			   <section id="stats">
+				   <p>Nombre de cours</p>
+				   <div id="nombre-cours" style="height: 250px;"></div>
+				   <p>Types de cours donnés</p>
+			   </section> <!-- Statistiques -->
+		   </div>
+	   </div>
    </div>
    <?php include "scripts.php";?>
-   <script src="assets/js/nav-tabs.js"></script>  
+   <script src="assets/js/nav-tabs.js"></script>
    <script>
 		$("#add-tarif").click(function(){
 			$("#new-tarif").show();
 		});
-	   
+
 	   $("#cancel").click(function(){
 		   $("#new-tarif").hide();
 	   });
-	   
+
 	   $(document).ready(function(){
 		   fetchTarifs();
-		   
-		   	var options = {
+
+			   var options = {
 			   valueNames: ['cours-name', 'jour', 'niveau', 'lieu', 'montant']
 		   };
 		   var coursList = new List('cours-list', options);
-		   
+
 		   var prof_id = <?php echo $data;?>;
 		   $.post('functions/compile_prof_cours.php', {prof_id}).done(function(data){
 			   var listeCours = JSON.parse(data);
-			   
+
 			   // Nombre de cours par jour
 			   var daysArray = [["lundi",0], ["mardi",0], ["mercredi",0], ["jeudi",0], ["vendredi",0], ["samedi",0]];
 			   var resDays = [];
@@ -258,9 +258,9 @@ if(isset($_POST["edit"])){
 				   labels: ['Nombre de cours']
 			   });
 		   })
-		   
+
 	   });
-	   
+
 	   function addTarif(){
 		   var prof_id = $("#prof_id").val();
 		   var prestation = $("#prestation").val();
@@ -273,7 +273,7 @@ if(isset($_POST["edit"])){
 			   fetchTarifs();
 		   })
 	   };
-	   
+
 	   function fetchTarifs(){
 		   var id = $("#prof_id").val();
 		   $.post("functions/get_tarifs.php", {id}).done(function(data){
@@ -293,7 +293,7 @@ if(isset($_POST["edit"])){
 			   }
 		   });
 	   }
-	   
+
 	   function updateTarif(id){
 		   var update_id = id;
 		   var tarif = $("#tarif-"+update_id).children(".tarif-prix").children("span").html();
@@ -312,7 +312,7 @@ if(isset($_POST["edit"])){
 			   setTimeout(function(){ $("#tarif-"+update_id).css(next); },800);
 		   });
 	   }
-	   
+
 	   function deleteTarif(id){
 		   var delete_id = id;
 		   alert(delete_id);

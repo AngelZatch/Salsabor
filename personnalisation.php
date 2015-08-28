@@ -78,7 +78,7 @@ $prixTotal = 0;
 									</div>
 									<div class="form-group">
 										<label for="text" class="control-label">Adresse mail</label>
-										<input type="text" name="mail" id="mail" placeholder="Adresse mail" class="form-control">
+										<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control">
 									</div>
 									<div class="form-group">
 										<label for="telephone" class="control-label">Numéro de téléphone</label>

@@ -9,34 +9,34 @@ $valueStaff = 0;
 $backLink = "";
 $titleText = "Inscrire un ";
 switch($status){
-    case "teacher":
-    $valueTeacher = 1;
-    $backLink = "professeurs.php";
-    $buttonText = "Retour aux professeurs";
-    $titleText .= "professeur";
-    break;
-    
-    case "eleve":
-    $valueEleve = 1;
-    $backLink = "adherents.php";
-    $buttonText = "Retour aux élèves";
-    $titleText .= "élève";
-    break;
-		
+	case "teacher":
+	$valueTeacher = 1;
+	$backLink = "professeurs.php";
+	$buttonText = "Retour aux professeurs";
+	$titleText .= "professeur";
+	break;
+
+	case "eleve":
+	$valueEleve = 1;
+	$backLink = "adherents.php";
+	$buttonText = "Retour aux élèves";
+	$titleText .= "élève";
+	break;
+
 	case "contact":
-    $backLink = "dashboard.php";
-    $buttonText = "Retour au panneau d'administration";
-    $titleText .= "contact";
-    break;
-    
-    case "staff":
-    $valueStaff = 1;
-    $backLink = "staff_liste.php?rank=0";
-    $buttonText = "Retour aux membres du staff";
-    $titleText .= "staff";
-    break;
+	$backLink = "dashboard.php";
+	$buttonText = "Retour au panneau d'administration";
+	$titleText .= "contact";
+	break;
+
+	case "staff":
+	$valueStaff = 1;
+	$backLink = "staff_liste.php?rank=0";
+	$buttonText = "Retour aux membres du staff";
+	$titleText .= "staff";
+	break;
 }
-    
+
 
 $now = date_create('now')->format('Y-m-d');
 
@@ -63,7 +63,7 @@ if(isset($_POST['addAdherent'])){
 		}
 	}
 	print_r($_FILES);
-	
+
 	// Champs par défaut
 	$actif = 1;
 	$acces_web = 1;
@@ -118,22 +118,22 @@ if(isset($_POST['addAdherent'])){
 ?>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Inscription d'un adhérent | Salsabor</title>
-    <?php include "includes.php";?>
+	<meta charset="UTF-8">
+	<title>Inscription d'un adhérent | Salsabor</title>
+	<?php include "includes.php";?>
 </head>
 <body>
   <?php include "nav.php";?>
    <div class="container-fluid">
-       <div class="row">
-           <?php include "side-menu.php";?>
-           <div class="col-sm-10 main">
-              <p id="current-time"></p>
-               <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> <?php echo $titleText;?></h1>
+	   <div class="row">
+		   <?php include "side-menu.php";?>
+		   <div class="col-sm-10 main">
+			  <p id="current-time"></p>
+			   <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> <?php echo $titleText;?></h1>
 				<form action="inscription.php" method="post" role="form" id="add_adherent" enctype="multipart/form-data">
 				  <div class="btn-toolbar">
-				 	  <a href="<?php echo $backLink;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <?php echo $buttonText;?></a>
-				 	  <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
+					   <a href="<?php echo $backLink;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <?php echo $buttonText;?></a>
+					   <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
 				</div> <!-- btn-toolbar -->
 				<p class="form-section">Informations personnelles</p>
 				<div class="form-group">
@@ -164,7 +164,7 @@ if(isset($_POST['addAdherent'])){
 				</div>
 				<div class="form-group">
 				<label for="mail" class="control-label">Adresse mail</label>
-					<input type="text" name="mail" id="mail" placeholder="Adresse mail" class="form-control mandatory">
+					<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control mandatory">
 				</div>
 				<div class="form-group">
 				<label for="telephone" class="control-label">Téléphone principal</label>
@@ -199,7 +199,7 @@ if(isset($_POST['addAdherent'])){
 					<label for="est_membre" class="control-label">Membre</label>
 					<input name="est_membre" id="est_membre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueEleve;?>">
 					<label for="est_professeur" class="control-label">Professeur</label>
-                    <input name="est_professeur" id="est_professeur" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueTeacher;?>">
+					<input name="est_professeur" id="est_professeur" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueTeacher;?>">
 					<label for="est_staff" class="control-label">Staff</label>
 					<input name="est_staff" id="est_staff" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueStaff;?>">
 					<label for="est_prestataire" class="control-label">Prestataire</label>
@@ -224,11 +224,11 @@ if(isset($_POST['addAdherent'])){
 					</select>
 				</div>
 			  </form>
-           </div>
-       </div>
+		   </div>
+	   </div>
    </div>
    <?php include "scripts.php";?>
-      <script>
+	  <script>
 		  $(document).ready(function(){
 			  $("#est_autre").change(function(){
 				  if($(this).val() == '1'){
@@ -237,7 +237,7 @@ if(isset($_POST['addAdherent'])){
 					  $("#autre").hide('600');
 				  }
 			  });
-			  
+
 			  $(".rib-toggle").change(function(){
 				  if($("#est_staff").val() == '0' && $("#est_professeur").val() == '0' && $("#est_prestataire").val() == '0'){
 					  $("#rib-data").hide('600');
@@ -245,7 +245,7 @@ if(isset($_POST['addAdherent'])){
 					  $("#rib-data").show('600');
 				  }
 			  })
-			 
+
 		  });
 	   var listening = false;
 	   var wait;
@@ -279,9 +279,9 @@ if(isset($_POST['addAdherent'])){
 			  showRemove: false,
 			  browseClass: "btn btn-info btn-block",
 			  browseLabel: " Sélectionnez une image",
-			  browseIcon: '<i class="glyphicon glyphicon-picture"></i>' 
+			  browseIcon: '<i class="glyphicon glyphicon-picture"></i>'
 		  });
-		  
+
 		  $("[name='certificat_medical']").fileinput({
 			  previewFileType: "image",
 			  showUpload: false,
@@ -289,8 +289,8 @@ if(isset($_POST['addAdherent'])){
 			  showRemove: false,
 			  browseClass: "btn btn-info btn-block",
 			  browseLabel: " Sélectionnez un fichier",
-			  browseIcon: '<i class="glyphicon glyphicon-open-file"></i>' 
+			  browseIcon: '<i class="glyphicon glyphicon-open-file"></i>'
 		  });
-	</script>    
+	</script>
 </body>
 </html>

@@ -186,7 +186,7 @@ if(isset($_POST["edit"])){
 								</div>
 								<div class="form-group col-sm-10">
 									<label for="mail" class="control-label">Adresse mail</label>
-									<input type="text" name="mail" id="mail" placeholder="Adresse mail" class="form-control" value="<?php echo $details["mail"];?>">
+									<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control" value="<?php echo $details["mail"];?>">
 								</div>
 							</div>
 							<div class="form-group">
