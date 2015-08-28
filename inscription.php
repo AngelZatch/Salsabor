@@ -44,7 +44,7 @@ $connaissances = $db->query("SELECT * FROM sources_connaissance");
 
 if(isset($_POST['addAdherent'])){
 	// Upload de l'image
-	$target_dir = "assets/pictures/";
+	/*$target_dir = "assets/pictures/";
 	$target_file = $target_dir.basename($_FILES["photo_identite"]["name"]);
 	$uploadOk = 1;
 	//$imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
@@ -54,7 +54,7 @@ if(isset($_POST['addAdherent'])){
 	} else {
 		echo "Fichier non conforme";
 		$uploadOk = 0;
-	}**/
+	}
 	if($uploadOk == 1){
 		if(move_uploaded_file($_FILES["photo_identite"]["tmp_name"], $target_file)){
 			echo "Fichier uploadé avec succès.";
@@ -62,7 +62,7 @@ if(isset($_POST['addAdherent'])){
 			echo "Erreur au transfert du fichier.";
 		}
 	}
-	print_r($_FILES);
+	print_r($_FILES);*/
 
 	// Champs par défaut
 	$actif = 1;
@@ -71,12 +71,12 @@ if(isset($_POST['addAdherent'])){
 		$db->beginTransaction();
 		$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
 												date_inscription, rue, code_postal, ville, mail,
-												telephone, tel_secondaire, photo, source_connaissance,
+												telephone, tel_secondaire, source_connaissance,
 												acces_web, est_membre, est_professeur, est_staff, est_prestataire,
 												est_autre, autre_statut, user_rib, actif)
 										VALUES(:prenom, :nom, :rfid, :date_naissance,
 												:date_inscription, :rue, :code_postal, :ville, :mail,
-												:telephone, :tel_secondaire, :photo, :sources_connaissance,
+												:telephone, :tel_secondaire, :sources_connaissance,
 												:acces_web, :est_membre, :est_professeur, :est_staff, :est_prestataire,
 												:est_autre, :autre_statut, :user_rib, :actif)');
 		$new->bindParam(':prenom', $_POST['identite_prenom']);
@@ -90,7 +90,6 @@ if(isset($_POST['addAdherent'])){
 		$new->bindParam(':mail', $_POST['mail']);
 		$new->bindParam(':telephone', $_POST['telephone']);
 		$new->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
-		$new->bindParam(':photo', $target_file);
 		$new->bindParam(':sources_connaissance', $_POST["sources_connaissance"]);
 		$new->bindParam(':acces_web', $acces_web);
 		$new->bindParam(':est_membre', $_POST["est_membre"]);
@@ -108,8 +107,7 @@ if(isset($_POST['addAdherent'])){
 			$delete->execute();
 		}
 		$db->commit();
-		echo "Succès lors de l'ajout";
-		header('Location: adherents.php');
+		/*header('Location: adherents.php');*/
 	} catch(PDOException $e){
 		$db->rollBack();
 		echo $e->getMessage();
@@ -130,7 +128,7 @@ if(isset($_POST['addAdherent'])){
 		   <div class="col-sm-10 main">
 			  <p id="current-time"></p>
 			   <h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> <?php echo $titleText;?></h1>
-				<form action="adherents.php" method="post" role="form" id="add_adherent" enctype="multipart/form-data">
+				<form action="" method="post" role="form" id="add_adherent" enctype="multipart/form-data">
 				  <div class="btn-toolbar">
 					   <a href="<?php echo $backLink;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <?php echo $buttonText;?></a>
 					   <input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
