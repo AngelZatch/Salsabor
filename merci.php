@@ -17,6 +17,7 @@ $db = PDOFactory::getConnection();
 					<p id="current-time"></p>
 					<div class="jumbotron">
 						<h1>Merci beaucoup de cet achat !</h1>
+						<a href="dashboard.php" role="button" class="btn btn-default btn-block">Retour au panneau principal</a>
 					</div>
 				</div>
 			</div>

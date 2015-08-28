@@ -219,7 +219,7 @@ function vente(){
 
 		//		$pdf->Output();
 		/**** /PDF ****/
-		header('Location: dashboard.php');
+		header('Location: merci.php');
 	}catch(PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());
