@@ -17,14 +17,22 @@ include 'functions/reservations.php';
 				<div class="col-sm-10 main">
 					<h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Page Test !</h1>
 					<form action="tests.php" method="post">
-						<input type="date" name="date_test">
+						<input type="text" name="identite">
 						<input type="submit">
 					</form>
 					<?php
-echo $date_activation = date_create("now")->format("Y-m-d");
-echo "<br>";
-$date_expiration = date("Y-m-d 00:00:00", strtotime($date_activation.'+30DAYS'));
-echo $date_expiration;
+
+	$data = explode(' ', $_POST["identite"]);
+$prenom = $data[0];
+$nom = '';
+for($i = 1; $i < count($data); $i++){
+	$nom .= $data[$i];
+	if($i != count($data)){
+		$nom .= " ";
+	}
+}
+echo $nom;
+
 					?>
 				</div>
 			</div>

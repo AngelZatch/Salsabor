@@ -18,7 +18,13 @@ function vente(){
 	// Obtention de l'identité du payeur
 	$data = explode(' ', $_POST["payeur"]);
 	$prenom = $data[0];
-	$nom = $data[1];
+	$nom = '';
+	for($i = 1; $i < count($data); $i++){
+		$nom .= $data[$i];
+		if($i != count($data)){
+			$nom .= " ";
+		}
+	}
 	$payeur = getAdherent($prenom, $nom);
 
 	// Génération d'un identifiant unique désignant la transaction
@@ -83,7 +89,13 @@ function vente(){
 			// Retrouver l'adhérent à partir de son nom
 			$dataBeneficiaire = explode(' ', $_POST["beneficiaire-".$l]);
 			$prenomBeneficiaire = $data[0];
-			$nomBeneficiaire = $data[1];
+			$nomBeneficiaire = '';
+			for($m = 1; $i < count($dataBeneficiaire); $i++){
+				$nom .= $dataBeneficiaire[$m];
+				if($m != count($dataBeneficiaire)){
+					$nom .= " ";
+				}
+			}
 			$adherent = getAdherent($prenomBeneficiaire, $nomBeneficiaire);
 
 			$new = $db->prepare("INSERT INTO produits_adherents(id_transaction_foreign, id_user_foreign, id_produit_foreign, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
@@ -173,7 +185,7 @@ function vente(){
 			$new_echeance->execute();
 
 			//Echeances - Contenu du tableau
-/*			$pdf->Rect(10, 149 + (8*$k), 35, 8);
+			/*			$pdf->Rect(10, 149 + (8*$k), 35, 8);
 			$pdf->setXY(10, 152 + (8*$k));
 			$infos = "Echéance ".($k+1);
 			$infos = iconv('UTF-8', 'windows-1252', $infos);
@@ -198,7 +210,7 @@ function vente(){
 		$emptyPanier = $db->query("TRUNCATE panier");
 		$db->commit();
 
-//		$pdf->Output();
+		//		$pdf->Output();
 		/**** /PDF ****/
 		header('Location: dashboard.php');
 	}catch(PDOException $e){
@@ -211,7 +223,13 @@ function invitation(){
 	$db = PDOFactory::getConnection();
 	$data = explode(' ', $_POST["identite_nom"]);
 	$prenom = $data[0];
-	$nom = $data[1];
+	$nom = '';
+	for($i = 1; $i < count($data); $i++){
+		$nom .= $data[$i];
+		if($i != count($data)){
+			$nom .= " ";
+		}
+	}
 	$adherent = getAdherent($prenom, $nom);
 
 	$transaction = generateReference();

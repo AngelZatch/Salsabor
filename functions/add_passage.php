@@ -5,7 +5,13 @@ include "tools.php";
 
 $data = explode(' ', $_POST["adherent"]);
 $prenom = $data[0];
-$nom = $data[1];
+$nom = '';
+for($i = 1; $i < count($data); $i++){
+	$nom .= $data[$i];
+	if($i != count($data)){
+		$nom .= " ";
+	}
+}
 
 $adherent = getAdherent($prenom, $nom);
 $date = date_create('now')->format('Y-m-d H:i:s');

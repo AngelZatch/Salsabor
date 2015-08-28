@@ -6,25 +6,32 @@ require_once "tools.php";
 
 function addResa(){
 	$db = PDOFactory::getConnection();
-	
+
 	$data = explode(' ', $_POST["identite_nom"]);
 	$prenom = $data[0];
-	$nom = $data[1];
+	$nom = '';
+	for($i = 1; $i < count($data); $i++){
+		$nom .= $data[$i];
+		if($i != count($data)){
+			$nom .= " ";
+		}
+	}
+
 	$prestation = $_POST['prestation'];
 	$date_debut = $_POST['date_debut']." ".$_POST['heure_debut'];
 	$date_fin = $_POST['date_debut']." ".$_POST['heure_fin'];
 	$lieu = $_POST['lieu'];
-	
+
 	$unite = (strtotime($_POST['heure_fin']) - strtotime($_POST['heure_debut']))/3600;
 	$prix = $_POST['prix_resa'];
-	
+
 	$priorite = $_POST['priorite'];
 	$paiement = $_POST['paiement'];
-	
+
 	// Obtention de la personne qui a fait la réservation
 	$adherent = getAdherent($prenom, $nom);
 	$salle = getLieu($lieu);
-	
+
 	/**** PDF ****/
 	$pdf = new FPDI();
 	$pdf->AddPage();
@@ -43,20 +50,20 @@ function addResa(){
 	$infos = $adherent['user_prenom']." ".$adherent['user_nom']."\n".$adherent['rue']." - ".$adherent['code_postal']." ".$adherent['ville']."\n".$adherent['mail']."\nTél : ".$adherent['telephone'];
 	$infos = iconv('UTF-8', 'windows-1252', $infos);
 	$pdf->MultiCell(0, 7, $infos);
-	
+
 	// Réservation
 	$pdf->setXY(10, 131);
 	if($priorite == 0) {
 		$textPriorite = 'libre (Attention : une réservation libre peut être supprimée sans préavis au profit d\'un cours)';
 	} else $textPriorite = 'payée';
-	
+
 	// Obtention de l'intitulé du type de prestation
 	$nomPresa = $db->query('SELECT prestations_name FROM prestations WHERE prestations_id='.$prestation)->fetch(PDO::FETCH_ASSOC);
-	
+
 	$reservation = $nomPresa['prestations_name']."\nLe ".date_create($date_debut)->format('d/m/Y')." de ".date_create($date_debut)->format('H:i')." à ".date_create($date_fin)->format('H:i')."\nRéservation ".$textPriorite."\n".$salle['salle_name'];
 	$reservation = iconv('UTF-8', 'windows-1252', $reservation);
 	$pdf->MultiCell(0, 7, $reservation);
-	
+
 	if($priorite == 1){
 		$pdf->setXY(170, 165);
 		$pdf->setFont('Arial', 'B', 18);
@@ -82,7 +89,7 @@ function addResa(){
 		$insertResa->bindParam(':priorite', $priorite);
 		$insertResa->bindParam(':paiement_effectue', $paiement);
 		$insertResa->execute();
-		
+
 		$db->commit();
 		// On génère le PDF "facture" une fois que la transaction est terminée
 		header("Location : planning.php");
@@ -94,16 +101,16 @@ function addResa(){
 
 function deleteResa(){
 	$index = $_POST['id'];
-    $db = PDOFactory::getConnection();
-    try{
-        $db->beginTransaction();
-        $delete = $db->prepare('DELETE FROM reservations WHERE reservation_id=?');
-        $delete->bindValue(1, $index, PDO::PARAM_INT);
-        $delete->execute();
-        $db->commit();
-    } catch(PDOException $e){
-        $db->rollBack();
-        var_dump($e->getMessage());
-    }
-    header('Location: planning.php');
+	$db = PDOFactory::getConnection();
+	try{
+		$db->beginTransaction();
+		$delete = $db->prepare('DELETE FROM reservations WHERE reservation_id=?');
+		$delete->bindValue(1, $index, PDO::PARAM_INT);
+		$delete->execute();
+		$db->commit();
+	} catch(PDOException $e){
+		$db->rollBack();
+		var_dump($e->getMessage());
+	}
+	header('Location: planning.php');
 }
