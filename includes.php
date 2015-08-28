@@ -10,4 +10,3 @@
 <link rel="stylesheet" href="assets/css/checkbox-x.min.css">
 <link rel="stylesheet" href="assets/css/fileinput.min.css">
 <link rel="stylesheet" href="assets/css/morris.css">
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700,300,600,400' rel='stylesheet' type='text/css'>
