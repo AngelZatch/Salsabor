@@ -65,14 +65,14 @@ function vente(){
 				$actif = 1;
 				$date_expiration = date("Y-m-d 00:00:00",strtotime($_POST["activation-".$l].'+'.$produit["validite_initiale"].'DAYS'));
 				$queryHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= ? AND date_chomee <= ?");
-				$queryHoliday->bindParam(1, $_POST["date_activation"]);
+				$queryHoliday->bindParam(1, $_POST["activation-".$l]);
 				$queryHoliday->bindParam(2, $date_expiration);
 				$queryHoliday->execute();
 
 				$j = 0;
 
 				for($i = 1; $i <= $queryHoliday->rowCount(); $i++){
-					$exp_date = date("Y-m-d 00:00:00",strtotime($_POST["date_expiration"].'+'.$i.'DAYS'));
+					$exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$i.'DAYS'));
 					$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
 					$checkHoliday->bindParam(1, $exp_date);
 					$checkHoliday->execute();
@@ -80,7 +80,7 @@ function vente(){
 						$j++;
 					}
 					$totalOffset = $i + $j;
-					$new_exp_date = date("Y-m-d 00:00:00",strtotime($_POST["date_expiration"].'+'.$totalOffset.'DAYS'));
+					$new_exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$totalOffset.'DAYS'));
 				}
 			} else {
 				$actif = 0;
@@ -103,7 +103,7 @@ function vente(){
 			$new->bindParam(':transaction', $transaction);
 			$new->bindParam(':adherent', $beneficiaire["user_id"]);
 			$new->bindParam(':produit', $produit["produit_id"]);
-			$new->bindParam(':date_activation', $_POST["date_activation"]);
+			$new->bindParam(':date_activation', $_POST["activation-".$l]);
 			$new->bindParam(':date_expiration', $new_exp_date);
 			$new->bindParam(':volume_horaire', $produit["volume_horaire"]);
 			$new->bindParam(':prix_achat', $_POST["prix-produit-".$l]);
