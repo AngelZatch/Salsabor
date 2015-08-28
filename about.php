@@ -16,7 +16,7 @@ $db = PDOFactory::getConnection();
 				<div class="col-sm-10 main">
 					<p id="current-time"></p>
 					<h1 class="page-title"><span class="glyphicon glyphicon-question-sign"></span> A propos de Salsabor Gestion</h1>
-					<p>Version de l'application : 1.0.5 mise à jour le 28/08/2015</p>
+					<p>Version de l'application : 1.1.0 mise à jour le 28/08/2015</p>
 				</div>
 			</div>
 		</div>
