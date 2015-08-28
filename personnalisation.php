@@ -37,7 +37,6 @@ $date_now = date_create("now")->format("Y-m-d");
 					</div>
 					<div class="btn-toolbar">
 						<a href="catalogue.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-th"></span> Retourner au catalogue</a>
-						<a href="paiement.php" role="button" id="check-memory" class="btn btn-default" input="submit"><span class="glyphicon glyphicon-repeat"></span> Règlement des achats <span class="glyphicon glyphicon-arrow-right"></span></a>
 					</div><!-- btn-toolbar -->
 					<?php foreach($row_panier as $p){ ?>
 					<section id="details-<?php echo $p["panier_order"];?>">
@@ -163,7 +162,8 @@ $date_now = date_create("now")->format("Y-m-d");
 						<?php }
 } ?>
 					</ul>
-					Total du panier : <span id="prix-total"><?php echo $prixTotal;?></span> €
+					<p id="shopping-cart-price">Total du panier : <span id="prix-total"><?php echo $prixTotal;?></span> €</p>
+					<a href="paiement.php" role="button" id="check-memory" class="btn btn-success btn-block" input="submit"> Règlement des achats <span class="glyphicon glyphicon-arrow-right"></span></a>
 				</div>
 			</div>
 		</div>

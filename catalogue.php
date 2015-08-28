@@ -25,7 +25,7 @@ $listeProduits = $db->query("SELECT * FROM produits");
 					</div>
 					<div class="btn-toolbar">
 						<a href="dashboard.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Annuler et retourner à l'accueil</a>
-						<a href="personnalisation.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-erase"></span> Personnaliser les produits achetés <span class="glyphicon glyphicon-arrow-right"></span></a>
+						<a href="personnalisation.php" role="button" class="btn btn-success"><span class="glyphicon glyphicon-erase"></span> Personnaliser les produits achetés <span class="glyphicon glyphicon-arrow-right"></span></a>
 					</div> <!-- btn-toolbar -->
 					<div class="row">
 						<?php while($produits = $listeProduits->fetch(PDO::FETCH_ASSOC)){?>
@@ -41,6 +41,7 @@ $listeProduits = $db->query("SELECT * FROM produits");
 						</div>
 						<?php } ?>
 					</div>
+					<a href="personnalisation.php" role="button" class="btn btn-success btn-block"><span class="glyphicon glyphicon-erase"></span> Personnaliser les produits achetés <span class="glyphicon glyphicon-arrow-right"></span></a>
 				</div>
 			</div>
 		</div>
