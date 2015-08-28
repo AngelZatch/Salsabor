@@ -112,7 +112,10 @@ $date_now = date_create("now")->format("Y-m-d");
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label for="date_expiration">Date indicative d'expiration</label>
-										<input type="date" name="date_expiration-<?php echo $p["panier_order"];?>" class="form-control">
+										<div class="input-group">
+											<input type="date" name="date_expiration-<?php echo $p["panier_order"];?>" class="form-control">
+											<span role="button" class="input-group-btn"><a class="btn btn-info" role="button" onclick="showExpDate(<?php echo $p["panier_order"];?>)">Rafraîchir</a></span>
+										</div>
 									</div>
 								</div>
 							</div>

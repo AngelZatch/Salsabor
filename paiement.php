@@ -50,7 +50,7 @@ if(isset($_POST["submit"])){
 							</tbody>
 						</table>
 						<div class="form-group">
-							<label for="prix_total">Prix total de la commande :</label>
+							<label for="prix_total">Prix total de la commande</label>
 							<input type="text" name="prix_total" class="form-control">
 						</div>
 						<div class="form-group">
