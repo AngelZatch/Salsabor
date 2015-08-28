@@ -88,20 +88,20 @@ function vente(){
 
 			// Retrouver l'adhérent à partir de son nom
 			$dataBeneficiaire = explode(' ', $_POST["beneficiaire-".$l]);
-			$prenomBeneficiaire = $data[0];
+			$prenomBeneficiaire = $dataBeneficiaire[0];
 			$nomBeneficiaire = '';
-			for($m = 1; $i < count($dataBeneficiaire); $i++){
-				$nom .= $dataBeneficiaire[$m];
+			for($m = 1; $m < count($dataBeneficiaire); $m++){
+				$nomBeneficiaire .= $dataBeneficiaire[$m];
 				if($m != count($dataBeneficiaire)){
-					$nom .= " ";
+					$nomBeneficiaire .= " ";
 				}
 			}
-			$adherent = getAdherent($prenomBeneficiaire, $nomBeneficiaire);
+			$beneficiaire = getAdherent($prenomBeneficiaire, $nomBeneficiaire);
 
 			$new = $db->prepare("INSERT INTO produits_adherents(id_transaction_foreign, id_user_foreign, id_produit_foreign, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
 		VALUES(:transaction, :adherent, :produit, :date_activation, :date_expiration, :volume_horaire, :prix_achat, :actif, :arep)");
 			$new->bindParam(':transaction', $transaction);
-			$new->bindParam(':adherent', $adherent["user_id"]);
+			$new->bindParam(':adherent', $beneficiaire["user_id"]);
 			$new->bindParam(':produit', $produit["produit_id"]);
 			$new->bindParam(':date_activation', $_POST["date_activation"]);
 			$new->bindParam(':date_expiration', $new_exp_date);
@@ -219,6 +219,7 @@ function vente(){
 	}
 }
 
+/** INVITATION **/
 function invitation(){
 	$db = PDOFactory::getConnection();
 	$data = explode(' ', $_POST["identite_nom"]);
