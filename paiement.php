@@ -3,6 +3,12 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 include 'functions/ventes.php';
 
+$queryAdherentsNom = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
+$array_eleves = array();
+while($adherents = $queryAdherentsNom->fetch(PDO::FETCH_ASSOC)){
+	array_push($array_eleves, $adherents["user_prenom"]." ".$adherents["user_nom"]);
+}
+
 if(isset($_POST["submit"])){
 	vente();
 }
@@ -79,20 +85,24 @@ if(isset($_POST["submit"])){
 		<?php include "scripts.php";?>
 		<script>
 			$(document).ready(function(){
+				var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
+				$("[name='payeur']").autocomplete({
+					source: listeAdherents
+				});
 				console.log(sessionStorage);
 				var i = 1;
 				var recap;
 				var nombreProduits = sessionStorage.getItem('numberProduits');
 				for(i; i <= nombreProduits; i++){
 					recap += "<tr>";
-					recap += "<td><input type='text' class='form-control' value='"+sessionStorage.getItem('produit-'+i)+"' name='nom-produit-"+i+"'></td>";
-					recap += "<td><input type='text' class='form-control' value='"+sessionStorage.getItem('beneficiaire-'+i)+"' name='beneficiaire-"+i+"'></td>";
+					recap += "<td><input type='hidden' class='form-control' value='"+sessionStorage.getItem('produit-'+i)+"' name='nom-produit-"+i+"'>"+sessionStorage.getItem('produit-'+i)+"</td>";
+					recap += "<td><input type='hidden' class='form-control' value='"+sessionStorage.getItem('beneficiaire-'+i)+"' name='beneficiaire-"+i+"'>"+sessionStorage.getItem('beneficiaire-'+i)+"</td>";
 					if(sessionStorage.getItem('activation-'+i) == '0'){
 						recap += "<td><input type='hidden' name='activation-"+i+"' value='0'>Activation automatique</td>";
 					} else {
 						recap += "<td><input type='hidden' name='activation-"+i+"' value='"+sessionStorage.getItem('activation-'+i)+"'>"+sessionStorage.getItem('activation-'+i)+"</td>";
 					}
-					recap += "<td><input type='text' class='form-control' value="+sessionStorage.getItem('prixIndividuel-'+i)+" name='prix-produit-"+i+"'></td>";
+					recap += "<td><input type='hidden' class='form-control' value="+sessionStorage.getItem('prixIndividuel-'+i)+" name='prix-produit-"+i+"'>"+sessionStorage.getItem('prixIndividuel-'+i)+" €</td>";
 					recap += "</tr>";
 				}
 				$(".produits-recap").append(recap);
@@ -115,8 +125,10 @@ if(isset($_POST["submit"])){
 						start_date.date(10);
 					} else if(start_date.date() < 18){
 						start_date.date(20);
-					} else {
+					} else if(start_date.date() < 28){
 						start_date.date(30);
+					} else {
+						start_date.date(41);
 					}
 					var montant_total = prixTotal;
 					var montant_restant = montant_total;
@@ -126,7 +138,7 @@ if(isset($_POST["submit"])){
 					$(".maturities-table").empty();
 					for(i; i <= nbEcheances; i++){
 						if(i == nbEcheances){
-							montant_echeance = (montant_restant).toFixed(2);
+							montant_echeance = montant_restant;
 						}
 						// Construction du tableau des échéances
 						var echeance = "<tr>";

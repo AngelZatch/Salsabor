@@ -16,13 +16,13 @@ $date_now = date_create("now")->format("Y-m-d 00:00:00");
 
 try{
 	$db->beginTransaction();
-	
+
 	// Vérification de la présence d'une invitation
 	$queryInvitation = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=$adherent[user_id] AND produit_nom='Invitation' AND produits_adherents.actif='1'");
 	if($queryInvitation->rowCount() == '1'){
 		$produit = $queryInvitation->fetch(PDO::FETCH_ASSOC);
 		$actif = 0;
-		
+
 		// Désactivation de l'invitation
 		$deactivate = $db->prepare("UPDATE produits_adherents SET date_fin_utilisation=?, actif=? WHERE id_transaction=?");
 		$deactivate->bindParam(1, $date_now);
@@ -62,7 +62,7 @@ try{
 			$activate->bindParam(4, $produit["id_produit_adherent"]);
 			$activate->execute();
 		}
-		
+
 		if(isset($produit["id_produit_adherent"])){
 			// Déduction du volume horaire dans le forfait (s'il n'est pas un illimité)
 			if(!strstr($produit["produit_nom"], "Illimité")){
@@ -73,7 +73,7 @@ try{
 				$substract->execute();
 			}
 		}
-		
+
 		// Mise à jour de la rémunération du professeur
 		if($prof["ratio_multiplicatif"] == "personne"){
 			$prix = $detailCours["cours_prix"] + $prof["tarif_prestation"];
@@ -83,14 +83,14 @@ try{
 			$add->execute();
 		}
 	}
-	
+
 	$add = $db->prepare("INSERT INTO cours_participants(cours_id_foreign, eleve_id_foreign, produit_adherent_id)
 												VALUES(:cours, :eleve, :produit)");
 	$add->bindParam(':cours', $cours);
 	$add->bindParam(':eleve', $adherent["user_id"]);
 	$add->bindParam(':produit', $produit["id_produit_adherent"]);
 	$add->execute();
-	
+
 	$db->commit();
 	echo "Participation ajoutée.";
 } catch (PDOExecption $e) {

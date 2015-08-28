@@ -15,6 +15,7 @@ $row_panier = $listePanier->fetchAll();
 $quantitePanier = $listePanier->rowCount();
 
 $prixTotal = 0;
+$date_now = date_create("now")->format("Y-m-d");
 ?>
 <html>
 	<head>
@@ -53,6 +54,7 @@ $prixTotal = 0;
 								<?php } ?>
 								<p>Il donne accès à <?php echo $p["volume_horaire"];?> heures de cours pendant toute sa durée d'activation.</p>
 								<p>L'extension de durée (AREP) n'est pas autorisée.</p>
+								<input type="hidden" name="validite_produit-<?php echo $p["panier_order"];?>" value="<?php echo $p["validite_initiale"];?>">
 							</div>
 						</div>
 						<div class="form-group"> <!-- Bénéficiaire -->
@@ -98,15 +100,19 @@ $prixTotal = 0;
 									<div class="form-group">
 										<label for="date_activation">Date d'activation <span class="label-tip">Par défaut : activation au premier passage</span></label>
 										<div class="input-group">
-											<input type="date" name="date_activation" id="date_activation-<?php echo $p["panier_order"];?>" class="form-control" onchange="evaluateExpirationDate()">
-											<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true" onclick="evaluateExpirationDate()">Insérer aujourd'hui</a></span>
+											<?php if(stristr($p["produit_nom"], "adhésion")){ ?>
+											<input type="date" name="date_activation" id="date_activation-<?php echo $p["panier_order"];?>" class="form-control" onchange="showExpDate(<?php echo $p["panier_order"];?>)" value="<?php echo $date_now;?>">
+											<?php } else { ?>
+											<input type="date" name="date_activation" id="date_activation-<?php echo $p["panier_order"];?>" class="form-control" onchange="showExpDate(<?php echo $p["panier_order"];?>)">
+											<?php } ?>
+											<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true" onclick="showExpDate(<?php echo $p["panier_order"];?>)">Insérer aujourd'hui</a></span>
 										</div>
 									</div>
 								</div>
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label for="date_expiration">Date indicative d'expiration</label>
-										<input type="date" name="date_expiration" class="form-control">
+										<input type="date" name="date_expiration-<?php echo $p["panier_order"];?>" class="form-control">
 									</div>
 								</div>
 							</div>
@@ -170,7 +176,7 @@ $prixTotal = 0;
 					ifAdherentExists();
 				}).blur(function(){
 					ifAdherentExists();
-				})
+				});
 
 				$("[name^='promotion']").keyup(function(){
 					if($(this).val().length != '0'){
@@ -221,6 +227,13 @@ $prixTotal = 0;
 					sessionStorage.setItem('prixTotal', $("#prix-total").html());
 				})
 			})
+			function showExpDate(digit){
+				var date_activation = new moment($("[name='date_activation-"+digit+"']").val());
+				var validite = $("[name='validite_produit-"+digit+"']").val();
+				var date_desactivation = date_activation.add(validite, 'days').format('YYYY-MM-DD');
+				console.log(validite);
+				$("[name='date_expiration-"+digit+"']").val(date_desactivation);
+			}
 			var listening = false;
 			var wait;
 			$("[name='fetch-rfid']").click(function(){
