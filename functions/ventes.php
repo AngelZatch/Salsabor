@@ -110,6 +110,13 @@ function vente(){
 			$new->bindParam(':actif', $actif);
 			$new->bindParam(':arep', $produit["autorisation_report"]);
 			$new->execute();
+
+			// Promotion de l'adhérent en tant que membre Salsabor si achat d'une adhésion annuelle
+			if(stristr($_POST["nom-produit-".$l],"adhésion")){
+				$upgrade = $db->prepare("UPDATE users SET est_membre=1 WHERE user_id=?");
+				$upgrade->bindValue(1, $beneficiaire["user_id"]);
+				$upgrade->execute();
+			}
 		}
 
 		/**** PDF ****/

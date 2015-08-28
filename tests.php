@@ -17,22 +17,11 @@ include 'functions/reservations.php';
 				<div class="col-sm-10 main">
 					<h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Page Test !</h1>
 					<form action="tests.php" method="post">
-						<input type="text" name="identite">
+						<input type="text" name="produit">
 						<input type="submit">
 					</form>
 					<?php
-
-	$data = explode(' ', $_POST["identite"]);
-$prenom = $data[0];
-$nom = '';
-for($i = 1; $i < count($data); $i++){
-	$nom .= $data[$i];
-	if($i != count($data)){
-		$nom .= " ";
-	}
-}
-echo $nom;
-
+if(stristr($_POST["produit"], "Adhésion")){echo "Concordance";}else{echo "Pas de concordance";}
 					?>
 				</div>
 			</div>
