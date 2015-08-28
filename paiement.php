@@ -66,10 +66,11 @@ if(isset($_POST["submit"])){
 							<table class="table table-striped">
 								<thead>
 									<tr>
-										<th class="col-lg-2">Date de l'échéance</th>
+										<th class="col-lg-1">Date de l'échéance</th>
 										<th class="col-lg-2">Montant</th>
 										<th class="col-lg-4">Méthode de règlement</th>
-										<th class="col-lg-6">Titulaire du moyen de paiement</th>
+										<th class="col-lg-4">Titulaire du moyen de paiement</th>
+										<th class="col-lg-1">Déjà reçue ?</th>
 									</tr>
 								</thead>
 								<tbody class="maturities-table">
@@ -113,7 +114,8 @@ if(isset($_POST["submit"])){
 					"Chèque n°",
 					"Espèces",
 					"Virement compte à compte",
-					"Chèques vacances"
+					"Chèques vacances",
+					"En attente"
 				];
 				// Gestion des échéances (nombre et valeur)
 				$("[name='echeances']").keyup(function(){
@@ -142,10 +144,11 @@ if(isset($_POST["submit"])){
 						// Construction du tableau des échéances
 						var echeance = "<tr>";
 						var current_date = start_date.add(1, 'month').format("YYYY-MM-DD");
-						echeance += "<td class='col-lg-2'><input type='date' class='form-control' value="+current_date+" name='date-echeance-"+i+"'></td>";
+						echeance += "<td class='col-lg-1'><input type='date' class='form-control' value="+current_date+" name='date-echeance-"+i+"'></td>";
 						echeance += "<td class='col-lg-2'><div class='input-group'><input type='text' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance-"+i+"'><span class='input-group-addon'>€</span></div></td>";
 						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='moyen-paiement-"+i+"' placeholder='CB / Numéro de chèque / Mandat / Espèces...'><span role='buttton' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-methode-"+i+"'>Propager</a></span></div></td>";
-						echeance += "<td class='col-lg-6'><div class='input-group'><input type='text' class='form-control' name='titulaire-paiement-"+i+"' placeholder='Prénom Nom'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-titulaire-"+i+"'>Propager</a></span></div></td>";
+						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='titulaire-paiement-"+i+"' placeholder='Prénom Nom'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-titulaire-"+i+"'>Propager</a></span></div></td>";
+						echeance += "<td class='col-lg-1'><input name='statut-echeance-"+i+"'></td>";
 						echeance += "</tr>";
 						montant_restant -= montant_echeance;
 						$(".maturities-table").append(echeance);
@@ -181,6 +184,7 @@ if(isset($_POST["submit"])){
 					$("[name^='moyen-paiement']").autocomplete({
 						source: methods
 					})
+					$("[name^='statut-echeance']").checkboxX({threeState: false, size: 'lg', value: 0});
 					$("[name^='propagation-methode']").click(function(){
 						var clicked = $(this);
 						var methode = clicked.parent().prev().val();

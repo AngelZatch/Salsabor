@@ -182,13 +182,17 @@ function vente(){
 
 		// Création de toutes les échéances associées à la transaction
 		for($k = 1; $k <= $echeances; $k++){
-			$new_echeance = $db->prepare("INSERT INTO produits_echeances(reference_achat, date_echeance, montant, payeur_echeance, methode_paiement)
-			VALUES(:transaction, :date_echeance, :prix, :payeur, :methode)");
+			if($_POST["statut-echeance-".$k] == '1'){$date_paiement = $date_achat;}
+
+			$new_echeance = $db->prepare("INSERT INTO produits_echeances(reference_achat, date_echeance, montant, payeur_echeance, methode_paiement, echeance_effectuee, date_paiement)
+			VALUES(:transaction, :date_echeance, :prix, :payeur, :methode, :echeance_effectuee, :date_paiement)");
 			$new_echeance->bindParam(':transaction', $transaction);
 			$new_echeance->bindParam(':date_echeance', $_POST["date-echeance-".$k]);
 			$new_echeance->bindParam(':prix', $_POST["montant-echeance-".$k]);
 			$new_echeance->bindParam(':payeur', $_POST["titulaire-paiement-".$k]);
 			$new_echeance->bindParam(':methode', $_POST["moyen-paiement-".$k]);
+			$new_echeance->bindParam(':echeance_effectuee', $_POST["statut-echeance-".$k]);
+			$new_echeance->bindParam('date_paiement', $date_achat);
 			$new_echeance->execute();
 
 			//Echeances - Contenu du tableau
