@@ -107,7 +107,7 @@ if(isset($_POST['addAdherent'])){
 			$delete->execute();
 		}
 		$db->commit();
-		/*header('Location: adherents.php');*/
+		header('Location: adherents.php');
 	} catch(PDOException $e){
 		$db->rollBack();
 		echo $e->getMessage();
@@ -134,47 +134,71 @@ if(isset($_POST['addAdherent'])){
 							<input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
 						</div> <!-- btn-toolbar -->
 						<p class="form-section">Informations personnelles</p>
-						<div class="form-group">
-							<label for="identite_prenom" class="control-label">Prénom</label>
-							<input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory" placeholder="Prénom">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="identite_prenom" class="control-label">Prénom</label>
+									<input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory" placeholder="Prénom">
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="identite_nom" class="control-label">Nom</label>
+									<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory" placeholder="Nom">
+								</div>
+							</div>
 						</div>
-						<div class="form-group">
-							<label for="identite_nom" class="control-label">Nom</label>
-							<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory" placeholder="Nom">
-						</div>
-						<div class="form-group">
-							<label for="profile_picture" class="control-label">Photo d'identité</label>
-							<input type="file" class="form-control" name="photo_identite">
-						</div>
-						<div class="form-group">
-							<label for="certificat_medical" class="control-label">Certificat Médical</label>
-							<input type="file" class="form-control" name="certificat_medical">
-						</div>
-						<div class="form-group">
-							<label for="" class="control-label">Adresse postale</label>
-							<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control mandatory">
-						</div>
-						<div class="form-group">
-							<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control mandatory">
-						</div>
-						<div class="form-group">
-							<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control mandatory">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="" class="control-label">Adresse postale</label>
+									<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control mandatory">
+								</div>
+							</div>
+							<div class="form-group col-lg-2">
+								<label for="">Code postal</label>
+								<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control">
+							</div>
+							<div class="form-group col-lg-4">
+								<label for="">Ville</label>
+								<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control">
+							</div>
 						</div>
 						<div class="form-group">
 							<label for="mail" class="control-label">Adresse mail</label>
 							<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control mandatory">
 						</div>
-						<div class="form-group">
-							<label for="telephone" class="control-label">Téléphone principal</label>
-							<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control mandatory">
-						</div>
-						<div class="form-group">
-							<label for="tel_secondaire" class="control-label">Téléphone secondaire</label>
-							<input type="text" name="tel_secondaire" class="form-control" placeholder="Numéro de téléphone secondaire">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="telephone" class="control-label">Téléphone principal</label>
+									<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control mandatory">
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="tel_secondaire" class="control-label">Téléphone secondaire</label>
+									<input type="text" name="tel_secondaire" class="form-control" placeholder="Numéro de téléphone secondaire">
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<label for="date_naissance" class="control-label">Date de naissance</label>
 							<input type="date" name="date_naissance" id="date_naissance" class="form-control mandatory">
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="profile_picture" class="control-label">Photo d'identité</label>
+									<input type="file" class="form-control" name="photo_identite">
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="certificat_medical" class="control-label">Certificat Médical</label>
+									<input type="file" class="form-control" name="certificat_medical">
+								</div>
+							</div>
 						</div>
 						<p class="form-section">Informations Salsabor</p>
 						<div class="form-group">
@@ -221,7 +245,7 @@ if(isset($_POST['addAdherent'])){
 								<?php } ?>
 							</select>
 						</div>
-						<input type="submit" name="addAdherent" role="button" class="btn btn-primary btn-block" value="ENREGISTRER" id="submit-button" disabled>
+						<input type="submit" name="addAdherent" role="button" class="btn btn-primary btn-block submit-button" value="ENREGISTRER" disabled>
 					</form>
 				</div>
 			</div>

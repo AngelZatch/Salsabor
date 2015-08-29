@@ -42,7 +42,24 @@ $(document).ready(function(){
 		$(this).prev("label").append(" <span class='span-mandatory' title='Ce champ est obligatoire'>*</span>");
 		var inputName = $(this).attr('name');
 		mandatories.push(inputName);
-	}).blur(function(){
+		$(this).parent().addClass('has-feedback');
+		$(this).parent().append("<span class='glyphicon form-control-feedback'></span>");
+		if($(this).html() != '' || $(this).val() != ''){
+			$(this).parent().addClass('has-success');
+			$(this).next("span").addClass('glyphicon-ok');
+		}
+	}).on('keyup change blur', function(){
+		if($(this).html() != '' || $(this).val() != ''){
+			$(this).parent().removeClass('has-error');
+			$(this).parent().addClass('has-success');
+			$(this).next("span").removeClass('glyphicon-remove');
+			$(this).next("span").addClass('glyphicon-ok');
+		} else {
+			$(this).parent().removeClass('has-success');
+			$(this).parent().addClass('has-error');
+			$(this).next("span").removeClass('glyphicon-ok');
+			$(this).next("span").addClass('glyphicon-remove');
+		}
 		var j = 0;
 		for(var i = 0; i < mandatories.length; i++){
 			if($("[name="+mandatories[i]+"]").val() != '' || $("[name="+mandatories[i]+"]").html() != ''){
@@ -56,8 +73,10 @@ $(document).ready(function(){
 		// Si tous les inputs sont remplis, alors on autorise la soumission du formulaire
 		if(j == mandatories.length){
 			$("#submit-button").prop('disabled', false);
+			$(".submit-button").prop('disabled', false);
 		} else {
 			$("#submit-button").prop('disabled', true);
+			$(".submit-button").prop('disabled', false);
 		}
 	});
 
