@@ -25,7 +25,7 @@ $listeProduits = $db->query("SELECT * FROM produits");
 					</div>
 					<div class="btn-toolbar">
 						<a href="dashboard.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Annuler et retourner à l'accueil</a>
-						<a href="personnalisation.php" role="button" class="btn btn-success" name="next"><span class="glyphicon glyphicon-erase"></span> Personnaliser les produits achetés <span class="glyphicon glyphicon-arrow-right"></span></a>
+						<a href="personnalisation.php" role="button" class="btn btn-success" name="next"><span class="glyphicon glyphicon-erase"></span> Valider les achats <span class="glyphicon glyphicon-arrow-right"></span></a>
 					</div> <!-- btn-toolbar -->
 					<div class="row">
 						<?php while($produits = $listeProduits->fetch(PDO::FETCH_ASSOC)){?>
@@ -41,7 +41,7 @@ $listeProduits = $db->query("SELECT * FROM produits");
 						</div>
 						<?php } ?>
 					</div>
-					<a href="" role="button" class="btn btn-success btn-block" name="next"><span class="glyphicon glyphicon-erase"></span> Personnaliser les produits achetés <span class="glyphicon glyphicon-arrow-right"></span></a>
+					<a href="" role="button" class="btn btn-success btn-block" name="next"><span class="glyphicon glyphicon-erase"></span> Valider les achats <span class="glyphicon glyphicon-arrow-right"></span></a>
 				</div>
 			</div>
 		</div>
@@ -51,8 +51,10 @@ $listeProduits = $db->query("SELECT * FROM produits");
 				composeURL();
 				$("[name='add-shopping']").click(function(){
 					var produit_id = $(this).parents("div").children("input").val();
-					sessionStorage.setItem('produit_id-'+numberProduits, produit_id);
-					numberProduits++;
+					var produit_nom = $(this).parents("div").children(".thumbnail-title").html();
+					sessionStorage.setItem('produit_id-'+lowestSpot, produit_id);
+					sessionStorage.setItem('produit-demo-'+lowestSpot, produit_nom);
+					notifPanier();
 					composeURL();
 				});
 			});

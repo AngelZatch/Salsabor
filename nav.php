@@ -27,17 +27,11 @@ $queryPanier = $db->query("SELECT * FROM panier JOIN produits ON panier_element=
 						<div class="arrow"></div>
 						<div class="popover-title"><span class="close" data-dismiss="popover-x">&times;</span>Panier en cours</div>
 						<div class="popover-content">
-							<table class="table">
-								<?php while($panier = $queryPanier->fetch(PDO::FETCH_ASSOC)){?>
-								<tr>
-									<td><?php echo $panier["produit_nom"];?></td>
-									<td><span class="glyphicon glyphicon-trash"></span></td>
-								</tr>
-								<?php } ?>
+							<table class="table-panier">
 							</table>
 						</div>
 						<div class="popover-footer">
-							<a href="personnalisation.php" class="btn btn-primary" role="button" name="next">Valider les achats</a>
+							<a href="" class="btn btn-success btn-block" role="button" name="next">Valider les achats</a>
 						</div>
 					</div>
 				</li>

@@ -92,7 +92,7 @@ if(isset($_POST["submit"])){
 				});
 				var i = 1;
 				var recap;
-				for(i; i <= window.numberProduits; i++){
+				for(i; i <= 20; i++){
 					if(sessionStorage.getItem('produit_id-'+i) != null){
 						recap += "<tr>";
 						recap += "<td><input type='hidden' class='form-control' value='"+sessionStorage.getItem('produit-'+i)+"' name='nom-produit-"+i+"'>"+sessionStorage.getItem('produit-'+i)+"</td>";

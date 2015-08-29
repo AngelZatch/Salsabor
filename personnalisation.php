@@ -218,7 +218,7 @@ $date_now = date_create("now")->format("Y-m-d");
 				// Stockage du panier
 				$("#check-memory").click(function(){
 					var i = 1;
-					for(i; i <= window.numberProduits; i++){
+					for(i; i <= 20; i++){
 						var j = i-1;
 						if(sessionStorage.getItem('produit_id-'+i) != null){
 							sessionStorage.setItem("produit-"+i+"", $("#produit-title-"+j).html());
