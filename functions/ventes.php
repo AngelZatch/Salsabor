@@ -218,7 +218,6 @@ function vente(){
 			$pdf->Write(0, $infos);*/
 		}
 
-		$emptyPanier = $db->query("TRUNCATE panier");
 		$db->commit();
 
 		//		$pdf->Output();

@@ -1,18 +1,21 @@
 <?php
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
-
-$queryProduits = $db->query("SELECT * FROM produits");
-
 $queryAdherentsNom = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
 $array_eleves = array();
 while($adherents = $queryAdherentsNom->fetch(PDO::FETCH_ASSOC)){
 	array_push($array_eleves, $adherents["user_prenom"]." ".$adherents["user_nom"]);
 }
 
-$listePanier = $db->query("SELECT * FROM panier JOIN produits ON panier_element=produits.produit_id");
-$row_panier = $listePanier->fetchAll();
-$quantitePanier = $listePanier->rowCount();
+$articlePanier = $_GET["element"];
+$elementSepare = explode('-', $articlePanier);
+$panierTotal = array();
+for($z = 0; $z < sizeof($elementSepare); $z++){
+	$elementPanier = $db->query("SELECT * FROM produits WHERE produit_id=$elementSepare[$z]")->fetch(PDO::FETCH_ASSOC);
+	$key = array("key" => $z);
+	$elementFull = array_merge($elementPanier, $key);
+	array_push($panierTotal, $elementFull);
+}
 
 $prixTotal = 0;
 $date_now = date_create("now")->format("Y-m-d");
@@ -38,13 +41,13 @@ $date_now = date_create("now")->format("Y-m-d");
 					<div class="btn-toolbar">
 						<a href="catalogue.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-th"></span> Retourner au catalogue</a>
 					</div><!-- btn-toolbar -->
-					<?php foreach($row_panier as $p){ ?>
-					<section id="details-<?php echo $p["panier_order"];?>">
-						<p id="produit-title-<?php echo $p["panier_order"];?>" class="produit-title"><?php echo $p["produit_nom"];?></p>
+					<?php foreach($panierTotal as $p){ ?>
+					<section id="details-<?php echo $p["key"];?>">
+						<p id="produit-title-<?php echo $p["key"];?>" class="produit-title"><?php echo $p["produit_nom"];?></p>
 						<span role="button" class="input-group-btn">
-							<a href="#produit-details-<?php echo $p["panier_order"];?>" class="btn btn-default btn-block" data-toggle="collapse" aria-expanded="false"><span class="glyphicon glyphicon-search"></span> Détails...</a>
+							<a href="#produit-details-<?php echo $p["key"];?>" class="btn btn-default btn-block" data-toggle="collapse" aria-expanded="false"><span class="glyphicon glyphicon-search"></span> Détails...</a>
 						</span>
-						<div id="produit-details-<?php echo $p["panier_order"];?>" class="collapse">
+						<div id="produit-details-<?php echo $p["key"];?>" class="collapse">
 							<div id="produit-content" class="well">
 								<?php if($p["produit_nom"]=="Invitation"){?>
 								<p>Cette invitation est à usage unique. Si elle n'est pas liée à un cours, sa période de validité est alors de <?php echo $p["validite_initiale"];?> jours.</p>
@@ -53,12 +56,12 @@ $date_now = date_create("now")->format("Y-m-d");
 								<?php } ?>
 								<p>Il donne accès à <?php echo $p["volume_horaire"];?> heures de cours pendant toute sa durée d'activation.</p>
 								<p>L'extension de durée (AREP) n'est pas autorisée.</p>
-								<input type="hidden" name="validite_produit-<?php echo $p["panier_order"];?>" value="<?php echo $p["validite_initiale"];?>">
+								<input type="hidden" name="validite_produit-<?php echo $p["key"];?>" value="<?php echo $p["validite_initiale"];?>">
 							</div>
 						</div>
 						<div class="form-group"> <!-- Bénéficiaire -->
 							<label for="personne">Bénéficiaire</label>
-							<input type="text" name="identite_nom" id="identite_nom-<?php echo $p["panier_order"];?>" class="form-control" placeholder="Nom">
+							<input type="text" name="identite_nom" id="identite_nom-<?php echo $p["key"];?>" class="form-control" placeholder="Nom">
 							<p class="error-alert" id="err_adherent"></p>
 							<div class="alert alert-danger" id="unpaid" style="display:none;"><strong>Cet adhérent a des échéances impayées. Impossible de continuer la procédure</strong></div>
 							<a href="#user-details" role="button" class="btn btn-info" value="create-user" id="create-user" style="display:none;" data-toggle="collapse" aria-expanded="false" aria-controls="userDetails">Ouvrir le formulaire de création</a>
@@ -100,11 +103,11 @@ $date_now = date_create("now")->format("Y-m-d");
 										<label for="date_activation">Date d'activation <span class="label-tip">Par défaut : activation au premier passage</span></label>
 										<div class="input-group">
 											<?php if(stristr($p["produit_nom"], "adhésion")){ ?>
-											<input type="date" name="date_activation" id="date_activation-<?php echo $p["panier_order"];?>" class="form-control" onchange="showExpDate(<?php echo $p["panier_order"];?>)" value="<?php echo $date_now;?>">
+											<input type="date" name="date_activation" id="date_activation-<?php echo $p["key"];?>" class="form-control" onchange="showExpDate(<?php echo $p["key"];?>)" value="<?php echo $date_now;?>">
 											<?php } else { ?>
-											<input type="date" name="date_activation" id="date_activation-<?php echo $p["panier_order"];?>" class="form-control" onchange="showExpDate(<?php echo $p["panier_order"];?>)">
+											<input type="date" name="date_activation" id="date_activation-<?php echo $p["key"];?>" class="form-control" onchange="showExpDate(<?php echo $p["key"];?>)">
 											<?php } ?>
-											<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true" onclick="showExpDate(<?php echo $p["panier_order"];?>)">Insérer aujourd'hui</a></span>
+											<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true" onclick="showExpDate(<?php echo $p["key"];?>)">Insérer aujourd'hui</a></span>
 										</div>
 									</div>
 								</div>
@@ -112,8 +115,8 @@ $date_now = date_create("now")->format("Y-m-d");
 									<div class="form-group">
 										<label for="date_expiration">Date indicative d'expiration</label>
 										<div class="input-group">
-											<input type="date" name="date_expiration-<?php echo $p["panier_order"];?>" class="form-control">
-											<span role="button" class="input-group-btn"><a class="btn btn-info" role="button" onclick="showExpDate(<?php echo $p["panier_order"];?>)">Rafraîchir</a></span>
+											<input type="date" name="date_expiration-<?php echo $p["key"];?>" class="form-control">
+											<span role="button" class="input-group-btn"><a class="btn btn-info" role="button" onclick="showExpDate(<?php echo $p["key"];?>)">Rafraîchir</a></span>
 										</div>
 									</div>
 								</div>
@@ -123,8 +126,8 @@ $date_now = date_create("now")->format("Y-m-d");
 									<div class="form-group">
 										<label for="promotion-e">Réduction (en €)</label>
 										<div class="input-group">
-											<span class="input-group-addon"><input type="radio" id="promotion-euros-<?php echo $p["panier_order"];?>" name="promotion" class="checkbox-x">Réduction en €</span>
-											<input type="text" name="promotion-e-<?php echo $p["panier_order"];?>" class="form-control">
+											<span class="input-group-addon"><input type="radio" id="promotion-euros-<?php echo $p["key"];?>" name="promotion" class="checkbox-x">Réduction en €</span>
+											<input type="text" name="promotion-e-<?php echo $p["key"];?>" class="form-control">
 										</div>
 									</div>
 								</div>
@@ -132,8 +135,8 @@ $date_now = date_create("now")->format("Y-m-d");
 									<div class="form-group">
 										<label for="promotion-p">Réduction (en %)</label>
 										<div class="input-group">
-											<span class="input-group-addon"><input type="radio" name="promotion" id="promotion-pourcent-<?php echo $p["panier_order"];?>">Réduction en %</span>
-											<input type="text" name="promotion-p-<?php echo $p["panier_order"];?>" class="form-control">
+											<span class="input-group-addon"><input type="radio" name="promotion" id="promotion-pourcent-<?php echo $p["key"];?>">Réduction en %</span>
+											<input type="text" name="promotion-p-<?php echo $p["key"];?>" class="form-control">
 										</div>
 									</div>
 								</div>
@@ -142,23 +145,23 @@ $date_now = date_create("now")->format("Y-m-d");
 								<label for="prix_achat">Montant</label>
 								<div class="input-group">
 									<span class="input-group-addon">€</span>
-									<input type="hidden" id="prix-fixe-<?php echo $p["panier_order"];?>" value="<?php echo $p["tarif_global"];?>">
-									<input type="text" name="prix_achat" id="prix-calcul-<?php echo $p["panier_order"];?>" class="form-control prix-display" value="<?php echo $p["tarif_global"];?>">
+									<input type="hidden" id="prix-fixe-<?php echo $p["key"];?>" value="<?php echo $p["tarif_global"];?>">
+									<input type="text" name="prix_achat" id="prix-calcul-<?php echo $p["key"];?>" class="form-control prix-display" value="<?php echo $p["tarif_global"];?>">
 								</div>
 							</div>
 						</div>
 					</section>
-					<?php $prixTotal += $p["tarif_global"];?>
-					<?php } ?>
+					<?php $prixTotal += $p["tarif_global"];
+													 } ?>
 				</div>
 				<div class="col-sm-2 shopping-section">
 					<h4><span class="glyphicon glyphicon-shopping-cart"></span> Panier en cours</h4>
 					<ul class="nav nav-pills nav-stacked">
-						<?php foreach($row_panier as $p){
-	if($p === reset($row_panier)) {?>
-						<li id="details-<?php echo $p["panier_order"];?>-toggle" class="active" style="cursor:pointer;" role="presentation"><a href="#"><?php echo $p["produit_nom"];?></a></li>
+						<?php foreach($panierTotal as $p){
+	if($p === reset($panierTotal)) {?>
+						<li id="details-<?php echo $p["key"];?>-toggle" class="active" style="cursor:pointer;" role="presentation"><a href="#"><?php echo $p["produit_nom"];?></a></li>
 						<?php } else { ?>
-						<li id="details-<?php echo $p["panier_order"];?>-toggle" style="cursor:pointer;" role="presentation"><a href="#"><?php echo $p["produit_nom"];?></a></li>
+						<li id="details-<?php echo $p["key"];?>-toggle" style="cursor:pointer;" role="presentation"><a href="#"><?php echo $p["produit_nom"];?></a></li>
 						<?php }
 } ?>
 					</ul>
@@ -214,19 +217,20 @@ $date_now = date_create("now")->format("Y-m-d");
 
 				// Stockage du panier
 				$("#check-memory").click(function(){
-					sessionStorage.clear();
 					var i = 1;
-					for(i; i <= <?php echo $quantitePanier;?>; i++){
-						sessionStorage.setItem("produit-"+i+"", $("#produit-title-"+i).html());
-						sessionStorage.setItem("beneficiaire-"+i+"", $("#identite_nom-"+i).val());
-						if($("#date_activation-"+i).val() != ""){
-							sessionStorage.setItem("activation-"+i+"", $("#date_activation-"+i).val());
-						} else {
-							sessionStorage.setItem("activation-"+i+"", 0);
+					for(i; i <= window.numberProduits; i++){
+						var j = i-1;
+						if(sessionStorage.getItem('produit_id-'+i) != null){
+							sessionStorage.setItem("produit-"+i+"", $("#produit-title-"+j).html());
+							sessionStorage.setItem("beneficiaire-"+i+"", $("#identite_nom-"+j).val());
+							if($("#date_activation-"+i).val() != ""){
+								sessionStorage.setItem("activation-"+i+"", $("#date_activation-"+j).val());
+							} else {
+								sessionStorage.setItem("activation-"+i+"", 0);
+							}
+							sessionStorage.setItem("prixIndividuel-"+i+"", $("#prix-calcul-"+j).val());
 						}
-						sessionStorage.setItem("prixIndividuel-"+i+"", $("#prix-calcul-"+i).val());
 					}
-					sessionStorage.setItem('numberProduits', i-1);
 					sessionStorage.setItem('prixTotal', $("#prix-total").html());
 				})
 			})

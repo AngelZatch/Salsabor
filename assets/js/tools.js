@@ -20,6 +20,7 @@ $(document).ready(function(){
 	}
 
 	var firstCount = 0; // Pour éviter la notification dès le rafraîchissement de la page.
+	window.numberProduits = 1; // Articles dans le panier
 	notifPassages(firstCount);
 	notifCoursParticipants(firstCount);
 	notifEcheancesDues(firstCount);
@@ -118,14 +119,19 @@ function notifEcheancesDues(firstCount){
 
 // Affiche en direct le nombre d'éléments dans le panier
 function notifPanier(){
-	$.post("functions/watch_panier.php").done(function(data){
-		if(data == 0){
-			$("#badge-panier").hide();
-		} else {
-			$("#badge-panier").show();
-			$("#badge-panier").html(data);
+	window.numberProduits = 1;
+	for(i = 1; i <= window.numberProduits; i++){
+		if(sessionStorage.getItem('produit_id-'+i) != null){
+			window.numberProduits++;
 		}
-	})
+	}
+	var actualNumber = window.numberProduits - 1;
+	if(actualNumber == 0){
+		$("#badge-panier").hide();
+	} else {
+		$("#badge-panier").show();
+		$("#badge-panier").html(actualNumber);
+	}
 }
 
 function showSuccessNotif(data){
@@ -233,6 +239,24 @@ function tickClock(){
 		$(this).find(".cours-count").html($(this).find(".list-group-item").length);
 		$(this).find(".cours-count-checked").html($(this).find(".list-group-item-success").length);
 	})
+}
+
+// Compose les URL lors de l'achat
+function composeURL(){
+	var url = "personnalisation.php?element=";
+	var i = 1;
+	for(i; i <= window.numberProduits; i++){
+		if(sessionStorage.getItem('produit_id-'+i) != null){
+			if(i == window.numberProduits -1) {
+				url += sessionStorage.getItem('produit_id-'+i);
+			} else {
+				url += sessionStorage.getItem('produit_id-'+i)+"-";
+			}
+		}
+	}
+	console.log(url);
+	$("[name='next']").attr('href', url);
+	$("[name='previous']").attr('href', url);
 }
 
 $(".draggable").draggable({

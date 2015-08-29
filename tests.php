@@ -21,7 +21,15 @@ include 'functions/reservations.php';
 						<input type="submit">
 					</form>
 					<?php
-if(stristr($_POST["produit"], "Adhésion")){echo "Concordance";}else{echo "Pas de concordance";}
+$articlePanier = $_GET["element"];
+$elementSepare = explode('-', $articlePanier);
+$panierTotal = array();
+for($i = 0; $i < sizeof($elementSepare); $i++){
+	echo $elementSepare[$i]."<br>";
+	$elementPanier = $db->query("SELECT * FROM produits WHERE produit_id=$elementSepare[$i]");
+	array_push($panierTotal, $elementPanier->fetch(PDO::FETCH_ASSOC));
+}
+print_r($panierTotal);
 					?>
 				</div>
 			</div>

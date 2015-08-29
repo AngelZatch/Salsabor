@@ -25,7 +25,7 @@ $listeProduits = $db->query("SELECT * FROM produits");
 					</div>
 					<div class="btn-toolbar">
 						<a href="dashboard.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Annuler et retourner à l'accueil</a>
-						<a href="personnalisation.php" role="button" class="btn btn-success"><span class="glyphicon glyphicon-erase"></span> Personnaliser les produits achetés <span class="glyphicon glyphicon-arrow-right"></span></a>
+						<a href="personnalisation.php" role="button" class="btn btn-success" name="next"><span class="glyphicon glyphicon-erase"></span> Personnaliser les produits achetés <span class="glyphicon glyphicon-arrow-right"></span></a>
 					</div> <!-- btn-toolbar -->
 					<div class="row">
 						<?php while($produits = $listeProduits->fetch(PDO::FETCH_ASSOC)){?>
@@ -35,24 +35,27 @@ $listeProduits = $db->query("SELECT * FROM produits");
 									<p class="thumbnail-title"><?php echo $produits["produit_nom"];?></p>
 									<p><?php echo $produits["description"];?></p>
 									<input type="hidden" value="<?php echo $produits["produit_id"];?>">
-									<a href="#" class="btn btn-primary btn-block" role="button">Ajouter au panier</a>
+									<a href="#" class="btn btn-primary btn-block" role="button" name="add-shopping">Ajouter au panier</a>
 								</div>
 							</div>
 						</div>
 						<?php } ?>
 					</div>
-					<a href="personnalisation.php" role="button" class="btn btn-success btn-block"><span class="glyphicon glyphicon-erase"></span> Personnaliser les produits achetés <span class="glyphicon glyphicon-arrow-right"></span></a>
+					<a href="" role="button" class="btn btn-success btn-block" name="next"><span class="glyphicon glyphicon-erase"></span> Personnaliser les produits achetés <span class="glyphicon glyphicon-arrow-right"></span></a>
 				</div>
 			</div>
 		</div>
 		<?php include "scripts.php";?>
 		<script>
-			$(".btn-block").click(function(){
-				var produit_id = $(this).parents("div").children("input").val();
-				$.post("functions/add_panier.php", {produit_id}).done(function(data){
-					showSuccessNotif(data);
-				})
-			})
+			$(document).ready(function(){
+				composeURL();
+				$("[name='add-shopping']").click(function(){
+					var produit_id = $(this).parents("div").children("input").val();
+					sessionStorage.setItem('produit_id-'+numberProduits, produit_id);
+					numberProduits++;
+					composeURL();
+				});
+			});
 		</script>
 	</body>
 </html>

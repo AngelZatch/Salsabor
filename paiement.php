@@ -33,7 +33,7 @@ if(isset($_POST["submit"])){
 					</div>
 					<form action="paiement.php" method="post">
 						<div class="btn-toolbar">
-							<a href="personnalisation.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-erase"></span> Retourner à la personnalisation des abonnements</a>
+							<a href="personnalisation.php" role="button" class="btn btn-default" name="previous"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-erase"></span> Retourner à la personnalisation des abonnements</a>
 							<input type="submit" role="button" class="btn btn-primary" name="submit" value="PROCEDER">
 						</div> <!-- btn-toolbar -->
 						<p>Récapitulatif de la commande</p>
@@ -92,23 +92,24 @@ if(isset($_POST["submit"])){
 				});
 				var i = 1;
 				var recap;
-				var nombreProduits = sessionStorage.getItem('numberProduits');
-				for(i; i <= nombreProduits; i++){
-					recap += "<tr>";
-					recap += "<td><input type='hidden' class='form-control' value='"+sessionStorage.getItem('produit-'+i)+"' name='nom-produit-"+i+"'>"+sessionStorage.getItem('produit-'+i)+"</td>";
-					recap += "<td><input type='hidden' class='form-control' value='"+sessionStorage.getItem('beneficiaire-'+i)+"' name='beneficiaire-"+i+"'>"+sessionStorage.getItem('beneficiaire-'+i)+"</td>";
-					if(sessionStorage.getItem('activation-'+i) == '0'){
-						recap += "<td><input type='hidden' name='activation-"+i+"' value='0'>Activation automatique</td>";
-					} else {
-						recap += "<td><input type='hidden' name='activation-"+i+"' value='"+sessionStorage.getItem('activation-'+i)+"'>"+sessionStorage.getItem('activation-'+i)+"</td>";
+				for(i; i <= window.numberProduits; i++){
+					if(sessionStorage.getItem('produit_id-'+i) != null){
+						recap += "<tr>";
+						recap += "<td><input type='hidden' class='form-control' value='"+sessionStorage.getItem('produit-'+i)+"' name='nom-produit-"+i+"'>"+sessionStorage.getItem('produit-'+i)+"</td>";
+						recap += "<td><input type='hidden' class='form-control' value='"+sessionStorage.getItem('beneficiaire-'+i)+"' name='beneficiaire-"+i+"'>"+sessionStorage.getItem('beneficiaire-'+i)+"</td>";
+						if(sessionStorage.getItem('activation-'+i) == '0'){
+							recap += "<td><input type='hidden' name='activation-"+i+"' value='0'>Activation automatique</td>";
+						} else {
+							recap += "<td><input type='hidden' name='activation-"+i+"' value='"+sessionStorage.getItem('activation-'+i)+"'>"+sessionStorage.getItem('activation-'+i)+"</td>";
+						}
+						recap += "<td><input type='hidden' class='form-control' value="+sessionStorage.getItem('prixIndividuel-'+i)+" name='prix-produit-"+i+"'>"+sessionStorage.getItem('prixIndividuel-'+i)+" €</td>";
+						recap += "</tr>";
 					}
-					recap += "<td><input type='hidden' class='form-control' value="+sessionStorage.getItem('prixIndividuel-'+i)+" name='prix-produit-"+i+"'>"+sessionStorage.getItem('prixIndividuel-'+i)+" €</td>";
-					recap += "</tr>";
 				}
 				$(".produits-recap").append(recap);
 				var prixTotal = sessionStorage.getItem('prixTotal');
 				$("[name='prix_total']").val(prixTotal);
-				$("[name='nombre_produits']").val(nombreProduits);
+				$("[name='nombre_produits']").val(numberProduits - 1);
 				var methods = [
 					"Carte bancaire",
 					"Chèque n°",
@@ -204,6 +205,11 @@ if(isset($_POST["submit"])){
 					});
 				})
 			})
+		</script>
+		<script>
+			$(document).ready(function(){
+				composeURL();
+			});
 		</script>
 	</body>
 </html>

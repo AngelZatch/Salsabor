@@ -23,5 +23,8 @@ $db = PDOFactory::getConnection();
 			</div>
 		</div>
 		<?php include "scripts.php";?>
+		<script>
+		sessionStorage.clear();
+		</script>
 	</body>
 </html>
