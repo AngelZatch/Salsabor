@@ -27,12 +27,12 @@ try{
             if($forfait["date_activation"] <= $start && $forfait["date_expiration"] >= $start){
                 $u = array();
                 $new_exp_date = date("Y-m-d 00:00:00",strtotime($forfait["date_expiration"].'+1DAYS'));
-                $u["id"] = $forfait["id_transaction"];
+                $u["id"] = $forfait["id_transaction_foreign"];
                 $u["old_date"] = $forfait["date_expiration"];
                 $u["new_date"] = $new_exp_date;
-                $update = $db->prepare("UPDATE produits_adherents SET date_expiration =:date_expiration WHERE id_transaction=:id");
+                $update = $db->prepare("UPDATE produits_adherents SET date_expiration =:date_expiration WHERE id_transaction_foreign=:id");
                 $update->bindParam(':date_expiration', $new_exp_date);
-                $update->bindParam(':id', $forfait["id_transaction"]);
+                $update->bindParam(':id', $forfait["id_transaction_foreign"]);
                 $update->execute();
                 array_push($updated, $u);
             }
