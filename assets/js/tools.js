@@ -285,6 +285,10 @@ function fillShoppingCart(){
 function removeCartElement(key){
 	sessionStorage.removeItem('produit_id-'+key);
 	sessionStorage.removeItem('produit-demo-'+key);
+	sessionStorage.removeItem('produit-'+key);
+	sessionStorage.removeItem('beneficiaire-'+key);
+	sessionStorage.removeItem('activation-'+key);
+	sessionStorage.removeItem('prixIndividuel-'+key);
 	notifPanier();
 }
 
