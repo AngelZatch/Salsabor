@@ -55,7 +55,7 @@ if(isset($_POST["submit"])){
 						</div>
 						<div class="form-group">
 							<label for="payeur">Payeur</label>
-							<input type="text" name="payeur" class="form-control" placeholder="Nom">
+							<input type="text" name="payeur" class="form-control has-name-completion" placeholder="Nom">
 						</div>
 						<div class="form-group">
 							<label for="echeances">Nombre d'échéances mensuelles</label>
@@ -87,7 +87,7 @@ if(isset($_POST["submit"])){
 		<script>
 			$(document).ready(function(){
 				var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
-				$("[name='payeur']").autocomplete({
+				$("has-name-completion").autocomplete({
 					source: listeAdherents
 				});
 				var i = 1;

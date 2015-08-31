@@ -138,13 +138,13 @@ if(isset($_POST['addAdherent'])){
 							<div class="col-lg-6">
 								<div class="form-group">
 									<label for="identite_prenom" class="control-label">Prénom</label>
-									<input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory" placeholder="Prénom">
+									<input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory input-lg" placeholder="Prénom">
 								</div>
 							</div>
 							<div class="col-lg-6">
 								<div class="form-group">
 									<label for="identite_nom" class="control-label">Nom</label>
-									<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory" placeholder="Nom">
+									<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory input-lg" placeholder="Nom">
 								</div>
 							</div>
 						</div>
@@ -152,39 +152,39 @@ if(isset($_POST['addAdherent'])){
 							<div class="col-lg-6">
 								<div class="form-group">
 									<label for="" class="control-label">Adresse postale</label>
-									<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control mandatory">
+									<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control mandatory input-lg">
 								</div>
 							</div>
 							<div class="form-group col-lg-2">
 								<label for="">Code postal</label>
-								<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control">
+								<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control input-lg">
 							</div>
 							<div class="form-group col-lg-4">
 								<label for="">Ville</label>
-								<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control">
+								<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control input-lg">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="mail" class="control-label">Adresse mail</label>
-							<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control mandatory">
+							<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control mandatory input-lg">
 						</div>
 						<div class="row">
 							<div class="col-lg-6">
 								<div class="form-group">
 									<label for="telephone" class="control-label">Téléphone principal</label>
-									<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control mandatory">
+									<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control mandatory input-lg">
 								</div>
 							</div>
 							<div class="col-lg-6">
 								<div class="form-group">
 									<label for="tel_secondaire" class="control-label">Téléphone secondaire</label>
-									<input type="text" name="tel_secondaire" class="form-control" placeholder="Numéro de téléphone secondaire">
+									<input type="text" name="tel_secondaire" class="form-control input-lg" placeholder="Numéro de téléphone secondaire">
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="date_naissance" class="control-label">Date de naissance</label>
-							<input type="date" name="date_naissance" id="date_naissance" class="form-control mandatory">
+							<input type="date" name="date_naissance" id="date_naissance" class="form-control input-lg">
 						</div>
 						<div class="row">
 							<div class="col-lg-6">
@@ -203,7 +203,7 @@ if(isset($_POST['addAdherent'])){
 						<p class="form-section">Informations Salsabor</p>
 						<div class="form-group">
 							<label for="date_inscription" class="control-label">Date d'inscription <span class="label-tip">Par défaut, aujourd'hui</span></label>
-							<input type="date" name="date_inscription" id="date_inscription" class="form-control mandatory" value="<?php echo $now;?>">
+							<input type="date" name="date_inscription" id="date_inscription" class="form-control mandatory input-lg" value="<?php echo $now;?>">
 						</div>
 						<div class="form-group">
 							<label for="parrain" class="control-label">Parrain</label>
@@ -212,7 +212,7 @@ if(isset($_POST['addAdherent'])){
 						<div class="form-group">
 							<label for="rfid" class="control-label">Code carte</label>
 							<div class="input-group">
-								<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
+								<input type="text" name="rfid" class="form-control input-lg" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
 								<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
 							</div>
 						</div>
@@ -239,7 +239,7 @@ if(isset($_POST['addAdherent'])){
 						</div>
 						<div class="form-group">
 							<label for="sources_connaissance" class="control-label">Par où avez vous connu Salsabor ? <span class="label-tip">Sélectionnez la source la plus influente</span></label>
-							<select name="sources_connaissance" class="form-control mandatory">
+							<select name="sources_connaissance" class="form-control input-lg">
 								<?php while($sources = $connaissances->fetch(PDO::FETCH_ASSOC)){ ?>
 								<option value="<?php echo $sources["source_id"];?>"><?php echo $sources["source"];?></option>
 								<?php } ?>

@@ -61,40 +61,9 @@ $date_now = date_create("now")->format("Y-m-d");
 						</div>
 						<div class="form-group"> <!-- Bénéficiaire -->
 							<label for="personne">Bénéficiaire</label>
-							<input type="text" name="identite_nom" id="identite_nom-<?php echo $p["key"];?>" class="form-control" placeholder="Nom">
+							<input type="text" name="identite_nom-<?php echo $p["key"];?>" class="form-control has-check has-name-completion" placeholder="Nom">
 							<p class="error-alert" id="err_adherent"></p>
 							<div class="alert alert-danger" id="unpaid" style="display:none;"><strong>Cet adhérent a des échéances impayées. Impossible de continuer la procédure</strong></div>
-							<a href="#user-details" role="button" class="btn btn-info" value="create-user" id="create-user" style="display:none;" data-toggle="collapse" aria-expanded="false" aria-controls="userDetails">Ouvrir le formulaire de création</a>
-							<div id="user-details" class="collapse">
-								<div class="well">
-									<div class="form-group">
-										<input type="text" name="identite_prenom" id="identite_prenom" class="form-control" placeholder="Prénom">
-									</div>
-									<div class="form-group">
-										<label for="" class="control-label">Adresse postale</label>
-										<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control">
-									</div>
-									<div class="form-group">
-										<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control">
-									</div>
-									<div class="form-group">
-										<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control">
-									</div>
-									<div class="form-group">
-										<label for="text" class="control-label">Adresse mail</label>
-										<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control">
-									</div>
-									<div class="form-group">
-										<label for="telephone" class="control-label">Numéro de téléphone</label>
-										<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control">
-									</div>
-									<div class="form-group">
-										<label for="date_naissance" class="control-label">Date de naissance</label>
-										<input type="date" name="date_naissance" id="date_naissance" class="form-control">
-									</div>
-									<a class="btn btn-primary" onClick="addAdherent()">AJOUTER</a>
-								</div>
-							</div>
 						</div>
 						<div id="maturities-checked">
 							<div class="row">
@@ -175,13 +144,8 @@ $date_now = date_create("now")->format("Y-m-d");
 		<script>
 			$(document).ready(function(){
 				var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
-				$("[name='identite_nom']").autocomplete({
+				$(".has-name-completion").autocomplete({
 					source: listeAdherents
-				});
-				$("#identite_nom").keyup(function(){
-					ifAdherentExists();
-				}).blur(function(){
-					ifAdherentExists();
 				});
 
 				$("[name^='promotion']").keyup(function(){
