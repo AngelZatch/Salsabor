@@ -115,6 +115,7 @@ $(document).ready(function(){
 				}
 			} else {
 				$(":regex(id,^unknown-user)").remove();
+				$(".has-name-completion").val(identite);
 			}
 		})
 	})
@@ -261,10 +262,10 @@ function addAdherent(){
 	var telephone = $('#telephone').val();
 	var date_naissance = $('#date_naissance').val();
 	$.post("functions/add_adherent.php", {identite_prenom, identite_nom, rfid, rue, code_postal, ville, mail, telephone, date_naissance}).done(function(data){
-		$('#create-user').click();
 		showSuccessNotif(data);
 		ifAdherentExists();
-		$("#identite_nom").val(identite_prenom+" "+identite_nom);
+		$(".has-name-completion").val(identite_prenom+" "+identite_nom);
+		$(":regex(id,^unknown-user)").hide('500');
 	});
 }
 

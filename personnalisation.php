@@ -61,7 +61,7 @@ $date_now = date_create("now")->format("Y-m-d");
 						</div>
 						<div class="form-group"> <!-- Bénéficiaire -->
 							<label for="personne">Bénéficiaire</label>
-							<input type="text" name="identite_nom-<?php echo $p["key"];?>" class="form-control has-check has-name-completion" placeholder="Nom">
+							<input type="text" name="identite_nom-<?php echo $p["key"];?>" class="form-control has-check has-name-completion input-lg" placeholder="Nom">
 							<p class="error-alert" id="err_adherent"></p>
 							<div class="alert alert-danger" id="unpaid" style="display:none;"><strong>Cet adhérent a des échéances impayées. Impossible de continuer la procédure</strong></div>
 						</div>
@@ -148,6 +148,7 @@ $date_now = date_create("now")->format("Y-m-d");
 					source: listeAdherents,
 					select: function(event, ui){
 						$(":regex(id,^unknown-user)").remove();
+						$(".has-name-completion").val(this.value);
 					}
 				});
 
@@ -189,12 +190,8 @@ $date_now = date_create("now")->format("Y-m-d");
 						var j = i-1;
 						if(sessionStorage.getItem('produit_id-'+i) != null){
 							sessionStorage.setItem("produit-"+i+"", $("#produit-title-"+j).html());
-							sessionStorage.setItem("beneficiaire-"+i+"", $("#identite_nom-"+j).val());
-							if($("#date_activation-"+i).val() != ""){
-								sessionStorage.setItem("activation-"+i+"", $("#date_activation-"+j).val());
-							} else {
-								sessionStorage.setItem("activation-"+i+"", 0);
-							}
+							sessionStorage.setItem("beneficiaire-"+i+"", $("[name='identite_nom-"+j+"']").val());
+							sessionStorage.setItem("activation-"+i+"", $("#date_activation-"+j).val());
 							sessionStorage.setItem("prixIndividuel-"+i+"", $("#prix-calcul-"+j).val());
 						}
 					}
