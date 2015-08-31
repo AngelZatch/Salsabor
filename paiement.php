@@ -91,6 +91,7 @@ if(isset($_POST["submit"])){
 					source: listeAdherents
 				});
 				var i = 1;
+				$("[name='payeur']").val(sessionStorage.getItem('beneficiaire-principal'));
 				var recap;
 				for(i; i <= 20; i++){
 					if(sessionStorage.getItem('produit_id-'+i) != null){
@@ -141,7 +142,7 @@ if(isset($_POST["submit"])){
 					$(".maturities-table").empty();
 					for(i; i <= nbEcheances; i++){
 						if(i == nbEcheances){
-							montant_echeance = montant_restant.toFixed(2);
+							montant_echeance = montant_restant;
 						}
 						// Construction du tableau des échéances
 						var echeance = "<tr>";
@@ -190,9 +191,13 @@ if(isset($_POST["submit"])){
 					$("[name^='propagation-methode']").click(function(){
 						var clicked = $(this);
 						var methode = clicked.parent().prev().val();
+						var indice = $(this).attr('name').substr(20);
+						console.log(indice);
 						if(methode.indexOf("Chèque") != -1){
 							var token = "Chèque n°";
-							$("[name^='propagation-methode']").parent().prev().val(token);
+							for(var m = indice; m <= nbEcheances; m++){
+								$("[name='propagation-methode-"+m+"']").parent().prev().val(token);
+							}
 							clicked.parent().prev().val(methode);
 						} else {
 							$("[name^='propagation-methode']").parent().prev().val(methode);

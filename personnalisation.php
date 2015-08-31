@@ -149,6 +149,9 @@ $date_now = date_create("now")->format("Y-m-d");
 					select: function(event, ui){
 						$(":regex(id,^unknown-user)").remove();
 						$(".has-name-completion").val(this.value);
+					},
+					change : function(event, ui){
+						sessionStorage.setItem('beneficiaire-principal', $(".has-name-completion").val());
 					}
 				});
 
@@ -177,7 +180,7 @@ $date_now = date_create("now")->format("Y-m-d");
 
 					var prixTotal = 0;
 					$(":regex(id,^prix-calcul)").each(function(){
-						var prixSeul = parseInt($(this).val());
+						var prixSeul = parseFloat($(this).val());
 						prixTotal += prixSeul;
 					})
 					$("#prix-total").html(prixTotal);
