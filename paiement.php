@@ -124,13 +124,14 @@ if(isset($_POST["submit"])){
 					var i = 1;
 					var start_date = moment();
 					if(start_date.date() < 8){
-						start_date.date(8);
+						start_date.date(10);
 					} else if(start_date.date() < 18){
-						start_date.date(18);
+						start_date.date(20);
 					} else if(start_date.date() < 28){
-						start_date.date(28);
+						start_date.date(30);
 					} else {
-						start_date.date(37);
+						var month = start_date.month();
+						start_date.month(month).date(10);
 					}
 					var montant_total = prixTotal;
 					var montant_restant = montant_total;
@@ -140,7 +141,7 @@ if(isset($_POST["submit"])){
 					$(".maturities-table").empty();
 					for(i; i <= nbEcheances; i++){
 						if(i == nbEcheances){
-							montant_echeance = montant_restant;
+							montant_echeance = montant_restant.toFixed(2);
 						}
 						// Construction du tableau des échéances
 						var echeance = "<tr>";
