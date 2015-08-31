@@ -87,7 +87,7 @@ if(isset($_POST["submit"])){
 		<script>
 			$(document).ready(function(){
 				var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
-				$("has-name-completion").autocomplete({
+				$(".has-name-completion").autocomplete({
 					source: listeAdherents
 				});
 				var i = 1;
