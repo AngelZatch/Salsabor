@@ -16,23 +16,23 @@ try{
 	$delete = $db->prepare('DELETE FROM jours_chomes WHERE jour_chome_id=?');
 	$delete->bindParam(1, $_POST["delete_id"]);
 	$delete->execute();
-    
-    foreach ($forfaits as $row => $forfait){
-        if($forfait["date_activation"] <= $holiday["date_chomee"] && $forfait["date_expiration"] >= $holiday["date_chomee"]){
-            $u = array();
-            $new_exp_date = date("Y-m-d 00:00:00",strtotime($forfait["date_expiration"].'-1DAYS'));
-            $u["id"] = $forfait["id_transaction"];
-            $u["old_date"] = $forfait["date_expiration"];
-            $u["new_date"] = $new_exp_date;
-            $update = $db->prepare("UPDATE produits_adherents SET date_expiration =:date_expiration WHERE id_transaction=:id");
-            $update->bindParam(':date_expiration', $new_exp_date);
-            $update->bindParam(':id', $forfait["id_transaction"]);
-            $update->execute();
-            array_push($updated, $u);
-        }
-    }
+
+	foreach ($forfaits as $row => $forfait){
+		if($forfait["date_activation"] <= $holiday["date_chomee"] && $forfait["date_expiration"] >= $holiday["date_chomee"]){
+			$u = array();
+			$new_exp_date = date("Y-m-d 00:00:00",strtotime($forfait["date_expiration"].'-1DAYS'));
+			$u["id"] = $forfait["id_transaction_foreign"];
+			$u["old_date"] = $forfait["date_expiration"];
+			$u["new_date"] = $new_exp_date;
+			$update = $db->prepare("UPDATE produits_adherents SET date_expiration =:date_expiration WHERE id_transaction_foreign=:id");
+			$update->bindParam(':date_expiration', $new_exp_date);
+			$update->bindParam(':id', $forfait["id_transaction_foreign"]);
+			$update->execute();
+			array_push($updated, $u);
+		}
+	}
 	$db->commit();
-    echo json_encode($updated);
+	echo json_encode($updated);
 } catch (PDOExecption $e) {
 	$db->rollBack();
 	$message = var_dump($e->getMessage());
