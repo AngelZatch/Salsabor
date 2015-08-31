@@ -38,44 +38,11 @@ if(isset($_POST['addResa'])){
 						</div> <!-- btn-toolbar -->
 						<div class="form-group">
 							<label for="identite" class="control-label">Demandeur</label>
-							<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory" placeholder="Nom" onChange="ifAdherentExists()">
-							<p class="error-alert" id="err_adherent"></p>
-							<a href="#user-details" role="button" class="btn btn-info" value="create-user" id="create-user" style="display:none;" data-toggle="collapse" aria-expanded="false" aria-controls="userDetails">Ouvrir le formulaire de création</a>
-							<div id="user-details" class="collapse">
-								<div class="well">
-									<div class="form-group">
-										<label for="identite_prenom" class="control-label">Prénom</label>
-										<input type="text" name="identite_prenom" id="identite_prenom" class="form-control" placeholder="Prénom">
-									</div>
-									<div class="form-group">
-										<label for="rue" class="control-label">Adresse postale</label>
-										<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control">
-									</div>
-									<div class="form-group">
-										<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control">
-									</div>
-									<div class="form-group">
-										<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control">
-									</div>
-									<div class="form-group">
-										<label for="mail" class="control-label">Adresse mail</label>
-										<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control">
-									</div>
-									<div class="form-group">
-										<label for="mail" class="control-label">Numéro de téléphone</label>
-										<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control">
-									</div>
-									<div class="form-group">
-										<label for="date_naissance" class="control-label">Date de naissance</label>
-										<input type="date" name="date_naissance" id="date_naissance" class="form-control">
-									</div>
-									<a class="btn btn-primary" onClick="addAdherent()">AJOUTER</a>
-								</div>
-							</div>
+							<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory has-check has-name-completion input-lg" placeholder="Nom">
 						</div>
 						<div class="form-group">
 							<label for="prestation" class="control-label">Activité</label>
-							<select name="prestation" id="prestation" class="form-control mandatory" onChange="checkCalendar(true, false)">
+							<select name="prestation" id="prestation" class="form-control mandatory input-lg" onChange="checkCalendar(true, false)">
 								<?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){?>
 								<option value="<?php echo $prestations['prestations_id'];?>"><?php echo $prestations['prestations_name'];?></option>";
 								<?php } ?>
@@ -84,7 +51,7 @@ if(isset($_POST['addResa'])){
 						<div class="form-group">
 							<label for="date_debut" class="control-label">Date <span class="span-mandatory">*</span></label>
 							<div class="input-group">
-								<input type="date" class="form-control mandatory" name="date_debut" id="date_debut" onChange="checkHoliday()">
+								<input type="date" class="form-control mandatory input-lg" name="date_debut" id="date_debut" onChange="checkHoliday()">
 								<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
 							</div>
 							<p class="error-alert" id="holiday-alert"></p>
@@ -92,14 +59,14 @@ if(isset($_POST['addResa'])){
 						<div class="form-group">
 							<fieldset>
 								<label for="heure_debut" class="control-label">Début à</label>
-								<input type="time" class="form-control mandatory" id="heure_debut" name="heure_debut" onChange="checkCalendar(true, false)">
+								<input type="time" class="form-control mandatory input-lg" id="heure_debut" name="heure_debut" onChange="checkCalendar(true, false)">
 								<label for="heure_fin" class="control-label">Fin à</label>
-								<input type="time" class="form-control mandatory" id="heure_fin" name="heure_fin" onChange="checkCalendar(true, false)">
+								<input type="time" class="form-control mandatory input-lg" id="heure_fin" name="heure_fin" onChange="checkCalendar(true, false)">
 							</fieldset>
 						</div>
 						<div class="form-group">
 							<label for="lieu" class="control-label">Salle</label>
-							<select name="lieu" class="form-control mandatory" id="lieu" onChange="checkCalendar(true, false)">
+							<select name="lieu" class="form-control mandatory input-lg" id="lieu" onChange="checkCalendar(true, false)">
 								<?php while($lieux = $queryLieux->fetch(PDO::FETCH_ASSOC)){?>
 								<option value="<?php echo $lieux['salle_id'];?>"><?php echo $lieux['salle_name'];?></option>;
 								<?php } ?>
@@ -146,7 +113,7 @@ if(isset($_POST['addResa'])){
 
 			$(document).ready(function(){
 				var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
-				$("[name='identite_nom']").autocomplete({
+				$("has-name-completion").autocomplete({
 					source: listeAdherents
 				});
 
