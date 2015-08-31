@@ -3,14 +3,27 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
 $date = new DateTime('now');
-$now = $date->format('Y-m-d');
-$time = $date->add(new DateInterval('P30D'))->format('Y-m-d');
+$year = $date->format('Y');
+$month = $date->format('m');
+$day = $date->format('d');
+if($day >= 1 && $day < 8){
+	$maturityDay = 10;
+} else if($day >= 9 && $day < 18){
+	$maturityDay = 20;
+} else if($day >= 19 && $day < 28){
+	$maturityDay = 30;
+}else{
+	$maturityDay = 10;
+	$month+=1;
+}
+$time = new DateTime($year.'-'.$month.'-'.$maturityDay);
+$maturityTime = $time->format('Y-m-d');
 
 $queryEcheances = $db->query("SELECT * FROM produits_echeances
 										JOIN produits_adherents ON reference_achat=produits_adherents.id_transaction_foreign
 										JOIN produits ON id_produit_foreign=produits.produit_id
 										JOIN users ON id_user_foreign=users.user_id
-										WHERE date_echeance<='$time' AND date_echeance>='$now' AND statut_banque = 0 ORDER BY date_echeance ASC");
+										WHERE date_echeance<='$maturityTime' AND statut_banque = 0");
 ?>
 <html>
 	<head>
@@ -26,6 +39,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances
 				<div class="col-sm-10 main">
 					<p id="current-time"></p>
 					<h1 class="page-title"><span class="glyphicon glyphicon-repeat"></span> Echéances</h1>
+					<p>Encaissement prévu le <?php echo $time->format('d/m/Y');?></p>
 					<div class="input-group input-group-lg search-form">
 						<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
 						<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">
