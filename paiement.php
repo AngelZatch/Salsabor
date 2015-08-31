@@ -124,13 +124,13 @@ if(isset($_POST["submit"])){
 					var i = 1;
 					var start_date = moment();
 					if(start_date.date() < 8){
-						start_date.date(10);
+						start_date.date(8);
 					} else if(start_date.date() < 18){
-						start_date.date(20);
+						start_date.date(18);
 					} else if(start_date.date() < 28){
-						start_date.date(30);
+						start_date.date(28);
 					} else {
-						start_date.date(41);
+						start_date.date(37);
 					}
 					var montant_total = prixTotal;
 					var montant_restant = montant_total;

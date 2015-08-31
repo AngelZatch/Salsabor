@@ -145,7 +145,10 @@ $date_now = date_create("now")->format("Y-m-d");
 			$(document).ready(function(){
 				var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
 				$(".has-name-completion").autocomplete({
-					source: listeAdherents
+					source: listeAdherents,
+					select: function(event, ui){
+						$(":regex(id,^unknown-user)").remove();
+					}
 				});
 
 				$("[name^='promotion']").keyup(function(){

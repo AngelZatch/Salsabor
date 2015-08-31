@@ -90,7 +90,7 @@ $(document).ready(function(){
 		}).hide();
 	});
 
-	$(".has-check").on('change, blur',function(){
+	$(".has-check").on('blur keyup focus',function(){
 		var field = $(this);
 		var identite = $(this).val();
 		var token = $(this).attr('name').substr(12);
@@ -114,9 +114,7 @@ $(document).ready(function(){
 					field.after(addOptions);
 				}
 			} else {
-				console.log("Résultat : identitifiant "+data);
-				var addOptions = "";
-				field.after(addOptions);
+				$(":regex(id,^unknown-user)").remove();
 			}
 		})
 	})
