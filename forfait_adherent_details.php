@@ -141,12 +141,17 @@ $queryEcheances->bindValue(1, $forfait["id_transaction_foreign"]);
 		<?php include "scripts.php";?>
 		<script src="assets/js/nav-tabs.js"></script>
 		<script>
+			function uploadChanges(token, value){
+				var database = "produits_echeances";
+				$.post("functions/update_field.php", {database, token, value}).done(function(data){
+					showSuccessNotif(data);
+				});
+			}
 			var remainingHours;
 			function calculateRemainingHours(){
 				window.remainingHours = $("#initial-hours").html() - $("*[name='total-cours']").val();
 				$("#remaining-hours").html(window.remainingHours);
 			}
-
 			function updateRemainingHours(){
 				var update_id = $("*[name=id]").val();
 				var remainingHours = window.remainingHours;
