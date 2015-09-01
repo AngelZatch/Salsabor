@@ -119,6 +119,61 @@ $(document).ready(function(){
 			}
 		})
 	})
+
+	// Autocomplétions
+	var methods = [
+		"Carte bancaire",
+		"Chèque n°",
+		"Espèces",
+		"Virement compte à compte",
+		"Chèques vacances",
+		"En attente"
+	];
+
+	// Champs modifiables
+	$(".editable").click(function(){
+		var initialValue = $(this).val();
+		if(initialValue == ""){initialValue = $(this).html();}
+		var token = $(this).attr('id');
+		$(this).replaceWith("<input type='text' class='form-control editing' id='"+token+"' value="+initialValue+">");
+		$(".editing").focus();
+		$(":regex(id,^methode_paiement)").autocomplete({
+			source: methods
+		})
+		$(".editing").blur(function(){
+			var editedValue = $(this).val();
+			if(editedValue != "" && editedValue != initialValue){
+				$(this).replaceWith("<span class='editable' id='"+token+"'>"+$(this).val()+"</span>");
+				uploadChanges(token, editedValue);
+			} else {
+				$(this).replaceWith("<span class='editable' id='"+token+"'>"+initialValue+"</span>");
+				$(this).bind('click');
+			}
+		});
+	});
+
+	// Modification des échéances
+	$(".statut-salsabor").click(function(){
+		var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
+		var container = $(this).parents("td");
+		$.post("functions/validate_echeance.php", {echeance_id}).done(function(data){
+			showSuccessNotif(data);
+			container.empty();
+			var date = moment().format('DD/MM/YYYY');
+			container.html("<span class='label label-success'>Réceptionnée le"+date+"</span>");
+		})
+	})
+
+	$(".statut-banque").click(function(){
+		var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
+		var container = $(this).parents("td");
+		$.post("functions/encaisser_echeance.php", {echeance_id}).done(function(data){
+			showSuccessNotif(data);
+			container.empty();
+			var date = moment().format('DD/MM/YYYY');
+			container.html("<span class='label label-success'>Encaissée le "+date+"</span>");
+		})
+	})
 });
 
 // FONCTIONS NOTIFICATIONS //
