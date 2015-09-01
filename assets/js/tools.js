@@ -48,7 +48,7 @@ $(document).ready(function(){
 			$(this).parent().addClass('has-success');
 			$(this).next("span").addClass('glyphicon-ok');
 		}
-	}).on('keyup change blur', function(){
+	}).on('focus keyup change blur', function(){
 		if($(this).html() != '' || $(this).val() != ''){
 			$(this).parent().removeClass('has-error');
 			$(this).parent().addClass('has-success');

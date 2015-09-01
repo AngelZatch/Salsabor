@@ -49,17 +49,28 @@ if(isset($_POST["submit"])){
 							<tbody class="produits-recap">
 							</tbody>
 						</table>
-						<div class="form-group">
-							<label for="prix_total">Prix total de la commande</label>
-							<input type="text" name="prix_total" class="form-control">
-						</div>
-						<div class="form-group">
-							<label for="payeur">Payeur</label>
-							<input type="text" name="payeur" class="form-control has-name-completion" placeholder="Nom">
-						</div>
-						<div class="form-group">
-							<label for="echeances">Nombre d'échéances mensuelles</label>
-							<input type="text" name="echeances" class="form-control">
+						<div class="row">
+							<div class="col-lg-2">
+								<div class="form-group">
+									<label for="prix_total">Prix total</label>
+									<div class="input-group">
+										<input type="text" name="prix_total" class="form-control input-lg">
+										<span class="input-group-addon">€</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-2">
+								<div class="form-group">
+									<label for="echeances">Nombre d'échéances</label>
+									<input type="text" name="echeances" class="form-control input-lg">
+								</div>
+							</div>
+							<div class="col-lg-8">
+								<div class="form-group">
+									<label for="payeur">Payeur</label>
+									<input type="text" name="payeur" class="form-control has-check mandatory has-name-completion input-lg" placeholder="Nom">
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<label for="numero_echeance">Détail des échances</label>
@@ -91,7 +102,7 @@ if(isset($_POST["submit"])){
 					source: listeAdherents
 				});
 				var i = 1;
-				$("[name='payeur']").val(sessionStorage.getItem('beneficiaire-principal'));
+				$(":regex(name,payeur)").val(sessionStorage.getItem('beneficiaire-principal'));
 				var recap;
 				for(i; i <= 20; i++){
 					if(sessionStorage.getItem('produit_id-'+i) != null){
@@ -124,11 +135,11 @@ if(isset($_POST["submit"])){
 					var nbEcheances = $(this).val();
 					var i = 1;
 					var start_date = moment();
-					if(start_date.date() < 8){
+					if(start_date.date() >= 1 && start_date.date() < 8){
 						start_date.date(10);
-					} else if(start_date.date() < 18){
+					} else if(start_date() >= 9 && start_date.date() < 18){
 						start_date.date(20);
-					} else if(start_date.date() < 28){
+					} else if(start_date.date() >= 19 && start_date.date() < 28){
 						start_date.date(30);
 					} else {
 						var month = start_date.month();
@@ -146,15 +157,16 @@ if(isset($_POST["submit"])){
 						}
 						// Construction du tableau des échéances
 						var echeance = "<tr>";
-						var current_date = start_date.add(1, 'month').format("YYYY-MM-DD");
-						echeance += "<td class='col-lg-1'><input type='date' class='form-control' value="+current_date+" name='date-echeance-"+i+"'></td>";
+						var current_date = start_date.format("YYYY-MM-DD");
+						echeance += "<td class='col-lg-1'><div class='input-group'><input type='date' class='form-control' value="+current_date+" name='date-echeance-"+i+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-date-"+i+"'>Propager</a></span></div></td>";
 						echeance += "<td class='col-lg-2'><div class='input-group'><input type='text' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance-"+i+"'><span class='input-group-addon'>€</span></div></td>";
 						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='moyen-paiement-"+i+"' placeholder='CB / Numéro de chèque / Mandat / Espèces...'><span role='buttton' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-methode-"+i+"'>Propager</a></span></div></td>";
-						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='titulaire-paiement-"+i+"' placeholder='Prénom Nom'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-titulaire-"+i+"'>Propager</a></span></div></td>";
+						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='titulaire-paiement-"+i+"' placeholder='Prénom Nom' value='"+$(":regex(name,payeur)").val()+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-titulaire-"+i+"'>Propager</a></span></div></td>";
 						echeance += "<td class='col-lg-1'><input name='statut-echeance-"+i+"'></td>";
 						echeance += "</tr>";
 						montant_restant -= montant_echeance;
 						$(".maturities-table").append(echeance);
+						start_date.add(1, 'month').format("YYYY-MM-DD");
 					}
 					$("[name^='montant-echeance']").keyup(function(){
 						// Lorsqu'un montant est modifié.
@@ -188,21 +200,32 @@ if(isset($_POST["submit"])){
 						source: methods
 					})
 					$("[name^='statut-echeance']").checkboxX({threeState: false, size: 'lg', value: 0});
+					$(":regex(name,^propagation-date)").click(function(){
+						var date = $(this).parent().prev().val();
+						var indice = $(this).attr('name').substr(17);
+						for(var m = indice++; m <= nbEcheances; m++){
+							$(":regex(name,date-echeance-"+m+")").val(date);
+							date = moment(date).add(1, 'month').format('YYYY-MM-DD');
+						}
+					})
 					$("[name^='propagation-methode']").click(function(){
 						var clicked = $(this);
 						var methode = clicked.parent().prev().val();
+						console.log(methode);
 						var indice = $(this).attr('name').substr(20);
-						console.log(indice);
-						if(methode.indexOf("Chèque") != -1){
+						if(methode.indexOf("Chèque") != -1 && methode != "Chèques vacances"){
 							var token = "Chèque n°";
-							for(var m = indice; m <= nbEcheances; m++){
-								$("[name='propagation-methode-"+m+"']").parent().prev().val(token);
+							var numero = methode.substr(9);
+							for(var m = indice++; m <= nbEcheances; m++){
+								$("[name='propagation-methode-"+m+"']").parent().prev().val(token+""+numero);
+								numero++;
 							}
 							clicked.parent().prev().val(methode);
 						} else {
-							$("[name^='propagation-methode']").parent().prev().val(methode);
+							for(var m = indice++; m <= nbEcheances; m++){
+								$("[name^='propagation-methode-"+m+"']").parent().prev().val(methode);
+							}
 						}
-
 					})
 					$("[name^='propagation-titulaire']").click(function(){
 						var titulaire = $(this).parent().prev().val();
@@ -210,6 +233,7 @@ if(isset($_POST["submit"])){
 						$("[name^='propagation-titulaire']").parent().prev().val(titulaire);
 					});
 				})
+				$(".mandatory").change();
 			})
 		</script>
 		<script>
