@@ -52,6 +52,12 @@ $queryEcheances = $db->prepare("SELECT * FROM produits_echeances
 		</div>
 		<?php include "scripts.php";?>
 		<script>
+			function uploadChanges(token, value){
+				var database = "produits_echeances";
+				$.post("functions/update_field.php", {database, token, value}).done(function(data){
+					showSuccessNotif(data);
+				});
+			}
 			var options = {
 				valueNames: ['date', 'forfait-name', 'user-name', 'montant', 'status', 'bank']
 			};
