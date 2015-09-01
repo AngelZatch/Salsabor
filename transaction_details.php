@@ -10,13 +10,12 @@ $queryTransaction->bindValue(1, $data);
 $queryTransaction->execute();
 $transaction = $queryTransaction->fetch(PDO::FETCH_ASSOC);
 
-$queryEcheances = $db->prepare("SELECT * FROM produits_echeances WHERE reference_achat=?");
-$queryEcheances->bindValue(1, $data);
-$queryEcheances->execute();
-
 $queryProduits = $db->prepare("SELECT * FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id JOIN users ON id_user_foreign=users.user_id WHERE id_transaction_foreign=?");
 $queryProduits->bindValue(1, $data);
 $queryProduits->execute();
+
+$queryEcheances = $db->prepare("SELECT * FROM produits_echeances WHERE reference_achat=?");
+$queryEcheances->bindValue(1, $data);
 ?>
 <html>
 	<head>
@@ -63,60 +62,7 @@ $queryProduits->execute();
 						</ul>
 					</section>
 					<section id="maturity">
-						<table class="table">
-							<thead>
-								<tr>
-									<th>Date de l'échéance</th>
-									<th>Montant de l'échéance</th>
-									<th>Méthode de paiement</th>
-									<th>Statut Salsabor</th>
-									<th>Statut Banque</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php while($echeances = $queryEcheances->fetch(PDO::FETCH_ASSOC)){
-	switch($echeances["echeance_effectuee"]){
-		case 0:
-		$status = "En attente";
-		$statusClass = "default";
-		break;
-
-		case 1:
-		$status = "Réceptionnée";
-		$statusClass = "success";
-		break;
-
-		case 2:
-		$status = "En retard";
-		$statusClass = "danger";
-		break;
-	} ?>
-								<tr>
-									<td><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></td>
-									<td><?php echo $echeances["montant"];?> €</td>
-									<td><?php echo $echeances["methode_paiement"];?></td>
-									<td class="status">
-										<?php if($status == "Réceptionnée"){ ?>
-										<span class="label label-<?php echo $statusClass;?>"><?php echo $status;?></span>
-										<?php } else { ?>
-										<span class="label label-info"><?php echo $status;?></span>
-										<button class="btn btn-default statut-salsabor"><span class="glyphicon glyphicon-download-alt"></span> Recevoir</button>
-										<?php } ?>
-										<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>">
-									</td>
-									<td class="bank">
-										<?php if($echeances["statut_banque"] == '1'){ ?>
-										<span class="label label-success">Encaissée</span>
-										<?php } else { ?>
-										<span class="label label-info">Dépôt à venir</span>
-										<button class="btn btn-default statut-banque"><span class="glyphicon glyphicon-download-alt"></span> Encaisser</button>
-										<?php } ?>
-										<input type="hidden" name="echeance-id" value="<?php echo $echeances["id_echeance"];?>">
-									</td>
-								</tr>
-								<?php } ?>
-							</tbody>
-						</table>
+						<?php include "inserts/echeancier.php";?>
 					</section>
 				</div>
 			</div>
@@ -124,20 +70,27 @@ $queryProduits->execute();
 		<?php include "scripts.php";?>
 		<script src="assets/js/nav-tabs.js"></script>
 		<script>
+			function uploadChanges(token, value){
+				var database = "produits_echeances";
+				$.post("functions/update_field.php", {database, token, value}).done(function(data){
+					showSuccessNotif(data);
+				});
+			}
 			$(document).ready(function(){
 				$(".statut-salsabor").click(function(){
-					var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
-					var container = $(this).parents("td");
+					var echeance_id = $(this).parent("td").children("input[name^='echeance']").val();
+					var container = $(this).parent("td");
 					$.post("functions/validate_echeance.php", {echeance_id}).done(function(data){
 						showSuccessNotif(data);
 						container.empty();
 						container.html("<span class='label label-success'>Réceptionnée</span>");
+						$(".statut-salsabor").removeClass("glyphicon-download-alt");
 					})
 				})
 
 				$(".statut-banque").click(function(){
-					var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
-					var container = $(this).parents("td");
+					var echeance_id = $(this).parent("td").children("input[name^='echeance']").val();
+					var container = $(this).parent("td");
 					$.post("functions/encaisser_echeance.php", {echeance_id}).done(function(data){
 						showSuccessNotif(data);
 						container.empty();
