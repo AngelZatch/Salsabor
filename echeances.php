@@ -56,6 +56,7 @@ $queryEcheances = $db->prepare("SELECT DISTINCT * FROM produits_echeances
 			</div>
 		</div>
 		<?php include "scripts.php";?>
+		<script src="assets/js/maturities.js"></script>
 		<script>
 			function uploadChanges(token, value){
 				var database = "produits_echeances";

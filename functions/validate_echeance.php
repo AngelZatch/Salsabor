@@ -12,6 +12,7 @@ if($maturity["echeance_effectuee"] == 1){
 	} else {
 		$newState = 0;
 	}
+	$date_reception = null;
 } else {
 	$newState = 1;
 }

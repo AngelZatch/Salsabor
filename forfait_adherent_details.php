@@ -146,6 +146,7 @@ $queryEcheances->bindValue(1, $forfait["id_transaction_foreign"]);
 		</div>
 		<?php include "scripts.php";?>
 		<script src="assets/js/nav-tabs.js"></script>
+		<script src="assets/js/maturities.js"></script>
 		<script>
 			function uploadChanges(token, value){
 				var database = "produits_echeances";

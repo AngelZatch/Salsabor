@@ -75,6 +75,7 @@ $queryEcheances->bindValue(1, $data);
 		</div>
 		<?php include "scripts.php";?>
 		<script src="assets/js/nav-tabs.js"></script>
+		<script src="assets/js/maturities.js"></script>
 		<script>
 			function uploadChanges(token, value){
 				var database = "produits_echeances";
@@ -82,28 +83,6 @@ $queryEcheances->bindValue(1, $data);
 					showSuccessNotif(data);
 				});
 			}
-			$(document).ready(function(){
-				$(".statut-salsabor").click(function(){
-					var echeance_id = $(this).parent("td").children("input[name^='echeance']").val();
-					var container = $(this).parent("td");
-					$.post("functions/validate_echeance.php", {echeance_id}).done(function(data){
-						showSuccessNotif(data);
-						container.empty();
-						container.html("<span class='label label-success'>Réceptionnée</span>");
-						$(".statut-salsabor").removeClass("glyphicon-download-alt");
-					})
-				})
-
-				$(".statut-banque").click(function(){
-					var echeance_id = $(this).parent("td").children("input[name^='echeance']").val();
-					var container = $(this).parent("td");
-					$.post("functions/encaisser_echeance.php", {echeance_id}).done(function(data){
-						showSuccessNotif(data);
-						container.empty();
-						container.html("<span class='label label-success'>Encaissée</span>");
-					})
-				})
-			})
 		</script>
 	</body>
 </html>
