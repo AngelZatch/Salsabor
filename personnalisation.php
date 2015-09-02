@@ -141,7 +141,7 @@ $date_now = date_create("now")->format("Y-m-d");
 } ?>
 					</ul>
 					<p id="shopping-cart-price">Total du panier : <span id="prix-total"><?php echo $prixTotal;?></span> €</p>
-					<a href="paiement.php" role="button" id="check-memory" class="btn btn-success btn-block" input="submit"> Règlement des achats <span class="glyphicon glyphicon-arrow-right"></span></a>
+					<a role="button" id="check-memory" class="btn btn-success btn-block"> Règlement des achats <span class="glyphicon glyphicon-arrow-right"></span></a>
 				</div>
 			</div>
 		</div>
@@ -205,6 +205,8 @@ $date_now = date_create("now")->format("Y-m-d");
 						}
 					}
 					sessionStorage.setItem('prixTotal', $("#prix-total").html());
+					var url = "paiement.php";
+					window.location = url;
 				})
 			})
 			function showExpDate(digit){
