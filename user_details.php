@@ -436,12 +436,15 @@ if(isset($_POST["edit"])){
 																	} ?>
 											</select>
 										</td>
-										<td class="col-sm-3"><button class="btn btn-default" onClick="addTarif()"><span class="glyphicon glyphicon-plus"></span> Valider</button><button class="btn btn-default" id="cancel"><span class="glyphicon glyphicon-cancel"></span> Annuler</button></td>
+										<td class="col-sm-3">
+											<a class="btn btn-default" onClick="addTarif()"><span class="glyphicon glyphicon-plus"></span> Valider</a>
+											<a class="btn btn-default" id="cancel"><span class="glyphicon glyphicon-cancel"></span> Annuler</a>
+										</td>
 									</tr>
 									<input type="hidden" name="prof_id" id="prof_id" value="<?php echo $data;?>">
 								</tbody>
 							</table>
-							<button class="btn btn-primary" id="add-tarif">AJOUTER UN TARIF</button>
+							<a role="button" class="btn btn-primary" id="add-tarif">AJOUTER UN TARIF</a>
 							<p id="json-output"></p>
 						</section> <!-- Tarifs -->
 						<section id="stats">
@@ -613,7 +616,6 @@ if(isset($_POST["edit"])){
 
 			function deleteTarif(id){
 				var delete_id = id;
-				alert(delete_id);
 				$.post("functions/delete_tarif_prof.php", {delete_id}).done(function(data){
 					showSuccessNotif(data);
 					$(".fetched").remove();

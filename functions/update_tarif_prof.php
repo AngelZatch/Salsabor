@@ -11,7 +11,7 @@ try{
 	$update->bindParam(':tarif', $_POST["tarif"]);
 	$update->bindParam(':update_id', $update_id);
 	$update->execute();
-	
+
 	// Mise à jour de tous les prix de tous les cours non payés affectés par le changement
 	// Selection de tous les cours affectés par le changement du tarif
 	$queryTarif = $db->query("SELECT * FROM tarifs_professeurs WHERE tarif_professeur_id='$update_id'")->fetch(PDO::FETCH_ASSOC);
@@ -19,8 +19,8 @@ try{
 	$queryCours->bindParam(1, $queryTarif["prof_id_foreign"]);
 	$queryCours->bindParam(2, $queryTarif["type_prestation"]);
 	$queryCours->execute();
-	
-	$test = 0; 
+
+	$test = 0;
 	while($cours = $queryCours->fetch(PDO::FETCH_ASSOC)){
 		/* CAS 1 : tarif par personne */
 		if($queryTarif["ratio_multiplicatif"] == 'personne'){
@@ -29,7 +29,7 @@ try{
 			$value = $queryParticipants * $_POST["tarif"];
 		} else if($queryTarif["ratio_multiplicatif"] == "heure"){
 			// Calcul basé sur le nombre d'heures
-			$value = $queryCours["cours_unite"] * $_POST["tarif"];
+			$value = $cours["cours_unite"] * $_POST["tarif"];
 		} else {
 			// Tarif "prestation" ; remplacement par le nouveau tarif
 			$value = $_POST["tarif"];
@@ -38,7 +38,7 @@ try{
 		$db->query("UPDATE cours SET cours_prix='$value' WHERE cours_id='$cours[cours_id]'");
 		$test++;
 	}
-	
+
 	$db->commit();
 	echo "Tarif mis à jour. ".$test." cours affectés par la modification";
 } catch (PDOExecption $e) {
