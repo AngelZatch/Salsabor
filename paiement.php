@@ -60,7 +60,7 @@ if(isset($_POST["submit"])){
 								<div class="form-group">
 									<label for="prix_total">Prix total</label>
 									<div class="input-group">
-										<input type="text" name="prix_total" class="form-control input-lg">
+										<input type="number" name="prix_total" class="form-control input-lg">
 										<span class="input-group-addon">€</span>
 									</div>
 								</div>
@@ -68,7 +68,7 @@ if(isset($_POST["submit"])){
 							<div class="col-lg-2">
 								<div class="form-group">
 									<label for="echeances">Nombre d'échéances</label>
-									<input type="text" name="echeances" class="form-control input-lg">
+									<input type="number" name="echeances" class="form-control input-lg">
 								</div>
 							</div>
 							<div class="col-lg-8">
@@ -165,7 +165,7 @@ if(isset($_POST["submit"])){
 						var echeance = "<tr>";
 						var current_date = start_date.format("YYYY-MM-DD");
 						echeance += "<td class='col-lg-1'><div class='input-group'><input type='date' class='form-control' value="+current_date+" name='date-echeance-"+i+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-date-"+i+"'>Propager</a></span></div></td>";
-						echeance += "<td class='col-lg-2'><div class='input-group'><input type='text' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance-"+i+"'><span class='input-group-addon'>€</span></div></td>";
+						echeance += "<td class='col-lg-2'><div class='input-group'><input type='number' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance-"+i+"'><span class='input-group-addon'>€</span></div></td>";
 						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='moyen-paiement-"+i+"' placeholder='CB / Numéro de chèque / Mandat / Espèces...'><span role='buttton' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-methode-"+i+"'>Propager</a></span></div></td>";
 						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='titulaire-paiement-"+i+"' placeholder='Prénom Nom' value='"+$(":regex(name,payeur)").val()+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-titulaire-"+i+"'>Propager</a></span></div></td>";
 						echeance += "<td class='col-lg-1'><input name='statut-echeance-"+i+"'></td>";

@@ -80,20 +80,20 @@ if(isset($_POST["add"])){
 						</div>
 						<div class="form-group" id="volume_horaire">
 							<label for="volume_horaire">Volume de cours (en heures)</label>
-							<input type="text" class="form-control input-lg" name="volume_horaire" placeholder="Exemple : 10">
+							<input type="number" class="form-control input-lg" name="volume_horaire" placeholder="Exemple : 10">
 						</div>
 						<div class="row">
 							<div class="col-lg-4">
 								<div class="form-group">
 									<label for="validite">Durée de validité (à partir de l'achat, en semaines)</label>
-									<input type="text" class="form-control input-lg" name="validite" placeholder="Exemple : 48">
+									<input type="number" class="form-control input-lg" name="validite" placeholder="Exemple : 48">
 								</div>
 							</div>
 							<div class="col-lg-4">
 								<div class="form-group">
 									<label for="tarif_global">Prix d'achat</label>
 									<div class="input-group input-group-lg">
-										<input type="text" class="form-control" name="tarif_global">
+										<input type="number" class="form-control" name="tarif_global">
 										<span class="input-group-addon">€</span>
 									</div>
 								</div>
@@ -101,7 +101,7 @@ if(isset($_POST["add"])){
 							<div class="col-lg-4">
 								<div class="form-group">
 									<label for="echeances">Nombre d'échéances de paiement autorisées</label>
-									<input type="text" class="form-control input-lg" name="echeances">
+									<input type="number" class="form-control input-lg" name="echeances">
 								</div>
 							</div>
 						</div>

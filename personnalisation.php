@@ -102,7 +102,7 @@ $date_now = date_create("now")->format("Y-m-d");
 										<label for="promotion-e">Réduction (en €)</label>
 										<div class="input-group">
 											<span class="input-group-addon"><input type="radio" id="promotion-euros-<?php echo $p["key"];?>" name="promotion" class="checkbox-x">Réduction en €</span>
-											<input type="text" name="promotion-e-<?php echo $p["key"];?>" class="form-control">
+											<input type="number" name="promotion-e-<?php echo $p["key"];?>" class="form-control">
 										</div>
 									</div>
 								</div>
@@ -111,7 +111,7 @@ $date_now = date_create("now")->format("Y-m-d");
 										<label for="promotion-p">Réduction (en %)</label>
 										<div class="input-group">
 											<span class="input-group-addon"><input type="radio" name="promotion" id="promotion-pourcent-<?php echo $p["key"];?>">Réduction en %</span>
-											<input type="text" name="promotion-p-<?php echo $p["key"];?>" class="form-control">
+											<input type="number" name="promotion-p-<?php echo $p["key"];?>" class="form-control">
 										</div>
 									</div>
 								</div>
@@ -121,7 +121,7 @@ $date_now = date_create("now")->format("Y-m-d");
 								<div class="input-group">
 									<span class="input-group-addon">€</span>
 									<input type="hidden" id="prix-fixe-<?php echo $p["key"];?>" value="<?php echo $p["tarif_global"];?>">
-									<input type="text" name="prix_achat" id="prix-calcul-<?php echo $p["key"];?>" class="form-control prix-display" value="<?php echo $p["tarif_global"];?>">
+									<input type="number" name="prix_achat" id="prix-calcul-<?php echo $p["key"];?>" class="form-control prix-display" value="<?php echo $p["tarif_global"];?>">
 								</div>
 							</div>
 						</div>

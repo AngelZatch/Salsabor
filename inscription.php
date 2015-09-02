@@ -163,7 +163,7 @@ if(isset($_POST['addAdherent'])){
 								</div>
 								<div class="form-group col-lg-2">
 									<label for="">Code postal</label>
-									<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control input-lg">
+									<input type="number" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control input-lg">
 								</div>
 								<div class="form-group col-lg-4">
 									<label for="">Ville</label>
@@ -178,13 +178,13 @@ if(isset($_POST['addAdherent'])){
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label for="telephone" class="control-label">Téléphone principal</label>
-										<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control mandatory input-lg">
+										<input type="number" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control mandatory input-lg">
 									</div>
 								</div>
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label for="tel_secondaire" class="control-label">Téléphone secondaire</label>
-										<input type="text" name="tel_secondaire" class="form-control input-lg" placeholder="Numéro de téléphone secondaire">
+										<input type="number" name="tel_secondaire" class="form-control input-lg" placeholder="Numéro de téléphone secondaire">
 									</div>
 								</div>
 							</div>
@@ -233,7 +233,7 @@ if(isset($_POST['addAdherent'])){
 								<label for="est_prestataire" class="control-label">Prestataire</label>
 								<input name="est_prestataire" id="est_prestataire" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
 								<label for="est_autre" class="contorl-label">Autre <span class="label-tip">Spécifiez ci-dessous</span></label>
-								<input type="text" name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+								<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
 							</div>
 							<div class="form-group" id="autre" style="display:none;">
 								<label for="autre_statut" class="control-label">Autre statut</label>

@@ -118,7 +118,7 @@ if(isset($_POST['delete'])){
 							<label for="prix_resa" class="control-label">Prix de la réservation : </label>
 							<div class="input-group">
 								<span class="input-group-addon" id="currency-addon">€</span>
-								<input type="text" name="prix_resa" id="prix_calcul" class="form-control" value="<?php echo $reservation['reservation_prix'];?>" aria-describedby="currency-addon">
+								<input type="number" name="prix_resa" id="prix_calcul" class="form-control" value="<?php echo $reservation['reservation_prix'];?>" aria-describedby="currency-addon">
 							</div>
 							<input type="checkbox" <?php if($reservation['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
 							<input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $reservation['paiement_effectue'];?>">

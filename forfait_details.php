@@ -95,20 +95,20 @@ if(isset($_POST["edit"])){
 							<div class="col-lg-3">
 								<div class="form-group">
 									<label for="volume_horaire">Volume de cours (en heures)</label>
-									<input type="text" class="form-control input-lg" name="volume_horaire" value="<?php echo $produit["volume_horaire"];?>" placeholder="Exemple : 10">
+									<input type="number" class="form-control input-lg" name="volume_horaire" value="<?php echo $produit["volume_horaire"];?>" placeholder="Exemple : 10">
 								</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="form-group">
 									<label for="validite">Durée de validité (en semaines)</label>
-									<input type="text" class="form-control input-lg" name="validite" value="<?php echo $produit["validite_initiale"] / 7;?>" placeholder="Exemple : 48">
+									<input type="number" class="form-control input-lg" name="validite" value="<?php echo $produit["validite_initiale"] / 7;?>" placeholder="Exemple : 48">
 								</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="form-group">
 									<label for="tarif_global">Prix d'achat</label>
 									<div class="input-group input-group-lg">
-										<input type="text" class="form-control" name="tarif_global" value="<?php echo $produit["tarif_global"];?>">
+										<input type="number" class="form-control" name="tarif_global" value="<?php echo $produit["tarif_global"];?>">
 										<span class="input-group-addon">€</span>
 									</div>
 								</div>
@@ -116,7 +116,7 @@ if(isset($_POST["edit"])){
 							<div class="col-lg-3">
 								<div class="form-group">
 									<label for="echeances">Nombre d'échéances autorisées</label>
-									<input type="text" class="form-control input-lg" name="echeances" value="<?php echo $produit["echeances_paiement"];?>">
+									<input type="number" class="form-control input-lg" name="echeances" value="<?php echo $produit["echeances_paiement"];?>">
 								</div>
 							</div>
 						</div>

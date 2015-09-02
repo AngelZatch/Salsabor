@@ -221,7 +221,7 @@ if(isset($_POST["edit"])){
 								<div class="col-lg-3">
 									<div class="form-group">
 										<label for="" class="control-label">Code postal</label>
-										<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control input-lg" value="<?php echo $details["code_postal"];?>">
+										<input type="number" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control input-lg" value="<?php echo $details["code_postal"];?>">
 									</div>
 								</div>
 								<div class="col-lg-3">
@@ -235,7 +235,7 @@ if(isset($_POST["edit"])){
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label for="telephone" class="control-label">Téléphone principal</label>
-										<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control input-lg" value="<?php echo $details["telephone"];?>">
+										<input type="number" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control input-lg" value="<?php echo $details["telephone"];?>">
 									</div>
 								</div>
 								<div class="col-lg-6">
@@ -424,7 +424,7 @@ if(isset($_POST["edit"])){
 												<?php } ?>
 											</select>
 										</td>
-										<td class="col-sm-3"><input type="text" name="tarif" id="tarif" class="form-control"></td>
+										<td class="col-sm-3"><input type="number" name="tarif" id="tarif" class="form-control"></td>
 										<td class="col-sm-3">
 											<select name="ratio" id="ratio" class="form-control">
 												<?php

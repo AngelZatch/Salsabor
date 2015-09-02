@@ -109,10 +109,10 @@ $(document).ready(function(){
 					addOptions += "<div class='form-group'><label class='control-label'>Prénom</label><input type='text' name='identite_prenom' id='identite_prenom' class='form-control input-lg' placeholder='Prénom'></div>";
 					addOptions += "<div class='form-group'><label class='control-label'>Nom</label><input type='text' name='identite_nom' id='identite_nom' class='form-control input-lg' placeholder='Nom'></div>";
 					addOptions += "<div class='form-group'><label class='control-label'>Adresse postale</label><input type='text' name='rue' id='rue' placeholder='Adresse' class='form-control input-lg'></div>";
-					addOptions += "<div class='form-group'><input type='text' name='code_postal' id='code_postal' placeholder='Code Postal' class='form-control input-lg'></div>";
+					addOptions += "<div class='form-group'><input type='number' name='code_postal' id='code_postal' placeholder='Code Postal' class='form-control input-lg'></div>";
 					addOptions += "<div class='form-group'><input type='text' name='ville' id='ville' placeholder='Ville' class='form-control input-lg'></div>";
 					addOptions += "<div class='form-group'><label for='text' class='control-label'>Adresse mail</label><input type='mail' name='mail' id='mail' placeholder='Adresse mail' class='form-control input-lg'></div>";
-					addOptions += "<div class='form-group'><label for='telephone' class='control-label'>Numéro de téléphone</label><input type='text' name='telephone' id='telephone' placeholder='Numéro de téléphone' class='form-control input-lg'></div>";
+					addOptions += "<div class='form-group'><label for='telephone' class='control-label'>Numéro de téléphone</label><input type='number' name='telephone' id='telephone' placeholder='Numéro de téléphone' class='form-control input-lg'></div>";
 					addOptions += "<div class='form-group'><label for='date_naissance' class='control-label'>Date de naissance</label><input type='date' name='date_naissance' id='date_naissance' class='form-control input-lg'></div>";
 					addOptions += "<a class='btn btn-primary' onClick='addAdherent()'>AJOUTER</a>";
 					addOptions += "</div></div></div>";
