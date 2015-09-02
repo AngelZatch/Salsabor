@@ -234,6 +234,7 @@ function notifPanier(){
 		var actualNumber = window.numberProduits - 1;
 		if(actualNumber == 0){
 			$("#badge-panier").hide();
+			$(".table-panier").empty();
 		} else {
 			$("#badge-panier").show();
 			$("#badge-panier").html(actualNumber);
@@ -357,7 +358,7 @@ function fillShoppingCart(){
 		if(sessionStorage.getItem('produit_id-'+i) != null){
 			panierElement += "<tr>";
 			panierElement += "<td class='col-lg-10'>"+sessionStorage.getItem('produit-demo-'+i)+"</td>";
-			panierElement += "<td class='col-lg-2'><span class='glyphicon glyphicon-trash' onClick=removeCartElement("+i+")></span></td>";
+			panierElement += "<td class='col-lg-2'><span class=' span-btn glyphicon glyphicon-trash' onClick=removeCartElement("+i+")></span></td>";
 			panierElement += "</tr>";
 		}
 	}
