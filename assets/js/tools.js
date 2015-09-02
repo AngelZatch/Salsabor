@@ -125,18 +125,6 @@ $(document).ready(function(){
 		})
 	})
 
-	// Modification des échéances
-	$(".statut-salsabor").click(function(){
-		var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
-		var container = $(this).parents("td");
-		$.post("functions/validate_echeance.php", {echeance_id}).done(function(data){
-			showSuccessNotif(data);
-			container.empty();
-			var date = moment().format('DD/MM/YYYY');
-			container.html("<span class='label label-success'>Réceptionnée le"+date+"</span>");
-		})
-	})
-
 	$(".statut-banque").click(function(){
 		var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
 		var container = $(this).parents("td");
@@ -159,6 +147,7 @@ $(document).ready(function(){
 	// Dès le clic, on récupère la valeur initiale du champ (peu importe le type de champ)
 	var initialValue = $(this).val();
 	if(initialValue == ""){initialValue = $(this).html();}
+	console.log(initialValue);
 
 	// On récupère ensuite l'id du champ modifié
 	var token = $(this).attr('id');
@@ -191,6 +180,34 @@ $(document).ready(function(){
 			$(this).replaceWith("<span class='editable' id='"+token+"'>"+initialValue+"</span>");
 		}
 	});
+}).on('mouseenter', '.editable', function(){
+	$(this).next().show();
+}).on('mouseleave', '.editable', function(){
+	$(this).next().hide();
+}).on('click', '.statut-salsabor', function(){
+	var echeance_id = $(this).parent("td").children("input[name='echeance-id']").val();
+	console.log($(this).parent("td").children("input[name='echeance-id']").val());
+	var label = $(this);
+	$.post("functions/validate_echeance.php", {echeance_id}).done(function(data){
+		var answerLabel = "<span class='label label-";
+		var date = moment().format('DD/MM/YYYY');
+		switch(data){
+			case '0':
+				answerLabel += "info'><span class='glyphicon glyphicon-option-horizontal'></span> Dépôt à venir</span><span class='statut-salsabor span-btn glyphicon glyphicon-download-alt'>";
+				break;
+
+			case '1':
+				answerLabel += "success'><span class='glyphicon glyphicon-ok'></span> ("+date+")</span><span class='statut-salsabor span-btn glyphicon glyphicon-remove'>";
+				break;
+
+			case '2':
+				answerLabel += "danger'><span class='glyphicon glyphicon-fire'></span> En retard</span><span class='statut-salsabor span-btn glyphicon glyphicon-download-alt'>";
+				break;
+		}
+		label.prev().remove();
+		answerLabel += "</span>";
+		label.replaceWith(answerLabel);
+	})
 })
 
 // FONCTIONS NOTIFICATIONS //

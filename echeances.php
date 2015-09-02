@@ -19,11 +19,11 @@ if($day >= 1 && $day < 8){
 $time = new DateTime($year.'-'.$month.'-'.$maturityDay);
 $maturityTime = $time->format('Y-m-d');
 
-$queryEcheances = $db->prepare("SELECT * FROM produits_echeances
+$queryEcheances = $db->prepare("SELECT DISTINCT * FROM produits_echeances
 										JOIN produits_adherents ON reference_achat=produits_adherents.id_transaction_foreign
 										JOIN produits ON id_produit_foreign=produits.produit_id
 										JOIN users ON id_user_foreign=users.user_id
-										WHERE date_echeance<='$maturityTime' AND statut_banque = 0");
+										WHERE (date_echeance<='$maturityTime' AND statut_banque = 0 AND echeance_effectuee = 1) OR echeance_effectuee = 2");
 ?>
 <html>
 	<head>

@@ -457,3 +457,11 @@ body{
 .editable{
 	cursor: pointer;
 }
+
+.statut-salsabor,.statut-banque {
+	float: right;
+}
+
+.span-btn {
+	cursor: pointer;
+}

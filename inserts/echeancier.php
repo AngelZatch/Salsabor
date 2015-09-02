@@ -11,7 +11,7 @@ $queryEcheances->execute();
 			<th class="col-lg-2">Montant</th>
 			<th class="col-lg-2">Méthode</th>
 			<th class="col-lg-2">Payeur</th>
-			<th class="col-lg-1">Statut Salsabor</th>
+			<th class="col-lg-2">Statut Salsabor</th>
 			<th class="col-lg-2">Statut Banque</th>
 		</tr>
 	</thead>
@@ -43,19 +43,24 @@ $queryEcheances->execute();
 			<td class="user-name"><span class="editable" id="payeur_echeance-<?php echo $echeances["produits_echeances_id"];?>"><?php echo $echeances["payeur_echeance"];?></span></td>
 			<td class="status">
 				<?php if($status == "Réceptionnée"){ ?>
-				<span class="label label-<?php echo $statusClass;?>">Reçue le <?php echo date_create($echeances["date_paiement"])->format('d/m/Y');?></span>
+				<span class="label label-<?php echo $statusClass;?>"><span class="glyphicon glyphicon-ok"></span> (<?php echo date_create($echeances["date_paiement"])->format('d/m/Y');?>)</span>
+				<span class="statut-salsabor span-btn glyphicon glyphicon-remove"></span>
+				<?php } else if($status == "En retard"){ ?>
+				<span class="label label-<?php echo $statusClass;?>"><span class="glyphicon glyphicon-fire"></span> <?php echo $status;?></span>
+				<span class="statut-salsabor span-btn glyphicon glyphicon-download-alt"></span>
 				<?php } else { ?>
-				<span class="label label-info"><?php echo $status;?></span>
-				<button class="btn btn-default statut-salsabor"><span class="glyphicon glyphicon-download-alt"></span></button>
+				<span class="label label-info"><span class="glyphicon glyphicon-option-horizontal"></span> En attente</span>
+				<span class="statut-salsabor span-btn glyphicon glyphicon-download-alt"></span>
 				<?php } ?>
 				<input type="hidden" name="echeance-id" value="<?php echo $echeances["produits_echeances_id"];?>">
 			</td>
 			<td class="bank">
 				<?php if($echeances["statut_banque"] == '1'){ ?>
-				<span class="label label-success">Encaissée le <?php echo $echeances["date_encaissement"];?></span>
+				<span class="label label-success"><span class="glyphicon glyphicon-ok"></span> (<?php echo date_create($echeances["date_encaissement"])->format('d/m/Y');?>)</span>
+				<span class="statut-banque span-btn glyphicon glyphicon-remove"></span>
 				<?php } else { ?>
-				<span class="label label-info">Dépôt à venir</span>
-				<button class="btn btn-default statut-banque"><span class="glyphicon glyphicon-download-alt"></span></button>
+				<span class="label label-info"><span class="glyphicon glyphicon-option-horizontal"></span> Dépôt à venir</span>
+				<span class="statut-banque span-btn glyphicon glyphicon-download-alt"></span>
 				<?php } ?>
 				<input type="hidden" name="echeance-id" value="<?php echo $echeances["produits_echeances_id"];?>">
 			</td>
