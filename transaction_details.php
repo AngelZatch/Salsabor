@@ -28,15 +28,21 @@ $queryEcheances->bindValue(1, $data);
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
+				<div class="fixed">
+					<div class="col-lg-6">
+						<p class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Transaction <?php echo $transaction["id_transaction"]?></p>
+					</div>
+					<div class="col-lg-6">
+						<div class="btn-toolbar">
+							<?php if($status == "transactions"){ ?>
+							<a href="transactions.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux transactions</a>
+							<?php } else { ?>
+							<a href="user_details.php?id=<?php echo $transaction["payeur_transaction"];?>&status=<?php echo $status;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent</a>
+							<?php } ?>
+						</div> <!-- btn-toolbar -->
+					</div>
+				</div>
 				<div class="col-sm-10 main">
-					<div class="btn-toolbar" id="top-page-buttons">
-						<?php if($status == "transactions"){ ?>
-						<a href="transactions.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux transactions</a>
-						<?php } else { ?>
-						<a href="user_details.php?id=<?php echo $transaction["payeur_transaction"];?>&status=<?php echo $status;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent</a>
-						<?php } ?>
-					</div> <!-- btn-toolbar -->
-					<h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Transaction <?php echo $transaction["id_transaction"]?></h1>
 					<ul class="nav nav-tabs">
 						<li role="presentation" id="infos-toggle" class="active"><a>Détails</a></li>
 						<li role="presentation" id="maturity-toggle"><a>Echéances</a></li>
@@ -69,6 +75,7 @@ $queryEcheances->bindValue(1, $data);
 		</div>
 		<?php include "scripts.php";?>
 		<script src="assets/js/nav-tabs.js"></script>
+		<script src="assets/js/maturities.js"></script>
 		<script>
 			function uploadChanges(token, value){
 				var database = "produits_echeances";
@@ -76,28 +83,6 @@ $queryEcheances->bindValue(1, $data);
 					showSuccessNotif(data);
 				});
 			}
-			$(document).ready(function(){
-				$(".statut-salsabor").click(function(){
-					var echeance_id = $(this).parent("td").children("input[name^='echeance']").val();
-					var container = $(this).parent("td");
-					$.post("functions/validate_echeance.php", {echeance_id}).done(function(data){
-						showSuccessNotif(data);
-						container.empty();
-						container.html("<span class='label label-success'>Réceptionnée</span>");
-						$(".statut-salsabor").removeClass("glyphicon-download-alt");
-					})
-				})
-
-				$(".statut-banque").click(function(){
-					var echeance_id = $(this).parent("td").children("input[name^='echeance']").val();
-					var container = $(this).parent("td");
-					$.post("functions/encaisser_echeance.php", {echeance_id}).done(function(data){
-						showSuccessNotif(data);
-						container.empty();
-						container.html("<span class='label label-success'>Encaissée</span>");
-					})
-				})
-			})
 		</script>
 	</body>
 </html>

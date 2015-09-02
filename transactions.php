@@ -15,9 +15,13 @@ $queryTransactions = $db->query("SELECT * FROM transactions JOIN users ON payeur
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
+				<div class="fixed">
+					<div class="col-lg-6">
+						<p class="page-title"><span class="glyphicon glyphicon-piggy-bank"></span> Transactions</p>
+					</div>
+					<div class="col-lg-6"></div>
+				</div>
 				<div class="col-sm-10 main">
-					<p id="current-time"></p>
-					<h1 class="page-title"><span class="glyphicon glyphicon-piggy-bank"></span> Transactions</h1>
 					<div id="echeances-list">
 						<table class="table table-hover">
 							<thead>

@@ -44,11 +44,17 @@ $queryEcheances->bindValue(1, $forfait["id_transaction_foreign"]);
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
+				<div class="fixed">
+					<div class="col-lg-6">
+						<p class="page-title"><span class="glyphicon glyphicon-credit-card"></span> <?php echo $forfait["produit_nom"]. " (".$forfait["id_transaction_foreign"].")";?></p>
+					</div>
+					<div class="col-lg-6">
+						<div class="btn-toolbar">
+							<a href="user_details.php?id=<?php echo $forfait["id_user_foreign"];?>&status=<?php echo $status;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent (<?php echo $forfait["user_prenom"]." ".$forfait["user_nom"];?>)</a>
+						</div> <!-- btn-toolbar -->
+					</div>
+				</div>
 				<div class="col-sm-10 main">
-					<div class="btn-toolbar" id="top-page-buttons">
-						<a href="user_details.php?id=<?php echo $forfait["id_user_foreign"];?>&status=<?php echo $status;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent (<?php echo $forfait["user_prenom"]." ".$forfait["user_nom"];?>)</a>
-					</div> <!-- btn-toolbar -->
-					<h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["user_prenom"]." ".$forfait["user_nom"]." (transaction ".$forfait["id_transaction_foreign"].")";?></h1>
 					<ul class="nav nav-tabs">
 						<li role="presentation" id="infos-toggle" class="active"><a>Détails du forfait</a></li>
 						<li role="presentation" id="history-toggle"><a>Liste des cours</a></li>
@@ -140,10 +146,12 @@ $queryEcheances->bindValue(1, $forfait["id_transaction_foreign"]);
 		</div>
 		<?php include "scripts.php";?>
 		<script src="assets/js/nav-tabs.js"></script>
+		<script src="assets/js/maturities.js"></script>
 		<script>
 			function uploadChanges(token, value){
 				var database = "produits_echeances";
 				$.post("functions/update_field.php", {database, token, value}).done(function(data){
+					console.log(data);
 					showSuccessNotif(data);
 				});
 			}

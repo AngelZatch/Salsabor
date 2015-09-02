@@ -70,59 +70,84 @@ if(isset($_POST["edit"])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-sm-10 main">
-					<h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $produit["produit_nom"];?></h1>
-					<div class="col-sm-9" id="solo-form">
-						<form action="forfait_details.php?id=<?php echo $data;?>" method="post">
+				<form action="forfait_details.php?id=<?php echo $data;?>" method="post">
+					<div class="fixed">
+						<div class="col-lg-6">
+							<p class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $produit["produit_nom"];?></p>
+						</div>
+						<div class="col-lg-6">
 							<div class="btn-toolbar">
 								<a href="forfaits.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux forfaits</a>
-								<input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER">
+								<input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER LES MODIFICATIONS">
 							</div><!-- btn-toolbar -->
-							<div class="form-group">
-								<label for="intitule">Intitulé</label>
-								<input type="text" class="form-control" name="intitule" value="<?php echo $produit["produit_nom"];?>" placeholder="Nom du produit">
-							</div>
-							<div class="form-group">
-								<label for="description">Description</label>
-								<textarea rows="5" class="form-control" name="description" value="<?php echo $produit["description"];?>" placeholder="Facultatif. Tentez d'être succinct !"></textarea>
-							</div>
-							<div class="form-group">
-								<label for="volume_horaire">Volume de cours (en heures)</label>
-								<input type="text" class="form-control" name="volume_horaire" value="<?php echo $produit["volume_horaire"];?>" placeholder="Exemple : 10">
-							</div>
-							<div class="form-group">
-								<label for="validite">Durée de validité (à partir de l'achat, en semaines)</label>
-								<input type="text" class="form-control" name="validite" value="<?php echo $produit["validite_initiale"] / 7;?>" placeholder="Exemple : 48">
-							</div>
-							<div class="form-group">
-								<label for="tarif_global">Prix d'achat</label>
-								<input type="text" class="form-control" name="tarif_global" value="<?php echo $produit["tarif_global"];?>">
-							</div>
-							<div class="form-group">
-								<label for="date_activation">Date de mise à disposition à l'achat (laissez vide pour une activation dès la validation)</label>
-								<div class="input-group">
-									<input type="date" class="form-control" name="date_activation" value="<?php echo $produit["date_activation"];?>">
-									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="date_limite_achat">Date limite d'achat possible (laissez vide pour une activation pendant une durée indéfinie)</label>
-								<div class="input-group">
-									<input type="date" class="form-control" name="date_limite_achat" value="<?php echo $produit["date_desactivation"];?>">
-									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="echeances">Nombre d'échéances de paiement autorisées</label>
-								<input type="text" class="form-control" name="echeances" value="<?php echo $produit["echeances_paiement"];?>">
-							</div>
-							<div class="form-group">
-								<label for="arep">Autoriser l'extension de validité ?</label>
-								<input type="checkbox" value="1" name="arep">
-							</div>
-						</form>
+						</div>
 					</div>
-				</div>
+					<div class="col-sm-10 main">
+						<div class="form-group">
+							<label for="intitule">Intitulé</label>
+							<input type="text" class="form-control input-lg" name="intitule" value="<?php echo $produit["produit_nom"];?>" placeholder="Nom du produit">
+						</div>
+						<div class="form-group">
+							<label for="description">Description</label>
+							<textarea rows="5" class="form-control input-lg" name="description" value="<?php echo $produit["description"];?>" placeholder="Facultatif. Tentez d'être succinct !"></textarea>
+						</div>
+						<div class="row">
+							<div class="col-lg-3">
+								<div class="form-group">
+									<label for="volume_horaire">Volume de cours (en heures)</label>
+									<input type="number" class="form-control input-lg" name="volume_horaire" value="<?php echo $produit["volume_horaire"];?>" placeholder="Exemple : 10">
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="form-group">
+									<label for="validite">Durée de validité (en semaines)</label>
+									<input type="number" class="form-control input-lg" name="validite" value="<?php echo $produit["validite_initiale"] / 7;?>" placeholder="Exemple : 48">
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="form-group">
+									<label for="tarif_global">Prix d'achat</label>
+									<div class="input-group input-group-lg">
+										<input type="number" class="form-control" name="tarif_global" value="<?php echo $produit["tarif_global"];?>">
+										<span class="input-group-addon">€</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="form-group">
+									<label for="echeances">Nombre d'échéances autorisées</label>
+									<input type="number" class="form-control input-lg" name="echeances" value="<?php echo $produit["echeances_paiement"];?>">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="date_activation">Date de mise à disposition à l'achat (laissez vide pour une activation dès la validation)</label>
+									<div class="input-group input-group-lg">
+										<input type="date" class="form-control" name="date_activation" value="<?php echo $produit["date_activation"];?>">
+										<span role="button" class="input-group-btn">
+											<a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="date_limite_achat">Date limite d'achat possible (laissez vide pour une activation pendant une durée indéfinie)</label>
+									<div class="input-group input-group-lg">
+										<input type="date" class="form-control" name="date_limite_achat" value="<?php echo $produit["date_desactivation"];?>">
+										<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="arep">Autoriser l'extension de validité ?</label>
+							<input type="checkbox" value="1" name="arep">
+						</div>
+					</div>
+				</form>
 			</div>
 		</div>
 		<?php include "scripts.php";?>

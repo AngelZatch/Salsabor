@@ -25,17 +25,22 @@ if(isset($_POST['addResa'])){
 	</head>
 	<body>
 		<?php include "nav.php";?>
-		<div class="container-fluid">
-			<div class="row">
-				<?php include "side-menu.php";?>
-				<div class="col-sm-10 main">
-					<p id="current-time"></p>
-					<h1 class="page-title"><span class="glyphicon glyphicon-record"></span> Effectuer une réservation</h1>
-					<form action="resa_add.php" method="post" target="_blank" role="form" id="add_resa">
-						<div class="btn-toolbar">
-							<a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-							<input type="submit" name="addResa" role="button" class="btn btn-primary confirm-add" value="ENREGISTRER" id="submit-button" disabled>
-						</div> <!-- btn-toolbar -->
+		<form action="resa_add.php" method="post" target="_blank" role="form" id="add_resa">
+			<div class="fixed">
+				<div class="col-lg-6">
+					<p class="page-title"><span class="glyphicon glyphicon-record"></span> Effectuer une réservation</p>
+				</div>
+				<div class="col-lg-6">
+					<div class="btn-toolbar">
+						<a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
+						<input type="submit" name="addResa" role="button" class="btn btn-primary confirm-add" value="ENREGISTRER" id="submit-button" disabled>
+					</div> <!-- btn-toolbar -->
+				</div>
+			</div>
+			<div class="container-fluid">
+				<div class="row">
+					<?php include "side-menu.php";?>
+					<div class="col-sm-10 main">
 						<div class="form-group">
 							<label for="identite" class="control-label">Demandeur</label>
 							<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory has-check has-name-completion input-lg" placeholder="Nom">
@@ -48,21 +53,31 @@ if(isset($_POST['addResa'])){
 								<?php } ?>
 							</select>
 						</div>
-						<div class="form-group">
-							<label for="date_debut" class="control-label">Date <span class="span-mandatory">*</span></label>
-							<div class="input-group">
-								<input type="date" class="form-control mandatory input-lg" name="date_debut" id="date_debut" onChange="checkHoliday()">
-								<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="date_debut" class="control-label">Date <span class="span-mandatory">*</span></label>
+									<div class="input-group input-group-lg">
+										<input type="date" class="form-control mandatory" name="date_debut" id="date_debut" onChange="checkHoliday()">
+										<span role="button" class="input-group-btn">
+											<a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="form-group">
+									<label for="heure_debut" class="control-label">Début à</label>
+									<input type="time" class="form-control mandatory input-lg" id="heure_debut" name="heure_debut" onChange="checkCalendar(true, false)">
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="form-group">
+									<label for="heure_fin" class="control-label">Fin à</label>
+									<input type="time" class="form-control mandatory input-lg" id="heure_fin" name="heure_fin" onChange="checkCalendar(true, false)">
+								</div>
 							</div>
 							<p class="error-alert" id="holiday-alert"></p>
-						</div>
-						<div class="form-group">
-							<fieldset>
-								<label for="heure_debut" class="control-label">Début à</label>
-								<input type="time" class="form-control mandatory input-lg" id="heure_debut" name="heure_debut" onChange="checkCalendar(true, false)">
-								<label for="heure_fin" class="control-label">Fin à</label>
-								<input type="time" class="form-control mandatory input-lg" id="heure_fin" name="heure_fin" onChange="checkCalendar(true, false)">
-							</fieldset>
 						</div>
 						<div class="form-group">
 							<label for="lieu" class="control-label">Salle</label>
@@ -73,15 +88,14 @@ if(isset($_POST['addResa'])){
 							</select>
 						</div>
 						<div class="form-group">
-							<label for="priorite" class="control-label">Réservation payée</label>
+							<label for="priorite" class="control-label">Réservation payée <span class="label-tip">Une réservation payée ne peut plus être supprimée au profit d'un cours.</span></label>
 							<input name="priorite" id="priorite" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
-							<label for="priorite">Une réservation payée ne peut plus être supprimée au profit d'un cours.</label>
 						</div>
 						<div class="form-group" id="prix_reservation">
 							<label for="prix_resa" class="control-label">Prix de la réservation : </label>
-							<div class="input-group">
+							<div class="input-group input-group-lg">
+								<input type="number" name="prix_resa" id="prix_calcul" class="form-control" aria-describedby="currency-addon">
 								<span class="input-group-addon" id="currency-addon">€</span>
-								<input type="text" name="prix_resa" id="prix_calcul" class="form-control" aria-describedby="currency-addon">
 							</div>
 							<input type="checkbox" unchecked data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" id="paiement">
 							<input type="hidden" name="paiement" id="paiement-sub" value="0">
@@ -89,10 +103,10 @@ if(isset($_POST['addResa'])){
 						<div class="align-right">
 							<p class="error-alert" id="error_message"></p>
 						</div>
-					</form>
+					</div>
 				</div>
 			</div>
-		</div>
+		</form>
 		<?php include "scripts.php";?>
 		<script src="assets/js/check_calendar.js"></script>
 		<script>
@@ -113,7 +127,7 @@ if(isset($_POST['addResa'])){
 
 			$(document).ready(function(){
 				var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
-				$("has-name-completion").autocomplete({
+				$(".has-name-completion").autocomplete({
 					source: listeAdherents
 				});
 

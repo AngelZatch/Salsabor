@@ -31,16 +31,22 @@ $date_now = date_create("now")->format("Y-m-d");
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
+				<div class="fixed">
+					<div class="col-lg-6">
+						<p class="page-title"><span class="glyphicon glyphicon-shopping-cart"></span> Acheter des produits</p>
+					</div>
+					<div class="col-lg-6">
+						<div class="btn-toolbar">
+							<a href="catalogue.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-th"></span> Retourner au catalogue</a>
+						</div><!-- btn-toolbar -->
+					</div>
+				</div>
 				<div class="col-sm-8 main" id="right-bordered">
-					<h1 class="page-title">Acheter des produits</h1>
 					<div class="progress">
 						<div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="25" aria-valuemax="100" style="width:50%;">
 							<span class="glyphicon glyphicon-erase"></span> Etape 2/4 : Personnalisation des produits
 						</div>
 					</div>
-					<div class="btn-toolbar">
-						<a href="catalogue.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-th"></span> Retourner au catalogue</a>
-					</div><!-- btn-toolbar -->
 					<?php foreach($panierTotal as $p){ ?>
 					<section id="details-<?php echo $p["key"];?>">
 						<p id="produit-title-<?php echo $p["key"];?>" class="produit-title"><?php echo $p["produit_nom"];?></p>
@@ -96,7 +102,7 @@ $date_now = date_create("now")->format("Y-m-d");
 										<label for="promotion-e">Réduction (en €)</label>
 										<div class="input-group">
 											<span class="input-group-addon"><input type="radio" id="promotion-euros-<?php echo $p["key"];?>" name="promotion" class="checkbox-x">Réduction en €</span>
-											<input type="text" name="promotion-e-<?php echo $p["key"];?>" class="form-control">
+											<input type="number" name="promotion-e-<?php echo $p["key"];?>" class="form-control">
 										</div>
 									</div>
 								</div>
@@ -105,7 +111,7 @@ $date_now = date_create("now")->format("Y-m-d");
 										<label for="promotion-p">Réduction (en %)</label>
 										<div class="input-group">
 											<span class="input-group-addon"><input type="radio" name="promotion" id="promotion-pourcent-<?php echo $p["key"];?>">Réduction en %</span>
-											<input type="text" name="promotion-p-<?php echo $p["key"];?>" class="form-control">
+											<input type="number" name="promotion-p-<?php echo $p["key"];?>" class="form-control">
 										</div>
 									</div>
 								</div>
@@ -115,7 +121,7 @@ $date_now = date_create("now")->format("Y-m-d");
 								<div class="input-group">
 									<span class="input-group-addon">€</span>
 									<input type="hidden" id="prix-fixe-<?php echo $p["key"];?>" value="<?php echo $p["tarif_global"];?>">
-									<input type="text" name="prix_achat" id="prix-calcul-<?php echo $p["key"];?>" class="form-control prix-display" value="<?php echo $p["tarif_global"];?>">
+									<input type="number" name="prix_achat" id="prix-calcul-<?php echo $p["key"];?>" class="form-control prix-display" value="<?php echo $p["tarif_global"];?>">
 								</div>
 							</div>
 						</div>
@@ -135,7 +141,7 @@ $date_now = date_create("now")->format("Y-m-d");
 } ?>
 					</ul>
 					<p id="shopping-cart-price">Total du panier : <span id="prix-total"><?php echo $prixTotal;?></span> €</p>
-					<a href="paiement.php" role="button" id="check-memory" class="btn btn-success btn-block" input="submit"> Règlement des achats <span class="glyphicon glyphicon-arrow-right"></span></a>
+					<a role="button" id="check-memory" class="btn btn-success btn-block"> Règlement des achats <span class="glyphicon glyphicon-arrow-right"></span></a>
 				</div>
 			</div>
 		</div>
@@ -199,6 +205,8 @@ $date_now = date_create("now")->format("Y-m-d");
 						}
 					}
 					sessionStorage.setItem('prixTotal', $("#prix-total").html());
+					var url = "paiement.php";
+					window.location = url;
 				})
 			})
 			function showExpDate(digit){

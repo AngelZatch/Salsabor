@@ -14,23 +14,14 @@ include 'functions/reservations.php';
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
+				<div class="fixed">
+					<div class="col-lg-6">
+						<p class="page-title"><span class="glyphicon glyphicon-warning-sign"></span> Page Test !</p>
+					</div>
+					<div class="col-lg-6"></div>
+				</div>
 				<div class="col-sm-10 main">
-					<h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Page Test !</h1>
-					<form action="tests.php" method="post">
-						<input type="text" name="produit">
-						<input type="submit">
-					</form>
-					<?php
-$articlePanier = $_GET["element"];
-$elementSepare = explode('-', $articlePanier);
-$panierTotal = array();
-for($i = 0; $i < sizeof($elementSepare); $i++){
-	echo $elementSepare[$i]."<br>";
-	$elementPanier = $db->query("SELECT * FROM produits WHERE produit_id=$elementSepare[$i]");
-	array_push($panierTotal, $elementPanier->fetch(PDO::FETCH_ASSOC));
-}
-print_r($panierTotal);
-					?>
+					<span class="editable">18/09/2015</span>
 				</div>
 			</div>
 		</div>

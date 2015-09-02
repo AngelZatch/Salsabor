@@ -16,7 +16,6 @@ $date = date_create('now')->format('H:i:s');
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<div class="col-sm-10 main">
-					<p id="current-time"></p>
 					<div class="jumbotron">
 						<h1><?php if($date > "06:00:00" && $date <= "12:00:00"){ ?>
 							Vous êtes là tôt aujourd'hui... Bonjour !
@@ -40,7 +39,6 @@ $date = date_create('now')->format('H:i:s');
 							<a href="eleve_inviter.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-heart-empty"></span> Inviter un élève</a>
 							<a href="passages.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-map-marker"></span> Consulter les passages</a>
 							<a href="echeances.php" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-repeat"></span> Consulter les échéances</a>
-							<a class="btn btn-primary btn-lg" href="read_rfid.php"><span class="glyphicon glyphicon-qrcode"></span> Lire un RFID (Admin)</a>
 						</p>
 					</div>
 				</div>

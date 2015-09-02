@@ -146,10 +146,12 @@ if(isset($_POST['deleteCoursAll'])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-sm-10 main">
-					<br>
-					<div class="col-sm-9">
-						<form method="post" class="form-horizontal" role="form">
+				<form method="post" role="form">
+					<div class="fixed">
+						<div class="col-lg-6">
+							<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
+						</div>
+						<div class="col-lg-6">
 							<div class="btn-toolbar">
 								<a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
 								<?php
@@ -176,71 +178,70 @@ if($res_recurrence == '0'){
 									</div>
 								</div>
 							</div> <!-- btn-toolbar -->
-							<br>
-							<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
-							<div class="form-group">
-								<input type="text" class="form-control" name="intitule" style="font-size:30px; height:inherit;" value=<?php echo $cours['cours_intitule'];?>>
-							</div>
-							<div class="form-group">
-								<input type="date" class="col-sm-3" name="date_debut" id="date_debut" value=<?php echo date_create($cours['cours_start'])->format('Y-m-d');?>>
-								<input type="time" class="col-sm-3" name="heure_debut" id="heure_debut" value=<?php echo date_create($cours['cours_start'])->format('H:i')?>>
-								<input type="time" class="col-sm-3" name="heure_fin" id="heure_fin" value=<?php echo date_create($cours['cours_end'])->format('H:i');?>>
-								<input type="date" class="col-sm-3" name="date_fin" id="date_fin" value=<?php echo date_create($cours['cours_end'])->format('Y-m-d');?>>
-							</div>
-							<div class="form-group">
-								<select name="type" id="" class="form-control">
-									<?php
+						</div>
+					</div>
+					<div class="col-sm-10 main">
+						<div class="form-group">
+							<input type="text" class="form-control" name="intitule" style="font-size:30px; height:inherit;" value=<?php echo $cours['cours_intitule'];?>>
+						</div>
+						<div class="form-group">
+							<input type="date" class="col-sm-3" name="date_debut" id="date_debut" value=<?php echo date_create($cours['cours_start'])->format('Y-m-d');?>>
+							<input type="time" class="col-sm-3" name="heure_debut" id="heure_debut" value=<?php echo date_create($cours['cours_start'])->format('H:i')?>>
+							<input type="time" class="col-sm-3" name="heure_fin" id="heure_fin" value=<?php echo date_create($cours['cours_end'])->format('H:i');?>>
+							<input type="date" class="col-sm-3" name="date_fin" id="date_fin" value=<?php echo date_create($cours['cours_end'])->format('Y-m-d');?>>
+						</div>
+						<div class="form-group">
+							<select name="type" id="" class="form-control">
+								<?php
 while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
 	if($cours["cours_type"] == $row_types["prestations_id"]) { ?>
-									<option selected="selected" value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>;
-									<?php } else { ?>
-									<option value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>;
-									<?php }
+								<option selected="selected" value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>;
+								<?php } else { ?>
+								<option value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>;
+								<?php }
 } ?>
-								</select>
-							</div>
-							<div class="form-group">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<label for="professeur">Professeur : </label>
-										<p>
-											<?php echo $data_prof['user_prenom']." ".$data_prof['user_nom'];?>
-										</p>
-									</div>
-									<div class="panel-body">
-										<label for="liste_participants">Participants enregistrés :</label>
-										<div class="input-group">
-											<input type="text" for="liste_participants" class="form-control" id="liste-participants" placeholder="Ajouter un participant">
-											<span role="buttton" class="input-group-btn" id="add-eleve"><a class="btn btn-info" role="button">Ajouter l'élève</a></span>
-										</div>
-									</div>
-									<ul class="list-group">
-										<?php while($participants = $queryParticipants->fetch(PDO::FETCH_ASSOC)){?>
-										<li class='list-group-item'>
-											<span class="glyphicon glyphicon-<?php echo (isset($participants["produit_adherent_id"]))?"ok":"remove";?>"></span>
-											<?php echo $participants['user_prenom']." ".$participants['user_nom'];?>
-											<span class="list-item-option delete-participant glyphicon glyphicon-trash" title="Supprimer l'élève de ce cours"><input type="hidden" value="<?php echo $participants["user_id"];?>"></span>
-										</li>
-										<?php } ?>
-										<li class="list-group-item" id="prix-calcul">Somme due à l'enseignant :
-											<div class="input-group">
-												<span class='input-group-addon' id='currency-addon'>€</span>
-												<input type=text name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $cours["cours_prix"];?>" aria-describedby='currency-addon'>
-											</div>
-											<input type="checkbox" <?php if($cours['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
-											<input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $cours['paiement_effectue'];?>">
-										</li>
-									</ul>
+							</select>
+						</div>
+						<div class="form-group">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<label for="professeur">Professeur : </label>
+									<p>
+										<?php echo $data_prof['user_prenom']." ".$data_prof['user_nom'];?>
+									</p>
 								</div>
+								<div class="panel-body">
+									<label for="liste_participants">Participants enregistrés :</label>
+									<div class="input-group">
+										<input type="text" for="liste_participants" class="form-control" id="liste-participants" placeholder="Ajouter un participant">
+										<span role="buttton" class="input-group-btn" id="add-eleve"><a class="btn btn-info" role="button">Ajouter l'élève</a></span>
+									</div>
+								</div>
+								<ul class="list-group">
+									<?php while($participants = $queryParticipants->fetch(PDO::FETCH_ASSOC)){?>
+									<li class='list-group-item'>
+										<span class="glyphicon glyphicon-<?php echo (isset($participants["produit_adherent_id"]))?"ok":"remove";?>"></span>
+										<?php echo $participants['user_prenom']." ".$participants['user_nom'];?>
+										<span class="list-item-option delete-participant glyphicon glyphicon-trash" title="Supprimer l'élève de ce cours"><input type="hidden" value="<?php echo $participants["user_id"];?>"></span>
+									</li>
+									<?php } ?>
+									<li class="list-group-item" id="prix-calcul">Somme due à l'enseignant :
+										<div class="input-group">
+											<span class='input-group-addon' id='currency-addon'>€</span>
+											<input type="number" name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $cours["cours_prix"];?>" aria-describedby='currency-addon'>
+										</div>
+										<input type="checkbox" <?php if($cours['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
+										<input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $cours['paiement_effectue'];?>">
+									</li>
+								</ul>
 							</div>
-							<div class="form-group">
-								<label for="edit-comment">Raison de modification :</label>
-								<textarea name="edit-comment" id="edit-comment" cols="30" rows="5" class="form-control"></textarea>
-							</div>
-							<div class="form-group"></div>
-						</form>
+						</div>
+						<div class="form-group">
+							<label for="edit-comment">Raison de modification :</label>
+							<textarea name="edit-comment" id="edit-comment" cols="30" rows="5" class="form-control"></textarea>
+						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 		<?php include "scripts.php";?>

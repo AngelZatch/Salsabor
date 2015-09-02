@@ -25,7 +25,7 @@ $salle = $querySalle->fetch(PDO::FETCH_ASSOC);
 				<div class="btn-toolbar" id="top-page-buttons">
                    <a href="salles.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des salles</a>
                 </div> <!-- btn-toolbar -->
-               <h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Salle <?php echo $salle["salle_name"];?></h1>
+               <p class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Salle <?php echo $salle["salle_name"];?></p>
            </div>
        </div>
    </div>

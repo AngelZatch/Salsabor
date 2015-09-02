@@ -31,22 +31,28 @@ if(isset($_POST["submit"])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-sm-10 main">
-					<h1 class="page-title"><span class="glyphicon glyphicon-heart-empty"></span> Inviter un élève</h1>
-					<form action="" method="post" target="_blank">
-						<div class="btn-toolbar">
-							<a href="dashboard.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Annuler et retourner au panneau d'administration</a>
-							<input type="submit" name="submit" role="button" class="btn btn-primary" value="ENREGISTRER">
-						</div> <!-- btn-toolbar -->
+				<form action="" method="post" target="_blank">
+					<div class="fixed">
+						<div class="col-lg-6">
+							<p class="page-title"><span class="glyphicon glyphicon-heart-empty"></span> Inviter un élève</p>
+						</div>
+						<div class="col-lg-6">
+							<div class="btn-toolbar">
+								<a href="dashboard.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Annuler et retourner au panneau d'administration</a>
+								<input type="submit" name="submit" role="button" class="btn btn-primary" value="ENREGISTRER">
+							</div> <!-- btn-toolbar -->
+						</div>
+					</div>
+					<div class="col-sm-10 main">
 						<input type="hidden" value="<?php echo $invitation["produit_id"]?>" class="form-control" id="produit-select" name="produit">
 						<div class="form-group">
 							<label for="personne">Acheteur du forfait</label>
-							<input type="text" name="identite_nom" id="identite_nom" class="form-control has-check has-name-completion" placeholder="Nom">
+							<input type="text" name="identite_nom" id="identite_nom" class="form-control has-check has-name-completion input-lg" placeholder="Nom">
 							<p class="error-alert" id="err_adherent"></p>
 						</div>
 						<div class="form-group" id="association">
 							<label for="cours">Associer un cours ? <span class="label-tip">L'invitation sera alors restreinte à ce cours et seulement celui-ci</span></label>
-							<div class="input-group">
+							<div class="input-group input-group-lg">
 								<input type="text" name="cours" class="form-control" id="search" placeholder="Tapez pour filtrer">
 								<span class="input-group-btn"><a href="#liste-cours" class="btn btn-default" data-toggle="collapse" aria-expanded="false" id="open-liste-cours">Liste des cours à venir</a></span>
 							</div>
@@ -70,18 +76,22 @@ if(isset($_POST["submit"])){
 							</div>
 							<input type="hidden" name="id-cours">
 						</div>
-						<div id="unassociated-invitation">
-							<div class="form-group">
-								<label for="date_activation">Date d'activation</label>
-								<input type="date" name="date_activation" class="form-control" value="<?php echo $date_activation?>">
+						<div id="unassociated-invitation" class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="date_activation">Date d'activation</label>
+									<input type="date" name="date_activation" class="form-control input-lg" value="<?php echo $date_activation?>">
+								</div>
 							</div>
-							<div class="form-group">
-								<label for="date_expiration">Date prévue d'expiration</label>
-								<input type="date" name="date_expiration" class="form-control" value="<?php echo $date_expiration;?>">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="date_expiration">Date prévue d'expiration</label>
+									<input type="date" name="date_expiration" class="form-control input-lg" value="<?php echo $date_expiration;?>">
+								</div>
 							</div>
 						</div>
-					</form>
-				</div>
+					</div>
+				</form>
 			</div>
 		</div>
 		<?php include "scripts.php";?>

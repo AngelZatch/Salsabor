@@ -5,7 +5,6 @@ Dès que le document est prêt, tous les modaux et les fonctions qui doivent tou
 */
 
 $(document).ready(function(){
-
 	jQuery.expr[':'].regex = function(elem, index, match) {
 		var matchParams = match[3].split(','),
 			validLabels = /^(data|css):/,
@@ -80,6 +79,12 @@ $(document).ready(function(){
 		}
 	});
 
+	// Editables
+	$(".editable").each(function(){
+		var editIcon = "<span class='glyphicon glyphicon-edit' style='display:none; float:right;'></span>";
+		$(this).after(editIcon);
+	});
+
 	// Filtre dynamique
 	var $rows = $('#filter-enabled tr');
 	$('#search').keyup(function(){
@@ -104,10 +109,10 @@ $(document).ready(function(){
 					addOptions += "<div class='form-group'><label class='control-label'>Prénom</label><input type='text' name='identite_prenom' id='identite_prenom' class='form-control input-lg' placeholder='Prénom'></div>";
 					addOptions += "<div class='form-group'><label class='control-label'>Nom</label><input type='text' name='identite_nom' id='identite_nom' class='form-control input-lg' placeholder='Nom'></div>";
 					addOptions += "<div class='form-group'><label class='control-label'>Adresse postale</label><input type='text' name='rue' id='rue' placeholder='Adresse' class='form-control input-lg'></div>";
-					addOptions += "<div class='form-group'><input type='text' name='code_postal' id='code_postal' placeholder='Code Postal' class='form-control input-lg'></div>";
+					addOptions += "<div class='form-group'><input type='number' name='code_postal' id='code_postal' placeholder='Code Postal' class='form-control input-lg'></div>";
 					addOptions += "<div class='form-group'><input type='text' name='ville' id='ville' placeholder='Ville' class='form-control input-lg'></div>";
 					addOptions += "<div class='form-group'><label for='text' class='control-label'>Adresse mail</label><input type='mail' name='mail' id='mail' placeholder='Adresse mail' class='form-control input-lg'></div>";
-					addOptions += "<div class='form-group'><label for='telephone' class='control-label'>Numéro de téléphone</label><input type='text' name='telephone' id='telephone' placeholder='Numéro de téléphone' class='form-control input-lg'></div>";
+					addOptions += "<div class='form-group'><label for='telephone' class='control-label'>Numéro de téléphone</label><input type='number' name='telephone' id='telephone' placeholder='Numéro de téléphone' class='form-control input-lg'></div>";
 					addOptions += "<div class='form-group'><label for='date_naissance' class='control-label'>Date de naissance</label><input type='date' name='date_naissance' id='date_naissance' class='form-control input-lg'></div>";
 					addOptions += "<a class='btn btn-primary' onClick='addAdherent()'>AJOUTER</a>";
 					addOptions += "</div></div></div>";
@@ -119,8 +124,7 @@ $(document).ready(function(){
 			}
 		})
 	})
-
-	// Autocomplétions
+}).on('click', '.editable', function(){
 	var methods = [
 		"Carte bancaire",
 		"Chèque n°",
@@ -129,53 +133,47 @@ $(document).ready(function(){
 		"Chèques vacances",
 		"En attente"
 	];
+	// Dès le clic, on récupère la valeur initiale du champ (peu importe le type de champ)
+	var initialValue = $(this).val();
+	if(initialValue == ""){initialValue = $(this).html();}
+	console.log(initialValue);
 
-	// Champs modifiables
-	$(".editable").click(function(){
-		var initialValue = $(this).val();
-		if(initialValue == ""){initialValue = $(this).html();}
-		var token = $(this).attr('id');
+	// On récupère ensuite l'id du champ modifié
+	var token = $(this).attr('id');
+
+	// Si la valeur correspond à une date, alors l'action de modification sera différente
+	if(initialValue.indexOf('/') != -1){
+		var initialDay = initialValue.substr(0,2);
+		var initialMonth = initialValue.substr(3,2);
+		var initialYear = initialValue.substr(6,4);
+		var initialDate = moment(new Date(initialYear+'-'+initialMonth+'-'+initialDay)).format("YYYY-MM-DD");
+		$(this).replaceWith("<input type='date' class='form-control editing' id='"+token+"' value="+initialDate+">");
+	} else {
 		$(this).replaceWith("<input type='text' class='form-control editing' id='"+token+"' value="+initialValue+">");
-		$(".editing").focus();
-		$(":regex(id,^methode_paiement)").autocomplete({
-			source: methods
-		})
-		$(".editing").blur(function(){
-			var editedValue = $(this).val();
-			if(editedValue != "" && editedValue != initialValue){
-				$(this).replaceWith("<span class='editable' id='"+token+"'>"+$(this).val()+"</span>");
-				uploadChanges(token, editedValue);
+	}
+	$(".editing").focus();
+	$(":regex(id,^methode_paiement)").autocomplete({
+		source: methods
+	})
+	$(".editing").blur(function(){
+		var editedValue = $(this).val();
+		if(editedValue != "" && editedValue != initialValue){
+			if(editedValue.indexOf('-') != -1){
+				var editedDate = moment(new Date(editedValue)).format("DD/MM/YYYY");
+				$(this).replaceWith("<span class='editable' id='"+token+"'>"+editedDate+"</span>");
 			} else {
-				$(this).replaceWith("<span class='editable' id='"+token+"'>"+initialValue+"</span>");
-				$(this).bind('click');
+				$(this).replaceWith("<span class='editable' id='"+token+"'>"+editedValue+"</span>");
 			}
-		});
+			uploadChanges(token, editedValue);
+		} else {
+			$(this).replaceWith("<span class='editable' id='"+token+"'>"+initialValue+"</span>");
+		}
 	});
-
-	// Modification des échéances
-	$(".statut-salsabor").click(function(){
-		var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
-		var container = $(this).parents("td");
-		$.post("functions/validate_echeance.php", {echeance_id}).done(function(data){
-			showSuccessNotif(data);
-			container.empty();
-			var date = moment().format('DD/MM/YYYY');
-			container.html("<span class='label label-success'>Réceptionnée le"+date+"</span>");
-		})
-	})
-
-	$(".statut-banque").click(function(){
-		var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
-		var container = $(this).parents("td");
-		$.post("functions/encaisser_echeance.php", {echeance_id}).done(function(data){
-			showSuccessNotif(data);
-			container.empty();
-			var date = moment().format('DD/MM/YYYY');
-			container.html("<span class='label label-success'>Encaissée le "+date+"</span>");
-		})
-	})
-});
-
+}).on('mouseenter', '.editable', function(){
+	$(this).next().show();
+}).on('mouseleave', '.editable', function(){
+	$(this).next().hide();
+})
 // FONCTIONS NOTIFICATIONS //
 // Fonction de surveillance des passages enregistrés. Avertit l'utilisateur et met à jour le badge de notification en cas de nouveaux enregistrements.
 function notifPassages(firstCount){
@@ -236,6 +234,7 @@ function notifPanier(){
 		var actualNumber = window.numberProduits - 1;
 		if(actualNumber == 0){
 			$("#badge-panier").hide();
+			$(".table-panier").empty();
 		} else {
 			$("#badge-panier").show();
 			$("#badge-panier").html(actualNumber);
@@ -359,7 +358,7 @@ function fillShoppingCart(){
 		if(sessionStorage.getItem('produit_id-'+i) != null){
 			panierElement += "<tr>";
 			panierElement += "<td class='col-lg-10'>"+sessionStorage.getItem('produit-demo-'+i)+"</td>";
-			panierElement += "<td class='col-lg-2'><span class='glyphicon glyphicon-trash' onClick=removeCartElement("+i+")></span></td>";
+			panierElement += "<td class='col-lg-2'><span class=' span-btn glyphicon glyphicon-trash' onClick=removeCartElement("+i+")></span></td>";
 			panierElement += "</tr>";
 		}
 	}
