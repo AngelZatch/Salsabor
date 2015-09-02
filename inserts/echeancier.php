@@ -4,14 +4,14 @@ $queryEcheances->execute();
 <table class="table">
 	<thead>
 		<tr>
-			<th class="col-lg-1">Date</th>
+			<th class="col-lg-2">Date</th>
 			<?php if(basename($_SERVER['PHP_SELF']) == "echeances.php"){ ?>
 			<th class="col-lg-1">Transaction</th>
 			<?php } ?>
-			<th class="col-lg-1">Montant</th>
+			<th class="col-lg-2">Montant</th>
 			<th class="col-lg-2">Méthode</th>
-			<th class="col-lg-3">Payeur</th>
-			<th class="col-lg-2">Statut Salsabor</th>
+			<th class="col-lg-2">Payeur</th>
+			<th class="col-lg-1">Statut Salsabor</th>
 			<th class="col-lg-2">Statut Banque</th>
 		</tr>
 	</thead>
@@ -34,7 +34,7 @@ $queryEcheances->execute();
 		break;
 	} ?>
 		<tr>
-			<td class="date"><p><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></p></td>
+			<td class="date col-lg-1"><span class="editable" id="date_echeance-<?php echo $echeances["produits_echeances_id"];?>"><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></span></td>
 			<?php if(basename($_SERVER['PHP_SELF']) == "echeances.php"){ ?>
 			<td class="forfait-name"><?php echo $echeances["id_transaction_foreign"];?></td>
 			<?php } ?>
@@ -43,7 +43,7 @@ $queryEcheances->execute();
 			<td class="user-name"><span class="editable" id="payeur_echeance-<?php echo $echeances["produits_echeances_id"];?>"><?php echo $echeances["payeur_echeance"];?></span></td>
 			<td class="status">
 				<?php if($status == "Réceptionnée"){ ?>
-				<span class="label label-<?php echo $statusClass;?>"><?php echo $status;?>  le <?php echo date_create($echeances["date_paiement"])->format('d/m/Y');?></span>
+				<span class="label label-<?php echo $statusClass;?>">Reçue le <?php echo date_create($echeances["date_paiement"])->format('d/m/Y');?></span>
 				<?php } else { ?>
 				<span class="label label-info"><?php echo $status;?></span>
 				<button class="btn btn-default statut-salsabor"><span class="glyphicon glyphicon-download-alt"></span></button>

@@ -5,7 +5,6 @@ Dès que le document est prêt, tous les modaux et les fonctions qui doivent tou
 */
 
 $(document).ready(function(){
-
 	jQuery.expr[':'].regex = function(elem, index, match) {
 		var matchParams = match[3].split(','),
 			validLabels = /^(data|css):/,
@@ -80,6 +79,12 @@ $(document).ready(function(){
 		}
 	});
 
+	// Editables
+	$(".editable").each(function(){
+		var editIcon = "<span class='glyphicon glyphicon-edit' style='display:none; float:right;'></span>";
+		$(this).after(editIcon);
+	});
+
 	// Filtre dynamique
 	var $rows = $('#filter-enabled tr');
 	$('#search').keyup(function(){
@@ -120,38 +125,6 @@ $(document).ready(function(){
 		})
 	})
 
-	// Autocomplétions
-	var methods = [
-		"Carte bancaire",
-		"Chèque n°",
-		"Espèces",
-		"Virement compte à compte",
-		"Chèques vacances",
-		"En attente"
-	];
-
-	// Champs modifiables
-	$(".editable").click(function(){
-		var initialValue = $(this).val();
-		if(initialValue == ""){initialValue = $(this).html();}
-		var token = $(this).attr('id');
-		$(this).replaceWith("<input type='text' class='form-control editing' id='"+token+"' value="+initialValue+">");
-		$(".editing").focus();
-		$(":regex(id,^methode_paiement)").autocomplete({
-			source: methods
-		})
-		$(".editing").blur(function(){
-			var editedValue = $(this).val();
-			if(editedValue != "" && editedValue != initialValue){
-				$(this).replaceWith("<span class='editable' id='"+token+"'>"+$(this).val()+"</span>");
-				uploadChanges(token, editedValue);
-			} else {
-				$(this).replaceWith("<span class='editable' id='"+token+"'>"+initialValue+"</span>");
-				$(this).bind('click');
-			}
-		});
-	});
-
 	// Modification des échéances
 	$(".statut-salsabor").click(function(){
 		var echeance_id = $(this).parents("td").children("input[name^='echeance']").val();
@@ -174,7 +147,51 @@ $(document).ready(function(){
 			container.html("<span class='label label-success'>Encaissée le "+date+"</span>");
 		})
 	})
-});
+}).on('click', '.editable', function(){
+	var methods = [
+		"Carte bancaire",
+		"Chèque n°",
+		"Espèces",
+		"Virement compte à compte",
+		"Chèques vacances",
+		"En attente"
+	];
+	// Dès le clic, on récupère la valeur initiale du champ (peu importe le type de champ)
+	var initialValue = $(this).val();
+	if(initialValue == ""){initialValue = $(this).html();}
+
+	// On récupère ensuite l'id du champ modifié
+	var token = $(this).attr('id');
+
+	// Si la valeur correspond à une date, alors l'action de modification sera différente
+	if(initialValue.indexOf('/') != -1){
+		var initialDay = initialValue.substr(0,2);
+		var initialMonth = initialValue.substr(3,2);
+		var initialYear = initialValue.substr(6,4);
+		var initialDate = moment(new Date(initialYear+'-'+initialMonth+'-'+initialDay)).format("YYYY-MM-DD");
+		$(this).replaceWith("<input type='date' class='form-control editing' id='"+token+"' value="+initialDate+">");
+	} else {
+		$(this).replaceWith("<input type='text' class='form-control editing' id='"+token+"' value="+initialValue+">");
+	}
+	$(".editing").focus();
+	$(":regex(id,^methode_paiement)").autocomplete({
+		source: methods
+	})
+	$(".editing").blur(function(){
+		var editedValue = $(this).val();
+		if(editedValue != "" && editedValue != initialValue){
+			if(editedValue.indexOf('-') != -1){
+				var editedDate = moment(new Date(editedValue)).format("DD/MM/YYYY");
+				$(this).replaceWith("<span class='editable' id='"+token+"'>"+editedDate+"</span>");
+			} else {
+				$(this).replaceWith("<span class='editable' id='"+token+"'>"+editedValue+"</span>");
+			}
+			uploadChanges(token, editedValue);
+		} else {
+			$(this).replaceWith("<span class='editable' id='"+token+"'>"+initialValue+"</span>");
+		}
+	});
+})
 
 // FONCTIONS NOTIFICATIONS //
 // Fonction de surveillance des passages enregistrés. Avertit l'utilisateur et met à jour le badge de notification en cas de nouveaux enregistrements.

@@ -22,5 +22,4 @@
 <script src="assets/js/list.min.js"></script>
 
 <!-- custom -->
-<script src="assets/js/swap-menus.js"></script>
 <script src="assets/js/tools.js"></script>

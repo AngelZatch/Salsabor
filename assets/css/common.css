@@ -453,3 +453,7 @@ body{
 	color: white;
 	min-height: 50px;
 }
+
+.editable{
+	cursor: pointer;
+}
