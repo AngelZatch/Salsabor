@@ -48,7 +48,7 @@ $queryEcheances->bindValue(1, $forfait["id_transaction_foreign"]);
 					<div class="btn-toolbar" id="top-page-buttons">
 						<a href="user_details.php?id=<?php echo $forfait["id_user_foreign"];?>&status=<?php echo $status;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent (<?php echo $forfait["user_prenom"]." ".$forfait["user_nom"];?>)</a>
 					</div> <!-- btn-toolbar -->
-					<h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["user_prenom"]." ".$forfait["user_nom"]." (transaction ".$forfait["id_transaction_foreign"].")";?></h1>
+					<p class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["user_prenom"]." ".$forfait["user_nom"]." (transaction ".$forfait["id_transaction_foreign"].")";?></p>
 					<ul class="nav nav-tabs">
 						<li role="presentation" id="infos-toggle" class="active"><a>Détails du forfait</a></li>
 						<li role="presentation" id="history-toggle"><a>Liste des cours</a></li>

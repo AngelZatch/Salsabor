@@ -125,129 +125,136 @@ if(isset($_POST['addAdherent'])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-sm-10 main">
-					<p id="current-time"></p>
-					<h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> <?php echo $titleText;?></h1>
-					<form action="" method="post" role="form" id="add_adherent" enctype="multipart/form-data">
-						<div class="btn-toolbar">
-							<a href="<?php echo $backLink;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <?php echo $buttonText;?></a>
-							<input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
-						</div> <!-- btn-toolbar -->
-						<p class="form-section">Informations personnelles</p>
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="identite_prenom" class="control-label">Prénom</label>
-									<input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory input-lg" placeholder="Prénom">
+				<form action="" method="post" role="form" id="add_adherent" enctype="multipart/form-data">
+					<div class="fixed">
+						<div class="col-lg-6">
+							<p class="page-title"><span class="glyphicon glyphicon-pencil"></span> <?php echo $titleText;?></p>
+						</div>
+						<div class="col-lg-6">
+							<div class="btn-toolbar">
+								<a href="<?php echo $backLink;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <?php echo $buttonText;?></a>
+								<input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
+							</div> <!-- btn-toolbar -->
+						</div>
+					</div>
+					<div class="col-sm-10 main">
+						<div class="content">
+							<p class="form-section">Informations personnelles</p>
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="identite_prenom" class="control-label">Prénom</label>
+										<input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory input-lg" placeholder="Prénom">
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="identite_nom" class="control-label">Nom</label>
+										<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory input-lg" placeholder="Nom">
+									</div>
 								</div>
 							</div>
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="identite_nom" class="control-label">Nom</label>
-									<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory input-lg" placeholder="Nom">
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="" class="control-label">Adresse postale</label>
+										<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control mandatory input-lg">
+									</div>
+								</div>
+								<div class="form-group col-lg-2">
+									<label for="">Code postal</label>
+									<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control input-lg">
+								</div>
+								<div class="form-group col-lg-4">
+									<label for="">Ville</label>
+									<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control input-lg">
 								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="" class="control-label">Adresse postale</label>
-									<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control mandatory input-lg">
+							<div class="form-group">
+								<label for="mail" class="control-label">Adresse mail</label>
+								<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control mandatory input-lg">
+							</div>
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="telephone" class="control-label">Téléphone principal</label>
+										<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control mandatory input-lg">
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="tel_secondaire" class="control-label">Téléphone secondaire</label>
+										<input type="text" name="tel_secondaire" class="form-control input-lg" placeholder="Numéro de téléphone secondaire">
+									</div>
 								</div>
 							</div>
-							<div class="form-group col-lg-2">
-								<label for="">Code postal</label>
-								<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control input-lg">
+							<div class="form-group">
+								<label for="date_naissance" class="control-label">Date de naissance</label>
+								<input type="date" name="date_naissance" id="date_naissance" class="form-control input-lg">
 							</div>
-							<div class="form-group col-lg-4">
-								<label for="">Ville</label>
-								<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control input-lg">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="mail" class="control-label">Adresse mail</label>
-							<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control mandatory input-lg">
-						</div>
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="telephone" class="control-label">Téléphone principal</label>
-									<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control mandatory input-lg">
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="profile_picture" class="control-label">Photo d'identité</label>
+										<input type="file" class="form-control" name="photo_identite">
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="certificat_medical" class="control-label">Certificat Médical</label>
+										<input type="file" class="form-control" name="certificat_medical">
+									</div>
 								</div>
 							</div>
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="tel_secondaire" class="control-label">Téléphone secondaire</label>
-									<input type="text" name="tel_secondaire" class="form-control input-lg" placeholder="Numéro de téléphone secondaire">
+							<p class="form-section">Informations Salsabor</p>
+							<div class="form-group">
+								<label for="date_inscription" class="control-label">Date d'inscription <span class="label-tip">Par défaut, aujourd'hui</span></label>
+								<input type="date" name="date_inscription" id="date_inscription" class="form-control mandatory input-lg" value="<?php echo $now;?>">
+							</div>
+							<div class="form-group">
+								<label for="parrain" class="control-label">Parrain</label>
+								<input type="text" name="parrain" class="form-control" placeholder="Tapez un nom pour rechercher">
+							</div>
+							<div class="form-group">
+								<label for="rfid" class="control-label">Code carte</label>
+								<div class="input-group">
+									<input type="text" name="rfid" class="form-control input-lg" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
+									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
 								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="date_naissance" class="control-label">Date de naissance</label>
-							<input type="date" name="date_naissance" id="date_naissance" class="form-control input-lg">
-						</div>
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="profile_picture" class="control-label">Photo d'identité</label>
-									<input type="file" class="form-control" name="photo_identite">
-								</div>
+							<div class="form-group">
+								<label for="statuts" class="control-label">Statut du contact <span class="label-tip">Cochez autant que nécessaire</span></label><br>
+								<label for="est_membre" class="control-label">Membre</label>
+								<input name="est_membre" id="est_membre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueEleve;?>">
+								<label for="est_professeur" class="control-label">Professeur</label>
+								<input name="est_professeur" id="est_professeur" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueTeacher;?>">
+								<label for="est_staff" class="control-label">Staff</label>
+								<input name="est_staff" id="est_staff" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueStaff;?>">
+								<label for="est_prestataire" class="control-label">Prestataire</label>
+								<input name="est_prestataire" id="est_prestataire" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+								<label for="est_autre" class="contorl-label">Autre <span class="label-tip">Spécifiez ci-dessous</span></label>
+								<input type="text" name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
 							</div>
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="certificat_medical" class="control-label">Certificat Médical</label>
-									<input type="file" class="form-control" name="certificat_medical">
-								</div>
+							<div class="form-group" id="autre" style="display:none;">
+								<label for="autre_statut" class="control-label">Autre statut</label>
+								<input type="text" name="autre_statut" class="form-control">
 							</div>
-						</div>
-						<p class="form-section">Informations Salsabor</p>
-						<div class="form-group">
-							<label for="date_inscription" class="control-label">Date d'inscription <span class="label-tip">Par défaut, aujourd'hui</span></label>
-							<input type="date" name="date_inscription" id="date_inscription" class="form-control mandatory input-lg" value="<?php echo $now;?>">
-						</div>
-						<div class="form-group">
-							<label for="parrain" class="control-label">Parrain</label>
-							<input type="text" name="parrain" class="form-control" placeholder="Tapez un nom pour rechercher">
-						</div>
-						<div class="form-group">
-							<label for="rfid" class="control-label">Code carte</label>
-							<div class="input-group">
-								<input type="text" name="rfid" class="form-control input-lg" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
-								<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
+							<div class="form-group" id="rib-data" style="display:none;">
+								<label for="rib" class="control-label">Informations bancaires <span class="label-tip">Pour un professeur, un staff ou un prestataire</span></label>
+								<input type="text" name="rib" class="form-control">
 							</div>
+							<div class="form-group">
+								<label for="sources_connaissance" class="control-label">Par où avez vous connu Salsabor ? <span class="label-tip">Sélectionnez la source la plus influente</span></label>
+								<select name="sources_connaissance" class="form-control input-lg">
+									<?php while($sources = $connaissances->fetch(PDO::FETCH_ASSOC)){ ?>
+									<option value="<?php echo $sources["source_id"];?>"><?php echo $sources["source"];?></option>
+									<?php } ?>
+								</select>
+							</div>
+							<input type="submit" name="addAdherent" role="button" class="btn btn-primary btn-block submit-button" value="ENREGISTRER" disabled>
 						</div>
-						<div class="form-group">
-							<label for="statuts" class="control-label">Statut du contact <span class="label-tip">Cochez autant que nécessaire</span></label><br>
-							<label for="est_membre" class="control-label">Membre</label>
-							<input name="est_membre" id="est_membre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueEleve;?>">
-							<label for="est_professeur" class="control-label">Professeur</label>
-							<input name="est_professeur" id="est_professeur" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueTeacher;?>">
-							<label for="est_staff" class="control-label">Staff</label>
-							<input name="est_staff" id="est_staff" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueStaff;?>">
-							<label for="est_prestataire" class="control-label">Prestataire</label>
-							<input name="est_prestataire" id="est_prestataire" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
-							<label for="est_autre" class="contorl-label">Autre <span class="label-tip">Spécifiez ci-dessous</span></label>
-							<input type="text" name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
-						</div>
-						<div class="form-group" id="autre" style="display:none;">
-							<label for="autre_statut" class="control-label">Autre statut</label>
-							<input type="text" name="autre_statut" class="form-control">
-						</div>
-						<div class="form-group" id="rib-data" style="display:none;">
-							<label for="rib" class="control-label">Informations bancaires <span class="label-tip">Pour un professeur, un staff ou un prestataire</span></label>
-							<input type="text" name="rib" class="form-control">
-						</div>
-						<div class="form-group">
-							<label for="sources_connaissance" class="control-label">Par où avez vous connu Salsabor ? <span class="label-tip">Sélectionnez la source la plus influente</span></label>
-							<select name="sources_connaissance" class="form-control input-lg">
-								<?php while($sources = $connaissances->fetch(PDO::FETCH_ASSOC)){ ?>
-								<option value="<?php echo $sources["source_id"];?>"><?php echo $sources["source"];?></option>
-								<?php } ?>
-							</select>
-						</div>
-						<input type="submit" name="addAdherent" role="button" class="btn btn-primary btn-block submit-button" value="ENREGISTRER" disabled>
-					</form>
-				</div>
+					</div>
+				</form>
 			</div>
 		</div>
 		<?php include "scripts.php";?>

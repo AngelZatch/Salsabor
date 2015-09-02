@@ -31,16 +31,22 @@ $date_now = date_create("now")->format("Y-m-d");
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
+				<div class="fixed">
+					<div class="col-lg-6">
+						<p class="page-title"><span class="glyphicon glyphicon-shopping-cart"></span> Acheter des produits</p>
+					</div>
+					<div class="col-lg-6">
+						<div class="btn-toolbar">
+							<a href="catalogue.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-th"></span> Retourner au catalogue</a>
+						</div><!-- btn-toolbar -->
+					</div>
+				</div>
 				<div class="col-sm-8 main" id="right-bordered">
-					<h1 class="page-title">Acheter des produits</h1>
 					<div class="progress">
 						<div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="25" aria-valuemax="100" style="width:50%;">
 							<span class="glyphicon glyphicon-erase"></span> Etape 2/4 : Personnalisation des produits
 						</div>
 					</div>
-					<div class="btn-toolbar">
-						<a href="catalogue.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-th"></span> Retourner au catalogue</a>
-					</div><!-- btn-toolbar -->
 					<?php foreach($panierTotal as $p){ ?>
 					<section id="details-<?php echo $p["key"];?>">
 						<p id="produit-title-<?php echo $p["key"];?>" class="produit-title"><?php echo $p["produit_nom"];?></p>

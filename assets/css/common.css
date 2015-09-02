@@ -64,6 +64,9 @@ body{
 
 .page-title{
 	font-family: 'globersemibold_free';
+	font-size: 28px;
+	padding: 0;
+	margin: 0;
 }
 
 .span-mandatory {
@@ -123,6 +126,7 @@ body{
 
 .main{
 	margin-left: 16.66666667%;
+	padding-top: 60px;
 }
 
 .main.large {
@@ -251,7 +255,9 @@ body{
 }
 
 .btn-toolbar {
-	margin-bottom: 20px;
+	padding-top: 5px;
+	position: fixed;
+	right: 1%;
 }
 #picture-container {
 	height: 230px;
@@ -335,12 +341,12 @@ body{
 }
 
 #current-time {
-	float: right;
 	font-size: 15px;
-	background-color: #81002B;
 	padding: 10px;
 	color: white;
 	font-weight: 700;
+	position: fixed;
+	z-index: 1000;
 }
 
 .main-section {
@@ -414,6 +420,7 @@ body{
 	z-index: 100;
 	min-height: 100%;
 	height: inherit;
+	padding-top: 50px;
 }
 
 .produit-title {
@@ -434,4 +441,15 @@ body{
 #prix-total {
 	font-size: 28px;
 	color: #a9023a;
+}
+
+.fixed {
+	position: fixed;
+	left: 16.667%;
+	z-index: 1000;
+	padding: 5px;
+	background-color: #8C002F;
+	width: 100%;
+	color: white;
+	min-height: 50px;
 }

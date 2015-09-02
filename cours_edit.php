@@ -146,6 +146,12 @@ if(isset($_POST['deleteCoursAll'])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
+				<div class="fixed">
+					<div class="col-lg-6">
+						<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
+					</div>
+					<div class="col-lg-6"></div>
+				</div>
 				<div class="col-sm-10 main">
 					<br>
 					<div class="col-sm-9">
@@ -177,7 +183,6 @@ if($res_recurrence == '0'){
 								</div>
 							</div> <!-- btn-toolbar -->
 							<br>
-							<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
 							<div class="form-group">
 								<input type="text" class="form-control" name="intitule" style="font-size:30px; height:inherit;" value=<?php echo $cours['cours_intitule'];?>>
 							</div>

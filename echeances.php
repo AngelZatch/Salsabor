@@ -36,10 +36,15 @@ $queryEcheances = $db->prepare("SELECT * FROM produits_echeances
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
+				<div class="fixed">
+					<div class="col-lg-6">
+						<p class="page-title"><span class="glyphicon glyphicon-repeat"></span> Echéances</p>
+					</div>
+					<div class="col-lg-6">
+						<p style="font-size:15px; padding-top:8px; font-style:italic;">Encaissement prévu le <?php echo $time->format('d/m/Y');?></p>
+					</div>
+				</div>
 				<div class="col-sm-10 main">
-					<p id="current-time"></p>
-					<h1 class="page-title"><span class="glyphicon glyphicon-repeat"></span> Echéances</h1>
-					<p>Encaissement prévu le <?php echo $time->format('d/m/Y');?></p>
 					<div class="input-group input-group-lg search-form">
 						<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
 						<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">

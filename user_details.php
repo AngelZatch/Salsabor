@@ -138,292 +138,320 @@ if(isset($_POST["edit"])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-sm-10 main">
-					<div class="btn-toolbar" id="top-page-buttons">
-						<?php if($status == 'professeur'){ ?>
-						<a href="professeurs.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
-						<?php } if($status == 'membre'){ ?>
-						<a href="adherents.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des adhérents</a>
-						<?php } if($status == 'staff'){ ?>
-						<a href="staff_liste.php?rank=0" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste du staff</a>
-						<?php } if($status == 'echeances'){ ?>
-						<a href="echeances.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux échéances</a>
+				<form method="post" role="form" enctype="multipart/form-data">
+					<div class="fixed">
+						<div class="col-lg-6">
+							<p class="page-title"><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?></p>
+						</div>
+						<div class="col-lg-6">
+							<div class="btn-toolbar">
+								<?php if($status == 'professeur'){ ?>
+								<a href="professeurs.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des professeurs</a>
+								<?php } if($status == 'membre'){ ?>
+								<a href="adherents.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des adhérents</a>
+								<?php } if($status == 'staff'){ ?>
+								<a href="staff_liste.php?rank=0" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste du staff</a>
+								<?php } if($status == 'echeances'){ ?>
+								<a href="echeances.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux échéances</a>
+								<?php } ?>
+								<input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER LES MODIFICATIONS">
+							</div> <!-- btn-toolbar -->
+						</div>
+					</div>
+					<div class="col-sm-10 main">
+						<?php if($details["est_membre"] == 1 && $queryEcheances != 0){ ?>
+						<div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
 						<?php } ?>
-					</div> <!-- btn-toolbar -->
-					<h1 class="page-title"><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?></h1>
-					<?php if($details["est_membre"] == 1 && $queryEcheances != 0){ ?>
-					<div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
-					<?php } ?>
-					<ul class="nav nav-tabs">
-						<li role="presentation" id="infos-toggle" class="active"><a>Informations personnelles</a></li>
-						<?php if($details["est_membre"] == 1){ ?>
-						<li role="presentation" id="history-suivis-toggle"><a>Cours suivis</a></li>
-						<li role="presentation" id="resa-toggle"><a>Réservations</a></li>
-						<li role="presentation" id="forfaits-toggle"><a>Abonnements</a></li>
-						<li role="presentation" id="achats-toggle"><a>Achats</a></li>
-						<?php } if($details["est_professeur"] == 1){ ?>
-						<li role="presentation" id="history-donnes-toggle"><a>Cours donnés</a></li>
-						<li role="presentation" id="tarifs-toggle"><a>Tarifs</a></li>
-						<li role="presentation" id="stats-toggle"><a>Statistiques</a></li>
-						<?php } ?>
-					</ul>
-					<section id="infos">
-						<form method="post" role="form" enctype="multipart/form-data">
+						<ul class="nav nav-tabs">
+							<li role="presentation" id="infos-toggle" class="active"><a>Informations personnelles</a></li>
+							<?php if($details["est_membre"] == 1){ ?>
+							<li role="presentation" id="history-suivis-toggle"><a>Cours suivis</a></li>
+							<li role="presentation" id="resa-toggle"><a>Réservations</a></li>
+							<li role="presentation" id="forfaits-toggle"><a>Abonnements</a></li>
+							<li role="presentation" id="achats-toggle"><a>Achats</a></li>
+							<?php } if($details["est_professeur"] == 1){ ?>
+							<li role="presentation" id="history-donnes-toggle"><a>Cours donnés</a></li>
+							<li role="presentation" id="tarifs-toggle"><a>Tarifs</a></li>
+							<li role="presentation" id="stats-toggle"><a>Statistiques</a></li>
+							<?php } ?>
+						</ul>
+						<section id="infos">
 							<div class="container-fluid">
-								<div class="form-group col-sm-2 thumbnail" id="picture-container">
+								<div class="form-group col-lg-2 thumbnail" id="picture-container">
 									<label for="photo_identite">
 										<img src="<?php echo ($details["photo"])?$details["photo"]:"assets/images/logotype-white.png";?>" alt="" style="max-height:100%; max-width:100%;">
 									</label>
 									<input type="file" name="photo_identite">
 								</div>
-								<div class="form-group col-sm-10">
-									<label for="identite_prenom" class="control-label">Prénom</label>
-									<input type="text" name="identite_prenom" id="identite_prenom" class="form-control" placeholder="Prénom" value="<?php echo $details["user_prenom"];?>">
+								<div class="col-lg-10">
+									<div class="row">
+										<div class="col-lg-6">
+											<div class="form-group">
+												<label for="identite_prenom" class="control-label">Prénom</label>
+												<input type="text" name="identite_prenom" id="identite_prenom" class="form-control input-lg" placeholder="Prénom" value="<?php echo $details["user_prenom"];?>">
+											</div>
+										</div>
+										<div class="col-lg-6">
+											<div class="form-group">
+												<label for="identite_nom" class="control-label">Nom</label>
+												<input type="text" name="identite_nom" id="identite_nom" class="form-control input-lg" placeholder="Nom" value="<?php echo $details["user_nom"];?>">
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="mail" class="control-label">Adresse mail</label>
+										<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control input-lg" value="<?php echo $details["mail"];?>">
+									</div>
+									<div class="form-group">
+										<label for="rfid" class="control-label">Code carte</label>
+										<div class="input-group input-group-lg">
+											<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
+											<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
+										</div>
+									</div>
 								</div>
-								<div class="form-group col-sm-10">
-									<label for="identite_nom" class="control-label">Nom</label>
-									<input type="text" name="identite_nom" id="identite_nom" class="form-control" placeholder="Nom" value="<?php echo $details["user_nom"];?>">
+							</div>
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="" class="control-label">Adresse postale</label>
+										<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control input-lg" value="<?php echo $details["rue"];?>">
+									</div>
 								</div>
-								<div class="form-group col-sm-10">
-									<label for="mail" class="control-label">Adresse mail</label>
-									<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control" value="<?php echo $details["mail"];?>">
+								<div class="col-lg-3">
+									<div class="form-group">
+										<label for="" class="control-label">Code postal</label>
+										<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control input-lg" value="<?php echo $details["code_postal"];?>">
+									</div>
+								</div>
+								<div class="col-lg-3">
+									<div class="form-group">
+										<label for="" class="control-label">Ville</label>
+										<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control input-lg" value="<?php echo $details["ville"];?>">
+									</div>
 								</div>
 							</div>
-							<div class="form-group">
-								<label for="rfid" class="control-label">Code carte</label>
-								<div class="input-group">
-									<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
-									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="telephone" class="control-label">Téléphone principal</label>
+										<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control input-lg" value="<?php echo $details["telephone"];?>">
+									</div>
 								</div>
-							</div>
-							<div class="form-group">
-								<label for="" class="control-label">Adresse postale</label>
-								<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control" value="<?php echo $details["rue"];?>">
-							</div>
-							<div class="form-group">
-								<input type="text" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control" value="<?php echo $details["code_postal"];?>">
-							</div>
-							<div class="form-group">
-								<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control" value="<?php echo $details["ville"];?>">
-							</div>
-							<div class="form-group">
-								<label for="telephone" class="control-label">Téléphone</label>
-								<input type="text" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control" value="<?php echo $details["telephone"];?>">
+								<div class="col-lg-6">
+									<div class="form-group"><label for="tel_secondaire" class="control-label">Téléphone secondaire</label><input type="number" name="tel_secondaire" id="tel_secondaire" placeholder="Numéro de téléphone secondaire" class="form-control input-lg"></div>
+								</div>
 							</div>
 							<div class="form-group">
 								<label for="date_naissance" class="control-label">Date de naissance</label>
-								<input type="date" name="date_naissance" id="date_naissance" class="form-control" value=<?php echo $details["date_naissance"];?>>
-							</div>
-							<div class="form-group">
-								<label for="certificat_medical" class="control-label">Certificat Médical</label>
-								<input type="file" class="form-control">
+								<input type="date" name="date_naissance" id="date_naissance" class="form-control input-lg" value=<?php echo $details["date_naissance"];?>>
 							</div>
 							<input type="submit" name="edit" role="button" class="btn btn-primary btn-block" value="ENREGISTRER LES MODIFICATIONS">
-						</form>
-					</section>
-					<?php if($details["est_membre"] == 1){ ?>
-					<section id="history-suivis">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th class="col-lg-2">Intitulé</th>
-									<th class="col-lg-3">Jour</th>
-									<th class="col-lg-2">Détails</th>
-									<th class="col-lg-3">Forfait</th>
-									<th class="col-lg-2">Prix pondéré</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php while($history = $queryHistoryRecus->fetch(PDO::FETCH_ASSOC)){ ?>
-								<tr <?php echo ($history["produit_adherent_id"]==null)?"class='warning'":"";?>>
-									<td class="col-lg-2"><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
-									<td class="col-lg-3"><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
-									<td class="col-lg-2"><?php echo $history['niveau_name']."\n".$history['salle_name'];?></td>
-									<td class="col-lg-3">
-										<?php if($history["produit_adherent_id"]==null){?>
-										<button class="btn btn-info" name="link-forfait"><span class="glyphicon glyphicon-link"></span> Associer un forfait</button>
-										<input type="hidden" name="cours" value="<?php echo $history["cours_id"];?>">
-										<select name="forfaits-actifs" style="display:none;" class="form-control">
-											<?php while($forfaitsActifs = $queryForfaitsActifs->fetch(PDO::FETCH_ASSOC)){?>
-											<option value="<?php echo $forfaitsActifs["id_transaction"]?>"><?php echo $forfaitsActifs["produit_nom"];?></option>
-											<?php } ?>
-										</select>
-										<?php } else echo $history["produit_adherent_id"];?>
-									</td>
-									<td class="col-lg-2">A déterminer</td>
-								</tr>
-								<?php } ?>
-							</tbody>
-						</table>
-					</section>
-					<section id="resa">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th>Plage horaire</th>
-									<th>Lieu</th>
-									<th>Activité</th>
-									<th>Prix de la réservation</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php while($reservations = $queryResa->fetch(PDO::FETCH_ASSOC)){ ?>
-								<tr>
-									<td>Le <?php echo date_create($reservations["reservation_start"])->format('d/m/Y \d\e H\hi');?> à <?php echo date_create($reservations["reservation_end"])->format('H\hi');?></td>
-									<td><?php echo $reservations["salle_name"];?></td>
-									<td><?php echo $reservations["prestations_name"];?></td>
-									<td><?php echo $reservations["reservation_prix"];?> €</td>
-								</tr>
-								<?php } ?>
-							</tbody>
-						</table>
-					</section>
-					<section id="forfaits">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th></th>
-									<th>Type de forfait</th>
-									<th>Date d'achat</th>
-									<th>Période de validité</th>
-									<th>Prix d'achat</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php while($forfaits = $queryForfaits->fetch(PDO::FETCH_ASSOC)){
+						</section>
+						<?php if($details["est_membre"] == 1){ ?>
+						<section id="history-suivis">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th class="col-lg-2">Intitulé</th>
+										<th class="col-lg-3">Jour</th>
+										<th class="col-lg-2">Détails</th>
+										<th class="col-lg-3">Forfait</th>
+										<th class="col-lg-2">Prix pondéré</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php while($history = $queryHistoryRecus->fetch(PDO::FETCH_ASSOC)){ ?>
+									<tr <?php echo ($history["produit_adherent_id"]==null)?"class='warning'":"";?>>
+										<td class="col-lg-2"><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
+										<td class="col-lg-3"><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
+										<td class="col-lg-2"><?php echo $history['niveau_name']."\n".$history['salle_name'];?></td>
+										<td class="col-lg-3">
+											<?php if($history["produit_adherent_id"]==null){?>
+											<button class="btn btn-info" name="link-forfait"><span class="glyphicon glyphicon-link"></span> Associer un forfait</button>
+											<input type="hidden" name="cours" value="<?php echo $history["cours_id"];?>">
+											<select name="forfaits-actifs" style="display:none;" class="form-control">
+												<?php while($forfaitsActifs = $queryForfaitsActifs->fetch(PDO::FETCH_ASSOC)){?>
+												<option value="<?php echo $forfaitsActifs["id_transaction"]?>"><?php echo $forfaitsActifs["produit_nom"];?></option>
+												<?php } ?>
+											</select>
+											<?php } else echo $history["produit_adherent_id"];?>
+										</td>
+										<td class="col-lg-2">A déterminer</td>
+									</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+						</section>
+						<section id="resa">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Plage horaire</th>
+										<th>Lieu</th>
+										<th>Activité</th>
+										<th>Prix de la réservation</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php while($reservations = $queryResa->fetch(PDO::FETCH_ASSOC)){ ?>
+									<tr>
+										<td>Le <?php echo date_create($reservations["reservation_start"])->format('d/m/Y \d\e H\hi');?> à <?php echo date_create($reservations["reservation_end"])->format('H\hi');?></td>
+										<td><?php echo $reservations["salle_name"];?></td>
+										<td><?php echo $reservations["prestations_name"];?></td>
+										<td><?php echo $reservations["reservation_prix"];?> €</td>
+									</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+						</section>
+						<section id="forfaits">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th></th>
+										<th>Type de forfait</th>
+										<th>Date d'achat</th>
+										<th>Période de validité</th>
+										<th>Prix d'achat</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php while($forfaits = $queryForfaits->fetch(PDO::FETCH_ASSOC)){
 	if($forfaits["dateActivation"] == "0000-00-00 00:00:00"){
 		$periode_validite = "Activation en attente";
 	} else {
 		$periode_validite = "Du ".date_create($forfaits["dateActivation"])->format('d/m/Y')." au ".date_create($forfaits["date_expiration"])->format('d/m/Y');
 	}
-								?>
-								<tr>
-									<?php if($forfaits["produitActif"] == '1') { ?>
-									<td><span class="glyphicon glyphicon-certificate glyphicon-success" title="Forfait/Invitation actif(ve)"></span></td>
-									<?php } else {
-									if($forfaits["dateActivation"] != "0000-00-00 00:00:00") { ?>
-									<td><span class="glyphicon glyphicon-certificate glyphicon-inactive" title="Forfait/Invitation inactif(ve)"></span></td>
-									<?php } else { ?>
-									<td><span class="glyphicon glyphicon-certificate glyphicon-inactive glyphicon-pending" title="Forfait/Invitation en attente"></span></td>
-									<?php }
-								} ?>
-									<td><?php echo $forfaits["produit_nom"];?></td>
-									<td><?php echo date_create($forfaits["date_achat"])->format('d/m/Y');?></td>
-									<td><?php echo $periode_validite;?></td>
-									<td><?php echo $forfaits["prix_achat"];?> €</td>
-									<td><a href="forfait_adherent_details.php?id=<?php echo $forfaits["id_produit_adherent"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
-								</tr>
-								<?php } ?>
-							</tbody>
-						</table>
-					</section>
-					<section id="achats">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th>Transaction</th>
-									<th>Date d'achat</th>
-									<th>Prix total</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php while($achats = $queryAchats->fetch(PDO::FETCH_ASSOC)){ ?>
-								<tr>
-									<td><?php echo $achats["id_transaction"];?></td>
-									<td><?php echo date_create($achats["date_achat"])->format('d/m/Y');?></td>
-									<td><?php echo $achats["prix_total"];?> €</td>
-									<td><a href="transaction_details.php?id=<?php echo $achats["id_transaction"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
-								</tr>
-								<?php } ?>
-							</tbody>
-						</table>
-					</section>
-					<?php } if($details["est_professeur"] == 1){ ?>
-					<section id="history-donnes">
-						<div class="filter-options col-lg-6">
-							<p class="section-title">Options de filtrage</p>
-						</div>
-						<div class="price-summary col-lg-6">
-							<p class="section-title">TOTAL</p>
-							<p>Nombre de cours : <?php echo $queryHistoryDonnes->rowCount();?></p>
-							<p>Somme totale : <?php echo $totalPrice;?> €</p>
-							<p>Somme déjà réglée : <?php echo $totalPaid;?> €</p>
-							<p>Somme restante : <?php echo $totalDue = $totalPrice - $totalPaid;?> €</p>
-						</div>
-						<div id="cours-list">
+									?>
+									<tr>
+										<?php if($forfaits["produitActif"] == '1') { ?>
+										<td><span class="glyphicon glyphicon-certificate glyphicon-success" title="Forfait/Invitation actif(ve)"></span></td>
+										<?php } else {
+										if($forfaits["dateActivation"] != "0000-00-00 00:00:00") { ?>
+										<td><span class="glyphicon glyphicon-certificate glyphicon-inactive" title="Forfait/Invitation inactif(ve)"></span></td>
+										<?php } else { ?>
+										<td><span class="glyphicon glyphicon-certificate glyphicon-inactive glyphicon-pending" title="Forfait/Invitation en attente"></span></td>
+										<?php }
+									} ?>
+										<td><?php echo $forfaits["produit_nom"];?></td>
+										<td><?php echo date_create($forfaits["date_achat"])->format('d/m/Y');?></td>
+										<td><?php echo $periode_validite;?></td>
+										<td><?php echo $forfaits["prix_achat"];?> €</td>
+										<td><a href="forfait_adherent_details.php?id=<?php echo $forfaits["id_produit_adherent"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
+									</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+						</section>
+						<section id="achats">
 							<table class="table table-striped">
 								<thead>
 									<tr>
-										<th>Intitulé <span class="glyphicon glyphicon-sort sort" data-sort="cours-name"></span></th>
-										<th>Jour <span class="glyphicon glyphicon-sort sort" data-sort="jour"></span></th>
-										<th>Niveau <span class="glyphicon glyphicon-sort sort" data-sort="niveau"></span></th>
-										<th>Lieu <span class="glyphicon glyphicon-sort sort" data-sort="lieu"></span></th>
-										<th>Somme <span class="glyphicon glyphicon-sort sort" data-sort="montant"></span></th>
+										<th>Transaction</th>
+										<th>Date d'achat</th>
+										<th>Prix total</th>
+										<th></th>
 									</tr>
 								</thead>
-								<tbody class="list">
-									<?php while ($history = $queryHistoryDonnes->fetch(PDO::FETCH_ASSOC)){?>
+								<tbody>
+									<?php while($achats = $queryAchats->fetch(PDO::FETCH_ASSOC)){ ?>
 									<tr>
-										<td class="cours-name"><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
-										<td class="jour"><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
-										<td class="niveau"><?php echo $history['niveau_name'];?></td>
-										<td class="lieu"><?php echo $history['salle_name'];?></td>
-										<td class="<?php echo ($history['paiement_effectue'] != 0)?'payment-done':'payment-due';?> montant"><?php echo $history['cours_prix'];?> €</td>
+										<td><?php echo $achats["id_transaction"];?></td>
+										<td><?php echo date_create($achats["date_achat"])->format('d/m/Y');?></td>
+										<td><?php echo $achats["prix_total"];?> €</td>
+										<td><a href="transaction_details.php?id=<?php echo $achats["id_transaction"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
 									</tr>
-									<?php $totalPrice += $history['cours_prix'];
-																										  if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
+									<?php } ?>
 								</tbody>
 							</table>
-						</div>
-					</section><!-- Historique des cours -->
-					<section id="tarifs">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th class="col-sm-3">Intitulé</th>
-									<th class="col-sm-3">Prix</th>
-									<th class="col-sm-3">Coefficient</th>
-									<th class="col-sm-3"></th>
-								</tr>
-							</thead>
-							<tbody id="table-content">
-								<tr id="new-tarif" style="display:none;">
-									<td class="col-sm-3">
-										<select name="prestation" id="prestation" class="form-control">
-											<?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){ ?>
-											<option value="<?php echo $prestations["prestations_id"];?>"><?php echo $prestations["prestations_name"];?></option>
-											<?php } ?>
-										</select>
-									</td>
-									<td class="col-sm-3"><input type="text" name="tarif" id="tarif" class="form-control"></td>
-									<td class="col-sm-3">
-										<select name="ratio" id="ratio" class="form-control">
-											<?php
-																while ($row_ratio = $ratio->fetch(PDO::FETCH_ASSOC)){
-																	$array_suffixes = preg_split("/','/", substr($row_ratio['Type'], 5, strlen($row_ratio['Type'])-7));
-																	for($i = 0; $i < sizeof($array_suffixes); $i++){?>
-											<option value="<?php echo $array_suffixes[$i];?>"><?php echo $array_suffixes[$i];?></option>
-											<?php }
-																} ?>
-										</select>
-									</td>
-									<td class="col-sm-3"><button class="btn btn-default" onClick="addTarif()"><span class="glyphicon glyphicon-plus"></span> Valider</button><button class="btn btn-default" id="cancel"><span class="glyphicon glyphicon-cancel"></span> Annuler</button></td>
-								</tr>
-								<input type="hidden" name="prof_id" id="prof_id" value="<?php echo $data;?>">
-							</tbody>
-						</table>
-						<button class="btn btn-primary" id="add-tarif">AJOUTER UN TARIF</button>
-						<p id="json-output"></p>
-					</section> <!-- Tarifs -->
-					<section id="stats">
-						<p>Nombre de cours</p>
-						<div id="nombre-cours" style="height: 250px;"></div>
-						<p>Types de cours donnés</p>
-					</section> <!-- Statistiques -->
-					<?php } ?>
-				</div>
+						</section>
+						<?php } if($details["est_professeur"] == 1){ ?>
+						<section id="history-donnes">
+							<div class="filter-options col-lg-6">
+								<p class="section-title">Options de filtrage</p>
+							</div>
+							<div class="price-summary col-lg-6">
+								<p class="section-title">TOTAL</p>
+								<p>Nombre de cours : <?php echo $queryHistoryDonnes->rowCount();?></p>
+								<p>Somme totale : <?php echo $totalPrice;?> €</p>
+								<p>Somme déjà réglée : <?php echo $totalPaid;?> €</p>
+								<p>Somme restante : <?php echo $totalDue = $totalPrice - $totalPaid;?> €</p>
+							</div>
+							<div id="cours-list">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>Intitulé <span class="glyphicon glyphicon-sort sort" data-sort="cours-name"></span></th>
+											<th>Jour <span class="glyphicon glyphicon-sort sort" data-sort="jour"></span></th>
+											<th>Niveau <span class="glyphicon glyphicon-sort sort" data-sort="niveau"></span></th>
+											<th>Lieu <span class="glyphicon glyphicon-sort sort" data-sort="lieu"></span></th>
+											<th>Somme <span class="glyphicon glyphicon-sort sort" data-sort="montant"></span></th>
+										</tr>
+									</thead>
+									<tbody class="list">
+										<?php while ($history = $queryHistoryDonnes->fetch(PDO::FETCH_ASSOC)){?>
+										<tr>
+											<td class="cours-name"><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
+											<td class="jour"><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
+											<td class="niveau"><?php echo $history['niveau_name'];?></td>
+											<td class="lieu"><?php echo $history['salle_name'];?></td>
+											<td class="<?php echo ($history['paiement_effectue'] != 0)?'payment-done':'payment-due';?> montant"><?php echo $history['cours_prix'];?> €</td>
+										</tr>
+										<?php $totalPrice += $history['cours_prix'];
+																											  if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
+									</tbody>
+								</table>
+							</div>
+						</section><!-- Historique des cours -->
+						<section id="tarifs">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th class="col-sm-3">Intitulé</th>
+										<th class="col-sm-3">Prix</th>
+										<th class="col-sm-3">Coefficient</th>
+										<th class="col-sm-3"></th>
+									</tr>
+								</thead>
+								<tbody id="table-content">
+									<tr id="new-tarif" style="display:none;">
+										<td class="col-sm-3">
+											<select name="prestation" id="prestation" class="form-control">
+												<?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){ ?>
+												<option value="<?php echo $prestations["prestations_id"];?>"><?php echo $prestations["prestations_name"];?></option>
+												<?php } ?>
+											</select>
+										</td>
+										<td class="col-sm-3"><input type="text" name="tarif" id="tarif" class="form-control"></td>
+										<td class="col-sm-3">
+											<select name="ratio" id="ratio" class="form-control">
+												<?php
+																	while ($row_ratio = $ratio->fetch(PDO::FETCH_ASSOC)){
+																		$array_suffixes = preg_split("/','/", substr($row_ratio['Type'], 5, strlen($row_ratio['Type'])-7));
+																		for($i = 0; $i < sizeof($array_suffixes); $i++){?>
+												<option value="<?php echo $array_suffixes[$i];?>"><?php echo $array_suffixes[$i];?></option>
+												<?php }
+																	} ?>
+											</select>
+										</td>
+										<td class="col-sm-3"><button class="btn btn-default" onClick="addTarif()"><span class="glyphicon glyphicon-plus"></span> Valider</button><button class="btn btn-default" id="cancel"><span class="glyphicon glyphicon-cancel"></span> Annuler</button></td>
+									</tr>
+									<input type="hidden" name="prof_id" id="prof_id" value="<?php echo $data;?>">
+								</tbody>
+							</table>
+							<button class="btn btn-primary" id="add-tarif">AJOUTER UN TARIF</button>
+							<p id="json-output"></p>
+						</section> <!-- Tarifs -->
+						<section id="stats">
+							<p>Nombre de cours</p>
+							<div id="nombre-cours" style="height: 250px;"></div>
+							<p>Types de cours donnés</p>
+						</section> <!-- Statistiques -->
+						<?php } ?>
+					</div>
+				</form>
 			</div>
 		</div>
 		<?php include "scripts.php";?>

@@ -24,18 +24,24 @@ if(isset($_POST["submit"])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-sm-10 main">
-					<h1 class="page-title">Acheter des produits</h1>
-					<div class="progress">
-						<div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="25" aria-valuemax="100" style="width:75%;">
-							<span class="glyphicon glyphicon-repeat"></span> Etape 3/4 : Ajustement des échéances
+				<form action="paiement.php" method="post">
+					<div class="fixed">
+						<div class="col-lg-6">
+							<p class="page-title"><span class="glyphicon glyphicon-shopping-cart"></span> Acheter des produits</p>
+						</div>
+						<div class="col-lg-6">
+							<div class="btn-toolbar">
+								<a href="personnalisation.php" role="button" class="btn btn-default" name="previous"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-erase"></span> Retourner à la personnalisation des abonnements</a>
+								<input type="submit" role="button" class="btn btn-primary" name="submit" value="PROCEDER">
+							</div> <!-- btn-toolbar -->
 						</div>
 					</div>
-					<form action="paiement.php" method="post">
-						<div class="btn-toolbar">
-							<a href="personnalisation.php" role="button" class="btn btn-default" name="previous"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-erase"></span> Retourner à la personnalisation des abonnements</a>
-							<input type="submit" role="button" class="btn btn-primary" name="submit" value="PROCEDER">
-						</div> <!-- btn-toolbar -->
+					<div class="col-sm-10 main">
+						<div class="progress">
+							<div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="25" aria-valuemax="100" style="width:75%;">
+								<span class="glyphicon glyphicon-repeat"></span> Etape 3/4 : Ajustement des échéances
+							</div>
+						</div>
 						<p>Récapitulatif de la commande</p>
 						<table class="table">
 							<thead>
@@ -90,8 +96,8 @@ if(isset($_POST["submit"])){
 						</div>
 						<input type="hidden" name="nombre_produits">
 						<input type="submit" role="button" class="btn btn-primary btn-block" name="submit" value="PROCEDER">
-					</form>
-				</div>
+					</div>
+				</form>
 			</div>
 		</div>
 		<?php include "scripts.php";?>

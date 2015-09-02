@@ -15,11 +15,17 @@ $queryForfaits = $db->query("SELECT * FROM produits");
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
+				<div class="fixed">
+					<div class="col-lg-6">
+						<p class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfaits</p>
+					</div>
+					<div class="col-lg-6">
+						<div class="btn-toolbar">
+							<a href="forfait_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait</a>
+						</div> <!-- btn-toolbar -->
+					</div>
+				</div>
 				<div class="col-sm-10 main">
-					<h1 class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Forfaits</h1>
-					<div class="btn-toolbar">
-						<a href="forfait_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait</a>
-					</div> <!-- btn-toolbar -->
 					<div class="table-responsive">
 						<table class="table table-striped table-hover">
 							<thead>

@@ -15,7 +15,7 @@ include 'functions/reservations.php';
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<div class="col-sm-10 main">
-					<h1 class="page-title"><span class="glyphicon glyphicon-pencil"></span> Page Test !</h1>
+					<p class="page-title"><span class="glyphicon glyphicon-pencil"></span> Page Test !</p>
 					<form action="tests.php" method="post">
 						<input type="text" name="produit">
 						<input type="submit">

@@ -38,13 +38,19 @@ if(isset($_POST['add'])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-sm-10 main">
-					<h1 class="page-title"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</h1>
-					<form action="cours_add.php" method="post" role="form">
-						<div class="btn-toolbar">
-							<a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-							<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER" onClick="checkMandatory()" id="submit-button" disabled>
-						</div> <!-- btn-toolbar -->
+				<form action="cours_add.php" method="post" role="form">
+					<div class="fixed">
+						<div class="col-lg-6">
+							<p class="page-title"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</p>
+						</div>
+						<div class="col-lg-6">
+							<div class="btn-toolbar">
+								<a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
+								<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER" onClick="checkMandatory()" id="submit-button" disabled>
+							</div> <!-- btn-toolbar -->
+						</div>
+					</div>
+					<div class="col-sm-10 main">
 						<div class="form-group">
 							<label for="intitule" class="control-label">Intitulé <span class="span-mandatory">*</span></label>
 							<div class="ui-widget">
@@ -75,13 +81,29 @@ while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
 								<?php } ?>
 							</select>
 						</div>
-						<div class="form-group">
-							<label for="date_debut" class="control-label">Date de Début</label>
-							<div class="input-group">
-								<input type="date" class="form-control mandatory input-lg" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
-								<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="date_debut" class="control-label">Date de Début</label>
+									<div class="input-group input-group-lg">
+										<input type="date" class="form-control mandatory" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
+										<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
+									</div>
+									<input type="checkbox" name="recurrence" id="recurrence" value="1">Est récurrent
+								</div>
 							</div>
-							<input type="checkbox" name="recurrence" id="recurrence" value="1">Est récurrent
+							<div class="col-lg-3">
+								<div class="form-group">
+									<label for="herue_debut" class="control-label">Début à</label>
+									<input type="time" class="form-control hasTimepicker mandatory input-lg" name="heure_debut" id="heure_debut" onChange="checkCalendar(false, false)">
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="form-group">
+									<label for="heure_fin" class="control-label">Fin à</label>
+									<input type="time" class="form-control hasTimepicker mandatory input-lg" name="heure_fin" id="heure_fin" onChange="checkCalendar(false, false)">
+								</div>
+							</div>
 						</div>
 						<div class="form-group" id="recurring-options" style="display:none;">
 							<label for="date_fin" class="control-label">Date de Fin</label>
@@ -92,14 +114,6 @@ while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
 								<input type="radio" value="7" name="frequence_repetition" onChange="checkCalendar(false, true)"> Hebdomadaire <br>
 								<input type="radio" value="14" name="frequence_repetition" onChange="checkCalendar(false, true)"> Bi-mensuelle<br>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="herue_debut" class="control-label">Début à</label>
-							<input type="time" class="form-control hasTimepicker mandatory input-lg" name="heure_debut" id="heure_debut" onChange="checkCalendar(false, false)">
-						</div>
-						<div class="form-group">
-							<label for="heure_fin" class="control-label">Fin à</label>
-							<input type="time" class="form-control hasTimepicker mandatory input-lg" name="heure_fin" id="heure_fin" onChange="checkCalendar(false, false)">
 						</div>
 						<div class="form-group">
 							<label for="prof_principal" class="control-label">Professeur principal</label>
@@ -117,21 +131,27 @@ while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
 								<?php } ?>
 							</select>
 						</div>
-						<div class="form-group">
-							<label for="niveau" class="control-label">Niveau</label>
-							<select name="niveau" class="form-control mandatory input-lg">
-								<?php while($row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC)){ ?>
-								<option value="<?php echo $row_niveaux['niveau_id'];?>"><?php echo $row_niveaux['niveau_name'];?></option>
-								<?php } ?>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="lieu" class="control-label">Lieu</label>
-							<select name="lieu" class="form-control mandatory input-lg" id="lieu" onChange="checkCalendar(false, false)">
-								<?php while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){ ?>
-								<option value="<?php echo $row_lieux['salle_id'];?>"><?php echo $row_lieux['salle_name'];?></option>
-								<?php } ?>
-							</select>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="niveau" class="control-label">Niveau</label>
+									<select name="niveau" class="form-control mandatory input-lg">
+										<?php while($row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC)){ ?>
+										<option value="<?php echo $row_niveaux['niveau_id'];?>"><?php echo $row_niveaux['niveau_name'];?></option>
+										<?php } ?>
+									</select>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="lieu" class="control-label">Lieu</label>
+									<select name="lieu" class="form-control mandatory input-lg" id="lieu" onChange="checkCalendar(false, false)">
+										<?php while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){ ?>
+										<option value="<?php echo $row_lieux['salle_id'];?>"><?php echo $row_lieux['salle_name'];?></option>
+										<?php } ?>
+									</select>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<label for="paiement" class="control-label">
@@ -141,8 +161,8 @@ while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
 						<div class="align-right">
 							<p id="error_message"></p>
 						</div>
-					</form>
-				</div>
+					</div>
+				</form>
 			</div>
 		</div>
 		<?php include "scripts.php";?>
