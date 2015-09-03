@@ -79,7 +79,7 @@ $queryEcheances->bindValue(1, $data);
 		<script>
 			function uploadChanges(token, value){
 				var database = "produits_echeances";
-				$.post("functions/update_field.php", {database, token, value}).done(function(data){
+				$.post("functions/update_field.php", {database : database, token : token, value : value}).done(function(data){
 					showSuccessNotif(data);
 				});
 			}

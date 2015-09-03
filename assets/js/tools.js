@@ -99,7 +99,7 @@ $(document).ready(function(){
 		var field = $(this);
 		var identite = $(this).val();
 		var token = $(this).attr('name').substr(12);
-		$.post("functions/check_adherent.php", {identite}).done(function(data){
+		$.post("functions/check_adherent.php", {identite : identite}).done(function(data){
 			if(data == 0){
 				if($(":regex(id,^unknown-user)").length == 0){
 					var addOptions = "<div id='unknown-user"+token+"'>";
@@ -171,7 +171,7 @@ $(document).ready(function(){
 	});
 }).on('mouseenter', '.editable', function(){
 	$(this).next().show();
-}).on('mouseleave', '.editable', function(){
+}).on('mouseleave blur', '.editable', function(){
 	$(this).next().hide();
 })
 // FONCTIONS NOTIFICATIONS //
@@ -261,8 +261,7 @@ $(".relative-start").each(function(){
 
 // Vérifie si un adhérent a des échéances impayées lors de la vente d'un forfait
 function checkMaturities(data){
-	var search_id = data;
-	$.post('functions/check_unpaid.php', {search_id}).done(function(maturities){
+	$.post('functions/check_unpaid.php', {search_id : data}).done(function(maturities){
 		if(maturities != 0){
 			$('#err_adherent').empty();
 			$('#unpaid').show();
@@ -286,9 +285,8 @@ function addAdherent(){
 	var mail = $('#mail').val();
 	var telephone = $('#telephone').val();
 	var date_naissance = $('#date_naissance').val();
-	$.post("functions/add_adherent.php", {identite_prenom, identite_nom, rfid, rue, code_postal, ville, mail, telephone, date_naissance}).done(function(data){
+	$.post("functions/add_adherent.php", {identite_prenom : identite_prenom, identite_nom : identite_nom, rfid : rfid, rue : rue, code_postal : code_postal, ville : ville, mail : mail, telephone : telephone, date_naissance : date_naissance}).done(function(data){
 		showSuccessNotif(data);
-		ifAdherentExists();
 		$(".has-name-completion").val(identite_prenom+" "+identite_nom);
 		$(":regex(id,^unknown-user)").hide('500');
 	});
@@ -297,7 +295,7 @@ function addAdherent(){
 // Vérifie l'existence de jours chômés à l'ajout d'un évènement
 function checkHoliday(){
 	var date_debut = $('#date_debut').val();
-	$.post("functions/check_holiday.php", {date_debut}).done(function(data){
+	$.post("functions/check_holiday.php", {date_debut : date_debut}).done(function(data){
 		console.log(data);
 		if(data != "0"){
 			$("#holiday-alert").empty();

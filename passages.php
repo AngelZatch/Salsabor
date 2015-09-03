@@ -135,7 +135,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 					var clicked = $(this);
 					var adherent = clicked.prev().val();
 					var cours_id = clicked.closest(".panel").find("#cours-id").val();
-					$.post("functions/add_passage.php", {cours_id, adherent}).done(function(data){
+					$.post("functions/add_passage.php", {cours_id : cours_id, adherent : adherent}).done(function(data){
 						showSuccessNotif(data);
 						var line = "<li class='list-group-item list-group-item-warning draggable col-sm-12 ui-draggable ui-draggable-handle'>";
 						line += "<p class='col-sm-3 eleve-infos'>";
@@ -159,7 +159,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 				if($(this).closest(".panel").find(".cours-count").html() != $(this).closest(".panel").find(".cours-count-checked").html()){
 					$.notify("Impossible de fermer un cours dont les passages n'ont pas tous été validés.", {globalPosition: "right bottom", className:"error"});
 				} else {
-					$.post("functions/close_cours.php", {cours}).done(function(data){
+					$.post("functions/close_cours.php", {cours : cours}).done(function(data){
 						$.notify("Cours fermé.", {globalPosition:"right bottom", className:"success"});
 					});
 					$(this).closest(".panel").hide('200');
@@ -179,7 +179,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 				var passage_id = clicked.parents().siblings(".eleve-infos").children("input.passage-id").val();
 				var rfid = clicked.parents().siblings(".eleve-tag").html();
 				console.log(eleve_id);
-				$.post("functions/validate_record.php", {cours_id, eleve_id, passage_id, rfid}).done(function(data){
+				$.post("functions/validate_record.php", {cours_id : cours_id, eleve_id : eleve_id, passage_id : passage_id, rfid : rfid}).done(function(data){
 					clicked.closest("li").removeClass('list-group-item-warning');
 					clicked.closest("li").addClass("list-group-item-success");
 					showSuccessNotif(data);
@@ -192,7 +192,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 				var eleve_id = clicked.parents().siblings(".eleve-infos").children("input.eleve-id").val();
 				var passage_id = clicked.parents().siblings(".eleve-infos").children("input.passage-id").val();
 				var rfid = clicked.parents().siblings(".eleve-tag").html();
-				$.post("functions/unvalidate_record.php", {cours_id, eleve_id, passage_id, rfid}).done(function(data){
+				$.post("functions/unvalidate_record.php", {cours_id : cours_id, eleve_id : eleve_id, passage_id : passage_id, rfid : rfid}).done(function(data){
 					clicked.closest("li").removeClass('list-group-item-success');
 					clicked.closest("li").addClass("list-group-item-warning");
 					$.notify("Passage supprimé.", {globalPosition:"right bottom", className:"success"});

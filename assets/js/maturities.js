@@ -1,7 +1,7 @@
 $(document).on('click', '.statut-salsabor', function(){
 	var echeance_id = $(this).parent("td").children("input[name='echeance-id']").val();
 	var label = $(this);
-	$.post("functions/validate_echeance.php", {echeance_id}).done(function(data){
+	$.post("functions/validate_echeance.php", {echeance_id : echeance_id}).done(function(data){
 		var answerLabel = "<span class='label label-";
 		var date = moment().format('DD/MM/YYYY');
 		switch(data){
@@ -24,7 +24,7 @@ $(document).on('click', '.statut-salsabor', function(){
 }).on('click', '.statut-banque', function(){
 	var echeance_id = $(this).parent("td").children("input[name='echeance-id']").val();
 	var label = $(this);
-	$.post("functions/encaisser_echeance.php", {echeance_id}).done(function(data){
+	$.post("functions/encaisser_echeance.php", {echeance_id : echeance_id}).done(function(data){
 		var answerLabel = "<span class='label label-";
 		var date = moment().format('DD/MM/YYYY');
 		switch(data){
