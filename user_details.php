@@ -235,11 +235,11 @@ if(isset($_POST["edit"])){
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label for="telephone" class="control-label">Téléphone principal</label>
-										<input type="number" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control input-lg" value="<?php echo $details["telephone"];?>">
+										<input type="tel" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control input-lg" value="<?php echo $details["telephone"];?>">
 									</div>
 								</div>
 								<div class="col-lg-6">
-									<div class="form-group"><label for="tel_secondaire" class="control-label">Téléphone secondaire</label><input type="number" name="tel_secondaire" id="tel_secondaire" placeholder="Numéro de téléphone secondaire" class="form-control input-lg"></div>
+									<div class="form-group"><label for="tel_secondaire" class="control-label">Téléphone secondaire</label><input type="tel" name="tel_secondaire" id="tel_secondaire" placeholder="Numéro de téléphone secondaire" class="form-control input-lg"></div>
 								</div>
 							</div>
 							<div class="form-group">
@@ -424,7 +424,7 @@ if(isset($_POST["edit"])){
 												<?php } ?>
 											</select>
 										</td>
-										<td class="col-sm-3"><input type="number" name="tarif" id="tarif" class="form-control"></td>
+										<td class="col-sm-3"><input type="number" step="any" name="tarif" id="tarif" class="form-control"></td>
 										<td class="col-sm-3">
 											<select name="ratio" id="ratio" class="form-control">
 												<?php

@@ -228,7 +228,7 @@ while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
 									<li class="list-group-item" id="prix-calcul">Somme due à l'enseignant :
 										<div class="input-group">
 											<span class='input-group-addon' id='currency-addon'>€</span>
-											<input type="number" name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $cours["cours_prix"];?>" aria-describedby='currency-addon'>
+											<input type="number" step="any" name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $cours["cours_prix"];?>" aria-describedby='currency-addon'>
 										</div>
 										<input type="checkbox" <?php if($cours['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
 										<input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $cours['paiement_effectue'];?>">

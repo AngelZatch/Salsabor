@@ -178,13 +178,13 @@ if(isset($_POST['addAdherent'])){
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label for="telephone" class="control-label">Téléphone principal</label>
-										<input type="number" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control mandatory input-lg">
+										<input type="tel" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control mandatory input-lg">
 									</div>
 								</div>
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label for="tel_secondaire" class="control-label">Téléphone secondaire</label>
-										<input type="number" name="tel_secondaire" class="form-control input-lg" placeholder="Numéro de téléphone secondaire">
+										<input type="tel" name="tel_secondaire" class="form-control input-lg" placeholder="Numéro de téléphone secondaire">
 									</div>
 								</div>
 							</div>

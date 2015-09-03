@@ -21,7 +21,7 @@ include 'functions/reservations.php';
 					<div class="col-lg-6"></div>
 				</div>
 				<div class="col-sm-10 main">
-					<span class="editable">18/09/2015</span>
+					<?php echo generateReference();?>
 				</div>
 			</div>
 		</div>

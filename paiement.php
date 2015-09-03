@@ -60,7 +60,7 @@ if(isset($_POST["submit"])){
 								<div class="form-group">
 									<label for="prix_total">Prix total</label>
 									<div class="input-group">
-										<input type="number" name="prix_total" class="form-control input-lg">
+										<input type="number" step="any" name="prix_total" class="form-control input-lg">
 										<span class="input-group-addon">€</span>
 									</div>
 								</div>

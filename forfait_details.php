@@ -108,7 +108,7 @@ if(isset($_POST["edit"])){
 								<div class="form-group">
 									<label for="tarif_global">Prix d'achat</label>
 									<div class="input-group input-group-lg">
-										<input type="number" class="form-control" name="tarif_global" value="<?php echo $produit["tarif_global"];?>">
+										<input type="number" step="any" class="form-control" name="tarif_global" value="<?php echo $produit["tarif_global"];?>">
 										<span class="input-group-addon">€</span>
 									</div>
 								</div>
