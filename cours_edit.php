@@ -41,7 +41,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 if(isset($_POST['editOne'])){
 	$db = PDOFactory::getConnection();
 	$start = $_POST['date_debut']." ".$_POST['heure_debut'];
-	$end = $_POST['date_fin']." ".$_POST['heure_fin'];
+	$end = $_POST['date_debut']." ".$_POST['heure_fin'];
 	$paiement = $_POST['paiement'];
 	$prix_final = $_POST['prix_cours'];
 	try{
@@ -74,7 +74,7 @@ if(isset($_POST['editOne'])){
 if(isset($_POST['editNext'])){
 	/** Edition de tous les suivants. Il faut donc rétablir la récurrence en cas de changement de dates **/
 	$start = $_POST['date_debut']." ".$_POST['heure_debut'];
-	$end = $_POST['date_fin']." ".$_POST['heure_fin'];
+	$end = $_POST['date_debut']." ".$_POST['heure_fin'];
 	$frequence_repetition = $res_recurrence['frequence_repetition'];
 	$date_fin = $_POST['parent_end_date'];
 	(int)$nombre_repetitions = (strtotime($res_recurrence['parent_end_date']) - strtotime($_POST['date_debut']))/(86400*$frequence_repetition)+1;
@@ -149,7 +149,7 @@ if(isset($_POST['deleteCoursAll'])){
 				<form method="post" role="form">
 					<div class="fixed">
 						<div class="col-lg-6">
-							<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
+							<p class="page-title"><?php echo $cours['cours_intitule'];?> (<?php echo date_create($cours['cours_start'])->format('d/m/Y');?> : <?php echo date_create($cours['cours_start'])->format('H:i')?> / <?php echo date_create($cours['cours_end'])->format('H:i');?>)</p>
 						</div>
 						<div class="col-lg-6">
 							<div class="btn-toolbar">
@@ -181,17 +181,33 @@ if($res_recurrence == '0'){
 						</div>
 					</div>
 					<div class="col-sm-10 main">
+						<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
 						<div class="form-group">
 							<input type="text" class="form-control" name="intitule" style="font-size:30px; height:inherit;" value="<?php echo $cours['cours_intitule'];?>">
 						</div>
-						<div class="form-group">
-							<input type="date" class="col-sm-3" name="date_debut" id="date_debut" value=<?php echo date_create($cours['cours_start'])->format('Y-m-d');?>>
-							<input type="time" class="col-sm-3" name="heure_debut" id="heure_debut" value=<?php echo date_create($cours['cours_start'])->format('H:i')?>>
-							<input type="time" class="col-sm-3" name="heure_fin" id="heure_fin" value=<?php echo date_create($cours['cours_end'])->format('H:i');?>>
-							<input type="date" class="col-sm-3" name="date_fin" id="date_fin" value=<?php echo date_create($cours['cours_end'])->format('Y-m-d');?>>
+						<div class="row">
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label for="" class="control-label">Date</label>
+									<input type="date" class="col-sm-3 form-control input-lg" name="date_debut" id="date_debut" value="<?php echo date_create($cours['cours_start'])->format('Y-m-d');?>">
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label for="" class="control-label">Heure de début</label>
+									<input type="time" class="col-sm-3 form-control input-lg" name="heure_debut" id="heure_debut" value="<?php echo date_create($cours['cours_start'])->format('H:i')?>">
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label for="" class="control-label">Heure de fin</label>
+									<input type="time" class="col-sm-3 form-control input-lg" name="heure_fin" id="heure_fin" value="<?php echo date_create($cours['cours_end'])->format('H:i');?>">
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
-							<select name="type" id="" class="form-control">
+							<label for="" class="control-label">Type de cours</label>
+							<select name="type" id="" class="form-control input-lg">
 								<?php
 while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
 	if($cours["cours_type"] == $row_types["prestations_id"]) { ?>
