@@ -62,21 +62,6 @@ if(isset($_POST['add'])){
 									</div>
 								</div>
 							</div>
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="suffixe" class="control-label">Suffixes</label><br>
-									<?php
-								while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
-									$array_suffixes = preg_split("/','/", substr($row_suffixes['Type'], 5, strlen($row_suffixes['Type'])-7));
-									$j = 1;
-									for($i = 0; $i < sizeof($array_suffixes); $i++){?>
-									<input data-toggle="checkbox-x" data-size="lg" data-three-state="false" name="suffixe<?php echo $i;?>" id="suffixe-<?php echo $i;?>" class="checkbox-inline" value="<?php echo $j;?>"> <?php echo $array_suffixes[$i];?>
-									<?php $j *= 2;
-									 }
-								}
-									?>
-								</div>
-							</div>
 						</div>
 						<div class="form-group">
 							<label for="type" class="control-label">Type de cours</label>
@@ -110,7 +95,7 @@ if(isset($_POST['add'])){
 							</div>
 						</div>
 						<div class="form-group">
-							Récurrence <input type="checkbox" name="recurrence" id="recurrence" value="0" data-toggle="checkbox-x" data-three-state="false" data-size="lg">
+							Récurrence <input name="recurrence" id="recurrence" value="0" data-toggle="checkbox-x" data-three-state="false" data-size="lg" value="0">
 						</div>
 						<div class="form-group" id="recurring-options" style="display:none;">
 							<label for="date_fin" class="control-label">Date de Fin</label>

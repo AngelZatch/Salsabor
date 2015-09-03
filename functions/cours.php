@@ -16,12 +16,6 @@ function addCours(){
 	$salle = $_POST['lieu'];
 	$start = $date_debut." ".$heure_debut;
 	$end = $date_debut." ".$heure_fin;
-	for($j = 0; $j < 3; $j++){
-		if(!isset($_POST['suffixe-'.$j])){
-			$_POST['suffixe-'.$j] = 0;
-		}
-	}
-	$suffixe = $_POST['suffixe-0'] + $_POST['suffixe-1'] + $_POST['suffixe-2'];
 	$type = $_POST['type'];
 	$priorite = 2;
 
@@ -39,20 +33,18 @@ function addCours(){
 
 	if(isset($_POST['paiement'])) $paiement = $_POST['paiement']; else $paiement = 0;
 
-
 	/** Insertion du cours si pas de récurrence (cours ponctuel) **/
-	if(!isset($_POST['recurrence'])){
+	if($_POST['recurrence'] == 0){
 		$recurrence = 0;
 		$frequence_repetition = 0;
 		$date_fin = $_POST['date_debut'];
 		try{
 			$db->beginTransaction();
 			/** Insertion du cours principal dans cours_parent **/
-			$insertCours = $db->prepare('INSERT INTO cours_parent(parent_intitule, weekday, parent_suffixe, parent_type, parent_start_date, parent_end_date, parent_start_time, parent_end_time, parent_prof_principal, parent_prof_remplacant, parent_niveau, parent_salle, parent_unite, parent_cout_horaire, recurrence, frequence_repetition, priorite)
-			VALUES(:intitule, :weekday, :suffixe, :type, :date_debut, :date_fin, :heure_debut, :heure_fin, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :recurrence, :frequence_repetition, :priorite)');
+			$insertCours = $db->prepare('INSERT INTO cours_parent(parent_intitule, weekday, parent_type, parent_start_date, parent_end_date, parent_start_time, parent_end_time, parent_prof_principal, parent_prof_remplacant, parent_niveau, parent_salle, parent_unite, parent_cout_horaire, recurrence, frequence_repetition, priorite)
+			VALUES(:intitule, :weekday, :type, :date_debut, :date_fin, :heure_debut, :heure_fin, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :recurrence, :frequence_repetition, :priorite)');
 			$insertCours->bindParam(':intitule', $intitule);
 			$insertCours->bindParam(':weekday', $weekday);
-			$insertCours->bindParam(':suffixe', $suffixe);
 			$insertCours->bindParam(':type', $type);
 			$insertCours->bindParam(':date_debut', $date_debut);
 			$insertCours->bindParam(':date_fin', $date_fin);
@@ -73,11 +65,10 @@ function addCours(){
 			$last_id = $db->lastInsertId();
 
 			/** Insertion du cours principal dans cours **/
-			$insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_suffixe, cours_type, cours_start, cours_end, prof_principal, prof_remplacant, cours_niveau, cours_salle, cours_unite, cours_prix, priorite, paiement_effectue)
-			VALUES(:cours_parent_id, :intitule, :suffixe, :type, :cours_start, :cours_end, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :priorite, :paiement)');
+			$insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_type, cours_start, cours_end, prof_principal, prof_remplacant, cours_niveau, cours_salle, cours_unite, cours_prix, priorite, paiement_effectue)
+			VALUES(:cours_parent_id, :intitule, :type, :cours_start, :cours_end, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :priorite, :paiement)');
 			$insertCours->bindParam(':cours_parent_id', $last_id);
 			$insertCours->bindParam(':intitule', $intitule);
-			$insertCours->bindParam(':suffixe', $suffixe);
 			$insertCours->bindParam(':type', $type);
 			$insertCours->bindParam(':cours_start', $start);
 			$insertCours->bindParam(':cours_end', $end);
@@ -92,7 +83,7 @@ function addCours(){
 
 			$insertCours->execute();
 			$db->commit();
-			header("planning.php");
+			header("Location : planning.php");
 		} catch(PDOException $e){
 			$db->rollBack();
 			var_dump($e->getMessage());
@@ -108,11 +99,10 @@ function addCours(){
 		try{
 			$db->beginTransaction();
 			/** Insertion du modèle de cours dans cours_parent **/
-			$insertCours = $db->prepare('INSERT INTO cours_parent(parent_intitule, weekday, parent_suffixe, parent_type, parent_start_date, parent_end_date, parent_start_time, parent_end_time, parent_prof_principal, parent_prof_remplacant, parent_niveau, parent_salle, parent_unite, parent_cout_horaire, recurrence, frequence_repetition, priorite)
-			VALUES(:intitule, :weekday, :suffixe, :type, :date_debut, :date_fin, :heure_debut, :heure_fin, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :recurrence, :frequence_repetition, :priorite)');
+			$insertCours = $db->prepare('INSERT INTO cours_parent(parent_intitule, weekday, parent_type, parent_start_date, parent_end_date, parent_start_time, parent_end_time, parent_prof_principal, parent_prof_remplacant, parent_niveau, parent_salle, parent_unite, parent_cout_horaire, recurrence, frequence_repetition, priorite)
+			VALUES(:intitule, :weekday, :type, :date_debut, :date_fin, :heure_debut, :heure_fin, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :recurrence, :frequence_repetition, :priorite)');
 			$insertCours->bindParam(':intitule', $intitule);
 			$insertCours->bindParam(':weekday', $weekday);
-			$insertCours->bindParam(':suffixe', $suffixe);
 			$insertCours->bindParam(':type', $type);
 			$insertCours->bindParam(':date_debut', $date_debut);
 			$insertCours->bindParam(':date_fin', $date_fin);
@@ -134,11 +124,10 @@ function addCours(){
 
 			for($i = 1; $i < $nombre_repetitions; $i++){
 				/** Insertion de toutes les récurrences du cours dans la table cours **/
-				$insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_suffixe, cours_type, cours_start, cours_end, prof_principal, prof_remplacant, cours_niveau, cours_salle, cours_unite, cours_prix, priorite, paiement_effectue)
-				VALUES(:cours_parent_id, :intitule, :suffixe, :type, :cours_start, :cours_end, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :priorite, :paiement)');
+				$insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_type, cours_start, cours_end, prof_principal, prof_remplacant, cours_niveau, cours_salle, cours_unite, cours_prix, priorite, paiement_effectue)
+				VALUES(:cours_parent_id, :intitule, :type, :cours_start, :cours_end, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :priorite, :paiement)');
 				$insertCours->bindParam(':cours_parent_id', $last_id);
 				$insertCours->bindParam(':intitule', $intitule);
-				$insertCours->bindParam(':suffixe', $suffixe);
 				$insertCours->bindParam(':type', $type);
 				$insertCours->bindParam(':cours_start', $start);
 				$insertCours->bindParam(':cours_end', $end);
@@ -158,7 +147,7 @@ function addCours(){
 				$end = date("Y-m-d H:i", $end_date);
 			}
 			$db->commit();
-			header("planning.php");
+			header("Location : planning.php");
 		} catch(PDOException $e){
 			$db->rollBack();
 			var_dump($e->getMessage());
