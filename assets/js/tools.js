@@ -99,7 +99,7 @@ $(document).ready(function(){
 		var field = $(this);
 		var identite = $(this).val();
 		var token = $(this).attr('name').substr(12);
-		$.post("functions/check_adherent.php", {identite}).done(function(data){
+		$.post("functions/check_adherent.php", identite).done(function(data){
 			if(data == 0){
 				if($(":regex(id,^unknown-user)").length == 0){
 					var addOptions = "<div id='unknown-user"+token+"'>";
