@@ -13,13 +13,13 @@ $date_now = date_create("now")->format("Y-m-d 00:00:00");
 
 try{
 	$db->beginTransaction();
-	
+
 	// Vérification de la présence d'une invitation
 	$queryInvitation = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=$eleve AND produit_nom='Invitation' AND produits_adherents.actif='1'");
 	if($queryInvitation->rowCount() == '1'){
 		$produit = $queryInvitation->fetch(PDO::FETCH_ASSOC);
 		$actif = 0;
-		
+
 		// Désactivation de l'invitation
 		$deactivate = $db->prepare("UPDATE produits_adherents SET date_fin_utilisation=?, actif=? WHERE id_produit_adherent=?");
 		$deactivate->bindParam(1, $date_now);
@@ -27,7 +27,7 @@ try{
 		$deactivate->bindParam(3, $produit["id_produit_adherent"]);
 		$deactivate->execute();
 	} else {
-		$produit = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=$eleve AND produit_nom!='Invitation'")->fetch(PDO::FETCH_ASSOC);
+		$produit = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=$eleve AND produit_nom!='Invitation' AND produit_nom != 'Adhésion Annuelle' ORDER BY id_produit_adherent ASC")->fetch(PDO::FETCH_ASSOC);
 		// Vérification de la validité du forfait et activation si nécessaire
 		if($produit["produitActif"] == '0'){
 			$actif = 1;
@@ -59,7 +59,7 @@ try{
 			$activate->bindParam(4, $produit["id_produit_adherent"]);
 			$activate->execute();
 		}
-		
+
 		// Déduction du volume horaire dans le forfait
 		if(isset($produit["id_produit_adherent"])){
 			if(!strstr($produit["produit_nom"], "Illimité")){
@@ -70,7 +70,7 @@ try{
 				$substract->execute();
 			}
 		}
-		
+
 		// Mise à jour de la rémunération du professeur
 		if($prof["ratio_multiplicatif"] == "personne"){
 			$prix = $detailCours["cours_prix"] + $prof["tarif_prestation"];
@@ -80,7 +80,7 @@ try{
 			$add->execute();
 		}
 	}
-	
+
 	// Enregistrement du passage dans la table des participants
 	$new = $db->prepare('INSERT INTO cours_participants(cours_id_foreign, eleve_id_foreign, produit_adherent_id)
 	VALUES(:cours, :eleve, :produit)');
@@ -88,13 +88,13 @@ try{
 	$new->bindParam(':eleve', $eleve);
 	$new->bindParam(':produit', $produit["id_produit_adherent"]);
 	$new->execute();
-	
+
 	// Validation de l'enregistrement dans la table passage (indiquera que le passage a déjà été traité)
 	$update = $db->prepare("UPDATE passages SET cours_id=?, status=2 WHERE passage_id=?");
 	$update->bindParam(1, $cours);
 	$update->bindParam(2, $passage);
 	$update->execute();
-	
+
 	$db->commit();
 	echo "Passage enregistré.";
 } catch(PDOException $e){
