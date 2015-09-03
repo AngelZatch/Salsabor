@@ -496,7 +496,7 @@ if(isset($_POST["edit"])){
 				var eleve_id = <?php echo $data;?>;
 				var produit_id = clicked.val();
 				var cours_id = clicked.prev().val();
-				$.post("functions/link_forfait.php", {eleve_id, cours_id, produit_id}).done(function(data){
+				$.post("functions/link_forfait.php", {eleve_id : eleve_id, cours_id : cours_id, produit_id : produit_id}).done(function(data){
 					showSuccessNotif(data);
 					clicked.parents("tr.warning").removeClass('warning');
 					clicked.hide();
@@ -567,7 +567,7 @@ if(isset($_POST["edit"])){
 				var prestation = $("#prestation").val();
 				var tarif = $("#tarif").val();
 				var ratio = $("#ratio").val();
-				$.post("functions/add_tarif_prof.php", {prof_id, prestation, tarif, ratio}).success(function(data){
+				$.post("functions/add_tarif_prof.php", {prof_id : prof_id, prestation : prestation, tarif : tarif, ratio : ratio}).success(function(data){
 					$("#new-tarif").hide();
 					showSuccessNotif(data);
 					$(".fetched").remove();
@@ -577,7 +577,7 @@ if(isset($_POST["edit"])){
 
 			function fetchTarifs(){
 				var id = $("#prof_id").val();
-				$.post("functions/get_tarifs.php", {id}).done(function(data){
+				$.post("functions/get_tarifs.php", {id : id}).done(function(data){
 					var json = JSON.parse(data);
 					for(var i = 0; i < json.length; i++){
 						var line = "<tr class='fetched' id='tarif-"+json[i].id+"'>";
@@ -598,7 +598,7 @@ if(isset($_POST["edit"])){
 			function updateTarif(id){
 				var update_id = id;
 				var tarif = $("#tarif-"+update_id).children(".tarif-prix").children("span").html();
-				$.post("functions/update_tarif_prof.php", {update_id, tarif}).done(function(data){
+				$.post("functions/update_tarif_prof.php", {update_id : update_id, tarif : tarif}).done(function(data){
 					showSuccessNotif(data);
 					var originalColor = $("#tarif-"+update_id).css("background-color");
 					var styles = {
@@ -616,7 +616,7 @@ if(isset($_POST["edit"])){
 
 			function deleteTarif(id){
 				var delete_id = id;
-				$.post("functions/delete_tarif_prof.php", {delete_id}).done(function(data){
+				$.post("functions/delete_tarif_prof.php", {delete_id : delete_id}).done(function(data){
 					showSuccessNotif(data);
 					$(".fetched").remove();
 					fetchTarifs();

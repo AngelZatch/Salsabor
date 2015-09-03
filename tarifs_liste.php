@@ -106,7 +106,7 @@ if(isset($_POST['addTarifResa'])){
 			function updateTarif(id){
 				var update_id = id;
 				var tarif = $("#tarif-"+update_id).html();
-				$.post("functions/update_tarif_resa.php", {update_id, tarif}).done(function(data){
+				$.post("functions/update_tarif_resa.php", {update_id : update_id, tarif : tarif}).done(function(data){
 					$.notify("Tarif mis à jour.", {globalPosition:"right bottom", className:"success"});
 					var originalColor = $("#tarif-"+update_id).parent().parent().css("background-color");
 					var styles = {

@@ -255,7 +255,7 @@ while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
 				$("#add-eleve").click(function(){
 					var adherent = $("#liste-participants").val();
 					var cours_id = $("[name='id']").val();
-					$.post("functions/add_participant.php", {cours_id, adherent}).done(function(data){
+					$.post("functions/add_participant.php", {cours_id : cours_id, adherent : adherent}).done(function(data){
 						showSuccessNotif(data);
 						var line = "<li class='list-group-item'>";
 						line += adherent;
