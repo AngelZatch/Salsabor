@@ -99,7 +99,7 @@ $(document).ready(function(){
 		var field = $(this);
 		var identite = $(this).val();
 		var token = $(this).attr('name').substr(12);
-		$.post("functions/check_adherent.php", identite).done(function(data){
+		$.post("functions/check_adherent.php", {identite}).done(function(data){
 			if(data == 0){
 				if($(":regex(id,^unknown-user)").length == 0){
 					var addOptions = "<div id='unknown-user"+token+"'>";
@@ -258,35 +258,6 @@ $("*[date-today='true']").click(function(){
 $(".relative-start").each(function(){
 	$(this).html(moment($(this).html(), "YYYY-MM-DD HH:ii:ss", 'fr').fromNow());
 });
-
-// Vérifie si un adhérent existe dans la base de données
-function ifAdherentExists(){
-	var identite = $("#identite_nom").val().split(" ");
-	if(identite == ''){
-		$('#err_adherent').empty();
-		$('#unpaid').hide();
-		$('#create-user').hide();
-		$("#maturities-checked").show();
-	} else {
-		var identite_prenom = identite[0];
-		var identite_nom = identite[1];
-		$.post("functions/check_adherent.php", {identite_prenom, identite_nom}).done(function(data){
-			if(data == 0){
-				$('#err_adherent').empty();
-				$('#unpaid').hide();
-				$('#err_adherent').append("Cet adhérent n'existe pas. Voulez-vous le créer ?");
-				$('#create-user').show();
-				$("#maturities-checked").show();
-			} else {
-				$('#err_adherent').empty();
-				$('#unpaid').hide();
-				$('#create-user').hide();
-				$("#maturities-checked").show();
-				checkMaturities(data);
-			}
-		});
-	}
-}
 
 // Vérifie si un adhérent a des échéances impayées lors de la vente d'un forfait
 function checkMaturities(data){
