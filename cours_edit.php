@@ -182,7 +182,7 @@ if($res_recurrence == '0'){
 					</div>
 					<div class="col-sm-10 main">
 						<div class="form-group">
-							<input type="text" class="form-control" name="intitule" style="font-size:30px; height:inherit;" value=<?php echo $cours['cours_intitule'];?>>
+							<input type="text" class="form-control" name="intitule" style="font-size:30px; height:inherit;" value="<?php echo $cours['cours_intitule'];?>">
 						</div>
 						<div class="form-group">
 							<input type="date" class="col-sm-3" name="date_debut" id="date_debut" value=<?php echo date_create($cours['cours_start'])->format('Y-m-d');?>>
@@ -212,7 +212,7 @@ while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
 								</div>
 								<div class="panel-body">
 									<label for="liste_participants">Participants enregistrés :</label>
-									<div class="input-group">
+									<div class="input-group input-group-lg">
 										<input type="text" for="liste_participants" class="form-control" id="liste-participants" placeholder="Ajouter un participant">
 										<span role="buttton" class="input-group-btn" id="add-eleve"><a class="btn btn-info" role="button">Ajouter l'élève</a></span>
 									</div>
@@ -228,7 +228,7 @@ while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
 									<li class="list-group-item" id="prix-calcul">Somme due à l'enseignant :
 										<div class="input-group">
 											<span class='input-group-addon' id='currency-addon'>€</span>
-											<input type="number" name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $cours["cours_prix"];?>" aria-describedby='currency-addon'>
+											<input type="number" step="any" name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $cours["cours_prix"];?>" aria-describedby='currency-addon'>
 										</div>
 										<input type="checkbox" <?php if($cours['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
 										<input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $cours['paiement_effectue'];?>">

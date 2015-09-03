@@ -94,7 +94,7 @@ if(isset($_POST['addResa'])){
 						<div class="form-group" id="prix_reservation">
 							<label for="prix_resa" class="control-label">Prix de la réservation : </label>
 							<div class="input-group input-group-lg">
-								<input type="number" name="prix_resa" id="prix_calcul" class="form-control" aria-describedby="currency-addon">
+								<input type="number" step="any" name="prix_resa" id="prix_calcul" class="form-control" aria-describedby="currency-addon">
 								<span class="input-group-addon" id="currency-addon">€</span>
 							</div>
 							<input type="checkbox" unchecked data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" id="paiement">

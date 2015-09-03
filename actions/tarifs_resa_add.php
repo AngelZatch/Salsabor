@@ -50,7 +50,7 @@ while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){
 	<div class="form-group">
 		<label for="prix_resa" class="col-sm-3 control-label">Prix <span class="span-mandatory">*</span></label>
 		<div class="col-sm-9 input-group">
-			<input type="number" class="form-control" name="prix_resa"><span class="input-group-addon">€</span>
+			<input type="number" step="any" class="form-control" name="prix_resa"><span class="input-group-addon">€</span>
 		</div>
 	</div>
 	<input type="submit" name="addTarifResa" value="Ajouter" class="btn btn-default">
