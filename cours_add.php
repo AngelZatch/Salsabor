@@ -13,10 +13,11 @@ $suffixes = $db->query("SHOW COLUMNS FROM cours_parent LIKE 'parent_suffixe'");
 
 $types = $db->query('SELECT * FROM prestations WHERE est_cours=1');
 
-$profs = $db->prepare('SELECT * FROM users WHERE est_professeur=1');
-$profs->setFetchMode(PDO::FETCH_ASSOC);
-$profs->execute();
-$row_profs = $profs->fetchAll();
+$queryProfs = $db->query('SELECT * FROM users WHERE est_professeur=1');
+$array_profs = array();
+while($profs = $queryProfs->fetch(PDO::FETCH_ASSOC)){
+	array_push($array_profs, $profs["user_prenom"]." ".$profs["user_nom"]);
+}
 
 $niveaux = $db->query('SELECT * FROM niveau');
 
@@ -38,7 +39,7 @@ if(isset($_POST['add'])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<form action="cours_add.php" method="post" role="form">
+				<form method="post" role="form">
 					<div class="fixed">
 						<div class="col-lg-6">
 							<p class="page-title"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</p>
@@ -51,27 +52,31 @@ if(isset($_POST['add'])){
 						</div>
 					</div>
 					<div class="col-sm-10 main">
-						<div class="form-group">
-							<label for="intitule" class="control-label">Intitulé <span class="span-mandatory">*</span></label>
-							<div class="ui-widget">
-								<input type="text" class="form-control mandatory input-lg" name="intitule" id="cours_tags" placeholder="Nom du cours">
-								<div class="float-right">
-									<p id="intitule-error-message" class="error-messages"></p>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="intitule" class="control-label">Intitulé</label>
+									<input type="text" class="form-control mandatory input-lg" name="intitule" id="cours_tags" placeholder="Nom du cours">
+									<div class="float-right">
+										<p id="intitule-error-message" class="error-messages"></p>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="suffixe" class="control-label">Suffixe</label>
-							<?php
-while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
-	$array_suffixes = preg_split("/','/", substr($row_suffixes['Type'], 5, strlen($row_suffixes['Type'])-7));
-	$j = 1;
-	for($i = 0; $i < 3; $i++){?>
-							<input type="checkbox" name="suffixe<?php echo $i;?>" id="suffixe-<?php echo $i;?>" class="checkbox-inline" value="<?php echo $j;?>"><?php echo $array_suffixes[$i];?>
-							<?php $j *= 2;
-							 }
-}
-							?>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="suffixe" class="control-label">Suffixes</label><br>
+									<?php
+								while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
+									$array_suffixes = preg_split("/','/", substr($row_suffixes['Type'], 5, strlen($row_suffixes['Type'])-7));
+									$j = 1;
+									for($i = 0; $i < sizeof($array_suffixes); $i++){?>
+									<input data-toggle="checkbox-x" data-size="lg" data-three-state="false" name="suffixe<?php echo $i;?>" id="suffixe-<?php echo $i;?>" class="checkbox-inline" value="<?php echo $j;?>"> <?php echo $array_suffixes[$i];?>
+									<?php $j *= 2;
+									 }
+								}
+									?>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<label for="type" class="control-label">Type de cours</label>
@@ -89,7 +94,6 @@ while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
 										<input type="date" class="form-control mandatory" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
 										<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
 									</div>
-									<input type="checkbox" name="recurrence" id="recurrence" value="1">Est récurrent
 								</div>
 							</div>
 							<div class="col-lg-3">
@@ -105,9 +109,12 @@ while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
 								</div>
 							</div>
 						</div>
+						<div class="form-group">
+							Récurrence <input type="checkbox" name="recurrence" id="recurrence" value="0" data-toggle="checkbox-x" data-three-state="false" data-size="lg">
+						</div>
 						<div class="form-group" id="recurring-options" style="display:none;">
 							<label for="date_fin" class="control-label">Date de Fin</label>
-							<input type="date" class="form-control" name="date_fin" id="date_fin" onChange="checkCalendar(false, true)">
+							<input type="date" class="form-control input-lg" name="date_fin" id="date_fin" onChange="checkCalendar(false, true)">
 							<label for="frequence_repetition" class="control-label">Récurrence<span class="span-mandatory">*</span></label>
 							<div id="options-recurrence">
 								<input type="radio" value="1" name="frequence_repetition" onChange="checkCalendar(false, true)"> Quotidienne<br>
@@ -115,21 +122,19 @@ while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
 								<input type="radio" value="14" name="frequence_repetition" onChange="checkCalendar(false, true)"> Bi-mensuelle<br>
 							</div>
 						</div>
-						<div class="form-group">
-							<label for="prof_principal" class="control-label">Professeur principal</label>
-							<select name="prof_principal" class="form-control mandatory input-lg">
-								<?php foreach ($row_profs as $r){ ?>
-								<option value="<?php echo $r['user_id'];?>"><?php echo $r['user_prenom']." ".$r['user_nom'];?></option>
-								<?php } ?>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="prof_remplacant" class="control-label">Professeur remplaçant</label>
-							<select name="prof_remplacant" class="form-control mandatory input-lg">
-								<?php foreach ($row_profs as $r){ ?>
-								<option value="<?php echo $r['user_id'];?>"><?php echo $r['user_prenom']." ".$r['user_nom'];?></option>
-								<?php } ?>
-							</select>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="prof_principal" class="control-label">Professeur principal</label>
+									<input type="text" name="prof_principal" class="form-control mandatory has-name-completion input-lg">
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="prof_remplacant" class="control-label">Professeur remplaçant</label>
+									<input type="text" name="prof_remplacant" class="form-control has-name-completion input-lg">
+								</div>
+							</div>
 						</div>
 						<div class="row">
 							<div class="col-lg-6">
@@ -170,9 +175,13 @@ while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
 		<script>
 			$(document).ready(function(){
 				var coursNameTags = JSON.parse('<?php echo json_encode($arr_cours_name);?>');
+				var listeProfs = JSON.parse('<?php echo json_encode($array_profs);?>');
 				$('#cours_tags').autocomplete({
 					source: coursNameTags
 				});
+				$(".has-name-completion").autocomplete({
+					source: listeProfs
+				})
 				var start = sessionStorage.getItem('start');
 				if(start != null){
 					var format_start = new Date(start).toISOString();
@@ -196,7 +205,7 @@ while ($row_suffixes = $suffixes->fetch(PDO::FETCH_ASSOC)){
 				sessionStorage.removeItem('end');
 				sessionStorage.removeItem('start');
 			});
-			$("#recurrence").click(function(){
+			$("#recurrence").change(function(){
 				$("#recurring-options").toggle('600');
 			});
 		</script>
