@@ -60,7 +60,7 @@ $queryEcheances = $db->prepare("SELECT DISTINCT * FROM produits_echeances
 		<script>
 			function uploadChanges(token, value){
 				var database = "produits_echeances";
-				$.post("functions/update_field.php", {database, token, value}).done(function(data){
+				$.post("functions/update_field.php", {database: database, token : token, value : value}).done(function(data){
 					showSuccessNotif(data);
 				});
 			}
