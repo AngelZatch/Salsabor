@@ -171,7 +171,7 @@ $(document).ready(function(){
 	});
 }).on('mouseenter', '.editable', function(){
 	$(this).next().show();
-}).on('mouseleave', '.editable', function(){
+}).on('mouseleave blur', '.editable', function(){
 	$(this).next().hide();
 })
 // FONCTIONS NOTIFICATIONS //
