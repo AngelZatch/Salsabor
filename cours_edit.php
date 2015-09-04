@@ -149,7 +149,7 @@ if(isset($_POST['deleteCoursAll'])){
 				<form method="post" role="form">
 					<div class="fixed">
 						<div class="col-lg-6">
-							<p class="page-title"><?php echo $cours['cours_intitule'];?> (<?php echo date_create($cours['cours_start'])->format('d/m/Y');?> : <?php echo date_create($cours['cours_start'])->format('H:i')?> / <?php echo date_create($cours['cours_end'])->format('H:i');?>)</p>
+							<p class="page-title"><span class="glyphicon glyphicon-eye-open"></span> Cours de <?php echo $cours['cours_intitule'];?></p>
 						</div>
 						<div class="col-lg-6">
 							<div class="btn-toolbar">
@@ -265,7 +265,8 @@ while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
 			$(document).ready(function(){
 				var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
 				$("#liste-participants").autocomplete({
-					source: listeAdherents
+					source: listeAdherents,
+					select: $(this).empty()
 				});
 
 				$("#add-eleve").click(function(){

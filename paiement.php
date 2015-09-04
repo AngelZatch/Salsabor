@@ -32,7 +32,7 @@ if(isset($_POST["submit"])){
 						<div class="col-lg-6">
 							<div class="btn-toolbar">
 								<a href="personnalisation.php" role="button" class="btn btn-default" name="previous"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-erase"></span> Retourner à la personnalisation des abonnements</a>
-								<input type="submit" role="button" class="btn btn-primary" name="submit" value="PROCEDER">
+								<a href="actions/validate_paiement.php" role="button" class="btn btn-primary" data-title="Validation du panier" data-toggle="lightbox" data-gallery="remoteload">PROCEDER</a>
 							</div> <!-- btn-toolbar -->
 						</div>
 					</div>
@@ -95,7 +95,8 @@ if(isset($_POST["submit"])){
 							</table>
 						</div>
 						<input type="hidden" name="nombre_produits">
-						<input type="submit" role="button" class="btn btn-primary btn-block" name="submit" value="PROCEDER">
+						<a href="actions/validate_paiement.php" role="button" class="btn btn-primary btn-block" data-title="Validation du panier" data-toggle="lightbox" data-gallery="remoteload">PROCEDER</a>
+						<input type="submit" style="display:none;" class="submit-relay-target" name="submit">
 					</div>
 				</form>
 			</div>
