@@ -120,7 +120,7 @@ $(document).ready(function(){
 				}
 			} else {
 				$(":regex(id,^unknown-user)").remove();
-				$(".has-name-completion").val(identite);
+				/*$(".has-name-completion").val(identite);*/
 			}
 		})
 	})

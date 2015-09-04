@@ -38,8 +38,8 @@ if(isset($_POST["submit"])){
 					</div>
 					<div class="col-sm-10 main">
 						<div class="progress">
-							<div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="25" aria-valuemax="100" style="width:75%;">
-								<span class="glyphicon glyphicon-repeat"></span> Etape 3/4 : Ajustement des échéances
+							<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="25" aria-valuemax="100" style="width:100%;">
+								<span class="glyphicon glyphicon-repeat"></span> Etape 3/3 : Ajustement des échéances
 							</div>
 						</div>
 						<p>Récapitulatif de la commande</p>
@@ -166,7 +166,7 @@ if(isset($_POST["submit"])){
 						var current_date = start_date.format("YYYY-MM-DD");
 						echeance += "<td class='col-lg-1'><div class='input-group'><input type='date' class='form-control' value="+current_date+" name='date-echeance-"+i+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-date-"+i+"'>Propager</a></span></div></td>";
 						echeance += "<td class='col-lg-2'><div class='input-group'><input type='number' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance-"+i+"'><span class='input-group-addon'>€</span></div></td>";
-						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='moyen-paiement-"+i+"' placeholder='CB / Numéro de chèque / Mandat / Espèces...'><span role='buttton' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-methode-"+i+"'>Propager</a></span></div></td>";
+						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='moyen-paiement-"+i+"' placeholder='En attente / Carte bancaire / Numéro de chèque / Mandat / Espèces...'><span role='buttton' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-methode-"+i+"'>Propager</a></span></div></td>";
 						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='titulaire-paiement-"+i+"' placeholder='Prénom Nom' value='"+$(":regex(name,payeur)").val()+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-titulaire-"+i+"'>Propager</a></span></div></td>";
 						echeance += "<td class='col-lg-1'><input name='statut-echeance-"+i+"'></td>";
 						echeance += "</tr>";
@@ -178,20 +178,20 @@ if(isset($_POST["submit"])){
 						// Lorsqu'un montant est modifié.
 						var echeance_fixe = $(this).val();
 						if(echeance_fixe != ''){
-							$(this).addClass('fixed');
+							$(this).addClass('fixed-value');
 						} else {
-							$(this).removeClass('fixed');
+							$(this).removeClass('fixed-value');
 						}
 
 						var montant_restant_auto = montant_total;
-						$(".fixed").each(function(){
+						$(".fixed-value").each(function(){
 							montant_restant_auto -= $(this).val();
 						})
 						montant_restant = montant_restant_auto;
-						var echeances_fixees = $(".fixed").length;
-						var echeances_auto = $("[name^='montant-echeance']:not(.fixed)").length;
+						var echeances_fixees = $(".fixed-value").length;
+						var echeances_auto = $("[name^='montant-echeance']:not(.fixed-value)").length;
 						i = 0;
-						$("[name^='montant-echeance']:not(.fixed)").each(function(){
+						$("[name^='montant-echeance']:not(.fixed-value)").each(function(){
 							if(i == echeances_auto - 1){
 								montant_echeance = (montant_restant).toFixed(2);
 							} else {
