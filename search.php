@@ -122,7 +122,7 @@ $numberTransactions = $searchTransactions->rowCount();
 					</div>
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<p class="panel-title"><span class="glyphicon glyphicon-time"></span> <?php echo $numberCours;?> cours corresponde(nt) à votre recherche</p>
+							<p class="panel-title"><span class="glyphicon glyphicon-eye-open"></span> <?php echo $numberCours;?> cours corresponde(nt) à votre recherche</p>
 						</div>
 						<div class="list-group">
 							<?php while($cours = $searchCours->fetch(PDO::FETCH_ASSOC)){
