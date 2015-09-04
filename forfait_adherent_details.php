@@ -12,6 +12,15 @@ $queryForfait = $db->prepare('SELECT *, produits_adherents.date_activation AS da
 								WHERE id_produit_adherent=?');
 $queryForfait->bindValue(1, $data);
 $queryForfait->execute();
+$numberForfait = $queryForfait->rowCount();
+if($numberForfait == 0){
+	$queryForfait = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation FROM produits_adherents
+								JOIN users ON id_user_foreign=users.user_id
+								JOIN produits ON id_produit_foreign=produits.produit_id
+								WHERE id_produit_adherent=?');
+	$queryForfait->bindValue(1, $data);
+	$queryForfait->execute();
+}
 $forfait = $queryForfait->fetch(PDO::FETCH_ASSOC);
 
 if($forfait["dateActivation"] == "0000-00-00 00:00:00"){
@@ -68,7 +77,11 @@ $queryEcheances->bindValue(1, $forfait["id_transaction_foreign"]);
 							</li>
 							<li class="details-list">
 								<div class="col-sm-5 list-name">Acheté le </div>
+								<?php if($numberForfait == 0){ ?>
+								<div class="col-sm-7">Non renseignée</div>
+								<?php } else { ?>
 								<div class="col-sm-7"><?php echo date_create($forfait["date_achat"])->format('d/m/Y');?></div>
+								<?php } ?>
 							</li>
 							<li class="details-list">
 								<div class="col-sm-5 list-name">Date d'activation</div>

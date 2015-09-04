@@ -120,7 +120,7 @@ $(document).ready(function(){
 				}
 			} else {
 				$(":regex(id,^unknown-user)").remove();
-				/*$(".has-name-completion").val(identite);*/
+				$(".has-name-completion:not(.completed)").val(identite);
 			}
 		})
 	})
@@ -173,6 +173,21 @@ $(document).ready(function(){
 	$(this).next().show();
 }).on('mouseleave blur', '.editable', function(){
 	$(this).next().hide();
+}).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
+	event.preventDefault();
+	return $(this).ekkoLightbox({
+		onNavigate: false
+	});
+}).on('click', '.submit-relay', function(){
+	$(".submit-relay-target").click();
+})
+
+$(".has-name-completion").on('click blur keyup', function(){
+	if($(this).val() != ""){
+		$(this).addClass("completed");
+	} else {
+		$(this).removeClass("completed");
+	}
 })
 // FONCTIONS NOTIFICATIONS //
 // Fonction de surveillance des passages enregistrés. Avertit l'utilisateur et met à jour le badge de notification en cas de nouveaux enregistrements.
@@ -287,7 +302,7 @@ function addAdherent(){
 	var date_naissance = $('#date_naissance').val();
 	$.post("functions/add_adherent.php", {identite_prenom : identite_prenom, identite_nom : identite_nom, rfid : rfid, rue : rue, code_postal : code_postal, ville : ville, mail : mail, telephone : telephone, date_naissance : date_naissance}).done(function(data){
 		showSuccessNotif(data);
-		$(".has-name-completion").val(identite_prenom+" "+identite_nom);
+		$(".has-name-completion:not(.completed)").val(identite_prenom+" "+identite_nom);
 		$(":regex(id,^unknown-user)").hide('500');
 	});
 }

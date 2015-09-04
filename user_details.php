@@ -35,35 +35,52 @@ if($details["est_professeur"] == 1){
 	$totalDue = 0;
 }
 
-if($details["est_membre"] == 1){
-	// On obtient l'historique de ses cours
-	$queryHistoryRecus = $db->prepare('SELECT * FROM cours_participants JOIN cours ON cours_id_foreign=cours.cours_id JOIN niveau ON cours.cours_niveau=niveau.niveau_id JOIN salle ON cours.cours_salle=salle.salle_id WHERE eleve_id_foreign=?');
-	$queryHistoryRecus->bindValue(1, $data);
-	$queryHistoryRecus->execute();
+// On obtient l'historique de ses cours
+$queryHistoryRecus = $db->prepare('SELECT * FROM cours_participants
+							JOIN cours ON cours_id_foreign=cours.cours_id
+							JOIN niveau ON cours.cours_niveau=niveau.niveau_id
+							JOIN salle ON cours.cours_salle=salle.salle_id
+							JOIN produits_adherents ON produit_adherent_id=produits_adherents.id_produit_adherent
+							JOIN produits ON id_produit_foreign=produits.produit_id
+							WHERE eleve_id_foreign=?');
+$queryHistoryRecus->bindValue(1, $data);
+$queryHistoryRecus->execute();
 
-	// On obtient l'historique de ses réservations
-	$queryResa = $db->prepare('SELECT * FROM reservations JOIN users ON reservation_personne=users.user_id JOIN prestations ON type_prestation=prestations_id JOIN salle ON reservation_salle=salle.salle_id WHERE reservation_personne=?');
-	$queryResa->bindValue(1, $data);
-	$queryResa->execute();
+// On obtient l'historique de ses réservations
+$queryResa = $db->prepare('SELECT * FROM reservations JOIN users ON reservation_personne=users.user_id JOIN prestations ON type_prestation=prestations_id JOIN salle ON reservation_salle=salle.salle_id WHERE reservation_personne=?');
+$queryResa->bindValue(1, $data);
+$queryResa->execute();
 
-	// On obtient l'historique de ses forfaits
-	$queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation, produits_adherents.actif AS produitActif FROM produits_adherents JOIN users ON id_user_foreign=users.user_id JOIN produits ON id_produit_foreign=produits.produit_id JOIN transactions ON id_transaction_foreign=transactions.id_transaction WHERE id_user_foreign=? ORDER BY produitActif DESC');
+// On obtient l'historique de ses forfaits
+$queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation, produits_adherents.actif AS produitActif FROM produits_adherents
+								JOIN users ON id_user_foreign=users.user_id
+								JOIN produits ON id_produit_foreign=produits.produit_id
+								JOIN transactions ON id_transaction_foreign=transactions.id_transaction
+								WHERE id_user_foreign=? ORDER BY produitActif DESC');
+$queryForfaits->bindValue(1, $data);
+$queryForfaits->execute();
+$numberForfaits = $queryForfaits->rowCount();
+if($numberForfaits == 0){
+	$queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation, produits_adherents.actif AS produitActif FROM produits_adherents
+								JOIN users ON id_user_foreign=users.user_id
+								JOIN produits ON id_produit_foreign=produits.produit_id
+								WHERE id_user_foreign=? ORDER BY produitActif DESC');
 	$queryForfaits->bindValue(1, $data);
 	$queryForfaits->execute();
-
-	// Ainsi que les forfaits actifs
-	$queryForfaitsActifs = $db->prepare("SELECT * FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=? AND produits_adherents.actif=1");
-	$queryForfaitsActifs->bindParam(1, $data);
-	$queryForfaitsActifs->execute();
-
-	// Et on cherche à savoir si des échéances sont en retard
-	$queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$data")->rowCount();
-
-	//Enfin, on obtient l'historique de tous les achats (mêmes les forfaits d'autres personnes)
-	$queryAchats = $db->prepare("SELECT * FROM transactions WHERE payeur_transaction=?");
-	$queryAchats->bindParam(1, $data);
-	$queryAchats->execute();
 }
+
+// Ainsi que les forfaits actifs
+$queryForfaitsActifs = $db->prepare("SELECT * FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=? AND produits_adherents.actif=1");
+$queryForfaitsActifs->bindParam(1, $data);
+$queryForfaitsActifs->execute();
+
+// Et on cherche à savoir si des échéances sont en retard
+$queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$data")->rowCount();
+
+//Enfin, on obtient l'historique de tous les achats (mêmes les forfaits d'autres personnes)
+$queryAchats = $db->prepare("SELECT * FROM transactions WHERE payeur_transaction=?");
+$queryAchats->bindParam(1, $data);
+$queryAchats->execute();
 
 // Edit des informations
 if(isset($_POST["edit"])){
@@ -159,17 +176,16 @@ if(isset($_POST["edit"])){
 						</div>
 					</div>
 					<div class="col-sm-10 main">
-						<?php if($details["est_membre"] == 1 && $queryEcheances != 0){ ?>
+						<?php if($queryEcheances != 0){ ?>
 						<div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
 						<?php } ?>
 						<ul class="nav nav-tabs">
 							<li role="presentation" id="infos-toggle" class="active"><a>Informations personnelles</a></li>
-							<?php if($details["est_membre"] == 1){ ?>
 							<li role="presentation" id="history-suivis-toggle"><a>Cours suivis</a></li>
 							<li role="presentation" id="resa-toggle"><a>Réservations</a></li>
 							<li role="presentation" id="forfaits-toggle"><a>Abonnements</a></li>
 							<li role="presentation" id="achats-toggle"><a>Achats</a></li>
-							<?php } if($details["est_professeur"] == 1){ ?>
+							<?php if($details["est_professeur"] == 1){ ?>
 							<li role="presentation" id="history-donnes-toggle"><a>Cours donnés</a></li>
 							<li role="presentation" id="tarifs-toggle"><a>Tarifs</a></li>
 							<li role="presentation" id="stats-toggle"><a>Statistiques</a></li>
@@ -248,7 +264,6 @@ if(isset($_POST["edit"])){
 							</div>
 							<input type="submit" name="edit" role="button" class="btn btn-primary btn-block" value="ENREGISTRER LES MODIFICATIONS">
 						</section>
-						<?php if($details["est_membre"] == 1){ ?>
 						<section id="history-suivis">
 							<table class="table table-striped">
 								<thead>
@@ -268,14 +283,14 @@ if(isset($_POST["edit"])){
 										<td class="col-lg-2"><?php echo $history['niveau_name']."\n".$history['salle_name'];?></td>
 										<td class="col-lg-3">
 											<?php if($history["produit_adherent_id"]==null){?>
-											<button class="btn btn-info" name="link-forfait"><span class="glyphicon glyphicon-link"></span> Associer un forfait</button>
+											<a class="btn btn-info" name="link-forfait"><span class="glyphicon glyphicon-link"></span> Associer un forfait</a>
 											<input type="hidden" name="cours" value="<?php echo $history["cours_id"];?>">
 											<select name="forfaits-actifs" style="display:none;" class="form-control">
 												<?php while($forfaitsActifs = $queryForfaitsActifs->fetch(PDO::FETCH_ASSOC)){?>
 												<option value="<?php echo $forfaitsActifs["id_transaction"]?>"><?php echo $forfaitsActifs["produit_nom"];?></option>
 												<?php } ?>
 											</select>
-											<?php } else echo $history["produit_adherent_id"];?>
+											<?php } else echo $history["produit_nom"];?>
 										</td>
 										<td class="col-lg-2">A déterminer</td>
 									</tr>
@@ -323,20 +338,23 @@ if(isset($_POST["edit"])){
 		$periode_validite = "Activation en attente";
 	} else {
 		$periode_validite = "Du ".date_create($forfaits["dateActivation"])->format('d/m/Y')." au ".date_create($forfaits["date_expiration"])->format('d/m/Y');
-	}
-									?>
+	}?>
 									<tr>
-										<?php if($forfaits["produitActif"] == '1') { ?>
+										<?php if($forfaits["produitActif"] == '1'){ ?>
 										<td><span class="glyphicon glyphicon-certificate glyphicon-success" title="Forfait/Invitation actif(ve)"></span></td>
 										<?php } else {
-										if($forfaits["dateActivation"] != "0000-00-00 00:00:00") { ?>
+		if($forfaits["dateActivation"] != "0000-00-00 00:00:00"){ ?>
 										<td><span class="glyphicon glyphicon-certificate glyphicon-inactive" title="Forfait/Invitation inactif(ve)"></span></td>
 										<?php } else { ?>
 										<td><span class="glyphicon glyphicon-certificate glyphicon-inactive glyphicon-pending" title="Forfait/Invitation en attente"></span></td>
 										<?php }
-									} ?>
+	} ?>
 										<td><?php echo $forfaits["produit_nom"];?></td>
+										<?php if($numberForfaits == 0){ ?>
+										<td>Non renseignée</td>
+										<?php } else { ?>
 										<td><?php echo date_create($forfaits["date_achat"])->format('d/m/Y');?></td>
+										<?php } ?>
 										<td><?php echo $periode_validite;?></td>
 										<td><?php echo $forfaits["prix_achat"];?> €</td>
 										<td><a href="forfait_adherent_details.php?id=<?php echo $forfaits["id_produit_adherent"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
@@ -367,7 +385,7 @@ if(isset($_POST["edit"])){
 								</tbody>
 							</table>
 						</section>
-						<?php } if($details["est_professeur"] == 1){ ?>
+						<?php if($details["est_professeur"] == 1){ ?>
 						<section id="history-donnes">
 							<div class="filter-options col-lg-6">
 								<p class="section-title">Options de filtrage</p>
@@ -428,12 +446,12 @@ if(isset($_POST["edit"])){
 										<td class="col-sm-3">
 											<select name="ratio" id="ratio" class="form-control">
 												<?php
-																	while ($row_ratio = $ratio->fetch(PDO::FETCH_ASSOC)){
-																		$array_suffixes = preg_split("/','/", substr($row_ratio['Type'], 5, strlen($row_ratio['Type'])-7));
-																		for($i = 0; $i < sizeof($array_suffixes); $i++){?>
+																  while ($row_ratio = $ratio->fetch(PDO::FETCH_ASSOC)){
+																	  $array_suffixes = preg_split("/','/", substr($row_ratio['Type'], 5, strlen($row_ratio['Type'])-7));
+																	  for($i = 0; $i < sizeof($array_suffixes); $i++){?>
 												<option value="<?php echo $array_suffixes[$i];?>"><?php echo $array_suffixes[$i];?></option>
 												<?php }
-																	} ?>
+																  } ?>
 											</select>
 										</td>
 										<td class="col-sm-3">
