@@ -115,6 +115,7 @@ if(isset($_POST["submit"])){
 					if(sessionStorage.getItem('produit_id-'+i) != null){
 						recap += "<tr>";
 						recap += "<td><input type='hidden' class='form-control' value='"+sessionStorage.getItem('produit-'+i)+"' name='nom-produit-"+i+"'>"+sessionStorage.getItem('produit-'+i)+"</td>";
+						recap += "<input type='hidden' class='form-control' value='"+sessionStorage.getItem('produit_id-'+i)+"' name='produit_id-"+i+"'>";
 						recap += "<td><input type='hidden' class='form-control' value='"+sessionStorage.getItem('beneficiaire-'+i)+"' name='beneficiaire-"+i+"'>"+sessionStorage.getItem('beneficiaire-'+i)+"</td>";
 						if(sessionStorage.getItem('activation-'+i) == ""){
 							recap += "<td><input type='hidden' name='activation-"+i+"' value='0'>Activation automatique</td>";
