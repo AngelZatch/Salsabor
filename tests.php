@@ -1,7 +1,11 @@
 <?php
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
-include 'functions/reservations.php';
+$queryAdherentsNav = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
+$array_eleves_nav = array();
+while($adherents_nav = $queryAdherentsNav->fetch(PDO::FETCH_ASSOC)){
+	array_push($array_eleves_nav, $adherents_nav["user_prenom"]." ".$adherents_nav["user_nom"]);
+}
 ?>
 <html>
 	<head>
@@ -21,26 +25,11 @@ include 'functions/reservations.php';
 					<div class="col-lg-6"></div>
 				</div>
 				<div class="col-sm-10 main">
-					<?php echo generateReference();?>
 				</div>
 			</div>
 		</div>
 		<?php include "scripts.php";?>
 		<script>
-			$('button').click(function(){
-				var id;
-				id = '#'+$(this).attr('id');
-				console.log(id);
-				$('#add-options').popoverX({
-					target: id,
-					placement: 'bottom',
-					closeOtherPopovers: true,
-				});
-				$('#add-options').popoverX('toggle');
-				$('#add-options').on('show.bs.modal', function(){
-					$('#add-options').popoverX('refreshPosition');
-				});
-			})
 		</script>
 	</body>
 </html>

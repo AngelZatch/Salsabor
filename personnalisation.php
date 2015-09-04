@@ -43,8 +43,8 @@ $date_now = date_create("now")->format("Y-m-d");
 				</div>
 				<div class="col-sm-8 main" id="right-bordered">
 					<div class="progress">
-						<div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="25" aria-valuemax="100" style="width:50%;">
-							<span class="glyphicon glyphicon-erase"></span> Etape 2/4 : Personnalisation des produits
+						<div class="progress-bar" role="progressbar" aria-valuenow="66" aria-valuemin="33" aria-valuemax="100" style="width:66.67%;">
+							<span class="glyphicon glyphicon-erase"></span> Etape 2/3 : Personnalisation des produits
 						</div>
 					</div>
 					<?php foreach($panierTotal as $p){ ?>
@@ -125,6 +125,14 @@ $date_now = date_create("now")->format("Y-m-d");
 								</div>
 							</div>
 						</div>
+						<?php
+													  $nextKey = $p["key"];
+													  $nextKey++;
+													  if($nextKey < sizeof($panierTotal)){?>
+						<a href="#" class="btn btn-primary btn-block nav-tabs-toggle" id="details-<?php echo $nextKey;?>-toggle">Personnaliser le produit suivant</a>
+						<?php } else { ?>
+						<a role="button" id="check-memory" class="btn btn-success btn-block"> Règlement des achats <span class="glyphicon glyphicon-arrow-right"></span></a>
+						<?php } ?>
 					</section>
 					<?php $prixTotal += $p["tarif_global"];
 													 } ?>
@@ -141,7 +149,6 @@ $date_now = date_create("now")->format("Y-m-d");
 } ?>
 					</ul>
 					<p id="shopping-cart-price">Total du panier : <span id="prix-total"><?php echo $prixTotal;?></span> €</p>
-					<a role="button" id="check-memory" class="btn btn-success btn-block"> Règlement des achats <span class="glyphicon glyphicon-arrow-right"></span></a>
 				</div>
 			</div>
 		</div>
@@ -154,7 +161,6 @@ $date_now = date_create("now")->format("Y-m-d");
 					source: listeAdherents,
 					select: function(event, ui){
 						$(":regex(id,^unknown-user)").remove();
-						$(".has-name-completion").val(this.value);
 					},
 					change : function(event, ui){
 						sessionStorage.setItem('beneficiaire-principal', $(".has-name-completion").val());

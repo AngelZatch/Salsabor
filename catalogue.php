@@ -30,8 +30,8 @@ $listeProduits = $db->query("SELECT * FROM produits");
 				<div class="col-sm-10 main">
 					<div class="content">
 						<div class="progress">
-							<div class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="25" aria-valuemax="100" style="width:25%;">
-								<span class="glyphicon glyphicon-th"></span> Etape 1/4 : Choix des produits
+							<div class="progress-bar" role="progressbar" aria-valuenow="33" aria-valuemin="33" aria-valuemax="100" style="width:33.33%;">
+								<span class="glyphicon glyphicon-th"></span> Etape 1/3 : Choix des produits
 							</div>
 						</div>
 						<div class="row">

@@ -465,3 +465,7 @@ body{
 .span-btn {
 	cursor: pointer;
 }
+
+.section-title {
+	font-size: 18px;
+}

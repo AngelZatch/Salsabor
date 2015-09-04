@@ -50,7 +50,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 											<span class="glyphicon glyphicon-pushpin"></span> <?php echo $nextCours["salle_name"];?>
 										</p>
 										<p class="cours-professeur col-lg-4">
-											<span class="glyphicon glyphicon-user"></span> <?php echo $nextCours["user_prenom"]." ".$nextCours["user_nom"];?>
+											<span class="glyphicon glyphicon-blackboard"></span> <?php echo $nextCours["user_prenom"]." ".$nextCours["user_nom"];?>
 										</p>
 									</div>
 								</div>
