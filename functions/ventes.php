@@ -53,9 +53,9 @@ function vente(){
 		// LES ETAPES SUIVANTES SONT REPETEES POUR CHAQUE PRODUIT
 		$l = 1;
 		for($l; $l <= $_POST["nombre_produits"]; $l++){
-			// Retrouver le produit à partir de son nom
-			$queryProduit = $db->prepare("SELECT * FROM produits WHERE produit_nom=?");
-			$nomProduit = $_POST["nom-produit-".$l];
+			// Retrouver le produit à partir de son id
+			$queryProduit = $db->prepare("SELECT * FROM produits WHERE produit_id=?");
+			$nomProduit = $_POST["produit_id-".$l];
 			$queryProduit->bindParam(1, $nomProduit);
 			$queryProduit->execute();
 			$produit = $queryProduit->fetch(PDO::FETCH_ASSOC);
