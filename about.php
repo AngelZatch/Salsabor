@@ -18,7 +18,7 @@ $db = PDOFactory::getConnection();
 					<div class="col-lg-6"></div>
 				</div>
 				<div class="col-sm-10 main">
-					<p>Version de l'application : 1.2.1 mise à jour le 03/09/2015</p>
+					<p>Version de l'application : 1.2.2 mise à jour le 04/09/2015</p>
 				</div>
 			</div>
 		</div>
