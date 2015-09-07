@@ -167,7 +167,7 @@ if(isset($_POST["submit"])){
 						var echeance = "<tr>";
 						var current_date = start_date.format("YYYY-MM-DD");
 						echeance += "<td class='col-lg-1'><div class='input-group'><input type='date' class='form-control' value="+current_date+" name='date-echeance-"+i+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-date-"+i+"'>Propager</a></span></div></td>";
-						echeance += "<td class='col-lg-2'><div class='input-group'><input type='number' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance-"+i+"'><span class='input-group-addon'>€</span></div></td>";
+						echeance += "<td class='col-lg-2'><div class='input-group'><input type='number' step='any' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance-"+i+"'><span class='input-group-addon'>€</span></div></td>";
 						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='moyen-paiement-"+i+"' placeholder='En attente / Carte bancaire / Numéro de chèque / Mandat / Espèces...'><span role='buttton' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-methode-"+i+"'>Propager</a></span></div></td>";
 						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='titulaire-paiement-"+i+"' placeholder='Prénom Nom' value='"+$(":regex(name,payeur)").val()+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-titulaire-"+i+"'>Propager</a></span></div></td>";
 						echeance += "<td class='col-lg-1'><input name='statut-echeance-"+i+"'></td>";
