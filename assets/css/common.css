@@ -278,6 +278,11 @@ body{
 	padding: 10px;
 }
 
+.details-list.last{
+	padding-bottom: 3px;
+	border-bottom: 1px solid #C4C4C4;
+}
+
 .list-name {
 	color: #949494;
 }
