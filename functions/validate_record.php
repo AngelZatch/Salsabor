@@ -40,7 +40,7 @@ try{
 
 			$j = 0;
 
-			for($i = 1; $i <= $queryHoliday->rowCount(); $i++){
+			for($i = 0; $i <= $queryHoliday->rowCount(); $i++){
 				$exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$i.'DAYS'));
 				$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
 				$checkHoliday->bindParam(1, $exp_date);

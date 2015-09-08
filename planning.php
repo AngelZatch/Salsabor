@@ -5,8 +5,6 @@ $db = PDOFactory::getConnection();
 require_once "functions/cours.php";
 require_once "functions/reservations.php";
 
-setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
-
 /** Chaque trigger de tous les formulaires appelle une des fonctions dans functions/cours.php **/
 // Sauf d'un seul cours
 if(isset($_POST['deleteCoursOne'])){

@@ -4,6 +4,9 @@ $db = PDOFactory::getConnection();
 
 // On obtient la liste des produits
 $listeProduits = $db->query("SELECT * FROM produits");
+if(isset($_GET["user"])){
+	$beneficiaireInitial = $_GET["user"];
+}
 ?>
 <html>
 	<head>
@@ -56,14 +59,24 @@ $listeProduits = $db->query("SELECT * FROM produits");
 		<?php include "scripts.php";?>
 		<script>
 			$(document).ready(function(){
-				composeURL();
+				// Bénéficiaire principal si la procédure a été entammée sur la page d'un utilisateur
+				<?php if(isset($_GET["user"])){ ?>
+				sessionStorage.setItem("beneficiaireInitial", '<?php echo $beneficiaireInitial;?>');
+				<?php } else { ?>
+				sessionStorage.removeItem("beneficiaireInitial");
+				<?php } ?>
 				$("[name='add-shopping']").click(function(){
+					if(sessionStorage.getItem("panier") == null){
+						var globalCart = [];
+					} else {
+						var globalCart = JSON.parse(sessionStorage.getItem("panier"));
+						composeURL(globalCart[0]);
+					}
 					var produit_id = $(this).parents("div").children("input").val();
-					var produit_nom = $(this).parents("div").children(".thumbnail-title").html();
-					sessionStorage.setItem('produit_id-'+lowestSpot, produit_id);
-					sessionStorage.setItem('produit-demo-'+lowestSpot, produit_nom);
+					globalCart.push(produit_id);
+					sessionStorage.setItem("panier", JSON.stringify(globalCart));
+					composeURL(globalCart[0]);
 					notifPanier();
-					composeURL();
 				});
 			});
 		</script>

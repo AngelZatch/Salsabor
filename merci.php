@@ -14,7 +14,6 @@ $db = PDOFactory::getConnection();
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<div class="col-sm-10 main">
-					<p id="current-time"></p>
 					<div class="jumbotron">
 						<h1>Merci beaucoup de cet achat !</h1>
 						<a href="dashboard.php" role="button" class="btn btn-default btn-block">Retour au panneau principal</a>

@@ -25,7 +25,7 @@ if(isset($_POST['addResa'])){
 	</head>
 	<body>
 		<?php include "nav.php";?>
-		<form action="resa_add.php" method="post" target="_blank" role="form" id="add_resa">
+		<form method="post" target="_blank" role="form" id="add_resa">
 			<div class="fixed">
 				<div class="col-lg-6">
 					<p class="page-title"><span class="glyphicon glyphicon-record"></span> Effectuer une réservation</p>
@@ -140,7 +140,6 @@ if(isset($_POST['addResa'])){
 					var end_hour = moment(format_end).format('HH:mm');
 				} else {
 					var format_start = new Date().toISOString();
-					console.log(format_start);
 					var format_end = new Date().toISOString();
 					var start_hour = moment(format_start).startOf('hour').add(1, 'h').format('HH:mm');
 					var end_hour = moment(format_end).startOf('hour').add(2, 'h').format('HH:mm');
@@ -153,6 +152,11 @@ if(isset($_POST['addResa'])){
 
 				sessionStorage.removeItem('end');
 				sessionStorage.removeItem('start');
+				$("#submit-button").click(function(){
+					setTimeout(function() {
+						window.location.href = "planning.php";
+					}, 5000);
+				})
 			});
 		</script>
 	</body>

@@ -1,11 +1,9 @@
 <?php
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
-$queryAdherentsNav = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
-$array_eleves_nav = array();
-while($adherents_nav = $queryAdherentsNav->fetch(PDO::FETCH_ASSOC)){
-	array_push($array_eleves_nav, $adherents_nav["user_prenom"]." ".$adherents_nav["user_nom"]);
-}
+$produit = $db->query("SELECT * FROM produits_adherents
+						JOIN produits ON id_produit_foreign=produits.produit_id
+						WHERE id_produit_adherent=1")->fetch(PDO::FETCH_ASSOC);
 ?>
 <html>
 	<head>
@@ -25,6 +23,32 @@ while($adherents_nav = $queryAdherentsNav->fetch(PDO::FETCH_ASSOC)){
 					<div class="col-lg-6"></div>
 				</div>
 				<div class="col-sm-10 main">
+					<?php
+$date_now = date_create('now')->format('Y-m-d H:i:s');
+	$actif = 1;
+	$date_activation = $date_now;
+	$date_expiration = date("Y-m-d 00:00:00", strtotime($date_activation.'+'.$produit["validite_initiale"].'DAYS'));
+	$queryHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= ? AND date_chomee <= ?");
+	$queryHoliday->bindParam(1, $date_activation);
+	$queryHoliday->bindParam(2, $date_expiration);
+	$queryHoliday->execute();
+
+echo $date_expiration;
+	$j = 0;
+
+	for($i = 0; $i <= $queryHoliday->rowCount(); $i++){
+		echo "Boucle";
+		$exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$i.'DAYS'));
+		$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
+		$checkHoliday->bindParam(1, $exp_date);
+		$checkHoliday->execute();
+		if($checkHoliday->rowCount() != 0){
+			$j++;
+		}
+		$totalOffset = $i + $j;
+		echo $new_exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$totalOffset.'DAYS'));
+	}
+					?>
 				</div>
 			</div>
 		</div>

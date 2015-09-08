@@ -260,7 +260,7 @@ body{
 	right: 1%;
 }
 #picture-container {
-	height: 230px;
+	height: 350px;
 }
 
 .content-right {
@@ -276,6 +276,11 @@ body{
 	display: flex;
 	border-top: 1px solid #C4C4C4;
 	padding: 10px;
+}
+
+.details-list.last{
+	padding-bottom: 3px;
+	border-bottom: 1px solid #C4C4C4;
 }
 
 .list-name {
@@ -330,6 +335,7 @@ body{
 
 .cours-title {
 	font-weight: 800;
+	font-size: 20px;
 }
 
 .cours-hours {
@@ -468,4 +474,8 @@ body{
 
 .section-title {
 	font-size: 18px;
+}
+
+.small-link {
+	font-size: 14px;
 }

@@ -36,6 +36,8 @@ $queryEcheances->bindValue(1, $data);
 						<div class="btn-toolbar">
 							<?php if($status == "transactions"){ ?>
 							<a href="transactions.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux transactions</a>
+							<?php } else if ($status == "echeances") { ?>
+							<a href="echeances.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux échéances</a>
 							<?php } else { ?>
 							<a href="user_details.php?id=<?php echo $transaction["payeur_transaction"];?>&status=<?php echo $status;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent</a>
 							<?php } ?>
@@ -43,38 +45,29 @@ $queryEcheances->bindValue(1, $data);
 					</div>
 				</div>
 				<div class="col-sm-10 main">
-					<ul class="nav nav-tabs">
-						<li role="presentation" id="infos-toggle" class="active"><a>Détails</a></li>
-						<li role="presentation" id="maturity-toggle"><a>Echéances</a></li>
+					<ul style="padding-left:0 !important;">
+						<li class="details-list">
+							<div class="col-sm-5 list-name">Transaction effectuée le</div>
+							<div class="col-sm-7"><?php echo $transaction["date_achat"];?></div>
+						</li>
+						<li class="details-list">
+							<div class="col-sm-5 list-name">Prix total</div>
+							<div class="col-sm-7"><?php echo $transaction["prix_total"];?> €</div>
+						</li>
+						<li class="details-list last">
+							<div class="col-sm-5 list-name">Liste des produits</div>
+							<div class="col-sm-7">
+								<?php while($produits = $queryProduits->fetch(PDO::FETCH_ASSOC)){ ?>
+								<p><?php echo $produits["produit_nom"];?> pour <?php echo $produits["user_prenom"]." ".$produits["user_nom"];?></p>
+								<?php } ?>
+							</div>
+						</li>
 					</ul>
-					<section id="infos">
-						<ul style="padding-left:0 !important;">
-							<li class="details-list">
-								<div class="col-sm-5 list-name">Transaction effectuée le</div>
-								<div class="col-sm-7"><?php echo $transaction["date_achat"];?></div>
-							</li>
-							<li class="details-list">
-								<div class="col-sm-5 list-name">Prix total</div>
-								<div class="col-sm-7"><?php echo $transaction["prix_total"];?> €</div>
-							</li>
-							<li class="details-list">
-								<div class="col-sm-5 list-name">Liste des produits</div>
-								<div class="col-sm-7">
-									<?php while($produits = $queryProduits->fetch(PDO::FETCH_ASSOC)){ ?>
-									<p><?php echo $produits["produit_nom"];?> pour <?php echo $produits["user_prenom"]." ".$produits["user_nom"];?></p>
-									<?php } ?>
-								</div>
-							</li>
-						</ul>
-					</section>
-					<section id="maturity">
-						<?php include "inserts/echeancier.php";?>
-					</section>
+					<?php include "inserts/echeancier.php";?>
 				</div>
 			</div>
 		</div>
 		<?php include "scripts.php";?>
-		<script src="assets/js/nav-tabs.js"></script>
 		<script src="assets/js/maturities.js"></script>
 		<script>
 			function uploadChanges(token, value){

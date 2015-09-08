@@ -83,7 +83,7 @@ function addCours(){
 
 			$insertCours->execute();
 			$db->commit();
-			header("Location : planning.php");
+			header("Location: planning.php");
 		} catch(PDOException $e){
 			$db->rollBack();
 			var_dump($e->getMessage());
@@ -147,7 +147,7 @@ function addCours(){
 				$end = date("Y-m-d H:i", $end_date);
 			}
 			$db->commit();
-			header("Location : planning.php");
+			header("Location: planning.php");
 		} catch(PDOException $e){
 			$db->rollBack();
 			var_dump($e->getMessage());
