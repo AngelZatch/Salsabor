@@ -101,9 +101,16 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 									<div class="col-sm-2 record-options">
 										<?php } else { ?>
 										<div class="col-sm-5 record-options">
-											<p class="list-item-option">
-												<span class="validate-record glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"></span> DEPLACER
-											</p>
+											<!--<p class="list-item-option move-record" data-toggle="popover-x" data-target="#popoverPassages" data-placement="bottom bottom-right">
+												<span class="move-record glyphicon glyphicon-circle-arrow-right" title="Valider l'enregistrement comme étant bien pour ce cours"></span> DEPLACER
+											</p>-->
+											<div class="popover popover-default popover-md" id="popoverPassages">
+												<div class="arrow"></div>
+												<div class="popover-title"><span class="close" data-dismiss="popover-x">&times;</span>Sélectionnez le cours à attribuer</div>
+												<div class="popover-content">
+													Bonjour, ceci est un popover.
+												</div>
+											</div>
 											<?php } if ($passages["status"] == 0 || $passages["status"] == 3){?>
 											<p class="list-item-option">
 												<span class="validate-record glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"></span> VALIDER
@@ -178,13 +185,20 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 
 			});
 
+			$(".move-record").click(function(){
+				var clicked = $(this);
+				var passage_id = clicked.parents().siblings(".eleve-infos").children("input.passage-id").val();
+				$.post("functions/fetch_target_cours.php", {passage_id : passage_id}).done(function(data){
+					console.log(JSON.parse(data));
+				})
+			})
+
 			$(".validate-record").click(function(){
 				var clicked = $(this);
 				var cours_id = clicked.closest(".panel").find("#cours-id").val();
 				var eleve_id = clicked.parents().siblings(".eleve-infos").children("input.eleve-id").val();
 				var passage_id = clicked.parents().siblings(".eleve-infos").children("input.passage-id").val();
 				var rfid = clicked.parents().siblings(".eleve-tag").html();
-				console.log(eleve_id);
 				$.post("functions/validate_record.php", {cours_id : cours_id, eleve_id : eleve_id, passage_id : passage_id, rfid : rfid}).done(function(data){
 					clicked.closest("li").removeClass('list-group-item-warning');
 					clicked.closest("li").addClass("list-group-item-success");

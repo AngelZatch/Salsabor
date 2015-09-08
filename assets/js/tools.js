@@ -270,21 +270,6 @@ function notifEcheancesDues(firstCount){
 	})
 }
 
-// Affiche en direct le nombre d'éléments dans le panier
-function notifPanier(){
-	if(sessionStorage.getItem("panier") != null){
-		var cartSize = JSON.parse(sessionStorage.getItem("panier"));
-		if(cartSize.length == 0){
-			$("#badge-panier").hide();
-			$(".table-panier").empty();
-		} else {
-			$("#badge-panier").show();
-			$("#badge-panier").html(cartSize.length);
-			fillShoppingCart();
-		}
-	}
-}
-
 function showSuccessNotif(data){
 	$.notify(data, {globalPosition:"right bottom", className:"success"});
 }
@@ -367,6 +352,22 @@ function tickClock(){
 	})
 }
 
+
+// Affiche en direct le nombre d'éléments dans le panier
+function notifPanier(){
+	if(sessionStorage.getItem("panier") != null){
+		var cartSize = JSON.parse(sessionStorage.getItem("panier"));
+		if(cartSize.length == 0){
+			$("#badge-panier").hide();
+			$(".table-panier").empty();
+		} else {
+			$("#badge-panier").show();
+			$("#badge-panier").html(cartSize.length);
+			fillShoppingCart();
+		}
+	}
+}
+
 // Remplit le popover de l'icône panier dans la navigation
 function fillShoppingCart(){
 	$(".table-panier").empty();
@@ -380,6 +381,7 @@ function fillShoppingCart(){
 			line += "<tr>";
 		}
 		$(".table-panier").append(line);
+		composeURL(cartSize[0]);
 	}
 }
 
