@@ -18,7 +18,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Template - Salsabor</title>
+		<title>Passages | Salsabor</title>
 		<?php include "includes.php";?>
 	</head>
 	<body>
@@ -41,10 +41,10 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 						<div class="panel-heading">
 							<div class="panel-title">
 								<div class="cours-infos">
-									<p class="cours-title"><?php echo $nextCours["cours_intitule"];?></p>
+									<p class="cours-title"><?php echo $nextCours["cours_intitule"];?> <a href="cours_edit.php?id=<?php echo $nextCours["cours_id"];?>&drive=passages" class="small-link">>> Détails...</a></p>
 									<div class="row">
 										<p class="cours-hours col-lg-4">
-											<span class="glyphicon glyphicon-time"></span> <?php echo date_create($nextCours["cours_start"])->format("H:i")." - ".date_create($nextCours["cours_end"])->format("H:i");?> (<span class="relative-start"><?php echo $nextCours["cours_start"];?></span>)
+											<span class="glyphicon glyphicon-time"></span> <?php echo date_create($nextCours["cours_start"])->format("H:i")." - ".date_create($nextCours["cours_end"])->format("H:i");?> (<span class="relative-start"><?php echo date_create($nextCours["cours_start"])->format("Y-m-d H:i");?></span>)
 										</p>
 										<p class="cours-salle col-lg-4">
 											<span class="glyphicon glyphicon-pushpin"></span> <?php echo $nextCours["salle_name"];?>
@@ -65,12 +65,12 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 																					   $queryPassages = $db->prepare("SELECT * FROM passages JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip JOIN users ON passage_eleve=users.user_rfid WHERE ((status=0 OR status=3) AND lecteur_lieu=? AND passage_date>=? AND passage_date<=?) OR (status=2 AND cours_id=?)");
 																					   $queryPassages->bindParam(1, $nextCours["cours_salle"]);
 																					   $queryPassages->bindParam(2, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'-60MINUTES')));
-																					   $queryPassages->bindParam(3, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'+20MINUTES')));
+																					   $queryPassages->bindParam(3, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'+30MINUTES')));
 																					   $queryPassages->bindParam(4, $nextCours["cours_id"]);
 																					   $queryPassages->execute();
 						?>
 						<ul class="list-group">
-							<div class="container-fluid row droppable">
+							<div class="container-fluid row">
 								<?php
 																					   while($passages = $queryPassages->fetch(PDO::FETCH_ASSOC)){
 																						   switch($passages["status"]){
@@ -88,7 +88,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 																						   };
 																						   $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$passages[user_id]")->rowCount();
 								?>
-								<li class="list-group-item list-group-item-<?php echo $status;?> draggable col-sm-12">
+								<li class="list-group-item list-group-item-<?php echo $status;?> col-sm-12">
 									<p class="col-sm-3 eleve-infos">
 										<?php echo $passages["user_prenom"]." ".$passages["user_nom"];?>
 										<input type="hidden" class="eleve-id" value="<?php echo $passages["user_id"];?>">
@@ -101,11 +101,17 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 									<div class="col-sm-2 record-options">
 										<?php } else { ?>
 										<div class="col-sm-5 record-options">
-											<?php }
-																						   if ($passages["status"] == 0 || $passages["status"] == 3){?>
-											<span class="list-item-option validate-record glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"></span>
+											<p class="list-item-option">
+												<span class="validate-record glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"></span> DEPLACER
+											</p>
+											<?php } if ($passages["status"] == 0 || $passages["status"] == 3){?>
+											<p class="list-item-option">
+												<span class="validate-record glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"></span> VALIDER
+											</p>
 											<?php } else if($passages["status"] == 2) {  ?>
-											<span class="list list-item-option unvalidate-record glyphicon glyphicon-remove" title="Annuler la validation de cet enregistrement"></span>
+											<p class="list-item-option">
+												<span class="list list-item-option unvalidate-record glyphicon glyphicon-remove" title="Annuler la validation de cet enregistrement"></span> ANNULER
+											</p>
 											<?php } ?>
 										</div>
 										</li>
@@ -137,7 +143,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 					var cours_id = clicked.closest(".panel").find("#cours-id").val();
 					$.post("functions/add_passage.php", {cours_id : cours_id, adherent : adherent}).done(function(data){
 						showSuccessNotif(data);
-						var line = "<li class='list-group-item list-group-item-warning draggable col-sm-12 ui-draggable ui-draggable-handle'>";
+						var line = "<li class='list-group-item list-group-item-warning col-sm-12'>";
 						line += "<p class='col-sm-3 eleve-infos'>";
 						line += adherent;
 						line += "</p>";

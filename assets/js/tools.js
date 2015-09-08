@@ -20,7 +20,6 @@ $(document).ready(function(){
 
 	var firstCount = 0; // Pour éviter la notification dès le rafraîchissement de la page.
 	window.numberProduits = 1; // Articles dans le panier
-	fillShoppingCart();
 	notifPassages(firstCount);
 	notifCoursParticipants(firstCount);
 	notifEcheancesDues(firstCount);
@@ -95,6 +94,7 @@ $(document).ready(function(){
 		}).hide();
 	});
 
+	// Vérification de l'existence d'un utilisateur dans la base
 	$(".has-check").on('blur keyup focus',function(){
 		var field = $(this);
 		var identite = $(this).val();
@@ -105,17 +105,53 @@ $(document).ready(function(){
 					var addOptions = "<div id='unknown-user"+token+"'>";
 					addOptions += "<p>Aucun résultat. Voulez vous inscrire cet adhérent ?</p>";
 					addOptions += "<a href='#user-details"+token+"' role='button' class='btn btn-info btn-block' value='create-user' id='create-user"+token+"' data-toggle='collapse' aria-expanded='false' aria-controls='userDetails'>Ouvrir le formulaire de création</a>";
-					addOptions += "<div id='user-details"+token+"' class='collapse'><div class='well'>";
-					addOptions += "<div class='form-group'><label class='control-label'>Prénom</label><input type='text' name='identite_prenom' id='identite_prenom' class='form-control input-lg' placeholder='Prénom'></div>";
-					addOptions += "<div class='form-group'><label class='control-label'>Nom</label><input type='text' name='identite_nom' id='identite_nom' class='form-control input-lg' placeholder='Nom'></div>";
-					addOptions += "<div class='form-group'><label class='control-label'>Adresse postale</label><input type='text' name='rue' id='rue' placeholder='Adresse' class='form-control input-lg'></div>";
-					addOptions += "<div class='form-group'><input type='number' name='code_postal' id='code_postal' placeholder='Code Postal' class='form-control input-lg'></div>";
-					addOptions += "<div class='form-group'><input type='text' name='ville' id='ville' placeholder='Ville' class='form-control input-lg'></div>";
-					addOptions += "<div class='form-group'><label for='text' class='control-label'>Adresse mail</label><input type='mail' name='mail' id='mail' placeholder='Adresse mail' class='form-control input-lg'></div>";
-					addOptions += "<div class='form-group'><label for='telephone' class='control-label'>Numéro de téléphone</label><input type='number' name='telephone' id='telephone' placeholder='Numéro de téléphone' class='form-control input-lg'></div>";
-					addOptions += "<div class='form-group'><label for='date_naissance' class='control-label'>Date de naissance</label><input type='date' name='date_naissance' id='date_naissance' class='form-control input-lg'></div>";
-					addOptions += "<a class='btn btn-primary' onClick='addAdherent()'>AJOUTER</a>";
-					addOptions += "</div></div></div>";
+					addOptions += "<div id='user-details"+token+"' class='collapse'>";
+					addOptions += "<div class='well'>";
+					addOptions += "<div class='row'>";
+					addOptions += "<div class='col-lg-6'>";
+					addOptions += "<div class='form-group'>";
+					addOptions += "<label class='control-label'>Prénom</label><input type='text' name='identite_prenom' id='identite_prenom' class='form-control input-lg' placeholder='Prénom'>";
+					addOptions += "</div>"; /*form-group*/
+					addOptions += "</div>"; /*col-lg-6*/
+					addOptions += "<div class='col-lg-6'>";
+					addOptions += "<div class='form-group'>";
+					addOptions += "<label class='control-label'>Nom</label><input type='text' name='identite_nom' id='identite_nom' class='form-control input-lg' placeholder='Nom'>";
+					addOptions += "</div>"; /*form-group*/
+					addOptions += "</div>"; /*col-lg-6*/
+					addOptions += "</div>"; /*row*/
+					addOptions += "<div class='row'>";
+					addOptions += "<div class='col-lg-6'>";
+					addOptions += "<div class='form-group'>";
+					addOptions += "<label class='control-label'>Adresse postale</label><input type='text' name='rue' id='rue' placeholder='Adresse' class='form-control input-lg'>";
+					addOptions += "</div>"; /*form-group*/
+					addOptions += "</div>" /*col-lg-6*/
+					addOptions += "<div class='col-lg-3'>";
+					addOptions += "<div class='form-group'>";
+					addOptions += "<label class='control-label'>Code postal</label><input type='number' name='code_postal' id='code_postal' placeholder='Code Postal' class='form-control input-lg'>";
+					addOptions += "</div>"; /*form-group*/
+					addOptions += "</div>"; /*col-lg-3*/
+					addOptions += "<div class='col-lg-3'>";
+					addOptions += "<div class='form-group'>";
+					addOptions += "<label class='control-label'>Ville</label><input type='text' name='ville' id='ville' placeholder='Ville' class='form-control input-lg'>";
+					addOptions += "</div>"; /*form-group*/
+					addOptions += "</div>"; /*col-lg-6*/
+					addOptions += "</div>"; /*row*/
+					addOptions += "<div class='row'>";
+					addOptions += "<div class='col-lg-6'>";
+					addOptions += "<div class='form-group'>";
+					addOptions += "<label for='text' class='control-label'>Adresse mail</label><input type='email' name='mail' id='mail' placeholder='Adresse mail' class='form-control input-lg'>";
+					addOptions += "</div>"; /*form-group*/
+					addOptions += "</div>"; /*col-lg-6*/
+					addOptions += "<div class='col-lg-6'>";
+					addOptions += "<div class='form-group'>";
+					addOptions += "<label for='telephone' class='control-label'>Numéro de téléphone</label><input type='tel' name='telephone' id='telephone' placeholder='Numéro de téléphone' class='form-control input-lg'>";
+					addOptions += "</div>"; /*form-group*/
+					addOptions += "</div>"; /*col-lg-6*/
+					addOptions += "</div>"; /*row*/
+					addOptions += "<a class='btn btn-primary btn-block' onClick='addAdherent()'>Inscrire l'adhérent</a>";
+					addOptions += "</div>"; /*well*/
+					addOptions += "</div>"; /*collapse*/
+					addOptions += "</div>"; /*unknown-user*/
 					field.after(addOptions);
 				}
 			} else {
@@ -236,23 +272,14 @@ function notifEcheancesDues(firstCount){
 
 // Affiche en direct le nombre d'éléments dans le panier
 function notifPanier(){
-	window.numberProduits = 1;
-	window.lowestSpot = 20;
-	for(i = 1; i <= 20; i++){
-		if(sessionStorage.getItem('produit_id-'+i) != null){
-			window.numberProduits++;
-		} else {
-			if(i <= window.lowestSpot){
-				window.lowestSpot = i;
-			}
-		}
-		var actualNumber = window.numberProduits - 1;
-		if(actualNumber == 0){
+	if(sessionStorage.getItem("panier") != null){
+		var cartSize = JSON.parse(sessionStorage.getItem("panier"));
+		if(cartSize.length == 0){
 			$("#badge-panier").hide();
 			$(".table-panier").empty();
 		} else {
 			$("#badge-panier").show();
-			$("#badge-panier").html(actualNumber);
+			$("#badge-panier").html(cartSize.length);
 			fillShoppingCart();
 		}
 	}
@@ -267,6 +294,7 @@ function showSuccessNotif(data){
 $("*[date-today='true']").click(function(){
 	var today = new moment().format("YYYY-MM-DD");
 	$(this).parent().prev().val(today);
+	$(this).parent().prev().blur();
 });
 
 // Convertit une date en temps relatif. (ex: "il y a un jour")
@@ -301,8 +329,13 @@ function addAdherent(){
 	var telephone = $('#telephone').val();
 	var date_naissance = $('#date_naissance').val();
 	$.post("functions/add_adherent.php", {identite_prenom : identite_prenom, identite_nom : identite_nom, rfid : rfid, rue : rue, code_postal : code_postal, ville : ville, mail : mail, telephone : telephone, date_naissance : date_naissance}).done(function(data){
-		showSuccessNotif(data);
+		var parse = JSON.parse(data);
 		$(".has-name-completion:not(.completed)").val(identite_prenom+" "+identite_nom);
+		if(window.miniCart != ""){
+			window.miniCart["id_beneficiaire"] = parse["id"];
+			window.miniCart["nom_beneficiaire"] = identite_prenom+" "+identite_nom;
+		}
+		showSuccessNotif(parse["success"]);
 		$(":regex(id,^unknown-user)").hide('500');
 	});
 }
@@ -336,40 +369,32 @@ function tickClock(){
 
 // Remplit le popover de l'icône panier dans la navigation
 function fillShoppingCart(){
-	var panierElement = "";
-	var i = 1;
-	for(i; i <= 20; i++){
-		if(sessionStorage.getItem('produit_id-'+i) != null){
-			panierElement += "<tr>";
-			panierElement += "<td class='col-lg-10'>"+sessionStorage.getItem('produit-demo-'+i)+"</td>";
-			panierElement += "<td class='col-lg-2'><span class=' span-btn glyphicon glyphicon-trash' onClick=removeCartElement("+i+")></span></td>";
-			panierElement += "</tr>";
+	$(".table-panier").empty();
+	if(sessionStorage.getItem("panier") != null){
+		var cartSize = JSON.parse(sessionStorage.getItem("panier"));
+		var line = "";
+		for(var i = 0; i < cartSize.length; i++){
+			line += "<tr>"
+			line += "<td class='col-lg-11'>"+cartSize[i]+"</td>";
+			line += "<td class='col-lg-1'><span class='glyphicon glyphicon-trash' onclick='removeCartElement("+i+")'></span></td>";
+			line += "<tr>";
 		}
+		$(".table-panier").append(line);
 	}
-	$(".table-panier").html(panierElement);
-	composeURL();
 }
 
 function removeCartElement(key){
-	sessionStorage.removeItem('produit_id-'+key);
-	sessionStorage.removeItem('produit-demo-'+key);
-	sessionStorage.removeItem('produit-'+key);
-	sessionStorage.removeItem('beneficiaire-'+key);
-	sessionStorage.removeItem('activation-'+key);
-	sessionStorage.removeItem('prixIndividuel-'+key);
+	var cart = JSON.parse(sessionStorage.getItem("panier"));
+	cart.splice(key, 1);
+	sessionStorage.setItem("panier", JSON.stringify(cart));
 	notifPanier();
 }
 
 // Compose les URL lors de l'achat
-function composeURL(){
+function composeURL(token){
 	var url = "personnalisation.php?element=";
-	var i = 1;
-	for(i; i <= 20; i++){
-		if(sessionStorage.getItem('produit_id-'+i) != null){
-			url += sessionStorage.getItem('produit_id-'+i)+"-";
-		}
-	}
-	url = url.slice(0,-1);
+	url += token;
+	url += "&order=0";
 	$("[name='next']").attr('href', url);
 	$("[name='previous']").attr('href', url);
 }

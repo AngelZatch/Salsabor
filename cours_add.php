@@ -47,7 +47,7 @@ if(isset($_POST['add'])){
 						<div class="col-lg-6">
 							<div class="btn-toolbar">
 								<a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-								<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER" onClick="checkMandatory()" id="submit-button" disabled>
+								<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
 							</div> <!-- btn-toolbar -->
 						</div>
 					</div>
@@ -176,7 +176,6 @@ if(isset($_POST['add'])){
 					var end_hour = moment(format_end).format('HH:mm');
 				} else {
 					var format_start = new Date().toISOString();
-					console.log(format_start);
 					var format_end = new Date().toISOString();
 					var start_hour = moment(format_start).startOf('hour').add(1, 'h').format('HH:mm');
 					var end_hour = moment(format_end).startOf('hour').add(2, 'h').format('HH:mm');

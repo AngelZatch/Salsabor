@@ -25,8 +25,8 @@ try{
 	$new->bindParam(':ville', $_POST['ville']);
 	$new->bindParam(':mail', $_POST['mail']);
 	$new->bindParam(':telephone', $_POST['telephone']);
-    $new->bindParam(':acces_web', $accesWeb);
-    $new->bindParam(':est_membre', $status);
+	$new->bindParam(':acces_web', $accesWeb);
+	$new->bindParam(':est_membre', $status);
 	$new->bindParam(':est_professeur', $status);
 	$new->bindParam(':est_staff', $status);
 	$new->bindParam(':est_prestataire', $status);
@@ -38,8 +38,12 @@ try{
 		$delete->bindParam(1, $_POST["rfid"]);
 		$delete->execute();
 	}
+	$res = array(
+	"success" => "Inscription réalisée",
+	"id" => $db->lastInsertId()
+	);
 	$db->commit();
-	echo "Inscription réalisée.";
+	echo json_encode($res);
 } catch(PDOException $e){
 	$db->rollBack();
 	echo $e->getMessage();

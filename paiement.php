@@ -23,20 +23,15 @@ if(isset($_POST["submit"])){
 		<?php include "nav.php";?>
 		<div class="container-fluid">
 			<div class="row">
-				<?php include "side-menu.php";?>
 				<form action="paiement.php" method="post">
-					<div class="fixed">
+					<div class="fixed-full">
 						<div class="col-lg-6">
 							<p class="page-title"><span class="glyphicon glyphicon-shopping-cart"></span> Acheter des produits</p>
 						</div>
 						<div class="col-lg-6">
-							<div class="btn-toolbar">
-								<a href="personnalisation.php" role="button" class="btn btn-default" name="previous"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-erase"></span> Retourner à la personnalisation des abonnements</a>
-								<a href="actions/validate_paiement.php" role="button" class="btn btn-primary" data-title="Validation du panier" data-toggle="lightbox" data-gallery="remoteload">PROCEDER</a>
-							</div> <!-- btn-toolbar -->
 						</div>
 					</div>
-					<div class="col-sm-10 main">
+					<div class="col-lg-12">
 						<div class="progress">
 							<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="25" aria-valuemax="100" style="width:100%;">
 								<span class="glyphicon glyphicon-repeat"></span> Etape 3/3 : Ajustement des échéances
@@ -67,7 +62,7 @@ if(isset($_POST["submit"])){
 							</div>
 							<div class="col-lg-2">
 								<div class="form-group">
-									<label for="echeances">Nombre d'échéances</label>
+									<label for="echeances">Echéances</label>
 									<input type="number" name="echeances" class="form-control input-lg">
 								</div>
 							</div>
@@ -87,7 +82,7 @@ if(isset($_POST["submit"])){
 										<th class="col-lg-2">Montant</th>
 										<th class="col-lg-4">Méthode de règlement</th>
 										<th class="col-lg-4">Titulaire du moyen de paiement</th>
-										<th class="col-lg-1">Déjà reçue ?</th>
+										<th class="col-lg-1">Réception</th>
 									</tr>
 								</thead>
 								<tbody class="maturities-table">
@@ -108,28 +103,38 @@ if(isset($_POST["submit"])){
 				$(".has-name-completion").autocomplete({
 					source: listeAdherents
 				});
-				var i = 1;
-				$(":regex(name,payeur)").val(sessionStorage.getItem('beneficiaire-principal'));
-				var recap;
-				for(i; i <= 20; i++){
-					if(sessionStorage.getItem('produit_id-'+i) != null){
-						recap += "<tr>";
-						recap += "<td><input type='hidden' class='form-control' value='"+sessionStorage.getItem('produit-'+i)+"' name='nom-produit-"+i+"'>"+sessionStorage.getItem('produit-'+i)+"</td>";
-						recap += "<input type='hidden' class='form-control' value='"+sessionStorage.getItem('produit_id-'+i)+"' name='produit_id-"+i+"'>";
-						recap += "<td><input type='hidden' class='form-control' value='"+sessionStorage.getItem('beneficiaire-'+i)+"' name='beneficiaire-"+i+"'>"+sessionStorage.getItem('beneficiaire-'+i)+"</td>";
-						if(sessionStorage.getItem('activation-'+i) == ""){
-							recap += "<td><input type='hidden' name='activation-"+i+"' value='0'>Activation automatique</td>";
-						} else {
-							recap += "<td><input type='hidden' name='activation-"+i+"' value='"+sessionStorage.getItem('activation-'+i)+"'>"+sessionStorage.getItem('activation-'+i)+"</td>";
-						}
-						recap += "<td><input type='hidden' class='form-control' value="+sessionStorage.getItem('prixIndividuel-'+i)+" name='prix-produit-"+i+"'>"+sessionStorage.getItem('prixIndividuel-'+i)+" €</td>";
-						recap += "</tr>";
+				/*$(":regex(name,payeur)").val(sessionStorage.getItem('beneficiaire-principal'));*/
+				var globalCart = JSON.parse(sessionStorage.getItem("panier")), recap, prixTotal = 0;
+				for(var i = 0; i < globalCart.length; i++){
+					var miniCart = JSON.parse(sessionStorage.getItem("cart-"+i));
+					console.log(sessionStorage.getItem("cart-"+i));
+					recap += "<tr>";
+					recap += "<td>";
+					recap += "<input type='hidden' value='"+miniCart["id_produit"]+"' name='produit_id-"+i+"'>"+miniCart["nom_produit"];
+					recap += "</td>";
+					recap += "<td>";
+					recap += "<input type='hidden' value='"+miniCart["id_beneficiaire"]+"' name='beneficiaire-"+i+"'>"+miniCart["nom_beneficiaire"];
+					recap += "</td>";
+					recap += "<td>";
+					if(miniCart["date_activation"] == null){
+						recap += "<input type='hidden' value='0' name='activation-"+i+"'>Activation automatique";
+					} else recap += "<input type='hidden' value='"+miniCart["date_activation"]+"' name='activation-"+i+"'>Activation le "+moment(miniCart["date_activation"]).format("DD/MM/YYYY");
+					recap += "</td>";
+					recap += "<td>";
+					if(miniCart["prix_final"] == null){
+						recap += "<input type='hidden' value='"+miniCart["prix"]+"' name='prix-produit-"+i+"'>"+miniCart["prix"]+" €";
+						prixTotal += parseFloat(miniCart["prix"]);
+					} else {
+						recap += "<input type='hidden' value='"+miniCart["prix_final"]+"' name='prix-produit-"+i+"'>"+miniCart["prix_final"]+" €";
+						prixTotal += parseFloat(miniCart["prix_final"]);
 					}
+					recap += "</td>";
+					recap += "</tr>";
+					console.log(prixTotal);
 				}
 				$(".produits-recap").append(recap);
-				var prixTotal = sessionStorage.getItem('prixTotal');
 				$("[name='prix_total']").val(prixTotal);
-				$("[name='nombre_produits']").val(numberProduits - 1);
+				$("[name='nombre_produits']").val(globalCart.length);
 				var methods = [
 					"Carte bancaire",
 					"Chèque n°",
@@ -145,7 +150,7 @@ if(isset($_POST["submit"])){
 					var start_date = moment();
 					if(start_date.date() >= 1 && start_date.date() < 8){
 						start_date.date(10);
-					} else if(start_date() >= 9 && start_date.date() < 18){
+					} else if(start_date.date() >= 9 && start_date.date() < 18){
 						start_date.date(20);
 					} else if(start_date.date() >= 19 && start_date.date() < 28){
 						start_date.date(30);
@@ -166,11 +171,11 @@ if(isset($_POST["submit"])){
 						// Construction du tableau des échéances
 						var echeance = "<tr>";
 						var current_date = start_date.format("YYYY-MM-DD");
-						echeance += "<td class='col-lg-1'><div class='input-group'><input type='date' class='form-control' value="+current_date+" name='date-echeance-"+i+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-date-"+i+"'>Propager</a></span></div></td>";
+						echeance += "<td class='col-lg-1'><div class='input-group'><input type='date' class='form-control' value="+current_date+" name='date-echeance-"+i+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-date-"+i+"'><span class='glyphicon glyphicon-arrow-down'></span> Propager</a></span></div></td>";
 						echeance += "<td class='col-lg-2'><div class='input-group'><input type='number' step='any' class='form-control' placeholder='Montant' value="+montant_echeance+" name='montant-echeance-"+i+"'><span class='input-group-addon'>€</span></div></td>";
-						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='moyen-paiement-"+i+"' placeholder='En attente / Carte bancaire / Numéro de chèque / Mandat / Espèces...'><span role='buttton' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-methode-"+i+"'>Propager</a></span></div></td>";
-						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='titulaire-paiement-"+i+"' placeholder='Prénom Nom' value='"+$(":regex(name,payeur)").val()+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-titulaire-"+i+"'>Propager</a></span></div></td>";
-						echeance += "<td class='col-lg-1'><input name='statut-echeance-"+i+"'></td>";
+						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control' name='moyen-paiement-"+i+"' placeholder='En attente / Carte bancaire / Numéro de chèque / Mandat / Espèces...'><span role='buttton' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-methode-"+i+"'><span class='glyphicon glyphicon-arrow-down'></span> Propager</a></span></div></td>";
+						echeance += "<td class='col-lg-4'><div class='input-group'><input type='text' class='form-control has-name-completion' name='titulaire-paiement-"+i+"' placeholder='Prénom Nom' value='"+$(":regex(name,payeur)").val()+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-titulaire-"+i+"'><span class='glyphicon glyphicon-arrow-down'></span> Propager</a></span></div></td>";
+						echeance += "<td class='col-lg-1'><div class='input-group'><input name='statut-echeance-"+i+"'><span role='button' class='input-group-btn'><a class='btn btn-info' role='button' name='propagation-statut-"+i+"'><span class='glyphicon glyphicon-arrow-down'></span></a></span></div></td>";
 						echeance += "</tr>";
 						montant_restant -= montant_echeance;
 						$(".maturities-table").append(echeance);
@@ -179,7 +184,7 @@ if(isset($_POST["submit"])){
 					$("[name^='montant-echeance']").keyup(function(){
 						// Lorsqu'un montant est modifié.
 						var echeance_fixe = $(this).val();
-						if(echeance_fixe != ''){
+						if(echeance_fixe != '' || $(this).is(":focus")){
 							$(this).addClass('fixed-value');
 						} else {
 							$(this).removeClass('fixed-value');
@@ -239,6 +244,15 @@ if(isset($_POST["submit"])){
 						var titulaire = $(this).parent().prev().val();
 						console.log(titulaire);
 						$("[name^='propagation-titulaire']").parent().prev().val(titulaire);
+					});
+					$("[name^='propagation-statut']").click(function(){
+						var indice = $(this).attr('name').substr(19);
+						var statut = $("[name='statut-echeance-"+indice+"']").val();
+						for(var m = indice++; m <= nbEcheances; m++){
+							console.log("Avant propagation : "+$("[name='statut-echeance-"+m+"']").val());
+							$("[name='statut-echeance-"+m+"']").val(statut).checkboxX('refresh');
+							console.log("Après propagation : "+$("[name='statut-echeance-"+m+"']").val());
+						}
 					});
 				})
 				$(".mandatory").change();

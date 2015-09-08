@@ -108,16 +108,11 @@ if(isset($_POST["edit"])){
 
 	try{
 		$db->beginTransaction();
-		$edit = $db->prepare('UPDATE users SET user_prenom = :prenom,
-													user_nom = :nom,
-													user_rfid = :rfid,
-													date_naissance = :date_naissance,
-													rue = :rue,
-													code_postal = :code_postal,
-													ville = :ville,
-													mail = :mail,
-													telephone = :telephone,
-													photo = :photo
+		$edit = $db->prepare('UPDATE users
+								SET user_prenom = :prenom, user_nom = :nom, user_rfid = :rfid,
+									date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal,ville = :ville,
+									mail = :mail, telephone = :telephone, photo = :photo,
+									est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre
 													WHERE user_id = :id');
 		$edit->bindParam(':prenom', $_POST["identite_prenom"]);
 		$edit->bindParam(':nom', $_POST["identite_nom"]);
@@ -129,6 +124,11 @@ if(isset($_POST["edit"])){
 		$edit->bindParam(':mail', $_POST["mail"]);
 		$edit->bindParam(':telephone', $_POST["telephone"]);
 		$edit->bindParam(':photo', $target_file);
+		$edit->bindParam(':est_membre', $_POST["est_membre"]);
+		$edit->bindParam(':est_professeur', $_POST["est_professeur"]);
+		$edit->bindParam(':est_staff', $_POST["est_staff"]);
+		$edit->bindParam(':est_prestataire', $_POST["est_prestataire"]);
+		$edit->bindParam(':est_autre', $_POST["est_autre"]);
 		$edit->bindParam(':id', $data);
 		$edit->execute();
 		if(isset($_POST["rfid"])){
@@ -193,13 +193,13 @@ if(isset($_POST["edit"])){
 						</ul>
 						<section id="infos">
 							<div class="container-fluid">
-								<div class="form-group col-lg-2 thumbnail" id="picture-container">
+								<div class="form-group col-lg-3 thumbnail" id="picture-container">
 									<label for="photo_identite">
 										<img src="<?php echo ($details["photo"])?$details["photo"]:"assets/images/logotype-white.png";?>" alt="" style="max-height:100%; max-width:100%;">
 									</label>
 									<input type="file" name="photo_identite">
 								</div>
-								<div class="col-lg-10">
+								<div class="col-lg-9">
 									<div class="row">
 										<div class="col-lg-6">
 											<div class="form-group">
@@ -217,6 +217,19 @@ if(isset($_POST["edit"])){
 									<div class="form-group">
 										<label for="mail" class="control-label">Adresse mail</label>
 										<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control input-lg" value="<?php echo $details["mail"];?>">
+									</div>
+									<div class="form-group">
+										<label for="statuts" class="control-label">Statut du contact <span class="label-tip">Cochez autant que nécessaire</span></label><br>
+										<label for="est_membre" class="control-label">Membre</label>
+										<input name="est_membre" id="est_membre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_membre"];?>">
+										<label for="est_professeur" class="control-label">Professeur</label>
+										<input name="est_professeur" id="est_professeur" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_professeur"];?>">
+										<label for="est_staff" class="control-label">Staff</label>
+										<input name="est_staff" id="est_staff" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_staff"];?>">
+										<label for="est_prestataire" class="control-label">Prestataire</label>
+										<input name="est_prestataire" id="est_prestataire" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_prestataire"];?>">
+										<label for="est_autre" class="contorl-label">Autre <span class="label-tip">Spécifiez ci-dessous</span></label>
+										<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_autre"];?>">
 									</div>
 									<div class="form-group">
 										<label for="rfid" class="control-label">Code carte</label>
@@ -362,6 +375,7 @@ if(isset($_POST["edit"])){
 									<?php } ?>
 								</tbody>
 							</table>
+							<a href="catalogue.php?user=<?php echo $details["user_id"];?>" class="btn btn-primary btn-block">Acheter un nouveau produit pour cet adhérent</a>
 						</section>
 						<section id="achats">
 							<table class="table table-striped">

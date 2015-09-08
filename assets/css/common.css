@@ -260,7 +260,7 @@ body{
 	right: 1%;
 }
 #picture-container {
-	height: 230px;
+	height: 350px;
 }
 
 .content-right {
@@ -335,6 +335,7 @@ body{
 
 .cours-title {
 	font-weight: 800;
+	font-size: 20px;
 }
 
 .cours-hours {
@@ -473,4 +474,8 @@ body{
 
 .section-title {
 	font-size: 18px;
+}
+
+.small-link {
+	font-size: 14px;
 }

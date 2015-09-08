@@ -72,8 +72,6 @@ function addResa(){
 		$linePrix = iconv('UTF-8', 'windows-1252', $linePrix);
 		$pdf->Write(0, $linePrix);
 	}
-	$pdf->Output();
-	/**** /PDF ****/
 
 	try{
 		$db->beginTransaction();
@@ -92,7 +90,8 @@ function addResa(){
 
 		$db->commit();
 		// On génère le PDF "facture" une fois que la transaction est terminée
-		header("Location : planning.php");
+		$pdf->Output();
+		/**** /PDF ****/
 	} catch(PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());

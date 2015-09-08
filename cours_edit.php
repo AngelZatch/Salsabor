@@ -4,6 +4,9 @@ $db = PDOFactory::getConnection();
 require_once 'functions/cours.php';
 /** Récupération des valeurs dans la base de données des champs **/
 $id = $_GET['id'];
+if(isset($_GET["drive"])){
+	$drive = $_GET["drive"];
+}
 $queryCours = $db->prepare('SELECT * FROM cours WHERE cours_id=?');
 $queryCours->bindParam(1, $id);
 $queryCours->execute();
@@ -30,7 +33,9 @@ $queryTarif->bindParam(2, $cours['cours_type']);
 $queryTarif->execute();
 $tarif = $queryTarif->fetch(PDO::FETCH_ASSOC);
 
-$types = $db->query('SELECT * FROM prestations WHERE est_cours=1');
+$queryTypes = $db->query('SELECT * FROM prestations WHERE est_cours=1');
+
+$querySalles = $db->query("SELECT * FROM salle WHERE est_salle_cours=1");
 
 $queryEleves = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
 $array_eleves = array();
@@ -44,12 +49,16 @@ if(isset($_POST['editOne'])){
 	$end = $_POST['date_debut']." ".$_POST['heure_fin'];
 	$paiement = $_POST['paiement'];
 	$prix_final = $_POST['prix_cours'];
+	$cours_type = $_POST["type"];
+	$cours_salle = $_POST["salle"];
 	try{
 		$db->beginTransaction();
 		$edit = $db->prepare('UPDATE cours SET cours_intitule = :intitule,
 										cours_start = :cours_start,
 										cours_end = :cours_end,
 										cours_prix = :prix,
+										cours_type = :cours_type,
+										cours_salle = :cours_salle,
 										paiement_effectue = :paiement,
 										justification_modification = :edit_comment,
 										derniere_modification = :derniere_modification
@@ -57,6 +66,8 @@ if(isset($_POST['editOne'])){
 		$edit->bindParam(':intitule', $_POST['intitule']);
 		$edit->bindParam(':cours_start', $start);
 		$edit->bindParam(':cours_end', $end);
+		$edit->bindParam(':cours_type', $cours_type);
+		$edit->bindParam(':cours_salle', $cours_salle);
 		$edit->bindParam(':prix', $prix_final);
 		$edit->bindParam(':paiement', $paiement);
 		$edit->bindParam(':edit_comment', $_POST['edit-comment']);
@@ -68,7 +79,11 @@ if(isset($_POST['editOne'])){
 		$db->rollBack();
 		var_dump($e->getMessage());
 	}
-	header('Location: planning.php');
+	if(isset($_GET["drive"])){
+		header('Location: passages.php');
+	} else {
+		header('Location: planning.php');
+	}
 }
 
 if(isset($_POST['editNext'])){
@@ -113,7 +128,11 @@ if(isset($_POST['editNext'])){
 		$db->rollBack();
 		var_dump($e->getMessage());
 	}
-	header('Location: planning.php');
+	if(isset($_GET["drive"])){
+		header('Location: passages.php');
+	} else {
+		header('Location: planning.php');
+	}
 }
 
 if(isset($_POST['editAll'])){
@@ -153,14 +172,15 @@ if(isset($_POST['deleteCoursAll'])){
 						</div>
 						<div class="col-lg-6">
 							<div class="btn-toolbar">
+								<?php if(isset($_GET["drive"])){ ?>
+								<a href="passages.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux passages</a>
+								<?php } else { ?>
 								<a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-								<?php
-if($res_recurrence == '0'){
-	echo "<input type='submit' name='editOne' role='button' class='btn btn-success' value='ENREGISTRER'>";
-} else {
-	echo "<a href='#save-options' class='btn btn-primary' role='button' data-toggle='collapse' aria-expanded='false' aria-controls='saveOptions'>ENREGISTRER</a>";
-}
-								?>
+								<?php } if($res_recurrence == '0'){ ?>
+								<input type='submit' name='editOne' role='button' class='btn btn-success' value='ENREGISTRER'>
+								<?php } else { ?>
+								<a href='#save-options' class='btn btn-primary' role='button' data-toggle='collapse' aria-expanded='false' aria-controls='saveOptions'>ENREGISTRER</a>
+								<?php } ?>
 								<a href="#delete-options" role="button" class="btn btn-danger" data-toggle="collapse" aria-expanded="false" aria-controls="deleteOptions"><span class="glyphicon glyphicon-trash"></span> Supprimer</a>
 								<input type="hidden" name="id" value="<?php echo $id;?>">
 								<div class="collapse" id="save-options">
@@ -205,18 +225,35 @@ if($res_recurrence == '0'){
 								</div>
 							</div>
 						</div>
-						<div class="form-group">
-							<label for="" class="control-label">Type de cours</label>
-							<select name="type" id="" class="form-control input-lg">
-								<?php
-while($row_types = $types->fetch(PDO::FETCH_ASSOC)){
-	if($cours["cours_type"] == $row_types["prestations_id"]) { ?>
-								<option selected="selected" value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>;
-								<?php } else { ?>
-								<option value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>;
-								<?php }
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="type" class="control-label">Type de cours</label>
+									<select name="type" class="form-control input-lg">
+										<?php while($types = $queryTypes->fetch(PDO::FETCH_ASSOC)){
+	if($cours["cours_type"] == $types["prestations_id"]) { ?>
+										<option selected="selected" value="<?php echo $types['prestations_id'];?>"><?php echo $types['prestations_name'];?></option>;
+										<?php } else { ?>
+										<option value="<?php echo $types['prestations_id'];?>"><?php echo $types['prestations_name'];?></option>;
+										<?php }
 } ?>
-							</select>
+									</select>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label for="salle" class="control-label">Salle</label>
+									<select name="salle" class="form-control input-lg">
+										<?php while($salles = $querySalles->fetch(PDO::FETCH_ASSOC)){
+	if($cours["cours_salle"] == $salles["salle_id"]) {?>
+										<option selected="selected" value="<?php echo $salles["salle_id"];?>"><?php echo $salles["salle_name"];?></option>
+										<?php } else { ?>
+										<option value="<?php echo $salles["salle_id"];?>"><?php echo $salles["salle_name"];?></option>
+										<?php }
+} ?>
+									</select>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<div class="panel panel-default">

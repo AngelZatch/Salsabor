@@ -36,6 +36,8 @@ $queryEcheances->bindValue(1, $data);
 						<div class="btn-toolbar">
 							<?php if($status == "transactions"){ ?>
 							<a href="transactions.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux transactions</a>
+							<?php } else if ($status == "echeances") { ?>
+							<a href="echeances.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux échéances</a>
 							<?php } else { ?>
 							<a href="user_details.php?id=<?php echo $transaction["payeur_transaction"];?>&status=<?php echo $status;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent</a>
 							<?php } ?>

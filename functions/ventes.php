@@ -51,8 +51,8 @@ function vente(){
 
 		// Création de tous les produits associés à la transaction
 		// LES ETAPES SUIVANTES SONT REPETEES POUR CHAQUE PRODUIT
-		$l = 1;
-		for($l; $l <= $_POST["nombre_produits"]; $l++){
+		$l = 0;
+		for($l; $l < $_POST["nombre_produits"]; $l++){
 			// Retrouver le produit à partir de son id
 			$queryProduit = $db->prepare("SELECT * FROM produits WHERE produit_id=?");
 			$nomProduit = $_POST["produit_id-".$l];
@@ -71,7 +71,7 @@ function vente(){
 
 				$j = 0;
 
-				for($i = 1; $i <= $queryHoliday->rowCount(); $i++){
+				for($i = 0; $i <= $queryHoliday->rowCount(); $i++){
 					$exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$i.'DAYS'));
 					$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
 					$checkHoliday->bindParam(1, $exp_date);
@@ -86,22 +86,13 @@ function vente(){
 				$actif = 0;
 			}
 
-			// Retrouver l'adhérent à partir de son nom
-			$dataBeneficiaire = explode(' ', $_POST["beneficiaire-".$l]);
-			$prenomBeneficiaire = $dataBeneficiaire[0];
-			$nomBeneficiaire = '';
-			for($m = 1; $m < count($dataBeneficiaire); $m++){
-				$nomBeneficiaire .= $dataBeneficiaire[$m];
-				if($m != count($dataBeneficiaire)){
-					$nomBeneficiaire .= " ";
-				}
-			}
-			$beneficiaire = getAdherent($prenomBeneficiaire, $nomBeneficiaire);
+			// Réception de l'id du bénéficiaire envoyé par le formulaire
+			$beneficiaire = $_POST["beneficiaire-".$l];
 
 			$new = $db->prepare("INSERT INTO produits_adherents(id_transaction_foreign, id_user_foreign, id_produit_foreign, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
 		VALUES(:transaction, :adherent, :produit, :date_activation, :date_expiration, :volume_horaire, :prix_achat, :actif, :arep)");
 			$new->bindParam(':transaction', $transaction);
-			$new->bindParam(':adherent', $beneficiaire["user_id"]);
+			$new->bindParam(':adherent', $beneficiaire);
 			$new->bindParam(':produit', $produit["produit_id"]);
 			$new->bindParam(':date_activation', $_POST["activation-".$l]);
 			$new->bindParam(':date_expiration', $new_exp_date);

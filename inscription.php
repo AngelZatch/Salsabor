@@ -113,6 +113,79 @@ if(isset($_POST['addAdherent'])){
 		echo $e->getMessage();
 	}
 }
+
+if(isset($_POST['addSell'])){
+	// Upload de l'image
+	/*$target_dir = "assets/pictures/";
+	$target_file = $target_dir.basename($_FILES["photo_identite"]["name"]);
+	$uploadOk = 1;
+	//$imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+	/**$check = getimagesize($_FILES['photo_identite']['tmp_name']);
+	if(!$check){
+		$uploadOk = 1;
+	} else {
+		echo "Fichier non conforme";
+		$uploadOk = 0;
+	}
+	if($uploadOk == 1){
+		if(move_uploaded_file($_FILES["photo_identite"]["tmp_name"], $target_file)){
+			echo "Fichier uploadé avec succès.";
+		} else {
+			echo "Erreur au transfert du fichier.";
+		}
+	}
+	print_r($_FILES);*/
+
+	// Champs par défaut
+	$actif = 1;
+	$acces_web = 1;
+	try{
+		$db->beginTransaction();
+		$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
+												date_inscription, rue, code_postal, ville, mail,
+												telephone, tel_secondaire, source_connaissance,
+												acces_web, est_membre, est_professeur, est_staff, est_prestataire,
+												est_autre, autre_statut, user_rib, actif)
+										VALUES(:prenom, :nom, :rfid, :date_naissance,
+												:date_inscription, :rue, :code_postal, :ville, :mail,
+												:telephone, :tel_secondaire, :sources_connaissance,
+												:acces_web, :est_membre, :est_professeur, :est_staff, :est_prestataire,
+												:est_autre, :autre_statut, :user_rib, :actif)');
+		$new->bindParam(':prenom', $_POST['identite_prenom']);
+		$new->bindParam(':nom', $_POST['identite_nom']);
+		$new->bindParam(':rfid', $_POST["rfid"]);
+		$new->bindParam(':date_naissance', $_POST['date_naissance']);
+		$new->bindParam(':date_inscription', $_POST['date_inscription']);
+		$new->bindParam(':rue', $_POST['rue']);
+		$new->bindParam(':code_postal', $_POST['code_postal']);
+		$new->bindParam(':ville', $_POST['ville']);
+		$new->bindParam(':mail', $_POST['mail']);
+		$new->bindParam(':telephone', $_POST['telephone']);
+		$new->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
+		$new->bindParam(':sources_connaissance', $_POST["sources_connaissance"]);
+		$new->bindParam(':acces_web', $acces_web);
+		$new->bindParam(':est_membre', $_POST["est_membre"]);
+		$new->bindParam(':est_professeur', $_POST["est_professeur"]);
+		$new->bindParam(':est_staff', $_POST["est_staff"]);
+		$new->bindParam(':est_prestataire', $_POST["est_prestataire"]);
+		$new->bindParam(':est_autre', $_POST["est_autre"]);
+		$new->bindParam(':autre_statut', $_POST["est_statut"]);
+		$new->bindParam(':user_rib', $_POST["user_rib"]);
+		$new->bindParam(':actif', $actif);
+		$new->execute();
+		$id = $db->lastInsertId();
+		if(isset($_POST["rfid"])){
+			$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
+			$delete->bindParam(1, $_POST["rfid"]);
+			$delete->execute();
+		}
+		$db->commit();
+		header('Location: catalogue.php?user='.$id.'');
+	} catch(PDOException $e){
+		$db->rollBack();
+		echo $e->getMessage();
+	}
+}
 ?>
 <html>
 	<head>
@@ -133,7 +206,7 @@ if(isset($_POST['addAdherent'])){
 						<div class="col-lg-6">
 							<div class="btn-toolbar">
 								<a href="<?php echo $backLink;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <?php echo $buttonText;?></a>
-								<input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
+								<input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="Inscrire" id="submit-button" disabled>
 							</div> <!-- btn-toolbar -->
 						</div>
 					</div>
@@ -251,7 +324,8 @@ if(isset($_POST['addAdherent'])){
 									<?php } ?>
 								</select>
 							</div>
-							<input type="submit" name="addAdherent" role="button" class="btn btn-primary btn-block submit-button" value="ENREGISTRER" disabled>
+							<input type="submit" name="addAdherent" role="button" class="btn btn-primary submit-button col-lg-6" value="Inscrire" disabled>
+							<input type="submit" name="addSell" role="button" class="btn btn-primary submit-button col-lg-6" value="Inscrire et acheter un produit" disabled>
 						</div>
 					</div>
 				</form>
