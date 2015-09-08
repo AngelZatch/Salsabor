@@ -28,7 +28,7 @@ $queryPanier = $db->query("SELECT * FROM panier JOIN produits ON panier_element=
 					</a>
 				</li>
 				<li class="notification-option" title="Participants à un cours sans forfait">
-					<a href="passages.php" class="notification-icon">
+					<a href="irregulars.php" class="notification-icon">
 						<span class="glyphicon glyphicon-ice-lolly-tasted"></span>
 						<span class="badge" id="badge-participants"></span>
 					</a>
