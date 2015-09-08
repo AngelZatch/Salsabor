@@ -13,6 +13,7 @@
 		<li><a href="#collapse-timetable" class="main-section" data-toggle="collapse"><span class="glyphicon glyphicon-transfer"></span> Emploi du temps</a></li>
 		<ul class="nav nav-sidebar collapse" id="collapse-timetable">
 			<li><a href="passages.php" class="main-option"><span class="glyphicon glyphicon-map-marker"></span> Passages</a></li>
+			<li><a href="irregulars.php" class="main-option"><span class="glyphicon glyphicon-ice-lolly-tasted"></span> Participants irréguliers</a></li>
 			<li><a href="planning.php" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='planning.php') echo "active";?>"><span class="glyphicon glyphicon-time"></span> Planning et Réservations</a></li>
 			<li><a href="jours_chomes.php" class="main-option"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés</a></li>
 		</ul>
