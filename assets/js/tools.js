@@ -314,6 +314,7 @@ function addAdherent(){
 	var telephone = $('#telephone').val();
 	var date_naissance = $('#date_naissance').val();
 	$.post("functions/add_adherent.php", {identite_prenom : identite_prenom, identite_nom : identite_nom, rfid : rfid, rue : rue, code_postal : code_postal, ville : ville, mail : mail, telephone : telephone, date_naissance : date_naissance}).done(function(data){
+		console.log(data);
 		var parse = JSON.parse(data);
 		$(".has-name-completion:not(.completed)").val(identite_prenom+" "+identite_nom);
 		if(window.miniCart != ""){

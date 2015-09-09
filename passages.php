@@ -101,23 +101,22 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 									<div class="col-sm-2 record-options">
 										<?php } else { ?>
 										<div class="col-sm-5 record-options">
-											<!--<p class="list-item-option move-record" data-toggle="popover-x" data-target="#popoverPassages" data-placement="bottom bottom-right">
+											<?php } if ($passages["status"] == 0 || $passages["status"] == 3){?>
+											<!--<p class="list-item-option move-record" data-toggle="popover-x" data-target="#popoverPassages" data-trigger="focus" data-placement="bottom bottom-right">
 												<span class="move-record glyphicon glyphicon-circle-arrow-right" title="Valider l'enregistrement comme étant bien pour ce cours"></span> DEPLACER
 											</p>-->
-											<div class="popover popover-default popover-md" id="popoverPassages">
+											<div class="popover popover-default popover-lg" id="popoverPassages">
 												<div class="arrow"></div>
 												<div class="popover-title"><span class="close" data-dismiss="popover-x">&times;</span>Sélectionnez le cours à attribuer</div>
 												<div class="popover-content">
-													Bonjour, ceci est un popover.
 												</div>
 											</div>
-											<?php } if ($passages["status"] == 0 || $passages["status"] == 3){?>
-											<p class="list-item-option">
-												<span class="validate-record glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"></span> VALIDER
+											<p class="list-item-option validate-record">
+												<span class="glyphicon glyphicon-ok" title="Valider l'enregistrement comme étant bien pour ce cours"></span> VALIDER
 											</p>
 											<?php } else if($passages["status"] == 2) {  ?>
-											<p class="list-item-option">
-												<span class="list list-item-option unvalidate-record glyphicon glyphicon-remove" title="Annuler la validation de cet enregistrement"></span> ANNULER
+											<p class="list-item-option unvalidate-record">
+												<span class="glyphicon glyphicon-remove" title="Annuler la validation de cet enregistrement"></span> ANNULER
 											</p>
 											<?php } ?>
 										</div>
@@ -189,7 +188,27 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 				var clicked = $(this);
 				var passage_id = clicked.parents().siblings(".eleve-infos").children("input.passage-id").val();
 				$.post("functions/fetch_target_cours.php", {passage_id : passage_id}).done(function(data){
-					console.log(JSON.parse(data));
+					$(".popover-content").empty();
+					var res = JSON.parse(data);
+					var line = "";
+					for(var i = 0; i < res.length; i++){
+						line += "<div class='panel panel-default panel-target'>";
+						line += "<div class='panel-heading'>";
+						line += "<div class='row'>";
+						line += "<div class='col-lg-7'><span class='glyphicon glyphicon-eye-open'></span> "+res[i].nom+"</div>";
+						line += "<div class='col-lg-5'><span class='glyphicon glyphicon-blackboard'></span> "+res[i].prof+"</div>";
+						line += "</div>";
+						line += "</div>";
+						line += "<div class='panel-body'>";
+						line += "<div class='row'>";
+						line += "<div class='col-lg-4'><span class='glyphicon glyphicon-signal'></span> "+res[i].niveau+"</div>";
+						line += "<div class='col-lg-4'><span class='glyphicon glyphicon-time'></span> "+res[i].heure+"</div>";
+						line += "<div class='col-lg-4'><span class='glyphicon glyphicon-pushpin'></span> "+res[i].salle+"</div>";
+						line += "</div>";
+						line += "</div>";
+						line += "</div>";
+					}
+					$(".popover-content").append(line);
 				})
 			})
 
@@ -198,6 +217,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 				var cours_id = clicked.closest(".panel").find("#cours-id").val();
 				var eleve_id = clicked.parents().siblings(".eleve-infos").children("input.eleve-id").val();
 				var passage_id = clicked.parents().siblings(".eleve-infos").children("input.passage-id").val();
+				console.log(passage_id);
 				var rfid = clicked.parents().siblings(".eleve-tag").html();
 				$.post("functions/validate_record.php", {cours_id : cours_id, eleve_id : eleve_id, passage_id : passage_id, rfid : rfid}).done(function(data){
 					clicked.closest("li").removeClass('list-group-item-warning');
@@ -215,7 +235,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 				$.post("functions/unvalidate_record.php", {cours_id : cours_id, eleve_id : eleve_id, passage_id : passage_id, rfid : rfid}).done(function(data){
 					clicked.closest("li").removeClass('list-group-item-success');
 					clicked.closest("li").addClass("list-group-item-warning");
-					$.notify("Passage supprimé.", {globalPosition:"right bottom", className:"success"});
+					showSuccessNotif(data);
 				});
 			})
 		</script>
