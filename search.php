@@ -3,13 +3,13 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 $searchTerms = $_GET["search_terms"];
 
-$searchUsers = $db->query("SELECT user_id, user_prenom, user_nom, mail, telephone, actif FROM users WHERE user_nom LIKE '%{$searchTerms}%' OR user_prenom LIKE '%{$searchTerms}%' AND est_professeur = 0 AND est_staff = 0 ORDER BY user_nom ASC");
+$searchUsers = $db->query("SELECT user_id, user_prenom, user_nom, mail, telephone, actif FROM users WHERE (user_nom LIKE '%{$searchTerms}%' OR user_prenom LIKE '%{$searchTerms}%') AND est_professeur = 0 AND est_staff = 0 ORDER BY user_nom ASC");
 $numberUsers = $searchUsers->rowCount();
 
-$searchProfs = $db->query("SELECT user_id, user_prenom, user_nom, mail, telephone FROM users WHERE user_nom LIKE '%{$searchTerms}%' OR user_prenom LIKE '%{$searchTerms}%' AND est_professeur = 1 ORDER BY user_nom ASC");
+$searchProfs = $db->query("SELECT user_id, user_prenom, user_nom, mail, telephone FROM users WHERE (user_nom LIKE '%{$searchTerms}%' OR user_prenom LIKE '%{$searchTerms}%') AND est_professeur = 1 ORDER BY user_nom ASC");
 $numberProfs = $searchProfs->rowCount();
 
-$searchStaff = $db->query("SELECT user_id, user_prenom, user_nom, mail, telephone FROM users WHERE user_nom LIKE '%{$searchTerms}%' OR user_prenom LIKE '%{$searchTerms}%' AND est_staff = 1 ORDER BY user_nom ASC");
+$searchStaff = $db->query("SELECT user_id, user_prenom, user_nom, mail, telephone FROM users WHERE (user_nom LIKE '%{$searchTerms}%' OR user_prenom LIKE '%{$searchTerms}%') AND est_staff = 1 ORDER BY user_nom ASC");
 $numberStaff = $searchStaff->rowCount();
 
 $searchCours = $db->query("SELECT * FROM cours
