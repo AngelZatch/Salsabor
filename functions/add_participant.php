@@ -65,8 +65,12 @@ try{
 		if(isset($produit["id_produit_adherent"])){
 			// Déduction du volume horaire dans le forfait (s'il n'est pas un illimité)
 			if(!strstr($produit["produit_nom"], "Illimité")){
-				$substract = $db->prepare("UPDATE produits_adherents SET volume_cours=? WHERE id_produit_adherent=?");
 				$remainingHours = $produit["volume_cours"] - $detailCours["cours_unite"];
+				if($remainingHours == 0){
+					$substract = $db->prepare("UPDATE produits_adherents SET volume_cours=?, actif=0 WHERE id_produit_adherent=?");
+				} else {
+					$substract = $db->prepare("UPDATE produits_adherents SET volume_cours=? WHERE id_produit_adherent=?");
+				}
 				$substract->bindParam(1, $remainingHours);
 				$substract->bindParam(2, $produit["id_produit_adherent"]);
 				$substract->execute();
