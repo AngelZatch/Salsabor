@@ -206,7 +206,7 @@ if(isset($_POST['addSell'])){
 						<div class="col-lg-6">
 							<div class="btn-toolbar">
 								<a href="<?php echo $backLink;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <?php echo $buttonText;?></a>
-								<input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="Inscrire" id="submit-button" disabled>
+								<input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="Enregistrer" id="submit-button" disabled>
 							</div> <!-- btn-toolbar -->
 						</div>
 					</div>
@@ -284,14 +284,14 @@ if(isset($_POST['addSell'])){
 								<label for="date_inscription" class="control-label">Date d'inscription <span class="label-tip">Par défaut, aujourd'hui</span></label>
 								<input type="date" name="date_inscription" id="date_inscription" class="form-control mandatory input-lg" value="<?php echo $now;?>">
 							</div>
-							<div class="form-group">
+							<!--<div class="form-group">
 								<label for="parrain" class="control-label">Parrain</label>
 								<input type="text" name="parrain" class="form-control" placeholder="Tapez un nom pour rechercher">
-							</div>
+							</div>-->
 							<div class="form-group">
 								<label for="rfid" class="control-label">Code carte</label>
-								<div class="input-group">
-									<input type="text" name="rfid" class="form-control input-lg" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
+								<div class="input-group input-group-lg">
+									<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
 									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
 								</div>
 							</div>
@@ -324,8 +324,12 @@ if(isset($_POST['addSell'])){
 									<?php } ?>
 								</select>
 							</div>
-							<input type="submit" name="addAdherent" role="button" class="btn btn-primary submit-button col-lg-6" value="Inscrire" disabled>
-							<input type="submit" name="addSell" role="button" class="btn btn-primary submit-button col-lg-6" value="Inscrire et acheter un produit" disabled>
+							<div class="col-lg-6">
+								<input type="submit" name="addAdherent" role="button" class="btn btn-primary submit-button btn-block" value="Enregistrer" disabled>
+							</div>
+							<div class="col-lg-6">
+								<input type="submit" name="addSell" role="button" class="btn btn-primary submit-button btn-block" value="Enregistrer et acheter" disabled>
+							</div>
 						</div>
 					</div>
 				</form>

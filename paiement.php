@@ -9,6 +9,8 @@ while($adherents = $queryAdherentsNom->fetch(PDO::FETCH_ASSOC)){
 	array_push($array_eleves, $adherents["user_prenom"]." ".$adherents["user_nom"]);
 }
 
+$date_now = date_create('now')->format('Y-m-d');
+
 if(isset($_POST["submit"])){
 	vente();
 }
@@ -60,13 +62,19 @@ if(isset($_POST["submit"])){
 									</div>
 								</div>
 							</div>
-							<div class="col-lg-2">
+							<div class="col-lg-3">
+								<div class="form-group">
+									<label for="date_achat">Date d'achat</label>
+									<input type="date" name="date_achat" class="form-control input-lg" value="<?php echo $date_now;?>">
+								</div>
+							</div>
+							<div class="col-lg-1">
 								<div class="form-group">
 									<label for="echeances">Echéances</label>
 									<input type="number" name="echeances" class="form-control input-lg">
 								</div>
 							</div>
-							<div class="col-lg-8">
+							<div class="col-lg-6">
 								<div class="form-group">
 									<label for="payeur">Payeur</label>
 									<input type="text" name="payeur" class="form-control has-check mandatory has-name-completion input-lg" placeholder="Nom">

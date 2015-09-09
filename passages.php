@@ -81,7 +81,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 							JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip
 							JOIN users ON passage_eleve=users.user_rfid OR passage_eleve_id=users.user_id
 							WHERE ((status=0 OR status=3) AND lecteur_lieu=? AND passage_date>=? AND passage_date<=?) OR (status=2 AND cours_id=?)
-							ORDER BY passage_date ASC");
+							ORDER BY user_nom ASC");
  $queryPassages->bindParam(1, $nextCours["cours_salle"]);
  $queryPassages->bindParam(2, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'-60MINUTES')));
  $queryPassages->bindParam(3, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'+30MINUTES')));

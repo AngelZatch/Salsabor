@@ -20,7 +20,7 @@ $queryPanier = $db->query("SELECT * FROM panier JOIN produits ON panier_element=
 		</form>
 		<div id="navbar" class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href=""><span class="glyphicon glyphicon-user"></span> ver.1.3.0</a></li>
+				<li><a href=""><span class="glyphicon glyphicon-user"></span> ver.1.3.1</a></li>
 				<li class="notification-option" title="Passages en attente de traitement">
 					<a href="passages.php" class="notification-icon">
 						<span class="glyphicon glyphicon-map-marker"></span>

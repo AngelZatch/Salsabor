@@ -31,7 +31,7 @@ function vente(){
 	$transaction = generateReference();
 
 	// Date de l'achat
-	$date_achat = date_create("now")->format('Y-m-d H:i:s');
+	$date_achat = $_POST["date_achat"];
 
 	// Obtention du nombre d'échéances pour la transaction
 	$echeances = $_POST["echeances"];
