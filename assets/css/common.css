@@ -479,3 +479,12 @@ body{
 .small-link {
 	font-size: 14px;
 }
+
+#popoverPassages {
+	max-height: 400px;
+	overflow-y: scroll;
+}
+
+.panel-target{
+	cursor: pointer;
+}
