@@ -117,7 +117,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 										<?php if($passages["passage_eleve"] != ""){
 									echo $passages["passage_eleve"];
 								} else {?>
-								Ajout manuel
+								Pas de carte
 										<?php } ?>
 								</p>
 									<p class="col-sm-3">Enregsitré à <?php echo date_create($passages["passage_date"])->format("H:i:s");?></p>
@@ -176,8 +176,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 					var adherent = clicked.prev().val();
 					var cours_id = clicked.closest(".panel").find("#cours-id").val();
 					$.post("functions/add_record.php", {cours_id : cours_id, adherent : adherent}).done(function(data){
-						console.log(data);
-						//window.location.href = "passages.php";
+						window.location.href = "passages.php";
 					});
 				})
 			}).on('click', '.validate-record', function(){

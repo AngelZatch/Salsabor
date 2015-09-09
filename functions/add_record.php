@@ -30,12 +30,14 @@ if($search->rowCount() == 0 || $res["date_expiration"] <= $cours["cours_start"])
 	$status = "0";
 }
 
+$passage_rfid = $adherent["user_rfid"];
 $passage_eleve_id = $adherent["user_id"];
 
 try{
 	$db->beginTransaction();
-	$new = $db->prepare('INSERT INTO passages(passage_eleve_id, passage_salle, passage_date, cours_id, status)
-	VALUES(:user_id, :salle, :date, :cours_id, :status)');
+	$new = $db->prepare('INSERT INTO passages(passage_eleve, passage_eleve_id, passage_salle, passage_date, cours_id, status)
+	VALUES(:rfid, :user_id, :salle, :date, :cours_id, :status)');
+	$new->bindParam(':rfid', $passage_rfid);
 	$new->bindParam(':user_id', $passage_eleve_id);
 	$new->bindParam(':salle', $cours["lecteur_ip"]);
 	$new->bindParam(':date', $cours["cours_start"]);
