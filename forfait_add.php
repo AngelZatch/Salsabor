@@ -20,8 +20,8 @@ if(isset($_POST["add"])){
 
 	try{
 		$db->beginTransaction();
-		$new = $db->prepare("INSERT INTO produits(produit_nom, description, volume_horaire, validite_initiale, tarif_horaire, tarif_global, date_activation ,date_desactivation, actif, echeances_paiement, autorisation_report)
-		VALUES(:intitule, :description, :volume_horaire, :validite, :tarif_horaire, :tarif_global, :date_activation, :date_limite_achat, :actif, :echeances, :autorisation_report)");
+		$new = $db->prepare("INSERT INTO produits(produit_nom, description, volume_horaire, validite_initiale, tarif_horaire, tarif_global, date_activation ,date_desactivation, actif, echeances_paiement, autorisation_report, est_recharge, est_illimite, est_sans_engagement, est_cours_particulier, est_formation_professionnelle, est_abonnement, est_autre)
+		VALUES(:intitule, :description, :volume_horaire, :validite, :tarif_horaire, :tarif_global, :date_activation, :date_limite_achat, :actif, :echeances, :autorisation_report, :est_recharge, :est_illimite, :est_sans_engagement, :est_cours_particulier, :est_formation_professionnelle, :est_abonnement, :est_autre)");
 		$new->bindParam(':intitule', $_POST["intitule"]);
 		$new->bindParam(':description', $_POST["description"]);
 		$new->bindParam(':volume_horaire', $_POST["volume_horaire"]);
@@ -33,6 +33,13 @@ if(isset($_POST["add"])){
 		$new->bindParam(':actif', $actif);
 		$new->bindParam(':echeances', $_POST["echeances"]);
 		$new->bindParam(':autorisation_report', $arep);
+		$new->bindParam(':est_recharge', $_POST["est_recharge"]);
+		$new->bindParam(':est_illimite', $_POST["est_illimite"]);
+		$new->bindParam(':est_sans_engagement', $_POST["est_sans_engagement"]);
+		$new->bindParam(':est_cours_particulier', $_POST["est_cours_particulier"]);
+		$new->bindParam(':est_formation_professionnelle', $_POST["est_formation_professionnelle"]);
+		$new->bindParam(':est_abonnement', $_POST["est_abonnement"]);
+		$new->bindParam(':est_autre', $_POST["est_autre"]);
 		$new->execute();
 		$db->commit();
 		header("Location: forfaits.php");
@@ -71,12 +78,25 @@ if(isset($_POST["add"])){
 							<input type="text" class="form-control input-lg" name="intitule" placeholder="Nom du produit">
 						</div>
 						<div class="form-group">
-							<label for="description">Description</label>
-							<textarea rows="5" class="form-control input-lg" name="description" placeholder="Facultatif. Tentez d'être succinct !"></textarea>
+							<label for="flags">Type de produit</label><br>
+							<label for="est_recharge" class="control-label">Recharge Liberté</label>
+							<input name="est_recharge" id="est_recharge" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+							<label for="est_illimite" class="control-label">Offre Illimitée</label>
+							<input name="est_illimite" id="est_illimite" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+							<label for="est_sans_engagement" class="control-label">Sans Engagement</label>
+							<input name="est_sans_engagement" id="est_sans_engagement" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+							<label for="est_cours_particulier" class="control-label">Cours Particulier</label>
+							<input name="est_cours_particulier" id="est_cours_particulier" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+							<label for="est_formation_professionnelle" class="contorl-label">Formation Professionnelle</label>
+							<input name="est_formation_professionnelle" id="est_formation_professionnelle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+							<label for="est_abonnement" class="contorl-label">Abonnement</label>
+							<input name="est_abonnement" id="est_abonnement" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+							<label for="est_autre" class="contorl-label">Divers</label>
+							<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
 						</div>
 						<div class="form-group">
-							<label for="offre_illimitee">Offre Illimitée ?</label>
-							<input name="offre_illimitee" id="offre_illimitee" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+							<label for="description">Description</label>
+							<textarea rows="5" class="form-control input-lg" name="description" placeholder="Facultatif. Tentez d'être succinct !"></textarea>
 						</div>
 						<div class="form-group" id="volume_horaire">
 							<label for="volume_horaire">Volume de cours (en heures)</label>
@@ -135,7 +155,7 @@ if(isset($_POST["add"])){
 		</div>
 		<?php include "scripts.php";?>
 		<script>
-			$("#offre_illimitee").change(function(){
+			$("#est_illimite").change(function(){
 				if($(this).val() == '1'){
 					$("#volume_horaire").hide('600');
 				} else {

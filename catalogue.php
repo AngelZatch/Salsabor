@@ -3,7 +3,7 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
 // On obtient la liste des produits
-$listeProduits = $db->query("SELECT * FROM produits");
+$listeProduits = $db->query("SELECT * FROM produits ORDER BY produit_nom ASC");
 if(isset($_GET["user"])){
 	$beneficiaireInitial = $_GET["user"];
 }

@@ -40,7 +40,7 @@ $queryPanier = $db->query("SELECT * FROM panier JOIN produits ON panier_element=
 					</a>
 				</li>
 				<li class="notification-option" title="Panier en cours">
-					<a href="#" class="notification-icon" data-toggle="popover-x" data-target="#popoverPanier" data-placement="bottom bottom-right">
+					<a href="#" class="notification-icon" data-toggle="popover-x" data-target="#popoverPanier" data-trigger="focus" data-placement="bottom bottom-right">
 						<span class="glyphicon glyphicon-shopping-cart"></span>
 						<span class="badge" id="badge-panier"></span>
 					</a>

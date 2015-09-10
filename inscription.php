@@ -231,7 +231,7 @@ if(isset($_POST['addSell'])){
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label for="" class="control-label">Adresse postale</label>
-										<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control mandatory input-lg">
+										<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control input-lg">
 									</div>
 								</div>
 								<div class="form-group col-lg-2">
@@ -245,13 +245,13 @@ if(isset($_POST['addSell'])){
 							</div>
 							<div class="form-group">
 								<label for="mail" class="control-label">Adresse mail</label>
-								<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control mandatory input-lg">
+								<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control input-lg">
 							</div>
 							<div class="row">
 								<div class="col-lg-6">
 									<div class="form-group">
 										<label for="telephone" class="control-label">Téléphone principal</label>
-										<input type="tel" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control mandatory input-lg">
+										<input type="tel" name="telephone" id="telephone" placeholder="Numéro de téléphone principal" class="form-control input-lg">
 									</div>
 								</div>
 								<div class="col-lg-6">

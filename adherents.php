@@ -29,8 +29,8 @@ $queryAdherents = $db->query('SELECT user_id, user_prenom, user_nom, user_rfid, 
 					<form action="search.php" role="search">
 						<div class="input-group input-group-lg">
 							<input type="text" class="form-control" name="search_terms" placeholder="Chercher un utilisateur, cours, achat...">
-							<span type="submit" class="input-group-btn">
-								<a class="btn btn-default">Rechercher un adhérent</a>
+							<span class="input-group-btn">
+								<input type="submit" class="btn btn-default" value="Rechercher">
 							</span>
 						</div>
 					</form>
