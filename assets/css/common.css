@@ -482,11 +482,15 @@ body{
 	font-size: 14px;
 }
 
-#popoverPassages {
-	max-height: 400px;
-	overflow-y: scroll;
+#popoverPassages, #popoverForfaits {
+	max-height: 300px;
 }
 
 .panel-target{
 	cursor: pointer;
+}
+
+.popover-content {
+	max-height: 259px;
+	overflow-y: scroll;
 }
