@@ -52,22 +52,17 @@ $queryResa->bindValue(1, $data);
 $queryResa->execute();
 
 // On obtient l'historique de ses forfaits
-$queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation, produits_adherents.actif AS produitActif FROM produits_adherents
-								JOIN users ON id_user_foreign=users.user_id
-								JOIN produits ON id_produit_foreign=produits.produit_id
-								JOIN transactions ON id_transaction_foreign=transactions.id_transaction
-								WHERE id_user_foreign=? ORDER BY produitActif DESC');
+$queryForfaits = $db->prepare('SELECT *, pa.date_activation AS dateActivation, pa.actif AS produitActif
+								FROM produits_adherents pa
+								JOIN users u ON id_user_foreign=u.user_id
+								JOIN produits p ON id_produit_foreign=p.produit_id
+								LEFT OUTER JOIN transactions t
+									ON id_transaction_foreign=t.id_transaction
+									AND t.id_transaction IS NOT NULL
+								WHERE id_user_foreign=?
+								ORDER BY produitActif DESC');
 $queryForfaits->bindValue(1, $data);
 $queryForfaits->execute();
-$numberForfaits = $queryForfaits->rowCount();
-if($numberForfaits == 0){
-	$queryForfaits = $db->prepare('SELECT *, produits_adherents.date_activation AS dateActivation, produits_adherents.actif AS produitActif FROM produits_adherents
-								JOIN users ON id_user_foreign=users.user_id
-								JOIN produits ON id_produit_foreign=produits.produit_id
-								WHERE id_user_foreign=? ORDER BY produitActif DESC');
-	$queryForfaits->bindValue(1, $data);
-	$queryForfaits->execute();
-}
 
 // Ainsi que les forfaits actifs
 $queryForfaitsActifs = $db->prepare("SELECT * FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=? AND produits_adherents.actif=1");
@@ -363,11 +358,7 @@ if(isset($_POST["edit"])){
 										<?php }
 	} ?>
 										<td><?php echo $forfaits["produit_nom"];?></td>
-										<?php if($numberForfaits == 0){ ?>
-										<td>Non renseignée</td>
-										<?php } else { ?>
 										<td><?php echo date_create($forfaits["date_achat"])->format('d/m/Y');?></td>
-										<?php } ?>
 										<td><?php echo $periode_validite;?></td>
 										<td><?php echo $forfaits["prix_achat"];?> €</td>
 										<td><a href="forfait_adherent_details.php?id=<?php echo $forfaits["id_produit_adherent"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
