@@ -68,13 +68,18 @@ if(isset($_GET["user"])){
 				$("[name='add-shopping']").click(function(){
 					if(sessionStorage.getItem("panier") == null){
 						var globalCart = [];
+						var globalCartNames = [];
 					} else {
 						var globalCart = JSON.parse(sessionStorage.getItem("panier"));
+						var globalCartNames = JSON.parse(sessionStorage.getItem("panier-noms"));
 						composeURL(globalCart[0]);
 					}
 					var produit_id = $(this).parents("div").children("input").val();
+					var produit_nom = $(this).parents("div").children(".thumbnail-title").html();
 					globalCart.push(produit_id);
+					globalCartNames.push(produit_nom);
 					sessionStorage.setItem("panier", JSON.stringify(globalCart));
+					sessionStorage.setItem("panier-noms", JSON.stringify(globalCartNames));
 					composeURL(globalCart[0]);
 					notifPanier();
 				});

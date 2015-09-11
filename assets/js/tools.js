@@ -373,7 +373,8 @@ function notifPanier(){
 function fillShoppingCart(){
 	$(".table-panier").empty();
 	if(sessionStorage.getItem("panier") != null){
-		var cartSize = JSON.parse(sessionStorage.getItem("panier"));
+		var cart = JSON.parse(sessionStorage.getItem("panier"));
+		var cartSize = JSON.parse(sessionStorage.getItem("panier-noms"));
 		var line = "";
 		for(var i = 0; i < cartSize.length; i++){
 			line += "<tr>"
@@ -382,14 +383,17 @@ function fillShoppingCart(){
 			line += "<tr>";
 		}
 		$(".table-panier").append(line);
-		composeURL(cartSize[0]);
+		composeURL(cart[0]);
 	}
 }
 
 function removeCartElement(key){
 	var cart = JSON.parse(sessionStorage.getItem("panier"));
+	var cartNames = JSON.parse(sessionStorage.getItem("panier-noms"));
 	cart.splice(key, 1);
+	cartNames.splice(key, 1);
 	sessionStorage.setItem("panier", JSON.stringify(cart));
+	sessionStorage.setItem("panier-noms", JSON.stringify(cartNames));
 	notifPanier();
 }
 
