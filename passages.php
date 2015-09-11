@@ -202,11 +202,11 @@ while($unidentified = $queryUnidentified->fetch(PDO::FETCH_ASSOC)){ ?>
 						</div>
 						<ul class="list-group">
 							<?php
-$queryUnidentified = $db->query("SELECT * FROM passages p
+$queryUnlinked = $db->query("SELECT * FROM passages p
 							WHERE status = 1
 							ORDER BY passage_date DESC");
-while($unidentified = $queryUnidentified->fetch(PDO::FETCH_ASSOC)){ ?>
-							<li class="list-group-item" id="passage-<?php echo $unidentified["passage_id"];?>">
+while($unlinked = $queryUnlinked->fetch(PDO::FETCH_ASSOC)){ ?>
+							<li class="list-group-item" id="passage-<?php echo $unlinked["passage_id"];?>">
 								<div class="row">
 									<div class="col-lg-3">
 										<p>
@@ -214,16 +214,16 @@ while($unidentified = $queryUnidentified->fetch(PDO::FETCH_ASSOC)){ ?>
 										</p>
 									</div>
 									<div class="col-lg-1">
-										<p><?php echo $unidentified["passage_eleve"];?></p>
+										<p><?php echo $unlinked["passage_eleve"];?></p>
 									</div>
 									<div class="col-lg-3">
-										<p>Enregistré le <?php echo date_create($unidentified["passage_date"])->format('d/m')." à ".date_create($unidentified["passage_date"])->format('H:i:s');?></p>
+										<p>Enregistré le <?php echo date_create($unlinked["passage_date"])->format('d/m')." à ".date_create($unlinked["passage_date"])->format('H:i:s');?></p>
 									</div>
 									<div class="col-lg-5">
 									<!--<p class="list-item-option link-record" title="Assigner le passage à un cours">
 <span class="glyphicon glyphicon-link"></span> ASSOCIER
 </p>-->
-										<a href="actions/validate_deletion.php" data-title="Suppression de passage" data-toggle="lightbox" data-gallery="remoteload" data-record="<?php echo $unidentified["passage_id"];?>" class="list-item-option delete-trigger" title="Supprimer ce passage">
+										<a href="actions/validate_deletion.php" data-title="Suppression de passage" data-toggle="lightbox" data-gallery="remoteload" data-record="<?php echo $unlinked["passage_id"];?>" class="list-item-option delete-trigger" title="Supprimer ce passage">
 											<span class="glyphicon glyphicon-trash"></span> SUPPRIMER
 										</a>
 									</div>
