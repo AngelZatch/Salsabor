@@ -109,11 +109,9 @@ while($nextCours = $queryNextCours->fetch(PDO::FETCH_ASSOC)){
 		};
 		$queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$passages[user_id]")->rowCount();
 							?>
-							<li class="list-group-item list-group-item-<?php echo $status;?> col-sm-12">
+							<li class="list-group-item list-group-item-<?php echo $status;?> col-sm-12" id="record-<?php echo $passages["passage_id"];?>" data-record="<?php $passages["passage_id"];?>" data-user="<?php echo $passages["user_id"];?>" data-bundle="">
 								<p class="col-lg-3 eleve-infos">
 									<?php echo $passages["user_prenom"]." ".$passages["user_nom"];?>
-									<input type="hidden" class="eleve-id" value="<?php echo $passages["user_id"];?>">
-									<input type="hidden" class="passage-id" value="<?php echo $passages["passage_id"];?>">
 								</p>
 								<p class="col-lg-1 eleve-tag">
 									<?php echo ($passages["passage_eleve"] != "")?$passages["passage_eleve"]:"Pas de carte";?>
@@ -121,31 +119,21 @@ while($nextCours = $queryNextCours->fetch(PDO::FETCH_ASSOC)){
 								<p class="col-lg-2">Enregsitré à <?php echo date_create($passages["passage_date"])->format("H:i:s");?></p>
 								<div class="col-lg-6 record-options">
 									<?php if ($passages["status"] == 0 || $passages["status"] == 3){?>
-									<p class="list-item-option validate-record" title="Valider l'enregistrement comme étant bien pour ce cours">
+									<p class="list-item-option validate-record" data-record="<?php echo $passages["passage_id"];?>" data-user="<?php echo $passages["user_id"];?>" title="Valider l'enregistrement comme étant bien pour ce cours">
 										<span class="glyphicon glyphicon-ok"></span> VALIDER
 									</p>
-									<p class="list-item-option move-record" data-toggle="popover-x" 	data-trigger="focus" data-placement="bottom bottom-right" data-target="#popoverPassages" title="Assigner le passage à un autre cours">
+									<p class="list-item-option move-record" id="record-<?php echo $passages["passage_id"];?>" data-record="<?php echo $passages["passage_id"];?>" title="Assigner le passage à un autre cours">
 										<span class="glyphicon glyphicon-circle-arrow-right"></span> DEPLACER
 									</p>
-									<div class="popover popover-primary popover-lg" id="popoverPassages">
-										<div class="arrow"></div>
-										<div class="popover-title"><span class="close" data-dismiss="popover-x">&times;</span>Sélectionnez le cours à attribuer</div>
-										<div class="popover-content content-passages"></div>
-									</div>
-									<!--<p class="list-item-option move-bundle" data-toggle="popover-x" data-target="#popoverForfaits" data-trigger="focus" data-placement="bottom bottom-right" title="Modifier le forfait utilisé" id="<?php echo $passages["user_id"];?>">
+									<p class="list-item-option move-bundle" id="move-bundle-<?php echo $passages["user_id"];?>" data-user="<?php echo $passages["user_id"];?>" data-record="<?php echo $passages["passage_id"];?>" title="Modifier le forfait utilisé">
 										<span class="glyphicon glyphicon-credit-card"></span> FORFAIT
-									</p>-->
-									<div class="popover popover-primary popover-lg" id="popoverForfaits">
-										<div class="arrow"></div>
-										<div class="popover-title"><span class="close" data-dismiss="popover-x">&times;</span>Sélectionnez le forfait à utiliser</div>
-										<div class="popover-content content-forfaits"></div>
-									</div>
-									<a href="actions/validate_deletion.php" data-title="Suppression de passage" data-toggle="lightbox" data-gallery="remoteload" class="list-item-option delete-trigger" title="Supprimer ce passage">
+									</p>
+									<a href="actions/validate_deletion.php" data-title="Suppression de passage" data-toggle="lightbox" data-gallery="remoteload" data-record="<?php echo $passages["passage_id"];?>" class="list-item-option delete-trigger" title="Supprimer ce passage">
 										<span class="glyphicon glyphicon-trash"></span> SUPPRIMER
 									</a>
 									<?php } else if($passages["status"] == 2) {  ?>
-									<p class="list-item-option unvalidate-record">
-										<span class="glyphicon glyphicon-remove" title="Annuler la validation de cet enregistrement"></span> ANNULER
+									<p class="list-item-option unvalidate-record" data-record="<?php echo $passages["passage_id"];?>" data-user="<?php echo $passages["user_id"];?>" title="Annuler la validation de cet enregistrement">
+										<span class="glyphicon glyphicon-remove"></span> ANNULER
 									</p>
 									<?php } ?>
 								</div>
@@ -191,14 +179,10 @@ while($unidentified = $queryUnidentified->fetch(PDO::FETCH_ASSOC)){ ?>
 									</div>
 									<div class="col-lg-5">
 										<!--<p class="list-item-option move-record" data-toggle="popover-x" data-target="#popoverPassages" data-trigger="focus" data-placement="bottom bottom-right" title="Assigner le passage à un cours">
-											<span class="glyphicon glyphicon-circle-arrow-right"></span> ASSIGNER
-										</p>-->
-										<div class="popover popover-default popover-lg" id="popoverPassages">
-											<div class="arrow"></div>
-											<div class="popover-title"><span class="close" data-dismiss="popover-x">&times;</span>Sélectionnez le cours à attribuer</div>
-											<div class="popover-content"></div>
-										</div>
-										<a href="actions/validate_deletion.php" data-title="Suppression de passage" data-toggle="lightbox" data-gallery="remoteload" class="list-item-option delete-trigger" title="Supprimer ce passage" id="<?php echo $unidentified["passage_id"];?>">
+<span class="glyphicon glyphicon-circle-arrow-right"></span> ASSIGNER
+</p>-->
+
+										<a href="actions/validate_deletion.php" data-title="Suppression de passage" data-toggle="lightbox" data-gallery="remoteload" data-record="<?php echo $unidentified["passage_id"];?>" class="list-item-option delete-trigger" title="Supprimer ce passage">
 											<span class="glyphicon glyphicon-trash"></span> SUPPRIMER
 										</a>
 									</div>
@@ -207,6 +191,21 @@ while($unidentified = $queryUnidentified->fetch(PDO::FETCH_ASSOC)){ ?>
 							<?php } ?>
 						</ul>
 					</div>
+				</div> <!-- main -->
+				<div class="popover popover-primary popover-lg" id="popoverPassages">
+					<div class="arrow"></div>
+					<div class="popover-title"><span class="close" data-dismiss="popover-x">&times;</span>Sélectionnez le cours à attribuer</div>
+					<div class="popover-content content-passages"></div>
+				</div>
+				<div class="popover popover-default popover-lg" id="popoverCours">
+					<div class="arrow"></div>
+					<div class="popover-title"><span class="close" data-dismiss="popover-x">&times;</span>Sélectionnez le cours à attribuer</div>
+					<div class="popover-content"></div>
+				</div>
+				<div class="popover popover-primary popover-lg" id="popoverForfaits">
+					<div class="arrow"></div>
+					<div class="popover-title"><span class="close" data-dismiss="popover-x">&times;</span>Sélectionnez le forfait à utiliser</div>
+					<div class="popover-content content-forfaits"></div>
 				</div>
 			</div>
 		</div>
@@ -227,22 +226,34 @@ while($unidentified = $queryUnidentified->fetch(PDO::FETCH_ASSOC)){ ?>
 					});
 				})
 			}).on('click', '.validate-record', function(){
+				/** Valider un passage **/
 				var clicked = $(this);
+				var record_id = clicked.attr("data-record");
+				var eleve_id = clicked.attr("data-user");
 				var cours_id = clicked.closest(".panel").find("#cours-id").val();
-				var eleve_id = clicked.parents().siblings(".eleve-infos").children("input.eleve-id").val();
-				var passage_id = clicked.parents().siblings(".eleve-infos").children("input.passage-id").val();
 				var rfid = clicked.parents().siblings(".eleve-tag").html();
-				$.post("functions/validate_record.php", {cours_id : cours_id, eleve_id : eleve_id, passage_id : passage_id, rfid : rfid}).done(function(data){
+				var bundle_id = $("#record-"+record_id).attr("data-bundle");
+				$.post("functions/validate_record.php", {cours_id : cours_id, eleve_id : eleve_id, passage_id : record_id, rfid : rfid, bundle_id : bundle_id}).done(function(data){
 					clicked.closest("li").removeClass('list-group-item-warning');
 					clicked.closest("li").addClass("list-group-item-success");
 					showSuccessNotif(data);
 					window.location.href = "passages.php";
 				});
 			}).on('click', '.move-record', function(){
+				/** Déplacer un enregistrement d'un cours à un autre **/
 				var clicked = $(this);
-				console.log($(this).offset());
-				$("#popoverPassages").popoverX('refreshPosition');
-				window.passage_id = clicked.parents().siblings(".eleve-infos").children("input.passage-id").val();
+				var options = {
+					target: '#'+$(this).attr("id"),
+					placement: 'bottom bottom-right',
+					closeOtherPopovers: true,
+					useOffsetForpos: false
+				}
+				$("#popoverPassages").popoverX(options);
+				$("#popoverPassages").on('shown.bs.modal', function(e){
+					$(this).offset({top: clicked.offset().top + 30, left: 670});
+				})
+				$("#popoverPassages").popoverX('toggle');
+				window.passage_id = clicked.attr("data-record");
 				$.post("functions/fetch_target_cours.php", {passage_id : passage_id}).done(function(data){
 					$(".content-passages").empty();
 					var res = JSON.parse(data);
@@ -274,48 +285,59 @@ while($unidentified = $queryUnidentified->fetch(PDO::FETCH_ASSOC)){ ?>
 					window.location.href = "passages.php";
 				})
 			}).on('click', '.unvalidate-record', function(){
+				/** Annuler la validation d'un passage */
 				var clicked = $(this);
-				var cours_id = clicked.closest(".panel").find("#cours-id").val();
-				var eleve_id = clicked.parents().siblings(".eleve-infos").children("input.eleve-id").val();
-				var passage_id = clicked.parents().siblings(".eleve-infos").children("input.passage-id").val();
-				var rfid = clicked.parents().siblings(".eleve-tag").html();
-				$.post("functions/unvalidate_record.php", {cours_id : cours_id, eleve_id : eleve_id, passage_id : passage_id, rfid : rfid}).done(function(data){
+				var passage_id = $(this).attr("data-record");
+				$.post("functions/unvalidate_record.php", {passage_id : passage_id}).done(function(data){
 					window.location.href = "passages.php";
 				});
 			}).on('click', '.delete-trigger', function(){
-				var passage_id = $(this).parents().siblings(".eleve-infos").children("input.passage-id").val();
-				if(passage_id == null){
-					window.passage_id = $(this).attr("id");
-				} else {
-					window.passage_id = passage_id;
-				}
+				/** Supprimer un passage **/
+				window.passage_id = $(this).attr("data-record");
+				console.log(window.passage_id);
 			}).on('click', '.delete-record', function(){
 				$.post("functions/delete_record.php", {passage_id : window.passage_id}).done(function(){
 					window.location.href = "passages.php";
 				});
 			}).on('click', '.close-record-display', function(){
+				/** Réduire la liste des passages d'un cours **/
 				$(this).parent().parent().next().slideToggle('600');
 				$(this).empty();
 				$(this).append("<span class='glyphicon glyphicon-resize-full'></span> MONTRER");
 				$(this).removeClass("close-record-display");
 				$(this).addClass("open-record-display");
 			}).on('click', '.open-record-display', function(){
+				/** Ouvrir la liste des passages d'un cours **/
 				$(this).parent().parent().next().slideToggle('600');
 				$(this).empty();
 				$(this).append("<span class='glyphicon glyphicon-resize-small'></span> REDUIRE");
 				$(this).addClass("close-record-display");
 				$(this).removeClass("open-record-display");
 			}).on('click', '.move-bundle', function(){
-				var eleve_id = $(this).attr("id");
+				/** Forcer l'utilisation d'un forfait spécifique**/
+				var clicked = $(this);
+				var eleve_id = $(this).attr("data-user");
+				window.record_id = $(this).parents().parents().attr("id").substr(7);
+				var options = {
+					target: '#'+clicked.attr("id"),
+					placement: 'bottom bottom-right',
+					closeOtherPopovers: true,
+					useOffsetForpos: false
+				}
+				$("#popoverForfaits").popoverX(options);
+				$("#popoverForfaits").on('shown.bs.modal', function(e){
+					$(this).offset({top: clicked.offset().top + 30, left: 570});
+				})
+				$("#popoverForfaits").popoverX('toggle');
 				$.post("functions/fetch_target_forfait.php", {eleve_id : eleve_id}).done(function(data){
 					$(".content-forfaits").empty();
 					var res = JSON.parse(data);
 					var line = "";
 					for(var i = 0; i < res.length; i++){
 						if(res[i].actif == 1){
-							line += "<div class='panel panel-success panel-target'>";
+							line += "<div class='panel panel-success panel-bundle-target' data-bundle="+res[i].id+">";
 						} else {
-							line += "<div class='panel panel-default panel-target'>";
+							line += "<div class='panel panel-default panel-bundle-target' data-bundle="+res[i].id+">";
 						}
 						line += "<input type='hidden' value="+res[i].id+">";
 						line += "<div class='panel-heading'>";
@@ -333,6 +355,12 @@ while($unidentified = $queryUnidentified->fetch(PDO::FETCH_ASSOC)){ ?>
 					}
 					$(".content-forfaits").append(line);
 				})
+			}).on('click', '.panel-bundle-target', function(){
+				var bundle_id = $(this).children("input").val();
+				$(this).addClass("chosen");
+				$(this).children(".panel-heading").children(".row").append("<div class='col-lg-5'><span class='glyphicon glyphicon-ok'></span> FORFAIT CHOISI</div>");
+				$("#record-"+record_id).attr("data-bundle", bundle_id);
+				$(".popover").delay('1500').hide('500');
 			})
 			$(".close-cours").click(function(){
 				var cours = $(this).closest(".panel").find("#cours-id").val();

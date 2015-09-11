@@ -22,32 +22,10 @@ $produit = $db->query("SELECT * FROM produits_adherents
 					</div>
 					<div class="col-lg-6"></div>
 				</div>
-				<div class="col-sm-10 main">
-					<?php
-$date_now = date_create('now')->format('Y-m-d H:i:s');
-	$actif = 1;
-	$date_activation = $date_now;
-	$date_expiration = date("Y-m-d 00:00:00", strtotime($date_activation.'+'.$produit["validite_initiale"].'DAYS'));
-	$queryHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= ? AND date_chomee <= ?");
-	$queryHoliday->bindParam(1, $date_activation);
-	$queryHoliday->bindParam(2, $date_expiration);
-	$queryHoliday->execute();
-
-echo $date_expiration;
-	$j = 0;
-
-	for($i = 0; $i <= $queryHoliday->rowCount(); $i++){
-		echo "Boucle";
-		$exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$i.'DAYS'));
-		$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
-		$checkHoliday->bindParam(1, $exp_date);
-		$checkHoliday->execute();
-		if($checkHoliday->rowCount() != 0){
-			$j++;
-		}
-		$totalOffset = $i + $j;
-		echo $new_exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$totalOffset.'DAYS'));
-	}
+				<div class="col-sm-10 main"><?php
+$today = date_create('now')->format('Y-m-d H:i:s');
+// Si ce même code a été passé il y a moins de 20 minutes, le passage est refusé
+echo $tenPrevious = date('Y-m-d H:i:s', strtotime($today.'-10MINUTES'));
 					?>
 				</div>
 			</div>

@@ -486,7 +486,7 @@ body{
 	max-height: 300px;
 }
 
-.panel-target{
+.panel-target, .panel-bundle-target{
 	cursor: pointer;
 }
 

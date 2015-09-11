@@ -10,7 +10,7 @@ $queryFeed = $db->prepare('SELECT *, pa.date_activation AS dateActivation, pa.ac
 								LEFT OUTER JOIN transactions t
 									ON id_transaction_foreign=t.id_transaction
 									AND t.id_transaction IS NOT NULL
-								WHERE id_user_foreign=?
+								WHERE id_user_foreign=? AND est_abonnement=0
 								ORDER BY produitActif DESC');
 $queryFeed->bindValue(1, $id);
 $queryFeed->execute();

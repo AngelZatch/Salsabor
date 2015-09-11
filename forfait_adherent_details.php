@@ -174,10 +174,11 @@ $queryEcheances->bindValue(1, $forfait["id_transaction_foreign"]);
 				$("#remaining-hours").html(window.remainingHours);
 			}
 			function updateRemainingHours(){
-				var update_id = $("*[name=id]").val();
+				var update_id = <?php echo $data;?>;
+				console.log(update_id);
 				var remainingHours = window.remainingHours;
-				$.post("functions/update_volume_cours.php", {update_id, remainingHours}).done(function(data){
-					$.notify("Modifications enregistrées.", {globalPosition: "bottom right", className:"success"});
+				$.post("functions/update_volume_cours.php", {update_id : update_id, remainingHours : remainingHours}).done(function(data){
+					showSuccessNotif(data);
 				})
 			}
 		</script>
