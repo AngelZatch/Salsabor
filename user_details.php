@@ -105,9 +105,9 @@ if(isset($_POST["edit"])){
 		$db->beginTransaction();
 		$edit = $db->prepare('UPDATE users
 								SET user_prenom = :prenom, user_nom = :nom, user_rfid = :rfid,
-									date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal,ville = :ville,
+									date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville,
 									mail = :mail, telephone = :telephone, photo = :photo,
-									est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre
+									est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre, commentaires = :commentaires
 													WHERE user_id = :id');
 		$edit->bindParam(':prenom', $_POST["identite_prenom"]);
 		$edit->bindParam(':nom', $_POST["identite_nom"]);
@@ -124,6 +124,7 @@ if(isset($_POST["edit"])){
 		$edit->bindParam(':est_staff', $_POST["est_staff"]);
 		$edit->bindParam(':est_prestataire', $_POST["est_prestataire"]);
 		$edit->bindParam(':est_autre', $_POST["est_autre"]);
+		$edit->bindParam(':commentaires', $_POST["commentaires"]);
 		$edit->bindParam(':id', $data);
 		$edit->execute();
 		if(isset($_POST["rfid"])){
@@ -268,7 +269,11 @@ if(isset($_POST["edit"])){
 							</div>
 							<div class="form-group">
 								<label for="date_naissance" class="control-label">Date de naissance</label>
-								<input type="date" name="date_naissance" id="date_naissance" class="form-control input-lg" value=<?php echo $details["date_naissance"];?>>
+								<input type="date" name="date_naissance" id="date_naissance" class="form-control input-lg" value="<?php echo $details["date_naissance"];?>">
+							</div>
+							<div class="form-group">
+								<label for="commentaires" class="control-label">Commentaires</label>
+								<textarea rows="5" class="form-control input-lg" name="commentaires"><?php echo $details["commentaires"];?></textarea>
 							</div>
 							<input type="submit" name="edit" role="button" class="btn btn-primary btn-block" value="ENREGISTRER LES MODIFICATIONS">
 						</section>

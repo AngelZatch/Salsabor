@@ -73,12 +73,12 @@ if(isset($_POST['addAdherent'])){
 												date_inscription, rue, code_postal, ville, mail,
 												telephone, tel_secondaire, source_connaissance,
 												acces_web, est_membre, est_professeur, est_staff, est_prestataire,
-												est_autre, autre_statut, user_rib, actif)
+												est_autre, autre_statut, user_rib, actif, commentaires)
 										VALUES(:prenom, :nom, :rfid, :date_naissance,
 												:date_inscription, :rue, :code_postal, :ville, :mail,
 												:telephone, :tel_secondaire, :sources_connaissance,
 												:acces_web, :est_membre, :est_professeur, :est_staff, :est_prestataire,
-												:est_autre, :autre_statut, :user_rib, :actif)');
+												:est_autre, :autre_statut, :user_rib, :actif, :commentaires)');
 		$new->bindParam(':prenom', $_POST['identite_prenom']);
 		$new->bindParam(':nom', $_POST['identite_nom']);
 		$new->bindParam(':rfid', $_POST["rfid"]);
@@ -100,6 +100,7 @@ if(isset($_POST['addAdherent'])){
 		$new->bindParam(':autre_statut', $_POST["est_statut"]);
 		$new->bindParam(':user_rib', $_POST["user_rib"]);
 		$new->bindParam(':actif', $actif);
+		$new->bindParam(':commentaires', $_POST["commentaires"]);
 		$new->execute();
 		if(isset($_POST["rfid"])){
 			$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
@@ -279,15 +280,19 @@ if(isset($_POST['addSell'])){
 									</div>
 								</div>
 							</div>
+							<div class="form-group">
+								<label for="commentaires" class="control-label">Commentaires</label>
+								<textarea rows="5" class="form-control input-lg" name="commentaires"><?php echo $details["commentaires"];?></textarea>
+							</div>
 							<p class="form-section">Informations Salsabor</p>
 							<div class="form-group">
 								<label for="date_inscription" class="control-label">Date d'inscription <span class="label-tip">Par défaut, aujourd'hui</span></label>
 								<input type="date" name="date_inscription" id="date_inscription" class="form-control mandatory input-lg" value="<?php echo $now;?>">
 							</div>
 							<!--<div class="form-group">
-								<label for="parrain" class="control-label">Parrain</label>
-								<input type="text" name="parrain" class="form-control" placeholder="Tapez un nom pour rechercher">
-							</div>-->
+<label for="parrain" class="control-label">Parrain</label>
+<input type="text" name="parrain" class="form-control" placeholder="Tapez un nom pour rechercher">
+</div>-->
 							<div class="form-group">
 								<label for="rfid" class="control-label">Code carte</label>
 								<div class="input-group input-group-lg">
