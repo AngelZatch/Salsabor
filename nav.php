@@ -5,8 +5,6 @@ $db = PDOFactory::getConnection();
 $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0 AND priorite=1")->rowCount();
 
 $queryPassages = $db->query("SELECT * FROM passages JOIN users ON passage_eleve=users.user_rfid");
-
-$queryPanier = $db->query("SELECT * FROM panier JOIN produits ON panier_element=produits.produit_id");
 ?>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
