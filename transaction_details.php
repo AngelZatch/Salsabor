@@ -16,6 +16,15 @@ $queryProduits->execute();
 
 $queryEcheances = $db->prepare("SELECT * FROM produits_echeances WHERE reference_achat=?");
 $queryEcheances->bindValue(1, $data);
+
+if(isset($_POST["submit"])){
+	$comments = $db->prepare("UPDATE transactions
+							SET transaction_commentaires=:commentaires
+							WHERE id_transaction= :id");
+	$comments->bindParam(':commentaires', $_POST["commentaires"]);
+	$comments->bindParam(':id', $data);
+	$comments->execute();
+}
 ?>
 <html>
 	<head>
@@ -64,6 +73,13 @@ $queryEcheances->bindValue(1, $data);
 						</li>
 					</ul>
 					<?php include "inserts/echeancier.php";?>
+					<form method="post">
+						<div class="form-group">
+							<label for="commentaires">Commentaires</label>
+							<textarea rows="5" class="form-control input-lg" name="commentaires"><?php echo $transaction["transaction_commentaires"];?></textarea>
+						</div>
+						<input type="submit" name="edit" class="btn btn-primary btn-block" value="Enregistrer les commentaires">
+					</form>
 				</div>
 			</div>
 		</div>
