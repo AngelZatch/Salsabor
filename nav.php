@@ -9,7 +9,7 @@ $queryPassages = $db->query("SELECT * FROM passages JOIN users ON passage_eleve=
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container-fluid">
-		<div class="navbar-header"><a href="dashboard.php" class="navbar-brand"><img src="assets/images/logotest.png" alt="Salsabor Gestion" style="height:100%;"></a></div>
+		<div class="navbar-header"><a href="dashboard" class="navbar-brand"><img src="assets/images/logotest.png" alt="Salsabor Gestion" style="height:100%;"></a></div>
 		<form action="search.php" class="navbar-form navbar-left" role="search">
 			<div class="form-group">
 				<input type="text" class="form-control" name="search_terms" placeholder="Chercher un utilisateur, cours, achat...">

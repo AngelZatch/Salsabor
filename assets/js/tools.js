@@ -216,6 +216,8 @@ $(document).ready(function(){
 	});
 }).on('click', '.submit-relay', function(){
 	$(".submit-relay-target").click();
+}).on('click', '.sub-modal-close', function(){
+	$(".sub-modal").toggle();
 })
 
 $(".has-name-completion").on('click blur keyup', function(){

@@ -23,3 +23,17 @@ Calculateur :
 - Donne les valeurs d'argent à payer à un professeur en fonction de telle ou telle activité.
 - CHAQUE ACTIVITE D'UN PROFESSEUR DOIT ÊTRE MARQUEE COMME PAYEE OU NON.
 - Prévisionel des montants à payer
+
+// MARS 2016 //
+-> Affecter un passage à un abonnement (renseigner une date de début & une date de fin)
+-> Date d'activation dès le premier passage
+-> Moteur de recherche et insertion de caractères : restreindre les caractères non supportés
+-> Nav tabs : refresh
+-> Champ commentaire dans les transactions
+-> Activation de forfaits, fermeture de forfaits épuisés
+-> Revamp UI sur les abonnements, achats, transactions...
+-> Trier les produits
+-> Modifier les échéanciers
+-> Renseigner un payeur qu'il soit adhérent ou non
+-> Abonnements & Transactions orphelins
+-> Trombinoscope dans les passages

@@ -49,7 +49,7 @@ $numberTransactions = $searchTransactions->rowCount();
 						</div>
 						<div class="list-group">
 							<?php while ($users = $searchUsers->fetch(PDO::FETCH_ASSOC)){ ?>
-							<a href="user_details.php?id=<?php echo $users["user_id"];?>&status=membre" class="list-group-item">
+							<a href="user/<?php echo $users["user_id"];?>" class="list-group-item">
 								<div class="row">
 									<div class="col-lg-1">
 										<?php if($users["actif"] == 1){ ?>
@@ -80,7 +80,7 @@ $numberTransactions = $searchTransactions->rowCount();
 						</div>
 						<div class="list-group">
 							<?php while ($profs = $searchProfs->fetch(PDO::FETCH_ASSOC)){ ?>
-							<a href="user_details.php?id=<?php echo $profs["user_id"];?>&status=membre" class="list-group-item">
+							<a href="user/<?php echo $profs["user_id"];?>" class="list-group-item">
 								<div class="row">
 									<div class="col-lg-4">
 										<?php echo $profs["user_prenom"]." ".$profs["user_nom"];?>
@@ -104,7 +104,7 @@ $numberTransactions = $searchTransactions->rowCount();
 						</div>
 						<div class="list-group">
 							<?php while ($staff = $searchStaff->fetch(PDO::FETCH_ASSOC)){ ?>
-							<a href="user_details.php?id=<?php echo $staff["user_id"];?>&status=membre" class="list-group-item">
+							<a href="user/<?php echo $staff["user_id"];?>" class="list-group-item">
 								<div class="row">
 									<div class="col-lg-4">
 										<?php echo $staff["user_prenom"]." ".$staff["user_nom"];?>
@@ -162,7 +162,7 @@ $numberTransactions = $searchTransactions->rowCount();
 						</div>
 						<div class="list-group">
 							<?php while ($transaction = $searchTransactions->fetch(PDO::FETCH_ASSOC)){ ?>
-							<a href="transaction_details.php?id=<?php echo $transaction["id_transaction"];?>&status=transactions" class="list-group-item">
+							<a href="user/<?php echo $transaction["payeur_transaction"];?>/achats#purchase-<?php echo $transaction["id_transaction"];?>" class="list-group-item">
 								<div class="row">
 									<div class="col-lg-6">
 										<?php echo $transaction["id_transaction"];?>

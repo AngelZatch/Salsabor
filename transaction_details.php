@@ -3,7 +3,6 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
 $data = $_GET["id"];
-$status = $_GET["status"];
 
 $queryTransaction = $db->prepare("SELECT * FROM transactions WHERE id_transaction=?");
 $queryTransaction->bindValue(1, $data);
@@ -30,6 +29,7 @@ if(isset($_POST["submit"])){
 	<head>
 		<meta charset="UTF-8">
 		<title>Transaction <?php echo $transaction["id_transaction"];?> | Salsabor</title>
+		<base href="../">
 		<?php include "styles.php";?>
 	</head>
 	<body>
@@ -40,17 +40,6 @@ if(isset($_POST["submit"])){
 				<div class="fixed">
 					<div class="col-lg-6">
 						<p class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Transaction <?php echo $transaction["id_transaction"]?></p>
-					</div>
-					<div class="col-lg-6">
-						<div class="btn-toolbar">
-							<?php if($status == "transactions"){ ?>
-							<a href="transactions.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux transactions</a>
-							<?php } else if ($status == "echeances") { ?>
-							<a href="echeances.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux échéances</a>
-							<?php } else { ?>
-							<a href="user_details.php?id=<?php echo $transaction["payeur_transaction"];?>&status=<?php echo $status;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à l'adhérent</a>
-							<?php } ?>
-						</div> <!-- btn-toolbar -->
 					</div>
 				</div>
 				<div class="col-sm-10 main">

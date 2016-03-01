@@ -1,0 +1,27 @@
+Options -MultiViews
+RewriteEngine On
+DirectoryIndex dashboard.php
+
+RewriteRule ^dashboard$ dashboard.php
+RewriteRule ^inscription$ inscription.php
+RewriteRule ^vente$ catalogue.php
+RewriteRule ^reservation$ resa_add.php
+RewriteRule ^invitation$ eleve_inviter.php
+RewriteRule ^passages$ passages.php
+RewriteRule ^regularisation$ irregulars.php
+RewriteRule ^planning$ planning.php
+RewriteRule ^salles$ salles.php
+RewriteRule ^forfaits$ forfaits.php
+RewriteRule ^tarifs$ tarifs_liste.php
+RewriteRule ^holidays$ jours_chomes.php
+RewriteRule ^echeances$ echeances.php
+RewriteRule ^transactions$ transactions.php
+
+#User Details
+RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]
+RewriteRule ^user/([0-9-]+)/achats user_purchases.php?id=$1 [NC,L]
+RewriteRule ^user/([0-9-]+)/abonnements user_subscriptions.php?id=$1 [NC,L]
+RewriteRule ^user/([0-9-]+)/historique user_history.php?id=$1 [NC,L]
+RewriteRule ^user/([0-9-]+)/reservations user_reservations.php?id=$1 [NC,L]
+
+RewriteRule ^transaction/([A-Za-z0-9-]+)$ transaction_details.php?id=$1

@@ -2,41 +2,11 @@
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
-$status = $_GET["status"];
 $valueTeacher = 0;
 $valueEleve = 0;
 $valueStaff = 0;
 $backLink = "";
-$titleText = "Inscrire un ";
-switch($status){
-	case "teacher":
-	$valueTeacher = 1;
-	$backLink = "professeurs.php";
-	$buttonText = "Retour aux professeurs";
-	$titleText .= "professeur";
-	break;
-
-	case "eleve":
-	$valueEleve = 1;
-	$backLink = "adherents.php";
-	$buttonText = "Retour aux élèves";
-	$titleText .= "élève";
-	break;
-
-	case "contact":
-	$backLink = "dashboard.php";
-	$buttonText = "Retour au panneau d'administration";
-	$titleText .= "contact";
-	break;
-
-	case "staff":
-	$valueStaff = 1;
-	$backLink = "staff_liste.php?rank=0";
-	$buttonText = "Retour aux membres du staff";
-	$titleText .= "staff";
-	break;
-}
-
+$titleText = "Réaliser une inscription";
 
 $now = date_create('now')->format('Y-m-d');
 
@@ -206,7 +176,6 @@ if(isset($_POST['addSell'])){
 						</div>
 						<div class="col-lg-6">
 							<div class="btn-toolbar">
-								<a href="<?php echo $backLink;?>" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <?php echo $buttonText;?></a>
 								<input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="Enregistrer" id="submit-button" disabled>
 							</div> <!-- btn-toolbar -->
 						</div>

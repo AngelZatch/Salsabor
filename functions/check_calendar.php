@@ -14,7 +14,7 @@ if($recurring == 'false'){
 	/** Conversion de la date **/
 	$date_debut = $_POST['date_debut']." ".$heure_debut;
 	$date_fin = $_POST['date_debut']." ".$heure_fin;
-	
+
 	$findResa = $db->prepare('SELECT COUNT(*) FROM cours WHERE cours_salle=? AND ((cours_start<=? AND cours_end>?) OR (cours_start<? AND cours_end>=?))');
 	$findResa->bindValue(1, $lieu);
 	$findResa->bindValue(2, $date_debut);
@@ -28,7 +28,7 @@ if($recurring == 'false'){
 	$frequence_repetition = $_POST['frequence_repetition'];
 	$date_debut = $_POST['date_debut'];
 	$date_fin = $_POST['date_debut'];
-    $start = $date_debut." ".$heure_debut;
+	$start = $date_debut." ".$heure_debut;
 	$end = $date_debut." ".$heure_fin;
 	(int)$nombre_repetitions = (strtotime($date_fin) - strtotime($date_debut))/(86400 * $frequence_repetition)+1;
 	$res = 0;

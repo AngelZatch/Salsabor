@@ -1,4 +1,15 @@
-$salsabor-red: #A9023A;
+$salsabor-red: #A9023A
+$system-color: #888888
+$success-color: #87CE77
+$warning-color: #F0AD4E
+$danger-color: #D9534F
+$skip-color: #D08AC3
+$play-color: #7DB8E0
+$whisper-color: #D5D5D5
+$avatar-size-preview: 120px
+$break-small: 360px
+$break-medium: 768px
+$break-large: 1200px
 
 /** ADJUSTMENT TOOLS **/
 .align-right
@@ -10,6 +21,9 @@ body
 .navbar
 	background-color: darken($salsabor-red, 10%)
 	border: 0
+
+.popover
+	z-index: 1060
 
 /** SIDE MENU **/
 .main-option
@@ -23,3 +37,150 @@ body
 	font-size: 28px
 	padding: 0
 	margin: 0
+
+/** PURCHASES **/
+.panel-purchase
+	box-shadow: 0px 0px 10px $system-color
+	border: 0
+	.panel-heading-container
+		cursor: pointer
+		text-decoration: none
+		color: black
+		&:hover
+			color: black
+	.panel-heading
+		background-color: white
+		text-decoration: none
+		p
+			margin-top: 10px
+	.panel-body
+		border-top: 1px solid lighten($system-color, 35%)
+
+.purchase-subtitle
+	font-weight: 600
+	color: $salsabor-red
+	font-size: 18px
+
+.purchase-id
+	font-size: 17px
+	font-weight: 600
+
+.purchase-sub
+	font-style: italic
+
+.purchase-product-name
+	font-weight: 600
+
+.purchase-product-list-container
+	margin-bottom: 20px
+
+.purchase-inside-list
+	padding-left: 0
+
+.purchase-item
+	display: inherit
+	padding-left: 0
+	padding-right: 0
+	cursor: pointer
+	p
+		padding: 10px
+		margin-top: 2px
+		margin-bottom: 0
+
+.purchase-item-options
+	padding: 0 0 20px 30px
+
+.maturity-item
+	cursor: default
+
+.item-pending
+	background-color: $warning-color
+	margin-bottom: 10px
+	&:hover
+		background-color: darken($warning-color, 10%)
+
+.item-expired
+	background-color: darken(white, 5%)
+	margin-bottom: 10px
+	color: darken(white, 30%)
+
+.item-active
+	background-color: $success-color
+	margin-bottom: 10px
+	&:hover
+		background-color: darken($success-color, 10%)
+
+.status-icon
+	text-align: center
+	color: $system-color
+	cursor: pointer
+	&:hover
+		color: darken($system-color, 30%)
+
+.status-success
+	color: $success-color
+	&:hover
+		color: darken($success-color, 20%)
+
+.maturitys-list > li
+	display: inherit
+
+/** PRODUCT MODAL **/
+.btn-modal
+	text-align: left
+	font-weight: 700
+	span
+		font-weight: 400
+		color: $salsabor-red
+
+.modal-body-title
+	font-size: 20px
+	font-weight: 600
+
+.modal-purchase
+	padding-left: 0
+	padding-right: 0
+	.purchase-details-container
+		padding-left: 0
+		padding-right: 0
+
+.product-status-container
+	border-radius: 8px
+	box-shadow: 0 0 10px $system-color
+	height: 120px
+	padding: 10px
+	text-align: center
+
+.highlighted-value
+	font-size: 22px
+	font-weight: 600
+	color: $salsabor-red
+
+.sessions-list
+	margin-top: -10px
+
+.product-session
+	@extend .purchase-item
+	cursor: default
+	padding: 1px 0
+	p
+		padding-bottom: 0
+		margin-top: 0
+
+h2.modal-body-title.first
+	margin-top: 0
+
+/** SUB MODAL **/
+.sub-modal
+	position: relative
+	left: 605px
+	background-color: white
+	border-radius: 4px
+	display: none
+	padding: 10px
+
+.sub-modal-header
+	border-bottom: 1px solid $system-color
+
+.sub-modal-body
+	padding-top: 10px

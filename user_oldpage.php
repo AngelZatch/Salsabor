@@ -143,7 +143,7 @@ if(isset($_POST["edit"])){
 	<head>
 		<meta charset="UTF-8">
 		<title>Editer - <?php echo $details["user_prenom"]." ".$details["user_nom"];?> | Salsabor</title>
-		<base href="../">
+		<base href="../../">
 		<?php include "styles.php";?>
 	</head>
 	<body>
@@ -162,15 +162,15 @@ if(isset($_POST["edit"])){
 						<div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
 						<?php } ?>
 						<ul class="nav nav-tabs">
-							<li role="presentation" class="active"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
-							<li role="presentation"><a href="user/<?php echo $data;?>/abonnements">Abonnements</a></li>
-							<li role="presentation"><a href="user/<?php echo $data;?>/historique">Cours suivis</a></li>
-							<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
-							<li role="presentation"><a href="user/<?php echo $data;?>/reservations">Réservations</a></li>
+							<li role="presentation" id="infos-toggle" class="active"><a>Informations personnelles</a></li>
+							<li role="presentation" id="forfaits-toggle"><a>Abonnements</a></li>
+							<li role="presentation" id="history-suivis-toggle"><a>Cours suivis</a></li>
+							<li role="presentation" id="achats-toggle"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
+							<li role="presentation" id="resa-toggle"><a>Réservations</a></li>
 							<?php if($details["est_professeur"] == 1){ ?>
-							<li role="presentation"><a>Cours donnés</a></li>
-							<li role="presentation"><a>Tarifs</a></li>
-							<li role="presentation"><a>Statistiques</a></li>
+							<li role="presentation" id="history-donnes-toggle"><a>Cours donnés</a></li>
+							<li role="presentation" id="tarifs-toggle"><a>Tarifs</a></li>
+							<li role="presentation" id="stats-toggle"><a>Statistiques</a></li>
 							<?php } ?>
 						</ul>
 						<section id="infos">
@@ -263,11 +263,210 @@ if(isset($_POST["edit"])){
 							</div>
 							<input type="submit" name="edit" role="button" class="btn btn-primary btn-block" value="ENREGISTRER LES MODIFICATIONS">
 						</section>
+						<section id="history-suivis">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th class="col-lg-2">Intitulé</th>
+										<th class="col-lg-3">Jour</th>
+										<th class="col-lg-2">Détails</th>
+										<th class="col-lg-3">Forfait</th>
+										<th class="col-lg-2">Prix pondéré</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php while($history = $queryHistoryRecus->fetch(PDO::FETCH_ASSOC)){ ?>
+									<tr <?php echo ($history["produit_adherent_id"]==null)?"class='warning'":"";?>>
+										<td class="col-lg-2"><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
+										<td class="col-lg-3"><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
+										<td class="col-lg-2"><?php echo $history['niveau_name']."\n".$history['salle_name'];?></td>
+										<td class="col-lg-3">
+											<?php if($history["produit_adherent_id"]==null){?>
+											<a class="btn btn-info" name="link-forfait"><span class="glyphicon glyphicon-link"></span> Associer un forfait</a>
+											<input type="hidden" name="cours" value="<?php echo $history["cours_id"];?>">
+											<select name="forfaits-actifs" style="display:none;" class="form-control">
+												<?php while($forfaitsActifs = $queryForfaitsActifs->fetch(PDO::FETCH_ASSOC)){?>
+												<option value="<?php echo $forfaitsActifs["id_transaction"]?>"><?php echo $forfaitsActifs["produit_nom"];?></option>
+												<?php } ?>
+											</select>
+											<?php } else echo $history["produit_nom"];?>
+										</td>
+										<td class="col-lg-2">A déterminer</td>
+									</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+						</section>
+						<section id="resa">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Plage horaire</th>
+										<th>Lieu</th>
+										<th>Activité</th>
+										<th>Prix de la réservation</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php while($reservations = $queryResa->fetch(PDO::FETCH_ASSOC)){ ?>
+									<tr>
+										<td>Le <?php echo date_create($reservations["reservation_start"])->format('d/m/Y \d\e H\hi');?> à <?php echo date_create($reservations["reservation_end"])->format('H\hi');?></td>
+										<td><?php echo $reservations["salle_name"];?></td>
+										<td><?php echo $reservations["prestations_name"];?></td>
+										<td><?php echo $reservations["reservation_prix"];?> €</td>
+									</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+						</section>
+						<section id="forfaits">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th></th>
+										<th>Type de forfait</th>
+										<th>Date d'achat</th>
+										<th>Période de validité</th>
+										<th>Prix d'achat</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php while($forfaits = $queryForfaits->fetch(PDO::FETCH_ASSOC)){
+	if($forfaits["dateActivation"] == "0000-00-00 00:00:00"){
+		$periode_validite = "Activation en attente";
+	} else {
+		$periode_validite = "Du ".date_create($forfaits["dateActivation"])->format('d/m/Y')." au ".date_create($forfaits["date_expiration"])->format('d/m/Y');
+	}?>
+									<tr>
+										<?php if($forfaits["produitActif"] == '1'){ ?>
+										<td><span class="glyphicon glyphicon-certificate glyphicon-success" title="Forfait/Invitation actif(ve)"></span></td>
+										<?php } else {
+		if($forfaits["dateActivation"] != "0000-00-00 00:00:00"){ ?>
+										<td><span class="glyphicon glyphicon-certificate glyphicon-inactive" title="Forfait/Invitation inactif(ve)"></span></td>
+										<?php } else { ?>
+										<td><span class="glyphicon glyphicon-certificate glyphicon-inactive glyphicon-pending" title="Forfait/Invitation en attente"></span></td>
+										<?php }
+	} ?>
+										<td><?php echo $forfaits["produit_nom"];?></td>
+										<td><?php echo date_create($forfaits["date_achat"])->format('d/m/Y');?></td>
+										<td><?php echo $periode_validite;?></td>
+										<td><?php echo $forfaits["prix_achat"];?> €</td>
+										<td><a href="forfait_adherent_details.php?id=<?php echo $forfaits["id_produit_adherent"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
+									</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+							<a href="catalogue.php?user=<?php echo $details["user_id"];?>" class="btn btn-primary btn-block">Acheter un nouveau produit pour cet adhérent</a>
+						</section>
+						<section id="achats">
+							<?php while($achats = $queryAchats->fetch(PDO::FETCH_ASSOC)){ ?>
+							<div class="panel panel-purchase">
+								<div class="panel-heading">
+									<p class="purchase-id">Transaction <?php echo $achats["id_transaction"];?></p>
+									<p class="purchase-sub">Effectuée le <?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <?php echo $achats["prix_total"];?> €</p>
+									<a href="transaction_details.php?id=<?php echo $achats["id_transaction"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a>
+								</div>
+								<div class="panel-body">
+									<p class="purchase-products-title">Liste des produits</p>
+
+									<p class="purchase-maturities-title">Echéancier</p>
+								</div>
+							</div>
+							<?php } ?>
+						</section>
+						<?php if($details["est_professeur"] == 1){ ?>
+						<section id="history-donnes">
+							<div class="filter-options col-lg-6">
+								<p class="section-title">Options de filtrage</p>
+							</div>
+							<div class="price-summary col-lg-6">
+								<p class="section-title">TOTAL</p>
+								<p>Nombre de cours : <?php echo $queryHistoryDonnes->rowCount();?></p>
+								<p>Somme totale : <?php echo $totalPrice;?> €</p>
+								<p>Somme déjà réglée : <?php echo $totalPaid;?> €</p>
+								<p>Somme restante : <?php echo $totalDue = $totalPrice - $totalPaid;?> €</p>
+							</div>
+							<div id="cours-list">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>Intitulé <span class="glyphicon glyphicon-sort sort" data-sort="cours-name"></span></th>
+											<th>Jour <span class="glyphicon glyphicon-sort sort" data-sort="jour"></span></th>
+											<th>Niveau <span class="glyphicon glyphicon-sort sort" data-sort="niveau"></span></th>
+											<th>Lieu <span class="glyphicon glyphicon-sort sort" data-sort="lieu"></span></th>
+											<th>Somme <span class="glyphicon glyphicon-sort sort" data-sort="montant"></span></th>
+										</tr>
+									</thead>
+									<tbody class="list">
+										<?php while ($history = $queryHistoryDonnes->fetch(PDO::FETCH_ASSOC)){?>
+										<tr>
+											<td class="cours-name"><?php echo $history['cours_intitule']." ".$history['cours_suffixe'];?></td>
+											<td class="jour"><?php echo date_create($history['cours_start'])->format('d/m/Y H:i');?> - <?php echo date_create($history['cours_end'])->format('H:i');?></td>
+											<td class="niveau"><?php echo $history['niveau_name'];?></td>
+											<td class="lieu"><?php echo $history['salle_name'];?></td>
+											<td class="<?php echo ($history['paiement_effectue'] != 0)?'payment-done':'payment-due';?> montant"><?php echo $history['cours_prix'];?> €</td>
+										</tr>
+										<?php $totalPrice += $history['cours_prix'];
+																											  if($history['paiement_effectue'] != 0)$totalPaid += $history['cours_prix'];} ?>
+									</tbody>
+								</table>
+							</div>
+						</section><!-- Historique des cours -->
+						<section id="tarifs">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th class="col-sm-3">Intitulé</th>
+										<th class="col-sm-3">Prix</th>
+										<th class="col-sm-3">Coefficient</th>
+										<th class="col-sm-3"></th>
+									</tr>
+								</thead>
+								<tbody id="table-content">
+									<tr id="new-tarif" style="display:none;">
+										<td class="col-sm-3">
+											<select name="prestation" id="prestation" class="form-control">
+												<?php while($prestations = $queryPrestations->fetch(PDO::FETCH_ASSOC)){ ?>
+												<option value="<?php echo $prestations["prestations_id"];?>"><?php echo $prestations["prestations_name"];?></option>
+												<?php } ?>
+											</select>
+										</td>
+										<td class="col-sm-3"><input type="number" step="any" name="tarif" id="tarif" class="form-control"></td>
+										<td class="col-sm-3">
+											<select name="ratio" id="ratio" class="form-control">
+												<?php
+																  while ($row_ratio = $ratio->fetch(PDO::FETCH_ASSOC)){
+																	  $array_suffixes = preg_split("/','/", substr($row_ratio['Type'], 5, strlen($row_ratio['Type'])-7));
+																	  for($i = 0; $i < sizeof($array_suffixes); $i++){?>
+												<option value="<?php echo $array_suffixes[$i];?>"><?php echo $array_suffixes[$i];?></option>
+												<?php }
+																  } ?>
+											</select>
+										</td>
+										<td class="col-sm-3">
+											<a class="btn btn-default" onClick="addTarif()"><span class="glyphicon glyphicon-plus"></span> Valider</a>
+											<a class="btn btn-default" id="cancel"><span class="glyphicon glyphicon-cancel"></span> Annuler</a>
+										</td>
+									</tr>
+									<input type="hidden" name="prof_id" id="prof_id" value="<?php echo $data;?>">
+								</tbody>
+							</table>
+							<a role="button" class="btn btn-primary" id="add-tarif">AJOUTER UN TARIF</a>
+							<p id="json-output"></p>
+						</section> <!-- Tarifs -->
+						<section id="stats">
+							<p>Nombre de cours</p>
+							<div id="nombre-cours" style="height: 250px;"></div>
+							<p>Types de cours donnés</p>
+						</section> <!-- Statistiques -->
+						<?php } ?>
 					</div>
 				</form>
 			</div>
 		</div>
 		<?php include "scripts.php";?>
+		<script src="assets/js/nav-tabs.js"></script>
 		<script>
 			var listening = false;
 			var wait;

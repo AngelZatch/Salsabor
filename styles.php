@@ -7,9 +7,11 @@
 
 <link rel="stylesheet" href="assets/css/jquery-ui.min.css">
 <link rel="stylesheet" href="assets/css/fullcalendar.min.css">
-<link rel="stylesheet" href="assets/css/jquery.ui.timepicker.css">
+<!--<link rel="stylesheet" href="assets/css/jquery.ui.timepicker.css">-->
 <link rel="stylesheet" href="assets/css/bootstrap-popover-x.min.css">
 <link rel="stylesheet" href="assets/css/bootstrap-toggle.min.css">
 <link rel="stylesheet" href="assets/css/checkbox-x.min.css">
 <link rel="stylesheet" href="assets/css/fileinput.min.css">
 <link rel="stylesheet" href="assets/css/morris.css">
+<link rel="stylesheet" href="assets/css/fuelux.min.css">
+<link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css">
