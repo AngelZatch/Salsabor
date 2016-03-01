@@ -8,7 +8,7 @@ $queryAdherents = $db->query('SELECT user_id, user_prenom, user_nom, user_rfid, 
 	<head>
 		<meta charset="UTF-8">
 		<title>Adhérents | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

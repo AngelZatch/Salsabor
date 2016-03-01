@@ -30,7 +30,7 @@ if(isset($_POST["submit"])){
 	<head>
 		<meta charset="UTF-8">
 		<title>Transaction <?php echo $transaction["id_transaction"];?> | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

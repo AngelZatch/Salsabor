@@ -46,7 +46,7 @@ $queryEcheances->bindValue(1, $forfait["id_transaction_foreign"]);
 	<head>
 		<meta charset="UTF-8">
 		<title>Forfait <?php echo $forfait["produit_nom"];?> de <?php echo $forfait["user_prenom"]." ".$forfait["user_nom"];?> | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Salsabor v0.1</title>
-    <?php include "includes.php";?>
+    <?php include "styles.php";?>
 </head>
 <body>
     <div class="container-fluid">

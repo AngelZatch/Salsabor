@@ -11,7 +11,7 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 	<head>
 		<meta charset="UTF-8">
 		<title>Template | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

@@ -18,7 +18,7 @@ $queryPassages = $db->query("SELECT * FROM passages JOIN users ON passage_eleve=
 		</form>
 		<div id="navbar" class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href=""><span class="glyphicon glyphicon-user"></span> ver.1.3.2</a></li>
+				<!--<li><a href=""><span class="glyphicon glyphicon-user"></span> ver.1.3.2</a></li>-->
 				<li class="notification-option" title="Passages en attente de traitement">
 					<a href="passages.php" class="notification-icon">
 						<span class="glyphicon glyphicon-map-marker"></span>
@@ -54,7 +54,7 @@ $queryPassages = $db->query("SELECT * FROM passages JOIN users ON passage_eleve=
 						</div>
 					</div>
 				</li>
-				<li><a href=""><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
+				<!--<li><a href=""><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>-->
 			</ul>
 		</div>
 	</div>

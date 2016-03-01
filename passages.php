@@ -24,7 +24,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 	<head>
 		<meta charset="UTF-8">
 		<title>Passages | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

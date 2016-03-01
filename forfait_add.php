@@ -53,7 +53,7 @@ if(isset($_POST["add"])){
 	<head>
 		<meta charset="UTF-8">
 		<title>Ajouter un forfait | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

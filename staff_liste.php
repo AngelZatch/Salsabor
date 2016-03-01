@@ -25,7 +25,7 @@ if(isset($_POST['addRank'])){
 	<head>
 		<meta charset="UTF-8">
 		<title>Staff | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

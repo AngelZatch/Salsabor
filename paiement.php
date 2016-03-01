@@ -19,7 +19,7 @@ if(isset($_POST["submit"])){
 	<head>
 		<meta charset="UTF-8">
 		<title>Récapitulatif de commande | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

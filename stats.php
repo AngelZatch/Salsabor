@@ -2,7 +2,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Statistiques | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

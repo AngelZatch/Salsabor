@@ -31,7 +31,7 @@ $queryEcheances = $db->prepare("SELECT * FROM produits_echeances
 	<head>
 		<meta charset="UTF-8">
 		<title>Echeances | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

@@ -8,7 +8,7 @@ $date = date_create('now')->format('H:i:s');
 	<head>
 		<meta charset="UTF-8">
 		<title>Accueil d'administration | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

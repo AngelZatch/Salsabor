@@ -8,7 +8,7 @@ $queryTransactions = $db->query("SELECT * FROM transactions JOIN users ON payeur
 	<head>
 		<meta charset="UTF-8">
 		<title>Transactions | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

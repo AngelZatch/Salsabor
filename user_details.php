@@ -144,7 +144,7 @@ if(isset($_POST["edit"])){
 	<head>
 		<meta charset="UTF-8">
 		<title>Editer - <?php echo $details["user_prenom"]." ".$details["user_nom"];?> | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

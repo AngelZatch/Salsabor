@@ -1,0 +1,30 @@
+/** ADJUSTMENT TOOLS **/
+/* line 4, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.align-right {
+  text-align: right; }
+
+/* line 7, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+body {
+  margin-top: 50px; }
+
+/* line 10, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.navbar {
+  background-color: #770129;
+  border: 0; }
+
+/** SIDE MENU **/
+/* line 15, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.main-option {
+  color: white !important;
+  font-weight: 600;
+  font-family: 'globersemibold_free'; }
+
+/** PAGE **/
+/* line 21, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.page-title {
+  font-family: 'globersemibold_free';
+  font-size: 28px;
+  padding: 0;
+  margin: 0; }
+
+/*# sourceMappingURL=default-style.css.map */

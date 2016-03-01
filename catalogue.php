@@ -12,7 +12,7 @@ if(isset($_GET["user"])){
 	<head>
 		<meta charset="UTF-8">
 		<title>Catalogue de produits | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

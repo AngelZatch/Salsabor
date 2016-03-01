@@ -77,7 +77,7 @@ if(isset($_POST["edit"])){
 	<head>
 		<meta charset="UTF-8">
 		<title>Détails du forfait <?php echo $produit["produit_nom"];?> | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

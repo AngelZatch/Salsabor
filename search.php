@@ -27,7 +27,7 @@ $numberTransactions = $searchTransactions->rowCount();
 	<head>
 		<meta charset="UTF-8">
 		<title>Résultats de recherche | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

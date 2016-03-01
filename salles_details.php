@@ -14,7 +14,7 @@ $salle = $querySalle->fetch(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <title>Détails de la salle <?php echo $salle["salle_name"];?> | Salsabor</title>
-    <?php include "includes.php";?>
+    <?php include "styles.php";?>
 </head>
 <body>
   <?php include "nav.php";?>

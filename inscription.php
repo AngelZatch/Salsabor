@@ -192,7 +192,7 @@ if(isset($_POST['addSell'])){
 	<head>
 		<meta charset="UTF-8">
 		<title>Inscription d'un adhérent | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -282,7 +282,7 @@ if(isset($_POST['addSell'])){
 							</div>
 							<div class="form-group">
 								<label for="commentaires" class="control-label">Commentaires</label>
-								<textarea rows="5" class="form-control input-lg" name="commentaires"><?php echo $details["commentaires"];?></textarea>
+								<textarea rows="5" class="form-control input-lg" name="commentaires"></textarea>
 							</div>
 							<p class="form-section">Informations Salsabor</p>
 							<div class="form-group">

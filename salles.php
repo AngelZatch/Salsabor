@@ -8,7 +8,7 @@ $querySalles = $db->query('SELECT * FROM salle WHERE est_salle_cours=1 ORDER BY 
 	<head>
 		<meta charset="UTF-8">
 		<title>Salles | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

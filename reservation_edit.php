@@ -56,7 +56,7 @@ if(isset($_POST['delete'])){
 	<head>
 		<meta charset="UTF-8">
 		<title>Edit - Résevation par <?php echo $reservation['user_prenom']." ".$reservation['user_nom'];?> le <?php echo date_create($reservation['reservation_start'])->format('d/m/Y');?> de <?php echo date_create($reservation['reservation_start'])->format('H:i')?> à <?php echo date_create($reservation['reservation_end'])->format('H:i');?> | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

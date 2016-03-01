@@ -24,7 +24,7 @@ if(isset($_POST['addTarifResa'])){
 	<head>
 		<meta charset="UTF-8">
 		<title>Tarifs | Salsabor</title>
-		<?php include "includes.php";?>
+		<?php include "styles.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>

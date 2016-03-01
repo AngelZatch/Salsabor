@@ -13,18 +13,8 @@
 	text-align: right;
 }
 
-body{
-	padding-top: 50px;
-	/**background-color: #ECECEC;**/
-}
-
 .nav-tabs{
 	margin-bottom: 10px !important;
-}
-
-.navbar{
-	background-color: #81002B;
-	border: 0;
 }
 
 .navbar-brand{
@@ -50,23 +40,10 @@ body{
 	}
 }
 
-.main-option{
-	color: white !important;
-	font-weight: 600;
-	font-family: 'globersemibold_free';
-}
-
 .main-option:hover,
 .main-option.active{
 	background-color: #720026 !important;
 	color: #FAB913 !important;
-}
-
-.page-title{
-	font-family: 'globersemibold_free';
-	font-size: 28px;
-	padding: 0;
-	margin: 0;
 }
 
 .span-mandatory {
@@ -115,13 +92,6 @@ body{
 
 .nav-pills > li > a {
 	color: #FAB913;
-}
-#small-menu {
-	width: 4.1666666667%;
-}
-
-#small-menu>ul>li {
-	font-size: 1.4em;
 }
 
 .main{
@@ -186,9 +156,6 @@ body{
 
 .table-responsive{
 	overflow-x: visible;
-}
-.align-right {
-	text-align:right;
 }
 
 #prix_calcul{
