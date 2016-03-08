@@ -5,6 +5,7 @@ $warning-color: #F0AD4E
 $danger-color: #D9534F
 $pending-color: #9491D6
 $near-danger-color: #F0684B
+$light-red-color: lighten($danger-color, 20%)
 /*$skip-color: #D08AC3*/
 $play-color: #7DB8E0
 $whisper-color: #D5D5D5
@@ -163,14 +164,35 @@ body
 
 .sessions-list
 	margin-top: -10px
+	padding-left: 5px
 
 .product-session
 	@extend .purchase-item
+	padding: 1px 5px
+	margin-bottom: 5px
 	cursor: default
-	padding: 1px 0
-	p
-		padding-bottom: 0
+	p.session-title
 		margin-top: 0
+		font-weight: 600
+	p.session-hours
+		margin-top: -10px
+		padding-top: 0
+
+
+#over-session-alert
+	font-weight: 600
+	color: $system-color
+	text-decoration: underline
+
+.session-valid
+	border-left: 7px solid $success-color
+	&:hover
+		background-color: $success-color
+
+.session-over
+	border-left: 7px solid $light-red-color
+	&:hover
+		background: $light-red-color
 
 h2.modal-body-title.first
 	margin-top: 0

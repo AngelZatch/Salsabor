@@ -14,6 +14,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$s["title"] = $details["cours_intitule"];
 	$s["start"] = $details["cours_start"];
 	$s["end"] = $details["cours_end"];
+	$s["duration"] = $details["cours_unite"];
 	array_push($sessionsList, $s);
 }
 
