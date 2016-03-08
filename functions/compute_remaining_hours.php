@@ -29,7 +29,7 @@ while($session = $sessions_list->fetch(PDO::FETCH_ASSOC)){
 if($remaining_hours <= 0){
 	$today = date_create("now")->format("Y-m-d");
 	$deactivate = $db->query("UPDATE produits_adherents
-							SET actif='0', date_fin_utilisation='$date_fin_utilisation'
+							SET actif='2', date_fin_utilisation='$date_fin_utilisation'
 							WHERE id_produit_adherent = '$product_id'");
 	echo $date_fin_utilisation;
 } else {
