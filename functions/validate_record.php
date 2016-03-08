@@ -29,7 +29,15 @@ try{
 			$deactivate->bindParam(3, $produit["id_produit_adherent"]);
 			$deactivate->execute();
 		} else {
-			$produit = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=$eleve AND produit_nom!='Invitation' AND produit_nom != 'Adhésion Annuelle' ORDER BY id_produit_adherent ASC")->fetch(PDO::FETCH_ASSOC);
+			$produit = $db->query("SELECT *, produits_adherents.actif AS produitActif
+									FROM produits_adherents
+									JOIN produits
+										ON id_produit_foreign=produits.produit_id
+									WHERE id_user_foreign=$eleve
+										AND produit_nom !='Invitation'
+										AND produit_nom != 'Adhésion Annuelle'
+										AND produits_adherents.actif != '2'
+									ORDER BY id_produit_adherent ASC")->fetch(PDO::FETCH_ASSOC);
 			// Vérification de la validité du forfait et activation si nécessaire
 			if($produit["produitActif"] == '0'){
 				$actif = 1;
