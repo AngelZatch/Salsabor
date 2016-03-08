@@ -83,7 +83,11 @@ $queryForfaits->execute();
 		echo "Valide du <span>".$date_activation->format('d/m/Y')."</span> au <span>".$date_expiration->format('d/m/Y')."</span>";
 	}?>
 								</p>
-								<p class="col-lg-3 purchase-product-hours"><?php echo $forfaits["volume_cours"];?> heures restantes</p>
+								<p class="col-lg-3 purchase-product-hours">
+									<?php if($forfaits["est_illimite"] == "0" && $forfaits["est_abonnement"] == "0"){
+		echo $forfaits["volume_cours"]." heures restantes";
+	}?>
+								</p>
 								<p class="col-lg-1 purchase-price align-right"><?php echo $forfaits["prix_achat"];?> €</p>
 							</li>
 							<?php } ?>

@@ -38,23 +38,33 @@ $(document).ready(function(){
 			modal.find(".product-status").html(product_status);
 			if(product_details.flag_hours == '1'){ // If the product is not an annual subscription
 				var product_validity = "<p id='product-status-"+product_details.id+"'><span class='highlighted-value'>"+product_details.remaining_hours+" heures</span><br>restantes avant expiration</p>";
-				// Bouton de calcul des heures
+
+				// Computing hours button
 				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+")'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
+
+				// Handling the sessions
+				var contents = "<ul class='purchase-inside-list'>", totalHours = product_details.hours, session_status;
+				for(var i = 0; i < sessions_list.length; i++){
+					/*console.log(sessions_list[i]);*/
+					if(totalHours > 0){
+						session_status = "session-valid";
+					} else {
+						if(totalHours == 0){
+							contents += "<p id='over-session-alert'>Les cours suivants sont hors forfait :</p>";
+						}
+						session_status = "session-over";
+					}
+					contents += "<li class='product-session "+session_status+" container-fluid'>";
+					contents += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
+					contents += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
+					contents += "</li>";
+					totalHours -= sessions_list[i].duration;
+				}
+				contents += "</ul>";
 			} else {
 				var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+moment(product_details.validity).toNow(true)+"</span><br> restants avant expiration</p>";
 			}
 			modal.find(".product-validity").html(product_validity);
-
-			// Handling the sessions
-			var contents = "<ul class='purchase-inside-list'>";
-			for(var i = 0; i < sessions_list.length; i++){
-				/*console.log(sessions_list[i]);*/
-				contents += "<li class='product-session container-fluid'>";
-				contents += "<p class='col-lg-5'>"+sessions_list[i].title+"</p>";
-				contents += "<p class='col-lg-7'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
-				contents += "</li>";
-			}
-			contents += "</ul>";
 			modal.find(".sessions-list").empty();
 			modal.find(".sessions-list").append(contents);
 			modal.find(".modal-actions").html(buttons);
