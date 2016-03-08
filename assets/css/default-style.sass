@@ -3,7 +3,9 @@ $system-color: #888888
 $success-color: #87CE77
 $warning-color: #F0AD4E
 $danger-color: #D9534F
-$skip-color: #D08AC3
+$pending-color: #9491D6
+$near-danger-color: #F0684B
+/*$skip-color: #D08AC3*/
 $play-color: #7DB8E0
 $whisper-color: #D5D5D5
 $avatar-size-preview: 120px
@@ -78,6 +80,7 @@ body
 	padding-left: 0
 
 .purchase-item
+	margin-bottom: 10px
 	display: inherit
 	padding-left: 0
 	padding-right: 0
@@ -95,20 +98,22 @@ body
 
 .item-pending
 	background-color: $warning-color
-	margin-bottom: 10px
 	&:hover
 		background-color: darken($warning-color, 10%)
 
 .item-expired
 	background-color: darken(white, 5%)
-	margin-bottom: 10px
 	color: darken(white, 30%)
 
 .item-active
 	background-color: $success-color
-	margin-bottom: 10px
 	&:hover
 		background-color: darken($success-color, 10%)
+
+.item-near-activation
+	background-color: $pending-color
+	&:hover
+		background-color: darken($pending-color, 10%)
 
 .status-icon
 	text-align: center

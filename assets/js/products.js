@@ -15,24 +15,31 @@ $(document).ready(function(){
 				case '0':
 					product_status += "<span class='highlighted-value'>En attente</span> d'activation";
 					/*buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-activate-"+product_details.id+"' onclick='activateProduct("+product_details.id+")'><span class='glyphicon glyphicon-play-circle'></span> Activer</button>";*/
+					// Activation button
 					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-activate-"+product_details.id+"' data-argument='"+product_details.id+"' data-subtype='activate'><span class='glyphicon glyphicon-play-circle'></span> Activer</button>";
 					break;
 
 				case '1':
 					product_status += "Valide du <br><span class='highlighted-value'> "+moment(product_details.activation).format("DD/MM/YYYY")+"</span><br>au<br><span class='highlighted-value'>"+moment(product_details.validity).format("DD/MM/YYYY")+"</span>";
+					// Deactivation button
 					buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-activate-"+product_details.id+"' onclick='deactivateProduct("+product_details.id+")'><span class='glyphicon glyphicon-ban-circle'></span> Désactiver</button>";
+					// Extension button
+					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-arep' data-argument='"+product_details.id+"' data-subtype='AREP'><span class='glyphicon glyphicon-calendar'></span> AREP</button>";
 					break;
 
 				case '2':
 					product_status += "<span class='highlighted-value'>Expiré</span><br>le "+moment(product_details.validity).format("DD/MM/YYYY");
 					/*buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-activate-"+product_details.id+"' onclick='activateProduct("+product_details.id+")'><span class='glyphicon glyphicon-play-circle'></span> Réactiver</button>";*/
+					// Reactivation button
 					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-activate-"+product_details.id+"' data-argument='"+product_details.id+"' data-subtype='activate'><span class='glyphicon glyphicon-play-circle'></span> Réactiver</button>";
 					break;
 			}
 			product_status += "</p>";
 			modal.find(".product-status").html(product_status);
-			if(product_details.flag_hours == '1'){
+			if(product_details.flag_hours == '1'){ // If the product is not an annual subscription
 				var product_validity = "<p id='product-status-"+product_details.id+"'><span class='highlighted-value'>"+product_details.remaining_hours+" heures</span><br>restantes avant expiration</p>";
+				// Bouton de calcul des heures
+				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+")'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
 			} else {
 				var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+moment(product_details.validity).toNow(true)+"</span><br> restants avant expiration</p>";
 			}
@@ -50,10 +57,6 @@ $(document).ready(function(){
 			contents += "</ul>";
 			modal.find(".sessions-list").empty();
 			modal.find(".sessions-list").append(contents);
-
-			// Creating all the action buttons
-			buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+")'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
-			buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-arep' data-argument='"+product_details.id+"' data-subtype='AREP'><span class='glyphicon glyphicon-calendar'></span> AREP</button>";
 			modal.find(".modal-actions").html(buttons);
 		})
 	}).on('hidden.bs.modal', function(event){
@@ -62,7 +65,6 @@ $(document).ready(function(){
 }).on('click', '.trigger-sub', function(e){
 	var target = document.getElementById($(this).attr("id"));
 	var tpos = $(this).position();
-	$(".sub-modal").offset({top : tpos.top + 20});
 	var product_id = target.dataset.argument;
 	var type = target.dataset.subtype;
 	console.log(product_id, type);
@@ -73,12 +75,14 @@ $(document).ready(function(){
 			title = "Prolonger";
 			body += "<input type='text' class='form-control datepicker'/>";
 			footer += "<button class='btn btn-success extend-product' data-argument='"+product_id+"' id='btn-sm-extend'>Prolonger</button>";
+			$(".sub-modal").css({top : tpos.top - 264+'px'});
 			break;
 
 		case 'activate':
 			title = "Activer";
 			body += "<input type='text' class='form-control datepicker'/>";
 			footer += "<button class='btn btn-success activate-product' data-argument='"+product_id+"' id='btn-sm-activate'>Activer</button>";
+			$(".sub-modal").css({top : tpos.top - 204+'px'});
 			break;
 
 		default:
@@ -93,9 +97,7 @@ $(document).ready(function(){
 		inline: true,
 		locale: "fr"
 	})
-	$(".sub-modal").toggle(0, function(){
-		console.log("sub modal shown");
-	});
+	$(".sub-modal").toggle(0);
 }).on('click', '.activate-product', function(){
 	var date = moment($(".datepicker").val(),"DD/MM/YYYY").format("YYYY-MM-DD");
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
@@ -121,26 +123,30 @@ function fetchPurchase(purchase_id){
 			contents += "<div class='row purchase-product-list-container' id='products-"+purchase_id+"'>";
 			contents += "<ul class='purchase-inside-list purchase-product-list'>";
 			for(var i = 0; i < purchase_list.length; i++){
-				if(purchase_list[i].status == '0'){
-					contents += "<li class='purchase-item item-pending container-fluid' id='purchase-item-"+purchase_list[i].id+"' data-toggle='modal' data-target='#product-modal' data-argument='"+purchase_list[i].id+"'>";
-				} else if(purchase_list[i].status == '2'){
-					contents += "<li class='purchase-item item-expired container-fluid' id='purchase-item-"+purchase_list[i].id+"' data-toggle='modal' data-target='#product-modal' data-argument='"+purchase_list[i].id+"'>";
-				} else {
-					contents += "<li class='purchase-item item-active container-fluid' id='purchase-item-"+purchase_list[i].id+"' data-toggle='modal' data-target='#product-modal' data-argument='"+purchase_list[i].id+"'>";
+				var item_status, text_status;
+				// Status of the purchase
+				if(purchase_list[i].status == '0'){ // If not yet activated
+					item_status = "item-pending";
+					text_status = "En attente";
+				} else if(purchase_list[i].status == '2'){ // If expired or fully used
+					item_status = "item-expired";
+					if(purchase_list[i].remaining_hours == '0.00' || (purchase_list[i].used != "NULL" && purchase_list[i].used != "0000-00-00 00:00:00")){
+						text_status = "Expiré le "+moment(purchase_list[i].used).format("DD/MM/YYYY");
+					} else {
+						text_status = "Expiré le "+moment(purchase_list[i].validity).format("DD/MM/YYYY");
+					}
+				} else { // If active or set to activate in the near future
+					if(purchase_list[i].activation > moment().format("YYYY-MM-DD")){
+						item_status = "item-near-activation";
+					} else {
+						item_status = "item-active";
+					}
+					text_status = "Valide du <span> "+moment(purchase_list[i].activation).format("DD/MM/YYYY")+"</span> au <span>"+moment(purchase_list[i].validity).format("DD/MM/YYYY")+"</span>";
 				}
+				contents += "<li class='purchase-item "+item_status+" container-fluid' id='purchase-item-"+purchase_list[i].id+"' data-toggle='modal' data-target='#product-modal' data-argument='"+purchase_list[i].id+"'>";
 				contents += "<p class='col-lg-3 purchase-product-name'>"+purchase_list[i].product+"</p>";
 				contents += "<p class='col-lg-3 purchase-product-validity'>";
-				if(purchase_list[i].status == '0'){
-					contents += "En attente";
-				} else if(purchase_list[i].status == '2'){
-					if(purchase_list[i].remaining_hours == '0.00' || (purchase_list[i].used != "NULL" && purchase_list[i].used != "0000-00-00 00:00:00")){
-						contents += "Expiré le "+moment(purchase_list[i].used).format("DD/MM/YYYY");
-					} else {
-						contents += "Expiré le "+moment(purchase_list[i].validity).format("DD/MM/YYYY");
-					}
-				} else {
-					contents += "Valide du <span> "+moment(purchase_list[i].activation).format("DD/MM/YYYY")+"</span> au <span>"+moment(purchase_list[i].validity).format("DD/MM/YYYY")+"</span>";
-				}
+				contents += text_status;
 				contents += "</p>";
 				contents += "<p class='col-lg-3 purchase-product-hours'>";
 				if(purchase_list[i].flag_hours == 1){
@@ -252,7 +258,11 @@ function activateProductWithDate(product_id, start_date){
 		$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Valide du <span>"+moment(dates[0]).format("DD/MM/YYYY")+"</span> au <span>"+moment(dates[1]).format("DD/MM/YYYY")+"</span>");
 		$("#purchase-item-"+product_id).removeClass("item-pending");
 		$("#purchase-item-"+product_id).removeClass("item-expired");
-		$("#purchase-item-"+product_id).addClass("item-active");
+		if(moment(dates[0]).format("YYYY-MM-DD") > moment().format("YYYY-MM-DD")){
+			$("#purchase-item-"+product_id).addClass("item-near-activation");
+		} else {
+			$("#purchase-item-"+product_id).addClass("item-active");
+		}
 		$("#btn-activate-"+product_id).html("<span class='glyphicon glyphicon-ban-circle'></span> Désactiver");
 		document.getElementById("btn-activate-"+product_id).onclick = function(){ deactivateProduct(product_id); };
 		$("#btn-activate-"+product_id).removeClass("trigger-sub");
@@ -269,16 +279,16 @@ function deactivateProduct(product_id){
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("En attente");
 			$("#purchase-item-"+product_id).addClass("item-pending");
 			$("#purchase-item-"+product_id).removeClass("item-expired");
-			$("#purchase-item-"+product_id).removeClass("item-active");
 			$("#btn-activate-"+product_id).html("<span class='glyphicon glyphicon-play-circle'></span> Activer");
 		} else {
 			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Expiré</span><br>le "+moment(value).format("DD/MM/YYYY"));
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(value).format("DD/MM/YYYY"));
 			$("#purchase-item-"+product_id).removeClass("item-pending");
 			$("#purchase-item-"+product_id).addClass("item-expired");
-			$("#purchase-item-"+product_id).removeClass("item-active");
 			$("#btn-activate-"+product_id).html("<span class='glyphicon glyphicon-play-circle'></span> Réactiver");
 		}
+		$("#purchase-item-"+product_id).removeClass("item-near-activation");
+		$("#purchase-item-"+product_id).removeClass("item-active");
 		/*document.getElementById("btn-activate-"+product_id).onclick = function(){ activateProduct(product_id); };*/
 		$("#btn-activate-"+product_id).attr("data-argument", product_id);
 		$("#btn-activate-"+product_id).attr("data-subtype", "activate");

@@ -58,13 +58,21 @@ $queryForfaits->execute();
 					<div class="container-fluid purchase-product-list-container">
 						<ul class="purchase-inside-list purchase-product-list">
 							<?php while($forfaits = $queryForfaits->fetch(PDO::FETCH_ASSOC)){
-	if($forfaits["produit_adherent_actif"] == '0'){ ?>
-							<li class="purchase-item item-pending container-fluid" id="purchase-item-<?php echo $forfaits["id_produit_adherent"];?>" data-toggle='modal' data-target='#product-modal' data-argument="<?php echo $forfaits["id_produit_adherent"];?>">
-								<?php } else if($forfaits["produit_adherent_actif"] == '2'){ ?>
-							<li class="purchase-item item-expired container-fluid" id="purchase-item-<?php echo $forfaits["id_produit_adherent"];?>" data-toggle='modal' data-target='#product-modal' data-argument="<?php echo $forfaits["id_produit_adherent"];?>">
-								<?php } else { ?>
-							<li class="purchase-item item-active container-fluid" id="purchase-item-<?php echo $forfaits["id_produit_adherent"];?>" data-toggle='modal' data-target='#product-modal' data-argument="<?php echo $forfaits["id_produit_adherent"];?>">
-								<?php } ?>
+	$date_activation = date_create($forfaits["produit_adherent_activation"]);
+	$date_expiration = date_create($forfaits["produit_validity"]);
+	$today = date('Y-m-d');
+	if($forfaits["produit_adherent_actif"] == '0'){
+		$item_class = "item-pending";
+	} else if($forfaits["produit_adherent_actif"] == '2') {
+		$item_class = "item-expired";
+	} else {
+		if($date_activation->format('Y-m-d') > $today){
+			$item_class = "item-near-activation";
+		} else {
+			$item_class = "item-active";
+		}
+	}?>
+							<li class="purchase-item <?php echo $item_class;?> container-fluid" id="purchase-item-<?php echo $forfaits["id_produit_adherent"];?>" data-toggle='modal' data-target='#product-modal' data-argument="<?php echo $forfaits["id_produit_adherent"];?>">
 								<p class="col-lg-3 purchase-product-name"><?php echo $forfaits["produit_nom"];?></p>
 								<p class="col-lg-3 purchase-product-validity">
 									<?php if($forfaits["produit_adherent_actif"] == '0'){
@@ -72,7 +80,7 @@ $queryForfaits->execute();
 	} else if($forfaits["produit_adherent_actif"] == '2'){
 		echo "Expiré le ".date_create($forfaits["date_expiration"])->format('d/m/Y');
 	} else {
-		echo "Valide du <span>".date_create($forfaits["produit_adherent_activation"])->format('d/m/Y')."</span> au <span>".date_create($forfaits["produit_validity"])->format('d/m/Y')."</span>";
+		echo "Valide du <span>".$date_activation->format('d/m/Y')."</span> au <span>".$date_expiration->format('d/m/Y')."</span>";
 	}?>
 								</p>
 								<p class="col-lg-3 purchase-product-hours"><?php echo $forfaits["volume_cours"];?> heures restantes</p>
