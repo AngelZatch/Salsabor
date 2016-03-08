@@ -7,10 +7,10 @@
 <!--<script src="assets/js/moment.min.js"></script>-->
 <script src="assets/js/moment-with-locales.js"></script>
 <script src="assets/js/fullcalendar.min.js"></script>
-<!--<script src="assets/js/jquery.ui.timepicker.js"></script>-->
+<script src="assets/js/jquery.ui.timepicker.js"></script>
 <script src="assets/js/lang-all.js"></script>
-<!--<script src="assets/js/jquery-dateFormat.min.js"></script>-->
-<!--<script src="assets/js/ekko-lightbox.min.js"></script>-->
+<script src="assets/js/jquery-dateFormat.min.js"></script>
+<script src="assets/js/ekko-lightbox.min.js"></script>
 <script src="assets/js/bootstrap-popover-x.min.js"></script>
 <script src="assets/js/bootstrap-toggle.min.js"></script>
 <script src="assets/js/js.cookie.js"></script>
