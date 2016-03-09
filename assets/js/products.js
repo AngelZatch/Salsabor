@@ -65,12 +65,14 @@ $(document).ready(function(){
 					}
 					totalHours -= sessions_list[i].duration;
 				}
+				modal.find(".sessions-list").empty();
+				modal.find(".sessions-list").append("<ul class='purchase-inside-list'>"+over_sessions+valid_sessions+"</ul>");
 			} else {
-				var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+moment(product_details.validity).toNow(true)+"</span><br> restants avant expiration</p>";
+				if(product_details.status == 1){
+					var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+moment(product_details.validity).toNow(true)+"</span><br> restants avant expiration</p>";
+				}
 			}
 			modal.find(".product-validity").html(product_validity);
-			modal.find(".sessions-list").empty();
-			modal.find(".sessions-list").append("<ul class='purchase-inside-list'>"+over_sessions+valid_sessions+"</ul>");
 			modal.find(".modal-actions").html(buttons);
 		})
 	}).on('hidden.bs.modal', function(event){
