@@ -170,7 +170,7 @@ body
 	@extend .purchase-item
 	padding: 1px 5px
 	margin-bottom: 5px
-	cursor: default
+	cursor: pointer
 	p.session-title
 		margin-top: 0
 		font-weight: 600
@@ -186,28 +186,44 @@ body
 
 .session-valid
 	border-left: 7px solid $success-color
-	&:hover
-		background-color: $success-color
+	&:not(.options-shown)
+		&:hover
+			background-color: $success-color
 
 .session-over
 	border-left: 7px solid $light-red-color
-	&:hover
-		background: $light-red-color
+	&:not(.options-shown)
+		&:hover
+			background: $light-red-color
+		&:active
+			background: darken($light-red-color, 10%)
+
+.session-options
+	background: white
 
 h2.modal-body-title.first
 	margin-top: 0
 
 /** SUB MODAL **/
 .sub-modal
-	position: relative
-	left: 605px
+	position: absolute
+	left: 464px
 	background-color: white
 	border-radius: 4px
 	display: none
 	padding: 10px
+	box-shadow: 2px 2px 10px $system-color
 
 .sub-modal-header
 	border-bottom: 1px solid $system-color
 
 .sub-modal-body
 	padding-top: 10px
+
+.sub-modal-product
+	display: inherit
+	cursor: pointer
+	padding: 10px
+	margin: 5px 0
+	span
+		float: right
