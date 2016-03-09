@@ -11,6 +11,7 @@ $load = $db->query("SELECT * FROM cours_participants cp
 $sessionsList = array();
 while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$s = array();
+	$s["id"] = $details["id"];
 	$s["title"] = $details["cours_intitule"];
 	$s["start"] = $details["cours_start"];
 	$s["end"] = $details["cours_end"];
