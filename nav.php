@@ -26,7 +26,7 @@ $queryPassages = $db->query("SELECT * FROM passages JOIN users ON passage_eleve=
 					</a>
 				</li>
 				<li class="notification-option" title="Participants à un cours sans forfait">
-					<a href="irregulars.php" class="notification-icon">
+					<a href="regularisation" class="notification-icon">
 						<span class="glyphicon glyphicon-ice-lolly-tasted"></span>
 						<span class="badge" id="badge-participants"></span>
 					</a>
