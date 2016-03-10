@@ -274,4 +274,13 @@ h2.modal-body-title.first {
   .sub-modal-product span {
     float: right; }
 
+/** CATALOGUE **/
+/* line 236, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.panel-product {
+  background-color: #e6e6e6; }
+
+/* line 239, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.product-description {
+  min-height: 80px; }
+
 /*# sourceMappingURL=default-style.css.map */
