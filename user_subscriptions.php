@@ -11,7 +11,9 @@ $details = $queryDetails->fetch(PDO::FETCH_ASSOC);
 
 // On obtient l'historique de ses forfaits
 $queryForfaits = $db->prepare('SELECT *, pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif,
-IF(date_prolongee IS NULL, date_expiration, date_prolongee) AS produit_validity
+								IF(date_prolongee IS NOT NULL, date_prolongee,
+									IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
+									) AS produit_validity
 								FROM produits_adherents pa
 								JOIN users u ON id_user_foreign=u.user_id
 								JOIN produits p ON id_produit_foreign=p.produit_id
@@ -78,7 +80,7 @@ $queryForfaits->execute();
 									<?php if($forfaits["produit_adherent_actif"] == '0'){
 		echo "En attente";
 	} else if($forfaits["produit_adherent_actif"] == '2'){
-		echo "Expiré le ".date_create($forfaits["date_expiration"])->format('d/m/Y');
+		echo "Expiré le ".$date_expiration->format('d/m/Y');
 	} else {
 		echo "Valide du <span>".$date_activation->format('d/m/Y')."</span> au <span>".$date_expiration->format('d/m/Y')."</span>";
 	}?>
