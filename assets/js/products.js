@@ -37,19 +37,23 @@ $(document).ready(function(){
 			product_status += "</p>";
 			modal.find(".product-status").html(product_status);
 			modal.find(".sessions-list").empty();
-			if(product_details.flag_hours == '1'){ // If the product is not an annual subscription
+			if(product_details.flag_hours == '1'){ // If the product is not an illimited, a private lesson or an annual subscription
 				var product_validity = "<p id='product-status-"+product_details.id+"'><span class='highlighted-value'>"+product_details.remaining_hours+" heures</span><br>restantes avant expiration</p>";
 
 				// Computing hours button
 				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+")'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
 			} else {
-				if(product_details.status == '1'){
+				if(product_details.status == '1'){ // If the product is active
 					var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+moment(product_details.validity).toNow(true)+"</span><br> restants avant expiration</p>";
 				}
 			}
-			if(product_details.subscription == '0'){
+			if(product_details.subscription == '0'){ // If the product is NOT an annual subscription
 				// Handling the sessions
 				var totalHours = product_details.hours, valid_sessions = "", over_sessions = "";
+				if(product_details.status == '2' && product_details.flag_hours == '0'){
+					console.log("Forfait illimité expiré");
+					var hoursUsed = 0;
+				}
 				for(var i = 0; i < sessions_list.length; i++){
 					/*console.log(sessions_list[i]);*/
 					if(product_details.illimited != '1'){
@@ -79,8 +83,13 @@ $(document).ready(function(){
 						valid_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
 						valid_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
 						valid_sessions += "</li>";
+						if(product_details.status == '2' && product_details.flag_hours == '0'){
+							hoursUsed += parseFloat(sessions_list[i].duration);
+						}
 					}
-
+					if(product_details.status == '2' && product_details.flag_hours == '0'){
+						var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+hoursUsed+"</span><br> heures consommées</p>";
+					}
 				}
 				modal.find(".sessions-list").append("<ul class='purchase-inside-list'>"+over_sessions+valid_sessions+"</ul>");
 			}
