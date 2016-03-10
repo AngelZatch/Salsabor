@@ -41,9 +41,14 @@ if($details["produit_adherent_activation"] != "0000-00-00 00:00:00" && $details[
 	}
 }
 
+if($new_exp_date < date_create("now")->format("Y-m-d")){
+	$actif = '2';
+} else {
+	$actif ='1';
+}
 $activate = $db->query("UPDATE produits_adherents
-						SET actif='1', date_fin_utilisation = NULL, date_activation = '$date_activation', date_expiration = '$date_expiration'
+						SET actif='$actif', date_fin_utilisation = NULL, date_activation = '$date_activation', date_expiration = '$new_exp_date'
 						WHERE id_produit_adherent = '$product_id'");
 
-echo json_encode(array($date_activation, $date_expiration));
+echo json_encode(array($date_activation, $new_exp_date));
 ?>

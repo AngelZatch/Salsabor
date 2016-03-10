@@ -25,6 +25,8 @@ $p["used"] = $details["date_fin_utilisation"];
 $p["hours"] = $details["volume_horaire"];
 $p["remaining_hours"] = $details["volume_cours"];
 $p["price"] = $details["prix_achat"];
+$p["illimited"] = $details["est_illimite"];
+$p["subscription"] = $details["est_abonnement"];
 if($details["est_illimite"] == 1 || $details["est_cours_particulier"] == 1 || $details["est_abonnement"]){
 	$p["flag_hours"] = 0;
 } else {
