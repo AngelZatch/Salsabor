@@ -36,6 +36,7 @@ $(document).ready(function(){
 			}
 			product_status += "</p>";
 			modal.find(".product-status").html(product_status);
+			modal.find(".sessions-list").empty();
 			if(product_details.flag_hours == '1'){ // If the product is not an annual subscription
 				var product_validity = "<p id='product-status-"+product_details.id+"'><span class='highlighted-value'>"+product_details.remaining_hours+" heures</span><br>restantes avant expiration</p>";
 
@@ -65,7 +66,6 @@ $(document).ready(function(){
 					}
 					totalHours -= sessions_list[i].duration;
 				}
-				modal.find(".sessions-list").empty();
 				modal.find(".sessions-list").append("<ul class='purchase-inside-list'>"+over_sessions+valid_sessions+"</ul>");
 			} else {
 				if(product_details.status == 1){
