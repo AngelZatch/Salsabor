@@ -116,6 +116,11 @@ body
 	&:hover
 		background-color: darken($pending-color, 10%)
 
+.item-near-expiration
+	background-color: lighten($success-color, 30%)
+	&:hover
+		background-color: darken($success-color, 10%)
+
 .status-icon
 	text-align: center
 	color: $system-color
@@ -177,7 +182,6 @@ body
 	p.session-hours
 		margin-top: -10px
 		padding-top: 0
-
 
 #over-session-alert
 	font-weight: 600

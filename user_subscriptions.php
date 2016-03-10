@@ -70,7 +70,9 @@ $queryForfaits->execute();
 	} else {
 		if($date_activation->format('Y-m-d') > $today){
 			$item_class = "item-near-activation";
-		} else {
+		} else if($date_expiration->format("Y-m-d") < date_create("now")->add(new dateinterval('P5D'))->format("Y-m-d")){
+			$item_class = "item-near-expiration";
+		} else{
 			$item_class = "item-active";
 		}
 	}?>
