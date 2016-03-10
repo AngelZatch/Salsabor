@@ -132,7 +132,7 @@ if(isset($_POST["edit"])){
 			$delete->execute();
 		}
 		$db->commit();
-		header("Location:user_details.php?id=$data&status=$status");
+		header("Location:$data");
 	} catch(PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());
@@ -155,6 +155,11 @@ if(isset($_POST["edit"])){
 					<div class="fixed">
 						<div class="col-lg-6">
 							<p class="page-title"><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?></p>
+						</div>
+						<div class="col-lg-6">
+							<div class="btn-toolbar">
+								<input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER LES MODIFICATIONS">
+							</div>
 						</div>
 					</div>
 					<div class="col-sm-10 main">
