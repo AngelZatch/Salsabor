@@ -3,7 +3,6 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
 // On obtient la liste des produits
-$listeProduits = $db->query("SELECT * FROM produits ORDER BY produit_nom ASC");
 if(isset($_GET["user"])){
 	$beneficiaireInitial = $_GET["user"];
 }
@@ -38,18 +37,61 @@ if(isset($_GET["user"])){
 							</div>
 						</div>
 						<div class="row">
-							<?php while($produits = $listeProduits->fetch(PDO::FETCH_ASSOC)){?>
-							<div class="col-sm-6 col-md-4">
-								<div class="thumbnail">
-									<div class="caption">
-										<p class="thumbnail-title"><?php echo $produits["produit_nom"];?></p>
-										<p><?php echo $produits["description"];?></p>
+							<?php
+							// Product list
+							$listeProduits = $db->query("SELECT * FROM produits ORDER BY est_autre, est_formation_professionnelle, est_cours_particulier, est_sans_engagement, est_abonnement, est_illimite, est_recharge DESC");
+							$previous = -1;
+							while($produits = $listeProduits->fetch(PDO::FETCH_ASSOC)){
+								$current = $produits["est_recharge"].$produits["est_illimite"].$produits["est_abonnement"].$produits["est_sans_engagement"].$produits["est_cours_particulier"].$produits["est_formation_professionnelle"].$produits["est_autre"];
+								if($previous != $current){
+									switch($current){
+										case '1000000':
+										case '1000001':
+											echo "<legend>Recharges</legend>";
+											break;
+
+										case '0100000':
+											echo "<legend>Illimités</legend>";
+											break;
+
+										case '0010000':
+											echo "<legend>Abonnements</legend>";
+											break;
+
+										case '0001000':
+											echo "<legend>Sans engagement</legend>";
+											break;
+
+										case '0000100':
+											echo "<legend>Cours particuliers</legend>";
+											break;
+
+										case '0000010':
+											echo "<legend>Formation professionnelle</legend>";
+											break;
+
+										case '0000001':
+											echo "<legend>Autres produits</legend>";
+											break;
+
+										default:
+											echo "<legend>Autres</legend>";
+									}
+								}
+							?>
+							<div class="col-sm-6 col-md-4 col-lg-4 panel-product-container">
+								<div class="panel panel-product">
+									<div class="panel-body">
+										<p class="product-title"><?php echo $produits["produit_nom"];?></p>
+										<p class="product-description"><?php echo $produits["description"];?></p>
 										<input type="hidden" value="<?php echo $produits["produit_id"];?>">
 										<a href="#" class="btn btn-primary btn-block" role="button" name="add-shopping">Ajouter au panier</a>
 									</div>
 								</div>
 							</div>
-							<?php } ?>
+							<?php
+								$previous = $current;
+							} ?>
 						</div>
 						<a href="" role="button" class="btn btn-success btn-block" name="next"><span class="glyphicon glyphicon-erase"></span> Valider les achats <span class="glyphicon glyphicon-arrow-right"></span></a>
 					</div>
