@@ -10,7 +10,7 @@ $queryDetails->execute();
 $details = $queryDetails->fetch(PDO::FETCH_ASSOC);
 
 //Enfin, on obtient l'historique de tous les achats (mêmes les forfaits d'autres personnes)
-$queryAchats = $db->prepare("SELECT * FROM transactions WHERE payeur_transaction=?");
+$queryAchats = $db->prepare("SELECT * FROM transactions WHERE payeur_transaction=? ORDER BY date_achat DESC");
 $queryAchats->bindParam(1, $data);
 $queryAchats->execute();
 ?>
@@ -47,12 +47,14 @@ $queryAchats->execute();
 						<?php } ?>
 					</ul>
 					<div>
-						<?php while($achats = $queryAchats->fetch(PDO::FETCH_ASSOC)){ ?>
+						<?php while($achats = $queryAchats->fetch(PDO::FETCH_ASSOC)){
+						$productQty = $db->query("SELECT id_produit_adherent FROM produits_adherents WHERE id_transaction_foreign='$achats[id_transaction]'")->rowCount();?>
 						<div class="panel panel-purchase" id="purchase-<?php echo $achats["id_transaction"];?>">
 							<a class="panel-heading-container" onClick="fetchPurchase('<?php echo $achats["id_transaction"];?>')">
 								<div class="panel-heading container-fluid">
 									<p class="purchase-id col-lg-5">Transaction <?php echo $achats["id_transaction"];?></p>
-									<p class="purchase-sub col-lg-7">Effectuée le <?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <?php echo $achats["prix_total"];?> €</p>
+									<p class="col-lg-4">Contient <?php echo $productQty;?> produit(s)</p>
+									<p class="purchase-sub col-lg-3">Effectuée le <?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <?php echo $achats["prix_total"];?> €</p>
 									<!--<button class="btn btn-default fetch-purchase" onClick="fetchPurchase('<?php echo $achats["id_transaction"];?>')">Détails</button>-->
 									<!--<a href="purchase_details.php?id=<?php echo $achats["id_transaction"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a>-->
 								</div>

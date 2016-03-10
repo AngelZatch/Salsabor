@@ -213,6 +213,8 @@ function fetchPurchase(purchase_id){
 				} else { // If active or set to activate in the near future
 					if(purchase_list[i].activation > moment().format("YYYY-MM-DD")){
 						item_status = "item-near-activation";
+					} else if(purchase_list[i].validity < moment().add(5, 'day').format("YYYY-MM-DD")){
+						item_status = "item-near-expiration";
 					} else {
 						item_status = "item-active";
 					}
@@ -336,6 +338,8 @@ function activateProductWithDate(product_id, start_date){
 			$("#purchase-item-"+product_id).removeClass("item-expired");
 			if(moment(dates[0]).format("YYYY-MM-DD") > moment().format("YYYY-MM-DD")){
 				$("#purchase-item-"+product_id).addClass("item-near-activation");
+			} else if(moment(dates[1]).format("YYYY-MM-DD") < moment().add(5, 'day').format("YYYY-MM-DD")){
+				$("#purchase-item-"+product_id).addClass("item-near-expiration");
 			} else {
 				$("#purchase-item-"+product_id).addClass("item-active");
 			}
