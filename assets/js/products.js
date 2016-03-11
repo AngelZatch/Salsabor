@@ -305,6 +305,16 @@ function computeRemainingHours(product_id){
 			$("#purchase-item-"+product_id).addClass("item-expired");
 			$("#purchase-item-"+product_id).removeClass("item-active");
 		} else {
+			if(value == '0'){
+				$("#product-validity-"+product_id).html("<span class='highlighted-value'>En attente </span><br>d'activation");
+				$("#purchase-item-"+product_id+">p.purchase-product-validity").html("En attente ");
+				$("#purchase-item-"+product_id).addClass("item-pending");
+				$("#purchase-item-"+product_id).removeClass("item-expired");
+				$("#purchase-item-"+product_id).removeClass("item-active");
+				if(top.location.pathname == 'Salsabor/regularisation/forfaits'){
+					$("#purchase-item-"+product_id).removeClass("item-overused");
+				}
+			}
 			value = parseFloat(value).toFixed(2);
 			$("#product-status-"+product_id+">span.highlighted-value").text(value+" heures");
 			$("#purchase-item-"+product_id+">p.purchase-product-hours").html(value+" heures restantes");
@@ -412,7 +422,7 @@ function reportSession(product_id, record_id){
 			computeRemainingHours(old_product);
 		}
 		computeRemainingHours(product_id);
-		if(top.location.pathname === '/Salsabor/regularisation'){
+		if(top.location.pathname === '/Salsabor/regularisation/passages'){
 			$("#record-"+record_id).remove();
 			$(".irregulars-target-container").empty();
 		}

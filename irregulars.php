@@ -12,6 +12,7 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 	<head>
 		<meta charset="UTF-8">
 		<title>Template | Salsabor</title>
+		<base href="../">
 		<?php include "styles.php";?>
 	</head>
 	<body>
@@ -21,7 +22,7 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 				<?php include "side-menu.php";?>
 				<div class="fixed">
 					<div class="col-lg-6">
-						<p class="page-title"><span class="glyphicon glyphicon-ice-lolly-tasted"></span> Participations non associées à un forfait</p>
+						<p class="page-title"><span class="glyphicon glyphicon-pawn"></span> Participations non associées à un forfait</p>
 					</div>
 					<div class="col-lg-6"></div>
 				</div>

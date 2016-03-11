@@ -11,7 +11,7 @@ This code will also:
 
 $product_id = $_POST["product_id"];
 
-$max_hours = $db->query("SELECT volume_horaire FROM produits_adherents pa
+$max_hours = $db->query("SELECT volume_horaire, pa.date_activation AS produit_adherent_activation FROM produits_adherents pa
 						JOIN produits p ON p.produit_id = pa.id_produit_foreign
 						WHERE id_produit_adherent = '$product_id'")->fetch(PDO::FETCH_ASSOC);
 
@@ -32,10 +32,22 @@ if($remaining_hours <= 0){
 							SET actif='2', date_fin_utilisation='$date_fin_utilisation', volume_cours = '$remaining_hours'
 							WHERE id_produit_adherent = '$product_id'");
 	echo $date_fin_utilisation;
+} else if($remaining_hours == $max_hours["volume_horaire"]){
+	$deactivate = $db->query("UPDATE produits_adherents
+							SET actif='0', volume_cours = '$remaining_hours'
+							WHERE id_produit_adherent = '$product_id'");
+	echo 0;
 } else {
-	$update = $db->query("UPDATE produits_adherents
+	if($max_hours["produit_adherent_activation"] == "0000-00-00 00:00:00"){
+		$date_activation = date("Y-m-d H:i:s");
+		$update = $db->query("UPDATE produits_adherents
+						SET actif='1', date_activation = '$date_activation', volume_cours = '$remaining_hours'
+						WHERE id_produit_adherent = '$product_id'");
+	} else {
+		$update = $db->query("UPDATE produits_adherents
 						SET actif='1', volume_cours = '$remaining_hours'
 						WHERE id_produit_adherent = '$product_id'");
+	}
 	echo $remaining_hours;
 }
 ?>
