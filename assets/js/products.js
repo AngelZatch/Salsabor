@@ -408,7 +408,13 @@ function reportSession(product_id, record_id){
 		- Close the submodal : OK
 		**/
 		$("#session-"+record_id).remove();
-		computeRemainingHours(old_product);
+		if(old_product != null){
+			computeRemainingHours(old_product);
+		}
 		computeRemainingHours(product_id);
+		if(top.location.pathname === '/Salsabor/regularisation'){
+			$("#record-"+record_id).remove();
+			$(".irregulars-target-container").empty();
+		}
 	})
 }

@@ -283,4 +283,35 @@ h2.modal-body-title.first {
 .product-description {
   min-height: 80px; }
 
+/** IRREGULARS **/
+/* line 243, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.irregulars-target-container {
+  border-left: 1px;
+  border-left-style: dashed;
+  border-left-color: #888888;
+  height: 100vh;
+  position: fixed;
+  left: 71.5%; }
+
+/* line 251, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.irregulars-list {
+  padding: 0; }
+
+/* line 254, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.irregular-record {
+  cursor: pointer;
+  display: inherit;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px; }
+  /* line 260, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  .irregular-record:hover {
+    background-color: #e6e6e6; }
+  /* line 262, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  .irregular-record:active {
+    background-color: #cccccc; }
+  /* line 264, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  .irregular-record p {
+    margin-bottom: 0; }
+
 /*# sourceMappingURL=default-style.css.map */

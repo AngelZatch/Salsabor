@@ -34,7 +34,7 @@ if($remaining_hours <= 0){
 	echo $date_fin_utilisation;
 } else {
 	$update = $db->query("UPDATE produits_adherents
-						SET volume_cours = '$remaining_hours'
+						SET actif='1', volume_cours = '$remaining_hours'
 						WHERE id_produit_adherent = '$product_id'");
 	echo $remaining_hours;
 }
