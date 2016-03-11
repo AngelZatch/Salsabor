@@ -1,3 +1,5 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#a9023a">
 <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
 <link rel="stylesheet" href="assets/css/common.css">
 <link rel="stylesheet" href="assets/css/default-style.css">
