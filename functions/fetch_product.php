@@ -4,12 +4,13 @@ $db = PDOFactory::getConnection();
 
 $product_id = $_POST["product_id"];
 
-$load = $db->query("SELECT *, pa.actif AS produit_adherent_actif, pa.date_activation AS produit_adherent_activation,
+$load = $db->query("SELECT *, pa.actif AS produit_adherent_actif, pa.date_activation AS produit_adherent_activation, date_achat,
 					IF(date_prolongee IS NOT NULL, date_prolongee,
 						IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
 						) AS produit_validity
 					FROM produits_adherents pa
 					JOIN produits p ON pa.id_produit_foreign = p.produit_id
+					JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 						WHERE id_produit_adherent = '$product_id'");
 
 $details = $load->fetch(PDO::FETCH_ASSOC);
@@ -18,6 +19,7 @@ $p = array();
 $p["id"] = $details["id_produit_adherent"];
 $p["recipient"] = $details["id_user_foreign"];
 $p["transaction"] = $details["id_transaction_foreign"];
+$p["transaction_date"] = $details["date_achat"];
 $p["product"] = $details["produit_nom"];
 $p["activation"] = $details["produit_adherent_activation"];
 $p["validity"] = $details["produit_validity"];

@@ -8,7 +8,7 @@ $(document).ready(function(){
 
 			// Handling the product
 			modal.find(".modal-title").text(product_details.product+" (ID : "+product_details.id+")");
-			modal.find(".purchase-sub").text("Transaction "+product_details.transaction);
+			modal.find(".purchase-sub").text("Transaction "+product_details.transaction+" du "+moment(product_details.transaction_date).format("DD/MM/YYYY"));
 
 			var product_status = "<p id='product-validity-"+product_details.id+"'>";
 			switch(product_details.status){
@@ -49,15 +49,39 @@ $(document).ready(function(){
 			}
 			if(product_details.subscription == '0'){ // If the product is NOT an annual subscription
 				// Handling the sessions
-				var totalHours = product_details.hours, valid_sessions = "", over_sessions = "";
+				var totalHours = product_details.hours, valid_sessions = "", over_sessions = "", out_sessions = "", previousSessions = [], valid_indicator = -1, over_indicator = -1;
 				if(product_details.status == '2' && product_details.flag_hours == '0'){
 					console.log("Forfait illimité expiré");
 					var hoursUsed = 0;
 				}
 				for(var i = 0; i < sessions_list.length; i++){
-					/*console.log(sessions_list[i]);*/
-					if(product_details.illimited != '1'){
-						if(totalHours > 0){
+					if(moment(sessions_list[i].start).format("YYYY-MM-DD") < moment(product_details.activation).format("YYYY-MM-DD")){
+						previousSessions.push(i);
+						over_indicator = -2;
+					} else {
+						/*console.log(sessions_list[i]);*/
+						if(product_details.illimited != '1'){
+							if(totalHours > 0){
+								if(valid_indicator == -1){
+									valid_sessions += "<p id='over-session-alert'>Cours validés :</p>";
+									valid_indicator = 0;
+								}
+								valid_sessions += "<li class='product-session session-valid container-fluid' data-argument='"+sessions_list[i].id+"' id='session-"+sessions_list[i].id+"'>";
+								valid_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
+								valid_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
+								valid_sessions += "</li>";
+							} else {
+								if(over_indicator == -1){
+									over_sessions += "<p id='over-session-alert'>Cours hors forfait :</p>";
+									over_indicator = 0;
+								}
+								over_sessions += "<li class='product-session session-over container-fluid' data-argument='"+sessions_list[i].id+"' id='session-"+sessions_list[i].id+"'>";
+								over_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
+								over_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
+								over_sessions += "</li>";
+							}
+							totalHours -= sessions_list[i].duration;
+						} else {
 							if(i == 0){
 								valid_sessions += "<p id='over-session-alert'>Cours validés :</p>";
 							}
@@ -65,33 +89,26 @@ $(document).ready(function(){
 							valid_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
 							valid_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
 							valid_sessions += "</li>";
-						} else {
-							if(totalHours == 0){
-								over_sessions += "<p id='over-session-alert'>Cours hors forfait :</p>";
+							if(product_details.status == '2' && product_details.flag_hours == '0'){
+								hoursUsed += parseFloat(sessions_list[i].duration);
 							}
-							over_sessions += "<li class='product-session session-over container-fluid' data-argument='"+sessions_list[i].id+"' id='session-"+sessions_list[i].id+"'>";
-							over_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
-							over_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
-							over_sessions += "</li>";
-						}
-						totalHours -= sessions_list[i].duration;
-					} else {
-						if(i == 0){
-							valid_sessions += "<p id='over-session-alert'>Cours validés :</p>";
-						}
-						valid_sessions += "<li class='product-session session-valid container-fluid' data-argument='"+sessions_list[i].id+"' id='session-"+sessions_list[i].id+"'>";
-						valid_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
-						valid_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
-						valid_sessions += "</li>";
-						if(product_details.status == '2' && product_details.flag_hours == '0'){
-							hoursUsed += parseFloat(sessions_list[i].duration);
 						}
 					}
 					if(product_details.status == '2' && product_details.flag_hours == '0'){
 						var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+hoursUsed+"</span><br> heures consommées</p>";
 					}
 				}
-				modal.find(".sessions-list").append("<ul class='purchase-inside-list'>"+over_sessions+valid_sessions+"</ul>");
+				for(var j = 0; j < previousSessions.length; j++){
+					if(over_indicator == -2){
+						out_sessions += "<p id='over-session-alert'>Cours hors forfait :</p>";
+						over_indicator = 0;
+					}
+					out_sessions += "<li class='product-session session-over container-fluid' data-argument='"+sessions_list[j].id+"' id='session-"+sessions_list[j].id+"'>";
+					out_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[j].title+"</p>";
+					out_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[j].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[j].start).format("HH:mm")+" - "+moment(sessions_list[j].end).format("HH:mm")+"</p>";
+					out_sessions += "</li>";
+				}
+				modal.find(".sessions-list").append("<ul class='purchase-inside-list'>"+out_sessions+over_sessions+valid_sessions+"</ul>");
 			}
 			modal.find(".product-validity").html(product_validity);
 			modal.find(".modal-actions").html(buttons);
@@ -133,10 +150,12 @@ $(document).ready(function(){
 				for(var i = 0; i < products_list.length; i++){
 					if(products_list[i].status == '1'){
 						product_status = "item-active";
+					} else if(products_list[i].status == '2'){
+						product_status = "item-expired";
 					} else {
 						product_status = "item-pending";
 					}
-					body += "<li class='sub-modal-product "+product_status+"' data-argument='"+products_list[i].id+"'>"+products_list[i].title+"</li>";
+					body += "<li class='sub-modal-product "+product_status+"' data-argument='"+products_list[i].id+"'>"+products_list[i].title+" ("+moment(products_list[i].transaction_achat).format("DD/MM/YYYY")+")</li>";
 				}
 				body += "</ul>";
 				$(".sub-modal-body").html(body);
@@ -297,13 +316,23 @@ function computeRemainingHours(product_id){
 					**/
 		/*console.log(value);*/
 		if(isNaN(value)){
-			$("#product-status-"+product_id+">span.highlighted-value").text("0 heures");
-			$("#purchase-item-"+product_id+">p.purchase-product-hours").html("Heures épuisées");
-			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Expiré</span><br>le "+moment(value).format("DD/MM/YYYY"));
-			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(value).format("DD/MM/YYYY"));
+			var values = JSON.parse(value);
+			var date = values[0], hours = values[1];
 			$("#purchase-item-"+product_id).removeClass("item-pending");
-			$("#purchase-item-"+product_id).addClass("item-expired");
+			$("#purchase-item-"+product_id).removeClass("item-overused");
 			$("#purchase-item-"+product_id).removeClass("item-active");
+			$("#purchase-item-"+product_id).removeClass("item-expired");
+			if(hours < 0){
+				$("#product-status-"+product_id+">span.highlighted-value").text(hours + " heures");
+				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(-1 * hours + " heures de trop");
+				$("#purchase-item-"+product_id).addClass("item-overused");
+			} else {
+				$("#product-status-"+product_id+">span.highlighted-value").text("0 heure");
+				$("#purchase-item-"+product_id+">p.purchase-product-hours").html("Heures épuisées");
+				$("#purchase-item-"+product_id).addClass("item-expired");
+			}
+			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Expiré</span><br>le "+moment(date).format("DD/MM/YYYY"));
+			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(date).format("DD/MM/YYYY"));
 		} else {
 			if(value == '0'){
 				$("#product-validity-"+product_id).html("<span class='highlighted-value'>En attente </span><br>d'activation");
@@ -313,6 +342,7 @@ function computeRemainingHours(product_id){
 				$("#purchase-item-"+product_id).addClass("item-pending");
 				$("#purchase-item-"+product_id).removeClass("item-expired");
 				$("#purchase-item-"+product_id).removeClass("item-active");
+				$("#purchase-item-"+product_id).removeClass("item-overused");
 				if(top.location.pathname == '/Salsabor/regularisation/forfaits'){
 					$("#purchase-item-"+product_id).removeClass("item-overused");
 				}

@@ -31,7 +31,10 @@ if($remaining_hours <= 0){
 	$deactivate = $db->query("UPDATE produits_adherents
 							SET actif='2', date_fin_utilisation='$date_fin_utilisation', volume_cours = '$remaining_hours'
 							WHERE id_produit_adherent = '$product_id'");
-	echo $date_fin_utilisation;
+	$values = array();
+	array_push($values, $date_fin_utilisation);
+	array_push($values, $remaining_hours);
+	echo json_encode($values);
 } else if($remaining_hours == $max_hours["volume_horaire"]){
 	$deactivate = $db->query("UPDATE produits_adherents
 							SET actif='0', volume_cours = '$remaining_hours'
