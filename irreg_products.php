@@ -8,7 +8,7 @@ $queryIrregulars = $db->query("SELECT * FROM produits_adherents pa
 								JOIN users u ON id_user_foreign = u.user_id
 								JOIN produits p ON id_produit_foreign = p.produit_id
 								JOIN transactions t ON id_transaction_foreign = t.id_transaction
-								WHERE volume_cours < '0.00'
+								WHERE volume_cours < '0.00' AND est_illimite != '1'
 								ORDER BY volume_cours ASC");
 ?>
 <html>
