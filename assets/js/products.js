@@ -326,13 +326,17 @@ function computeRemainingHours(product_id){
 				$("#product-status-"+product_id+">span.highlighted-value").text(hours + " heures");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(-1 * hours + " heures de trop");
 				$("#purchase-item-"+product_id).addClass("item-overused");
+			} else if(hours > 0){
+				$("#product-status-"+product_id+">span.highlighted-value").text(hours + "heures consommées");
+				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + "heures consommées");
+				$("#purchase-item-"+product_id).addClass("item-active");
 			} else {
 				$("#product-status-"+product_id+">span.highlighted-value").text("0 heure");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html("Heures épuisées");
 				$("#purchase-item-"+product_id).addClass("item-expired");
+				$("#product-validity-"+product_id).html("<span class='highlighted-value'>Expiré</span><br>le "+moment(date).format("DD/MM/YYYY"));
+				$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(date).format("DD/MM/YYYY"));
 			}
-			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Expiré</span><br>le "+moment(date).format("DD/MM/YYYY"));
-			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(date).format("DD/MM/YYYY"));
 		} else {
 			if(value == '0'){
 				$("#product-validity-"+product_id).html("<span class='highlighted-value'>En attente </span><br>d'activation");
