@@ -11,7 +11,7 @@ This code will also:
 
 $product_id = $_POST["product_id"];
 
-$max_hours = $db->query("SELECT volume_horaire, pa.date_activation AS produit_adherent_activation FROM produits_adherents pa
+$max_hours = $db->query("SELECT volume_horaire, est_illimite, pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif FROM produits_adherents pa
 						JOIN produits p ON p.produit_id = pa.id_produit_foreign
 						WHERE id_produit_adherent = '$product_id'")->fetch(PDO::FETCH_ASSOC);
 
@@ -27,11 +27,29 @@ while($session = $sessions_list->fetch(PDO::FETCH_ASSOC)){
 }
 
 if($remaining_hours <= 0){
-	$today = date_create("now")->format("Y-m-d");
-	$deactivate = $db->query("UPDATE produits_adherents
+	/*if($max_hours["produit_adherent_actif"] != "2"){
+		$today = date_create("now")->format("Y-m-d");
+	}*/
+	$values = array();
+	array_push($values, $date_fin_utilisation);
+	if($max_hours["est_illimite"] == "1"){
+		$deactivate = $db->query("UPDATE produits_adherents
+							SET actif='1', volume_cours = '$remaining_hours'
+							WHERE id_produit_adherent = '$product_id'");
+		array_push($values, -1 * $remaining_hours);
+	} else {
+		if($max_hours["produit_adherent_actif"] == "2"){
+			$deactivate = $db->query("UPDATE produits_adherents
+							SET actif='2', volume_cours = '$remaining_hours'
+							WHERE id_produit_adherent = '$product_id'");
+		} else {
+			$deactivate = $db->query("UPDATE produits_adherents
 							SET actif='2', date_fin_utilisation='$date_fin_utilisation', volume_cours = '$remaining_hours'
 							WHERE id_produit_adherent = '$product_id'");
-	echo $date_fin_utilisation;
+		}
+		array_push($values, $remaining_hours);
+	}
+	echo json_encode($values);
 } else if($remaining_hours == $max_hours["volume_horaire"]){
 	$deactivate = $db->query("UPDATE produits_adherents
 							SET actif='0', volume_cours = '$remaining_hours'

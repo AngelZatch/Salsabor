@@ -125,6 +125,10 @@ body
 	&:hover
 		background-color: $danger-color
 
+.item-overused
+	@extend .item-overconsumed
+	background-color: lighten($danger-color, 20%)
+
 .status-icon
 	text-align: center
 	color: $system-color
@@ -147,6 +151,9 @@ body
 	span
 		font-weight: 400
 		color: $salsabor-red
+
+.btn-danger
+	font-weight: 800
 
 .modal-body-title
 	font-size: 20px

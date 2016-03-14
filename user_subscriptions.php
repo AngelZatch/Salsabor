@@ -21,7 +21,8 @@ $queryForfaits = $db->prepare('SELECT *, pa.date_activation AS produit_adherent_
 									ON id_transaction_foreign=t.id_transaction
 									AND t.id_transaction IS NOT NULL
 								WHERE id_user_foreign=?
-								ORDER BY produit_adherent_activation DESC');
+								ORDER BY
+									date_achat DESC');
 $queryForfaits->bindValue(1, $data);
 $queryForfaits->execute();
 ?>
@@ -63,17 +64,21 @@ $queryForfaits->execute();
 	$date_activation = date_create($forfaits["produit_adherent_activation"]);
 	$date_expiration = date_create($forfaits["produit_validity"]);
 	$today = date('Y-m-d');
-	if($forfaits["produit_adherent_actif"] == '0'){
-		$item_class = "item-pending";
-	} else if($forfaits["produit_adherent_actif"] == '2') {
-		$item_class = "item-expired";
+	if($forfaits["volume_cours"] < '0' && $forfaits["est_illimite"] != '1'){
+		$item_class = "item-overused";
 	} else {
-		if($date_activation->format('Y-m-d') > $today){
-			$item_class = "item-near-activation";
-		} else if($date_expiration->format("Y-m-d") < date_create("now")->add(new dateinterval('P5D'))->format("Y-m-d")){
-			$item_class = "item-near-expiration";
-		} else{
-			$item_class = "item-active";
+		if($forfaits["produit_adherent_actif"] == '0'){
+			$item_class = "item-pending";
+		} else if($forfaits["produit_adherent_actif"] == '2') {
+			$item_class = "item-expired";
+		} else {
+			if($date_activation->format('Y-m-d') > $today){
+				$item_class = "item-near-activation";
+			} else if($date_expiration->format("Y-m-d") < date_create("now")->add(new dateinterval('P5D'))->format("Y-m-d")){
+				$item_class = "item-near-expiration";
+			} else{
+				$item_class = "item-active";
+			}
 		}
 	}?>
 							<li class="purchase-item <?php echo $item_class;?> container-fluid" id="purchase-item-<?php echo $forfaits["id_produit_adherent"];?>" data-toggle='modal' data-target='#product-modal' data-argument="<?php echo $forfaits["id_produit_adherent"];?>">
