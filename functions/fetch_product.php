@@ -11,6 +11,7 @@ $load = $db->query("SELECT *, pa.actif AS produit_adherent_actif, pa.date_activa
 					FROM produits_adherents pa
 					JOIN produits p ON pa.id_produit_foreign = p.produit_id
 					JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
+					JOIN users u ON pa.id_user_foreign = u.user_id
 						WHERE id_produit_adherent = '$product_id'");
 
 $details = $load->fetch(PDO::FETCH_ASSOC);
@@ -20,6 +21,7 @@ $p["id"] = $details["id_produit_adherent"];
 $p["recipient"] = $details["id_user_foreign"];
 $p["transaction"] = $details["id_transaction_foreign"];
 $p["transaction_date"] = $details["date_achat"];
+$p["user"] = $details["user_prenom"]." ".$details["user_nom"];
 $p["product"] = $details["produit_nom"];
 $p["activation"] = $details["produit_adherent_activation"];
 $p["validity"] = $details["produit_validity"];

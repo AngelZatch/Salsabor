@@ -8,7 +8,7 @@ $(document).ready(function(){
 
 			// Handling the product
 			modal.find(".modal-title").text(product_details.product+" (ID : "+product_details.id+")");
-			modal.find(".purchase-sub").text("Transaction "+product_details.transaction+" du "+moment(product_details.transaction_date).format("DD/MM/YYYY"));
+			modal.find(".purchase-sub").text("Transaction "+product_details.transaction+" du "+moment(product_details.transaction_date).format("DD/MM/YYYY")+"; utilisé par "+product_details.user);
 
 			var product_status = "<p id='product-validity-"+product_details.id+"'>";
 			switch(product_details.status){
@@ -51,7 +51,7 @@ $(document).ready(function(){
 				// Handling the sessions
 				var totalHours = product_details.hours, valid_sessions = "", over_sessions = "", out_sessions = "", previousSessions = [], valid_indicator = -1, over_indicator = -1;
 				if(product_details.status == '2' && product_details.flag_hours == '0'){
-					console.log("Forfait illimité expiré");
+					/*console.log("Forfait illimité expiré");*/
 					var hoursUsed = 0;
 				}
 				for(var i = 0; i < sessions_list.length; i++){
@@ -164,6 +164,14 @@ $(document).ready(function(){
 			$(".sub-modal").css({top : tpos.top-45+'px'});
 			break;
 
+		case 'delete':
+			title = "Supprimer une participation";
+			var record_id = product_id;
+			body += "Êtes-vous sûr de vouloir supprimer cette participation ?";
+			$(".sub-modal-body").html(body);
+			footer += "<button class='btn btn-danger delete-session col-lg-6' id='btn-product-delete' data-session='"+record_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : tpos.top-45+'px'});
+
 		default:
 			title = "Sub modal";
 			break;
@@ -189,7 +197,7 @@ $(document).ready(function(){
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
 	if(!$(this).hasClass("options-shown")){
 		session.addClass("options-shown");
-		var content = "<div class='session-options'><button class='btn btn-default btn-modal trigger-sub' data-argument='"+product_id+"' data-subtype='report' id='btn-session-report'><span class='glyphicon glyphicon-arrow-right'></span> Affecter à un autre produit</button></div>";
+		var content = "<div class='session-options'><button class='btn btn-default btn-modal trigger-sub' data-argument='"+product_id+"' data-subtype='report' id='btn-session-report'><span class='glyphicon glyphicon-arrow-right'></span> Réaffecter</button><button class='btn btn-danger btn-modal trigger-sub' data-argument='"+product_id+"' data-subtype='delete' id='btn-session-delete'><span class='glyphicon glyphicon-trash'></span> Supprimer</button></div>";
 		session.append(content);
 	} else {
 		$(this).find(".session-options").remove();
@@ -204,6 +212,9 @@ $(document).ready(function(){
 	var session_target = document.getElementById($(this).attr("id")).dataset.session;
 	var product_target = document.getElementById("product-selected").dataset.argument;
 	reportSession(product_target, session_target);
+}).on('click', '.delete-session', function(){
+	var session_target = document.getElementById($(this).attr("id")).dataset.session;
+	deleteSession(session_target);
 })
 
 /** Fetch the purchase : products and maturities of the purchase **/
@@ -330,6 +341,7 @@ function computeRemainingHours(product_id){
 				$("#product-status-"+product_id+">span.highlighted-value").text(hours + "heures consommées");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + "heures consommées");
 				$("#purchase-item-"+product_id).addClass("item-active");
+				$("#purchase-item-"+product_id).removeClass("item-overused");
 			} else {
 				$("#product-status-"+product_id+">span.highlighted-value").text("0 heure");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html("Heures épuisées");
@@ -347,9 +359,6 @@ function computeRemainingHours(product_id){
 				$("#purchase-item-"+product_id).removeClass("item-expired");
 				$("#purchase-item-"+product_id).removeClass("item-active");
 				$("#purchase-item-"+product_id).removeClass("item-overused");
-				if(top.location.pathname == '/Salsabor/regularisation/forfaits'){
-					$("#purchase-item-"+product_id).removeClass("item-overused");
-				}
 			} else {
 				value = parseFloat(value).toFixed(2);
 				$("#product-status-"+product_id+">span.highlighted-value").text(value+" heures");
@@ -358,20 +367,6 @@ function computeRemainingHours(product_id){
 		}
 	})
 }
-
-/*function activateProduct(product_id){
-	$.post("functions/activate_product.php", {product_id : product_id}).done(function(data){
-		var dates = JSON.parse(data);
-		console.log(dates);
-		$("#product-validity-"+product_id).html("Valide du <br><span class='highlighted-value'> "+moment(dates[0]).format("DD/MM/YYYY")+"</span><br>au<br><span class='highlighted-value'>"+moment(dates[1]).format("DD/MM/YYYY")+"</span>");
-		$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Valide du "+moment(dates[0]).format("DD/MM/YYYY")+" au "+moment(dates[1]).format("DD/MM/YYYY"));
-		$("#purchase-item-"+product_id).removeClass("item-pending");
-		$("#purchase-item-"+product_id).removeClass("item-expired");
-		$("#purchase-item-"+product_id).addClass("item-active");
-		$("#btn-activate-"+product_id).html("<span class='glyphicon glyphicon-ban-circle'></span> Désactiver");
-		document.getElementById("btn-activate-"+product_id).onclick = function(){ deactivateProduct(product_id); };
-	})
-}*/
 
 function activateProductWithDate(product_id, start_date){
 	$.post("functions/activate_product.php", {product_id : product_id, start_date : start_date}).done(function(data){
@@ -443,7 +438,6 @@ function extendProduct(product_id, end_date){
 }
 
 function reportSession(product_id, record_id){
-	console.log(product_id, record_id);
 	$.post("functions/set_product_session.php", {record_id : record_id, product_id : product_id}).done(function(old_product){
 		$(".sub-modal").hide();
 		/** Once a session has been assigned to another product, various things have to happen
@@ -462,5 +456,13 @@ function reportSession(product_id, record_id){
 			$("#record-"+record_id).remove();
 			$(".irregulars-target-container").empty();
 		}
+	})
+}
+
+function deleteSession(record_id){
+	$.post("functions/delete_session.php", {record_id : record_id}).done(function(old_product){
+		$(".sub-modal").hide();
+		$("#session-"+record_id).remove();
+		computeRemainingHours(old_product);
 	})
 }
