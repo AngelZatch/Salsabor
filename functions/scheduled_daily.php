@@ -13,7 +13,7 @@ try{
 	$update->execute();
 
 	// Désactivation des forfaits dont le volume horaire atteint 0
-	$deactivateAbonnement = $db->prepare("UPDATE produits_adherents SET actif=0 WHERE date_expiration<=?");
+	$deactivateAbonnement = $db->prepare("UPDATE produits_adherents SET actif=2 WHERE date_expiration<=?");
 	$deactivateAbonnement->bindParam(1, $compare_start);
 	$deactivateAbonnement->execute();
 

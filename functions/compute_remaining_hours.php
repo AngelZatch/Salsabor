@@ -23,7 +23,9 @@ $remaining_hours = $max_hours["volume_horaire"];
 
 while($session = $sessions_list->fetch(PDO::FETCH_ASSOC)){
 	$remaining_hours -= floatval($session["cours_unite"]);
-	$date_fin_utilisation = $session["cours_end"];
+	if($remaining_hours >= 0){
+		$date_fin_utilisation = $session["cours_end"];
+	}
 }
 
 if($remaining_hours <= 0){
@@ -31,6 +33,7 @@ if($remaining_hours <= 0){
 		$today = date_create("now")->format("Y-m-d");
 	}*/
 	$values = array();
+	if(!isset($date_fin_utilisation)) $date_fin_utilisation = null;
 	array_push($values, $date_fin_utilisation);
 	if($max_hours["est_illimite"] == "1"){
 		$deactivate = $db->query("UPDATE produits_adherents
