@@ -67,7 +67,7 @@ if($remaining_hours <= 0){
 						SET actif='1', date_activation = '$date_activation', volume_cours = '$remaining_hours'
 						WHERE id_produit_adherent = '$product_id'");
 	} else {
-		if($max_hours["produit_validity"] != NULL && $max_hours["produit_validity"] < date()){
+		if($max_hours["produit_validity"] != NULL && $max_hours["produit_validity"] < date("Y-m-d H:i:s")){
 			$actif = '2';
 		} else {
 			$actif = '1';
