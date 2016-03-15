@@ -11,8 +11,10 @@ $details = $queryDetails->fetch(PDO::FETCH_ASSOC);
 
 //Enfin, on obtient l'historique de tous les achats (mêmes les forfaits d'autres personnes)
 $queryAchats = $db->query("SELECT * FROM transactions
-						WHERE payeur_transaction='$data'
+						WHERE id_transaction IN (SELECT id_transaction_foreign FROM produits_adherents WHERE id_user_foreign = '$data') OR payeur_transaction='$data'
 						ORDER BY date_achat DESC");
+
+$queryTransactions = $db->query("SELECT * FROM produits_adherents WHERE id_user_foreign = '$data'");
 ?>
 <html>
 	<head>

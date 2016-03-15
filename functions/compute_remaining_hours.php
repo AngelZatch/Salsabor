@@ -11,7 +11,9 @@ This code will also:
 
 $product_id = $_POST["product_id"];
 
-$max_hours = $db->query("SELECT volume_horaire, est_illimite, pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif FROM produits_adherents pa
+$max_hours = $db->query("SELECT volume_horaire, est_illimite, pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif, IF(date_prolongee IS NOT NULL, date_prolongee,
+						IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
+						) AS produit_validity FROM produits_adherents pa
 						JOIN produits p ON p.produit_id = pa.id_produit_foreign
 						WHERE id_produit_adherent = '$product_id'")->fetch(PDO::FETCH_ASSOC);
 
@@ -65,8 +67,13 @@ if($remaining_hours <= 0){
 						SET actif='1', date_activation = '$date_activation', volume_cours = '$remaining_hours'
 						WHERE id_produit_adherent = '$product_id'");
 	} else {
+		if($max_hours["produit_validity"] != NULL){
+			$actif = '2';
+		} else {
+			$actif = '1';
+		}
 		$update = $db->query("UPDATE produits_adherents
-						SET actif='1', volume_cours = '$remaining_hours'
+						SET actif='$actif', volume_cours = '$remaining_hours'
 						WHERE id_produit_adherent = '$product_id'");
 	}
 	echo $remaining_hours;
