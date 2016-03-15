@@ -34,26 +34,26 @@ body {
 
 /** PURCHASES **/
 /* line 45, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-.panel-purchase {
+.panel-purchase, .panel-session {
   box-shadow: 0px 0px 10px #888888;
   border: 0; }
   /* line 48, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-  .panel-purchase .panel-heading-container {
+  .panel-purchase .panel-heading-container, .panel-session .panel-heading-container {
     cursor: pointer;
     text-decoration: none;
     color: black; }
     /* line 52, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-    .panel-purchase .panel-heading-container:hover {
+    .panel-purchase .panel-heading-container:hover, .panel-session .panel-heading-container:hover {
       color: black; }
   /* line 54, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-  .panel-purchase .panel-heading {
+  .panel-purchase .panel-heading, .panel-session .panel-heading {
     background-color: white;
     text-decoration: none; }
     /* line 57, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-    .panel-purchase .panel-heading p {
+    .panel-purchase .panel-heading p, .panel-session .panel-heading p {
       margin-top: 10px; }
   /* line 59, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-  .panel-purchase .panel-body {
+  .panel-purchase .panel-body, .panel-session .panel-body {
     border-top: 1px solid #e1e1e1; }
 
 /* line 62, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
@@ -63,7 +63,7 @@ body {
   font-size: 18px; }
 
 /* line 67, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-.purchase-id {
+.purchase-id, .session-id {
   font-size: 17px;
   font-weight: 600; }
 
@@ -325,5 +325,7 @@ h2.modal-body-title.first {
   /* line 275, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .irregular-record p {
     margin-bottom: 0; }
+
+/** ACTIVE SESSIONS **/
 
 /*# sourceMappingURL=default-style.css.map */
