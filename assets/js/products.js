@@ -103,9 +103,9 @@ $(document).ready(function(){
 						out_sessions += "<p id='over-session-alert'>Cours hors forfait :</p>";
 						over_indicator = 0;
 					}
-					out_sessions += "<li class='product-session session-over container-fluid' data-argument='"+sessions_list[j].id+"' id='session-"+sessions_list[j].id+"'>";
-					out_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[j].title+"</p>";
-					out_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[j].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[j].start).format("HH:mm")+" - "+moment(sessions_list[j].end).format("HH:mm")+"</p>";
+					out_sessions += "<li class='product-session session-over container-fluid' data-argument='"+sessions_list[previousSessions[j]].id+"' id='session-"+sessions_list[previousSessions[j]].id+"'>";
+					out_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[previousSessions[j]].title+"</p>";
+					out_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[previousSessions[j]].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[previousSessions[j]].start).format("HH:mm")+" - "+moment(sessions_list[previousSessions[j]].end).format("HH:mm")+"</p>";
 					out_sessions += "</li>";
 				}
 				modal.find(".sessions-list").append("<ul class='purchase-inside-list'>"+out_sessions+over_sessions+valid_sessions+"</ul>");
