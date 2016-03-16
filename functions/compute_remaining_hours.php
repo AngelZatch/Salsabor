@@ -30,19 +30,18 @@ while($session = $sessions_list->fetch(PDO::FETCH_ASSOC)){
 	}
 }
 
+$values = array();
+if(!isset($date_fin_utilisation)) $date_fin_utilisation = null;
+array_push($values, $date_fin_utilisation); // Position 0 of the array
 if($remaining_hours <= 0){
-	/*if($max_hours["produit_adherent_actif"] != "2"){
-		$today = date_create("now")->format("Y-m-d");
-	}*/
-	$values = array();
-	if(!isset($date_fin_utilisation)) $date_fin_utilisation = null;
-	array_push($values, $date_fin_utilisation);
 	if($max_hours["est_illimite"] == "1"){
+		$status = '1';
 		$deactivate = $db->query("UPDATE produits_adherents
 							SET actif='1', volume_cours = '$remaining_hours'
 							WHERE id_produit_adherent = '$product_id'");
-		array_push($values, -1 * $remaining_hours);
+		array_push($values, -1 * $remaining_hours); // Position 1 of the array
 	} else {
+		$status = '2';
 		if($max_hours["produit_adherent_actif"] == "2"){
 			$deactivate = $db->query("UPDATE produits_adherents
 							SET actif='2', volume_cours = '$remaining_hours'
@@ -52,30 +51,33 @@ if($remaining_hours <= 0){
 							SET actif='2', date_fin_utilisation='$date_fin_utilisation', volume_cours = '$remaining_hours'
 							WHERE id_produit_adherent = '$product_id'");
 		}
-		array_push($values, $remaining_hours);
+		array_push($values, $remaining_hours); // Position 1 of the array
 	}
-	echo json_encode($values);
 } else if($remaining_hours == $max_hours["volume_horaire"]){
+	$status = '0';
+	array_push($values, $remaining_hours); // Position 1 of the array
 	$deactivate = $db->query("UPDATE produits_adherents
 							SET actif='0', volume_cours = '$remaining_hours'
 							WHERE id_produit_adherent = '$product_id'");
 	echo 0;
-} else {
+} else { // If the hours are still in positive.
+	array_push($values, $remaining_hours); // Position 1 of the array
 	if($max_hours["produit_adherent_activation"] == "0000-00-00 00:00:00"){
 		$date_activation = date("Y-m-d H:i:s");
 		$update = $db->query("UPDATE produits_adherents
 						SET actif='1', date_activation = '$date_activation', volume_cours = '$remaining_hours'
 						WHERE id_produit_adherent = '$product_id'");
 	} else {
-		if($max_hours["produit_validity"] != NULL && $max_hours["produit_validity"] < date("Y-m-d H:i:s")){
-			$actif = '2';
+		if($max_hours["produit_validity"] != '' && date_create($max_hours["produit_validity"])->format("Y-m-d") < date("Y-m-d")){
+			$status = '2';
 		} else {
-			$actif = '1';
+			$status = '1';
 		}
 		$update = $db->query("UPDATE produits_adherents
-						SET actif='$actif', volume_cours = '$remaining_hours'
+						SET actif='$status', volume_cours = '$remaining_hours'
 						WHERE id_produit_adherent = '$product_id'");
 	}
-	echo $remaining_hours;
 }
+array_push($values, $status); // Position 2 of the array
+echo json_encode($values);
 ?>

@@ -363,16 +363,19 @@ function computeRemainingHours(product_id){
 						-> update the value of remaining hours to 0 in the modal AND the purchase space behind it
 						-> update the status of validity to "Expired on" + date in the modal AND the purchase space behind it
 						-> Find all sessions taken with this product that happened AFTER the date and highlight them in red to indicate they cannot stay there and have to be assigned to another product.
+
+						In short, we're going to check the state, hours remaining and the dates of validity.
 					**/
 		/*console.log(value);*/
-		if(isNaN(value)){
-			var values = JSON.parse(value);
-			var date = values[0], hours = values[1];
-			$("#purchase-item-"+product_id).removeClass("item-pending");
-			$("#purchase-item-"+product_id).removeClass("item-overused");
-			$("#purchase-item-"+product_id).removeClass("item-active");
-			$("#purchase-item-"+product_id).removeClass("item-expired");
-			$("#purchase-item-"+product_id).removeClass("item-consumed");
+		$("#purchase-item-"+product_id).removeClass("item-pending");
+		$("#purchase-item-"+product_id).removeClass("item-overused");
+		$("#purchase-item-"+product_id).removeClass("item-active");
+		$("#purchase-item-"+product_id).removeClass("item-expired");
+		$("#purchase-item-"+product_id).removeClass("item-consumed");
+		var values = JSON.parse(value);
+		console.log(values);
+		var date = values[0], hours = values[1], status = values[2];
+		if(date != "null"){ // If the product is expired
 			if(hours < 0){
 				$("#product-status-"+product_id+">span.highlighted-value").text(hours + " heures");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(-1 * hours + " heures sur-consommées");
@@ -389,17 +392,21 @@ function computeRemainingHours(product_id){
 				$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(date).format("DD/MM/YYYY"));
 			}
 		} else {
-			if(value == '0'){
+			if(hours == '0'){
 				$("#product-validity-"+product_id).html("<span class='highlighted-value'>En attente </span><br>d'activation");
 				$("#purchase-item-"+product_id+">p.purchase-product-validity").html("En attente ");
 				$("#product-status-"+product_id+">span.highlighted-value").empty();
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").empty();
 				$("#purchase-item-"+product_id).addClass("item-pending");
 			} else {
-				value = parseFloat(value).toFixed(2);
+				hours = parseFloat(hours).toFixed(2);
 				$("#product-status-"+product_id+">span.highlighted-value").text(value+" heures");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(value+" heures restantes");
-				$("#purchase-item-"+product_id).addClass("item-active");
+				if(status == '2'){
+					$("#purchase-item-"+product_id).addClass("item-expired");
+				} else {
+					$("#purchase-item-"+product_id).addClass("item-active");
+				}
 			}
 		}
 	})
