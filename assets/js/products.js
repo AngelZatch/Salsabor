@@ -157,7 +157,7 @@ $(document).ready(function(){
 
 						case '2':
 							product_status = "item-expired";
-							product_flavor_text = "Valide du "+moment(products_list[i].start).format("DD/MM/YYY")+" au "+moment(products_list[i].validity).format("DD/MM/YYYY");
+							product_flavor_text = "Valide du "+moment(products_list[i].start).format("DD/MM/YYYY")+" au "+moment(products_list[i].validity).format("DD/MM/YYYY");
 							break;
 
 						case '0':
@@ -165,7 +165,7 @@ $(document).ready(function(){
 							product_flavor_text = "Acheté le "+moment(products_list[i].transaction_achat).format("DD/MM/YYYY");
 							break;
 					}
-					if(products_list[i].hours < 0){
+					if(products_list[i].hours < 0 && product_list[i].unlimited != 1){
 						product_status = "item-overused";
 					}
 					body += "<li class='sub-modal-product "+product_status+"' data-argument='"+products_list[i].id+"'>";
@@ -374,16 +374,20 @@ function computeRemainingHours(product_id){
 		$("#purchase-item-"+product_id).removeClass("item-consumed");
 		var values = JSON.parse(value);
 		console.log(values);
-		var date = values[0], hours = values[1], status = values[2];
+		var date = values[1], hours = values[0], status = values[2];
 		if(date != "null"){ // If the product is expired
 			if(hours < 0){
 				$("#product-status-"+product_id+">span.highlighted-value").text(hours + " heures");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(-1 * hours + " heures sur-consommées");
 				$("#purchase-item-"+product_id).addClass("item-overused");
 			} else if(hours > 0){
-				$("#product-status-"+product_id+">span.highlighted-value").text(hours + "heures consommées");
-				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + "heures consommées");
-				$("#purchase-item-"+product_id).addClass("item-active");
+				$("#product-status-"+product_id+">span.highlighted-value").text(hours + " heures");
+				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures");
+				if(status == '2'){
+					$("#purchase-item-"+product_id).addClass("item-expired");
+				} else {
+					$("#purchase-item-"+product_id).addClass("item-active");
+				}
 			} else {
 				$("#product-status-"+product_id+">span.highlighted-value").text("0 heure");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html("Heures épuisées");
@@ -400,8 +404,8 @@ function computeRemainingHours(product_id){
 				$("#purchase-item-"+product_id).addClass("item-pending");
 			} else {
 				hours = parseFloat(hours).toFixed(2);
-				$("#product-status-"+product_id+">span.highlighted-value").text(value+" heures");
-				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(value+" heures restantes");
+				$("#product-status-"+product_id+">span.highlighted-value").text(hours+" heures");
+				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours+" heures restantes");
 				if(status == '2'){
 					$("#purchase-item-"+product_id).addClass("item-expired");
 				} else {
@@ -465,7 +469,7 @@ function deactivateProduct(product_id){
 			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Expiré</span><br>le "+moment(value).format("DD/MM/YYYY"));
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(value).format("DD/MM/YYYY"));
 			$("#purchase-item-"+product_id).removeClass("item-pending");
-			$("#purchase-item-"+product_id).addClass("item-expired");
+			$("#purchase-item-"+product_id).addClass("item-overused");
 			$("#btn-activate-"+product_id).html("<span class='glyphicon glyphicon-play-circle'></span> Réactiver");
 		}
 		$("#purchase-item-"+product_id).removeClass("item-near-activation");
