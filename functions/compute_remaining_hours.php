@@ -25,6 +25,7 @@ $sessions_list = $db->query("SELECT cours_unite, cours_start, cours_end FROM cou
 
 $remaining_hours = $max_hours["volume_horaire"];
 $computeEnd = false;
+$date_fin_utilisation = 'null';
 
 while($session = $sessions_list->fetch(PDO::FETCH_ASSOC)){
 	if($max_hours["produit_adherent_actif"] == '0'){
@@ -88,7 +89,6 @@ if($remaining_hours <= 0){
 						WHERE id_produit_adherent = '$product_id'");
 	}
 }
-if(!isset($date_fin_utilisation)) $date_fin_utilisation = 'null';
 array_push($values, $date_fin_utilisation); // Position 0 of the array
 array_push($values, $status); // Position 2 of the array
 echo json_encode($values);
