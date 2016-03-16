@@ -7,7 +7,7 @@ $db = PDOFactory::getConnection();
 $product_id = $_POST["product_id"];
 
 /** Check if the product has already been activated before **/
-$details = $db->query("SELECT pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif, date_expiration, date_fin_utilisation, validite_initiale FROM produits_adherents pa
+$details = $db->query("SELECT pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif, date_expiration, date_fin_utilisation, validite_initiale, volume_cours FROM produits_adherents pa
 						JOIN produits p ON pa.id_produit_foreign = p.produit_id
 						WHERE id_produit_adherent = '$product_id'")->fetch(PDO::FETCH_ASSOC);
 
@@ -39,6 +39,9 @@ if($details["produit_adherent_activation"] != "0000-00-00 00:00:00" && $details[
 		$totalOffset = $i + $j;
 		$new_exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$totalOffset.'DAYS'));
 	}
+	if(!isset($new_exp_date)){
+		$new_exp_date = $date_expiration;
+	}
 }
 
 if($new_exp_date < date_create("now")->format("Y-m-d")){
@@ -50,5 +53,5 @@ $activate = $db->query("UPDATE produits_adherents
 						SET actif='$actif', date_fin_utilisation = NULL, date_activation = '$date_activation', date_expiration = '$new_exp_date'
 						WHERE id_produit_adherent = '$product_id'");
 
-echo json_encode(array($date_activation, $new_exp_date));
+echo json_encode(array($date_activation, $new_exp_date, $details["volume_cours"]));
 ?>
