@@ -15,7 +15,7 @@ Yes. This code does everything to ensure the information can be tracked and stay
 
 $product_id = $_POST["product_id"];
 
-$product_details = $db->query("SELECT volume_horaire, est_illimite, pa.date_activation AS produit_adherent_activation, volume_horaire, validite_initiale, pa.actif AS produit_adherent_actif, date_achat,
+$product_details = $db->query("SELECT volume_horaire, est_illimite, pa.date_activation AS produit_adherent_activation, validite_initiale, pa.actif AS produit_adherent_actif, date_achat,
 						IF(date_prolongee IS NOT NULL, date_prolongee,
 							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
 							) AS produit_validity FROM produits_adherents pa
@@ -44,7 +44,7 @@ while($session = $sessions_list->fetch(PDO::FETCH_ASSOC)){
 		}
 	}
 	$remaining_hours -= floatval($session["cours_unite"]);
-	if($product_details["produit_validity"] == null || $product_details["produit_validity"] > $session["cours_end"]){
+	if($product_details["produit_validity"] == null || ($product_details["produit_validity"] < $session["cours_end"] && $remaining_hours >= 0)){
 		if($remaining_hours >= 0){
 			$date_fin_utilisation = $session["cours_end"];
 		}
