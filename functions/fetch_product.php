@@ -2,7 +2,7 @@
 include "db_connect.php";
 $db = PDOFactory::getConnection();
 
-$product_id = $_POST["product_id"];
+$product_id = $_GET["product_id"];
 
 $load = $db->query("SELECT *, pa.actif AS produit_adherent_actif, pa.date_activation AS produit_adherent_activation, date_achat,
 					IF(date_prolongee IS NOT NULL, date_prolongee,

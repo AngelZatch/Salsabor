@@ -7,6 +7,8 @@ $record_id = $_POST["record_id"];
 $record = $db->query("SELECT passage_date FROM passages
 					WHERE passage_id = '$record_id'")->fetch(PDO::FETCH_ASSOC);
 
+$passage_date = date_create($record["passage_date"])->format("Y-m-d");
+
 $load = $db->query("SELECT id_produit_adherent, pa.actif AS produit_adherent_actif, pa.date_activation AS produit_adherent_activation, produit_nom, date_achat, est_illimite, volume_cours,
 					IF(date_prolongee IS NOT NULL, date_prolongee,
 						IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
@@ -19,7 +21,7 @@ $load = $db->query("SELECT id_produit_adherent, pa.actif AS produit_adherent_act
 						(SELECT eleve_id_foreign
 							FROM cours_participants
 							WHERE id='$record_id')
-						AND (pa.actif != '2' OR (pa.actif = '2' AND (pa.date_activation < '$record[passage_date]' AND date_expiration > '$record[passage_date]')))
+						AND (pa.actif != '2' OR (pa.actif = '2' AND pa.date_activation < '$passage_date'))
 						AND est_abonnement != '1'");
 
 $productList = array();
