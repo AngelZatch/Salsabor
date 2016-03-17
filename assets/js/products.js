@@ -166,7 +166,7 @@ $(document).ready(function(){
 							product_flavor_text = "Acheté le "+moment(products_list[i].transaction_achat).format("DD/MM/YYYY");
 							break;
 					}
-					if(products_list[i].hours < 0 && product_list[i].unlimited != 1){
+					if(products_list[i].hours < 0 && products_list[i].unlimited != 1){
 						product_status = "item-overused";
 					}
 					body += "<li class='sub-modal-product "+product_status+"' data-argument='"+products_list[i].id+"'>";
