@@ -53,65 +53,6 @@ $(document).ready(function(){
 			if(product_details.subscription == '0'){ // If the product is NOT an annual subscription
 				// Handling the sessions
 				fillSessions(sessions);
-				/*var totalHours = product_details.hours, valid_sessions = "", over_sessions = "", out_sessions = "", previousSessions = [], valid_indicator = -1, over_indicator = -1;
-				if(product_details.status == '2' && product_details.flag_hours == '0'){
-					var hoursUsed = 0;
-				}
-				for(var i = 0; i < sessions_list.length; i++){
-					if(sessions_list[i].valid == 2){
-						previousSessions.push(i);
-						over_indicator = -2;
-					} else {
-						//console.log(sessions_list[i]);
-						if(product_details.illimited != '1'){
-							if(totalHours > 0){
-								if(valid_indicator == -1){
-									valid_sessions += "<p id='over-session-alert'>Cours validés :</p>";
-									valid_indicator = 0;
-								}
-								valid_sessions += "<li class='product-session session-valid container-fluid' data-argument='"+sessions_list[i].id+"' id='session-"+sessions_list[i].id+"'>";
-								valid_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
-								valid_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
-								valid_sessions += "</li>";
-							} else {
-								if(over_indicator == -1){
-									over_sessions += "<p id='over-session-alert'>Cours hors forfait :</p>";
-									over_indicator = 0;
-								}
-								over_sessions += "<li class='product-session session-over container-fluid' data-argument='"+sessions_list[i].id+"' id='session-"+sessions_list[i].id+"'>";
-								over_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
-								over_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
-								over_sessions += "</li>";
-							}
-							totalHours -= sessions_list[i].duration;
-						} else {
-							if(i == 0){
-								valid_sessions += "<p id='over-session-alert'>Cours validés :</p>";
-							}
-							valid_sessions += "<li class='product-session session-valid container-fluid' data-argument='"+sessions_list[i].id+"' id='session-"+sessions_list[i].id+"'>";
-							valid_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
-							valid_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
-							valid_sessions += "</li>";
-							if(product_details.status == '2' && product_details.flag_hours == '0'){
-								hoursUsed += parseFloat(sessions_list[i].duration);
-							}
-						}
-					}
-					if(product_details.status == '2' && product_details.flag_hours == '0'){
-						var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+hoursUsed+"</span><br> heures consommées</p>";
-					}
-				}
-				for(var j = 0; j < previousSessions.length; j++){
-					if(over_indicator == -2){
-						out_sessions += "<p id='over-session-alert'>Cours hors forfait :</p>";
-						over_indicator = 0;
-					}
-					out_sessions += "<li class='product-session session-over container-fluid' data-argument='"+sessions_list[previousSessions[j]].id+"' id='session-"+sessions_list[previousSessions[j]].id+"'>";
-					out_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[previousSessions[j]].title+"</p>";
-					out_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[previousSessions[j]].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[previousSessions[j]].start).format("HH:mm")+" - "+moment(sessions_list[previousSessions[j]].end).format("HH:mm")+"</p>";
-					out_sessions += "</li>";
-				}
-				modal.find(".sessions-list").append("<ul class='purchase-inside-list'>"+out_sessions+over_sessions+valid_sessions+"</ul>");*/
 			}
 			modal.find(".product-validity").html(product_validity);
 			modal.find(".modal-actions").html(buttons);
@@ -404,7 +345,7 @@ function fillSessions(sessions){
 function computeRemainingHours(product_id, refresh){
 	$.post("functions/compute_remaining_hours.php", {product_id : product_id}).done(function(value){
 		/** Things to do here:
-			This function checks everything and sets everything if needed. It computes the remaining hours of a product, its status, it activates or deactivates if necessary and computes the activation and expiration dates as well.
+			This function checks everything and sets everything if needed. It computes the remaining hours of a product, its status, it activates or deactivates if necessary and computes the activation and expiration dates as well. Once it's done, it'll call the function to refresh the list of sessions so they stay up-to-date as well.
 			This is the all-purpose script that pretty much does everything for a product.
 		**/
 		/*console.log(value);*/
