@@ -72,13 +72,7 @@ $queryForfaits->execute();
 		} else if($forfaits["produit_adherent_actif"] == '2') {
 			$item_class = "item-expired";
 		} else {
-			if($date_activation->format('Y-m-d') > $today){
-				$item_class = "item-near-activation";
-			} else if($date_expiration->format("Y-m-d") < date_create("now")->add(new dateinterval('P5D'))->format("Y-m-d")){
-				$item_class = "item-near-expiration";
-			} else{
-				$item_class = "item-active";
-			}
+			$item_class = "item-active";
 		}
 	}?>
 							<li class="purchase-item <?php echo $item_class;?> container-fluid" id="purchase-item-<?php echo $forfaits["id_produit_adherent"];?>" data-toggle='modal' data-target='#product-modal' data-argument="<?php echo $forfaits["id_produit_adherent"];?>">
