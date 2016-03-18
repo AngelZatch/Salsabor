@@ -50,9 +50,9 @@ $(document).ready(function(){
 					var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+moment(product_details.validity).toNow(true)+"</span><br> restants</p>";
 				}
 			}
-			if(product_details.subscription == '0'){ // If the product is NOT an annual subscription
+			if(product_details.subscription == 0){ // If the product is NOT an annual subscription
 				// Handling the sessions
-				fillSessions(sessions);
+				computeRemainingHours(argument, true);
 			}
 			modal.find(".product-validity").html(product_validity);
 			modal.find(".modal-actions").html(buttons);
@@ -305,7 +305,7 @@ function fetchSessions(product_id){
 
 function fillSessions(sessions){
 	$(".sessions-list").empty();
-	console.log(sessions);
+	/*console.log(sessions);*/
 	var sessions_list = JSON.parse(sessions[0]), valid_sessions = "", over_sessions = "", out_sessions = "", previousSessions = [], valid_indicator = -1, over_indicator = -1;
 	for(var i = 0; i < sessions_list.length; i++){
 		/*console.log(sessions_list[i]);*/
@@ -338,7 +338,6 @@ function fillSessions(sessions){
 		out_sessions += "</li>";
 	}
 	$(".sessions-list").html("<ul class='purchase-inside-list'>"+out_sessions+over_sessions+valid_sessions+"</ul>");
-	console.log("Bouh");
 }
 
 /** Compute the remaining hours of a product **/
@@ -369,10 +368,10 @@ function computeRemainingHours(product_id, refresh){
 			} else { // If the product has no more hours.
 				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html("Heures épuisées");
-				$("#product-validity-"+product_id).html("<span class='highlighted-value'>Expiré</span><br>le "+moment(date).format("DD/MM/YYYY"));
-				$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(date).format("DD/MM/YYYY"));
 				$("#purchase-item-"+product_id).addClass("item-expired");
 			}
+			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Expiré</span><br>le "+moment(date).format("DD/MM/YYYY"));
+			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(date).format("DD/MM/YYYY"));
 		} else if (status == 1){ // If the product is active
 			$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
 			$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");

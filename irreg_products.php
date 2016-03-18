@@ -48,7 +48,7 @@ $queryIrregulars = $db->query("SELECT * FROM produits_adherents pa
 							<li class="purchase-item item-overconsumed container-fluid" id="purchase-item-<?php echo $irregulars["id_produit_adherent"];?>" data-toggle='modal' data-target="#product-modal" data-argument="<?php echo $irregulars["id_produit_adherent"];?>">
 								<p class="col-lg-3 purchase-product-name"><?php echo $irregulars["produit_nom"];?></p>
 								<p class="col-lg-3 purchase-product-owner"><?php echo $irregulars["user_prenom"]." ".$irregulars["user_nom"];?></p>
-								<p class="col-lg-3 purchase-product-hours"><?php echo -1 * $irregulars["volume_cours"];?> heures sur-consommées</p>
+								<p class="col-lg-3 purchase-product-hours"><?php echo -1 * $irregulars["volume_cours"];?> heures en excès</p>
 								<p class="col-lg-1 purchase-price align-right"><?php echo $irregulars["prix_achat"];?> €</p>
 							</li>
 							<?php } ?>
