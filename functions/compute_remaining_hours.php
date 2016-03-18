@@ -36,11 +36,11 @@ if($product_details["est_illimite"] == 1){
 } else {
 	$date_fin_utilisation = $product_details["produit_validity"];
 }
-$values = array();
+$v = array();
 $computeEnd = false;
 
 while($session = $sessions_list->fetch(PDO::FETCH_ASSOC)){
-	if($remaining_hours == $product_details["volume_horaire"] && $product_details["produit_adherent_actif"] != '1' && $session["cours_start"] >= $product_details["date_achat"]){
+	if($remaining_hours == $product_details["volume_horaire"] && ($product_details["produit_adherent_actif"] != '1' || $product_details["est_illimite"] == '1') && $session["cours_start"] >= $product_details["date_achat"]){
 		// If the product's current hours are max, the product is not an unlimited formula AND the date of the session is AFTER the purchase date of the product, we compute the activation date. This will only occur one time to ensure the date of activation is always accurate.
 		$date_activation = date_create($session["cours_start"])->format("Y-m-d 00:00:00");
 		$setActivationDate = $db->query("UPDATE produits_adherents SET date_activation = '$date_activation' WHERE id_produit_adherent = '$product_id'");
@@ -55,33 +55,33 @@ while($session = $sessions_list->fetch(PDO::FETCH_ASSOC)){
 
 if($remaining_hours <= 0){ // If the number of remaining hours is negative
 	if($product_details["est_illimite"] == "1"){
-		$status = '1';
+		if($computeEnd){
+			$date_fin_utilisation = date_create(computeExpirationDate($db, $date_activation, $product_details["validite_initiale"]))->format("Y-m-d H:i:s");
+		}
+		if($date_fin_utilisation < date("Y-m-d")){
+			$status = '2';
+		} else {
+			$status = '1';
+		}
 		$deactivate = $db->query("UPDATE produits_adherents
-							SET actif='1', volume_cours = '$remaining_hours'
+							SET actif='$status', volume_cours = '$remaining_hours', date_expiration = '$date_fin_utilisation'
 							WHERE id_produit_adherent = '$product_id'");
-		array_push($values, -1 * $remaining_hours); // Position 1 of the array
+		$v["hours"] = -1 * $remaining_hours;
 	} else {
 		$status = '2';
-		if($product_details["produit_adherent_actif"] == "2"){
-			$deactivate = $db->query("UPDATE produits_adherents
-							SET actif='2', volume_cours = '$remaining_hours', date_fin_utilisation = '$date_fin_utilisation'
+		$deactivate = $db->query("UPDATE produits_adherents
+							SET actif='$status', date_fin_utilisation='$date_fin_utilisation', volume_cours = '$remaining_hours'
 							WHERE id_produit_adherent = '$product_id'");
-		} else {
-			$deactivate = $db->query("UPDATE produits_adherents
-							SET actif='2', date_fin_utilisation='$date_fin_utilisation', volume_cours = '$remaining_hours'
-							WHERE id_produit_adherent = '$product_id'");
-		}
-		array_push($values, $remaining_hours); // Position 1 of the array
+		$v["hours"] = 1 * $remaining_hours;
 	}
 } else if($remaining_hours == $product_details["volume_horaire"]){
 	$status = '0';
-	array_push($values, $remaining_hours); // Position 1 of the array
+	$v["hours"] = 1 * $remaining_hours;
 	$deactivate = $db->query("UPDATE produits_adherents
-							SET actif='0', volume_cours = '$remaining_hours'
+							SET actif='$status', volume_cours = '$remaining_hours'
 							WHERE id_produit_adherent = '$product_id'");
-	echo 0;
 } else { // If the hours are still in positive.
-	array_push($values, $remaining_hours);
+	$v["hours"] = 1 * $remaining_hours;
 	if($computeEnd){ // If the expiration date has to be computed.
 		$date_fin_utilisation = date_create(computeExpirationDate($db, $date_activation, $product_details["validite_initiale"]))->format("Y-m-d H:i:s");
 		if($date_fin_utilisation < date("Y-m-d")){ // If the computed expiration date is anterior to today, then the product should be expired.
@@ -102,7 +102,8 @@ if($remaining_hours <= 0){ // If the number of remaining hours is negative
 		$update = $db->query("UPDATE produits_adherents SET actif='$status', volume_cours = '$remaining_hours', date_fin_utilisation = NULL WHERE id_produit_adherent = '$product_id'");
 	}
 }
-array_push($values, $date_fin_utilisation); // Position 0 of the array
-array_push($values, $status); // Position 2 of the array
-echo json_encode($values);
+$v["expiration"] = $date_fin_utilisation;
+$v["status"] = $status;
+$v["limit"] = $product_details["est_illimite"];
+echo json_encode($v);
 ?>
