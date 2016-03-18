@@ -230,13 +230,7 @@ function fetchPurchase(purchase_id){
 					item_status = "item-expired";
 					text_status = "Expiré le "+moment(purchase_list[i].validity).format("DD/MM/YYYY");
 				} else { // If active or set to activate in the near future
-					if(purchase_list[i].activation > moment().format("YYYY-MM-DD")){
-						item_status = "item-near-activation";
-					} else if(purchase_list[i].validity < moment().add(5, 'day').format("YYYY-MM-DD")){
-						item_status = "item-near-expiration";
-					} else {
-						item_status = "item-active";
-					}
+					item_status = "item-active";
 					text_status = "Valide du <span> "+moment(purchase_list[i].activation).format("DD/MM/YYYY")+"</span> au <span>"+moment(purchase_list[i].validity).format("DD/MM/YYYY")+"</span>";
 				}
 				contents += "<li class='purchase-item "+item_status+" container-fluid' id='purchase-item-"+purchase_list[i].id+"' data-toggle='modal' data-target='#product-modal' data-argument='"+purchase_list[i].id+"'>";
@@ -368,7 +362,9 @@ function computeRemainingHours(product_id, refresh){
 				$("#purchase-item-"+product_id).addClass("item-overused");
 			} else if(hours > 0){ // If the product still has remaining hours
 				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
-				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
+				if(limit != '1'){
+					$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
+				}
 				$("#purchase-item-"+product_id).addClass("item-expired");
 			} else { // If the product has no more hours.
 				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
@@ -410,13 +406,7 @@ function activateProductWithDate(product_id, start_date){
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Valide du <span>"+moment(dates[0]).format("DD/MM/YYYY")+"</span> au <span>"+moment(dates[1]).format("DD/MM/YYYY")+"</span>");
 			$("#purchase-item-"+product_id).removeClass("item-pending");
 			$("#purchase-item-"+product_id).removeClass("item-expired");
-			if(moment(dates[0]).format("YYYY-MM-DD") > moment().format("YYYY-MM-DD")){
-				$("#purchase-item-"+product_id).addClass("item-near-activation");
-			} else if(moment(dates[1]).format("YYYY-MM-DD") < moment().add(5, 'day').format("YYYY-MM-DD")){
-				$("#purchase-item-"+product_id).addClass("item-near-expiration");
-			} else {
-				$("#purchase-item-"+product_id).addClass("item-active");
-			}
+			$("#purchase-item-"+product_id).addClass("item-active");
 			$("#btn-activate-"+product_id).html("<span class='glyphicon glyphicon-ban-circle'></span> Désactiver");
 			document.getElementById("btn-activate-"+product_id).onclick = function(){ deactivateProduct(product_id); };
 			$("#btn-activate-"+product_id).removeClass("trigger-sub");
@@ -458,7 +448,6 @@ function deactivateProduct(product_id){
 			$("#purchase-item-"+product_id).addClass("item-overused");
 			$("#btn-activate-"+product_id).html("<span class='glyphicon glyphicon-play-circle'></span> Réactiver");
 		}
-		$("#purchase-item-"+product_id).removeClass("item-near-activation");
 		$("#purchase-item-"+product_id).removeClass("item-active");
 		/*document.getElementById("btn-activate-"+product_id).onclick = function(){ activateProduct(product_id); };*/
 		$("#btn-activate-"+product_id).attr("data-argument", product_id);
