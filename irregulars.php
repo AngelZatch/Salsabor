@@ -47,9 +47,13 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 		<script>
 			$(document).on("click", ".irregular-record", function(){
 				var record_id = document.getElementById($(this).attr("id")).dataset.argument;
-				displayEligibleProducts(record_id);
+				$.when(fetchEligibleProducts(record_id)).done(function(data){
+					var construct = displayEligibleProducts(data);
+					construct += "<button class='btn btn-success report-product' id='btn-product-report' data-session='"+record_id+"'>Associer à ce produit</button>";
+					$(".irregulars-target-container").html(construct);
+				})
 			})
-			function displayEligibleProducts(record_id){
+			/*function displayEligibleProducts(record_id){
 				$(".irregulars-target-container").empty();
 				$.post("functions/fetch_user_products.php", {record_id : record_id}).done(function(data){
 					var product_list = JSON.parse(data), product_status;
@@ -72,7 +76,7 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 						$(".irregulars-target-container").append(display_list);
 					}
 				})
-			}
+			}*/
 		</script>
 	</body>
 </html>

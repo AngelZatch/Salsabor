@@ -40,7 +40,7 @@ $v = array();
 $computeEnd = false;
 
 while($session = $sessions_list->fetch(PDO::FETCH_ASSOC)){
-	if($remaining_hours == $product_details["volume_horaire"] && ($product_details["produit_adherent_actif"] != '1' || $product_details["est_illimite"] == '1') && $session["cours_start"] >= $product_details["date_achat"]){
+	if($remaining_hours == $product_details["volume_horaire"] && ($product_details["produit_adherent_actif"] != '1' || $product_details["est_illimite"] == '1') && $session["cours_start"] >= $product_details["date_achat"] || $product_details["produit_adherent_activation"] == null || $product_details["produit_adherent_activation"] == "0000-00-00 00:00:00"){
 		// If the product's current hours are max, the product is not an unlimited formula AND the date of the session is AFTER the purchase date of the product, we compute the activation date. This will only occur one time to ensure the date of activation is always accurate.
 		$date_activation = date_create($session["cours_start"])->format("Y-m-d 00:00:00");
 		$setActivationDate = $db->query("UPDATE produits_adherents SET date_activation = '$date_activation' WHERE id_produit_adherent = '$product_id'");
