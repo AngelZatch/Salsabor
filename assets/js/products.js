@@ -54,6 +54,7 @@ $(document).ready(function(){
 				// Handling the sessions
 				computeRemainingHours(argument, true);
 			}
+			modal.find(".product-validity").empty();
 			modal.find(".product-validity").html(product_validity);
 			modal.find(".modal-actions").html(buttons);
 		})
@@ -123,7 +124,7 @@ $(document).ready(function(){
 							if(products_list[i].hours < 0){
 								product_hours = -1 * products_list[i].hours+" heures sur-consommées";
 							} else {
-								product_hours = products_list[i].hours+" heures restantes";
+								product_hours = 1 * products_list[i].hours+" heures restantes";
 							}
 							body += "<p>"+product_hours+"</p>";
 						}
@@ -245,7 +246,11 @@ function fetchPurchase(purchase_id){
 				contents += "</p>";
 				contents += "<p class='col-lg-3 purchase-product-hours'>";
 				if(purchase_list[i].flag_hours == 1){
-					contents += purchase_list[i].remaining_hours+" heures restatntes";
+					if(purchase_list[i].remaining_hours < 0){
+						contents += -1 * purchase_list[i].remaining_hours+" heures en excès";
+					} else {
+						contents += 1 * purchase_list[i].remaining_hours+" heures restatntes";
+					}
 				}
 				contents += "</p>";
 				contents += "<p class='col-lg-1 purchase-product-price align-right'>";
@@ -355,7 +360,7 @@ function computeRemainingHours(product_id, refresh){
 		$("#purchase-item-"+product_id).removeClass("item-consumed");
 		var values = JSON.parse(value);
 		console.log(values);
-		var date = values[1], hours = values[0], status = values[2];
+		var date = values.expiration, hours = values.hours, status = values.status, limit = values.limit;
 		if(status == 2){ // If the product is expired
 			if(hours < 0){ // If the product is overused
 				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ -1 * hours + " heures</span> de consommation excessive");
@@ -374,11 +379,15 @@ function computeRemainingHours(product_id, refresh){
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(date).format("DD/MM/YYYY"));
 		} else if (status == 1){ // If the product is active
 			$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
-			$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
+			if(limit != '1'){
+				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
+			}
 			$("#purchase-item-"+product_id).addClass("item-active");
 		} else { // If the product is pending
 			$("#product-status-"+product_id).html("<span class='highlighted-value'>En attente</span>");
-			$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
+			if(limit != '1'){
+				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
+			}
 			$("#product-validity-"+product_id).html("<span class='highlighted-value'>En attente</span>");
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("En attente");
 			$("#purchase-item-"+product_id).addClass("item-pending");
