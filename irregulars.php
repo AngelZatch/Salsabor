@@ -49,7 +49,8 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 				var record_id = document.getElementById($(this).attr("id")).dataset.argument;
 				$.when(fetchEligibleProducts(record_id)).done(function(data){
 					var construct = displayEligibleProducts(data);
-					construct += "<button class='btn btn-success report-product' id='btn-product-report' data-session='"+record_id+"'>Associer à ce produit</button>";
+					construct += "<button class='btn btn-default btn-modal report-product' id='btn-product-report' data-session='"+record_id+"'><span class='glyphicon glyphicon-arrow-right'></span> Associer</button> ";
+					/*construct += "<button class='btn btn-danger delete-session' data-argument='"+record_id+"' id='btn-record-delete'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";*/
 					$(".irregulars-target-container").html(construct);
 				})
 			})
