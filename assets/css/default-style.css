@@ -312,28 +312,30 @@ h2.modal-body-title.first {
   border-left: 1px;
   border-left-style: dashed;
   border-left-color: #888888;
-  height: 100vh;
+  padding-bottom: 20px;
+  height: 83.5vh;
   position: fixed;
-  left: 71.5%; }
+  left: 71.5%;
+  overflow-y: scroll; }
 
-/* line 270, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 272, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .irregulars-list {
   padding: 0; }
 
-/* line 273, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 275, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .irregular-record {
   cursor: pointer;
   display: inherit;
   padding: 10px;
   margin-top: 5px;
   margin-bottom: 5px; }
-  /* line 279, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 281, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .irregular-record:hover {
     background-color: #e6e6e6; }
-  /* line 281, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 283, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .irregular-record:active {
     background-color: #cccccc; }
-  /* line 283, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 285, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .irregular-record p {
     margin-bottom: 0; }
 

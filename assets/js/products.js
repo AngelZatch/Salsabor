@@ -91,7 +91,12 @@ $(document).ready(function(){
 		case 'report':
 			title = "Assigner à un autre produit";
 			var record_id = product_id;
-			$.post("functions/fetch_user_products.php", {record_id : record_id}).done(function(data){
+			//displayEligibleProducts(record_id);
+			$.when(fetchEligibleProducts(record_id)).done(function(data){
+				var construct = displayEligibleProducts(data);
+				$(".sub-modal-body").html(construct);
+			})
+			/*$.post("functions/fetch_user_products.php", {record_id : record_id}).done(function(data){
 				var products_list = JSON.parse(data), product_status, product_flavor_text, product_hours;
 				body += "<ul class='purchase-inside-list'>";
 				if(products_list.length == 0){
@@ -133,7 +138,7 @@ $(document).ready(function(){
 				}
 				body += "</ul>";
 				$(".sub-modal-body").html(body);
-			})
+			})*/
 			footer += "<button class='btn btn-success report-product' id='btn-product-report' data-session='"+record_id+"'>Reporter</button>";
 			$(".sub-modal").css({top : tpos.top-45+'px'});
 			break;
@@ -337,6 +342,56 @@ function fillSessions(sessions){
 		out_sessions += "</li>";
 	}
 	$(".sessions-list").html("<ul class='purchase-inside-list'>"+out_sessions+over_sessions+valid_sessions+"</ul>");
+}
+
+/** Fetch the products that can be target of a record reassignment **/
+function fetchEligibleProducts(record_id){
+	return $.post("functions/fetch_user_products.php", {record_id : record_id});
+}
+function displayEligibleProducts(data){
+	var products_list = JSON.parse(data), product_status, product_flavor_text, product_hours, product_purchase_date;
+	var body = "<ul class='purchase-inside-list'>";
+	if(products_list.length == 0){
+		body += "Aucun produit n'est disponible";
+	} else{
+		for(var i = 0; i < products_list.length; i++){
+			product_purchase_date = "Acheté le "+moment(products_list[i].transaction_achat).format("DD/MM/YYYY");
+			switch(products_list[i].status){
+				case '1':
+					product_status = "item-active";
+					product_flavor_text = "Valide du "+moment(products_list[i].start).format("DD/MM/YYYY")+" au "+moment(products_list[i].validity).format("DD/MM/YYYY");
+					break;
+
+				case '2':
+					product_status = "item-expired";
+					product_flavor_text = "Valide du "+moment(products_list[i].start).format("DD/MM/YYYY")+" au "+moment(products_list[i].validity).format("DD/MM/YYYY");
+					break;
+
+				case '0':
+					product_status = "item-pending";
+					product_flavor_text = "En attente";
+					break;
+			}
+			if(products_list[i].hours < 0 && products_list[i].unlimited != 1){
+				product_status = "item-overused";
+			}
+			body += "<li class='sub-modal-product "+product_status+"' data-argument='"+products_list[i].id+"'>";
+			body += "<p class='smp-title'>"+products_list[i].title+"</p>";
+			body += "<p>"+product_purchase_date+"</p>";
+			body += "<p>"+product_flavor_text+"</p>";
+			if(products_list[i].unlimited != 1){
+				if(products_list[i].hours < 0){
+					product_hours = -1 * products_list[i].hours+" heures en excès";
+				} else {
+					product_hours = 1 * products_list[i].hours+" heures restantes";
+				}
+				body += "<p>"+product_hours+"</p>";
+			}
+			body += "</li>";
+		}
+	}
+	body += "</ul>";
+	return body;
 }
 
 /** Compute the remaining hours of a product **/
