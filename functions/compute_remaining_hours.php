@@ -58,7 +58,9 @@ if($product_details["est_abonnement"] == '0'){
 			if($computeEnd){
 				$date_fin_utilisation = date_create(computeExpirationDate($db, $date_activation, $product_details["validite_initiale"]))->format("Y-m-d H:i:s");
 			}
-			if($date_fin_utilisation < date("Y-m-d")){
+			if($remaining_hours == 0 && $product_details["produit_adherent_activation"] == null && $product_details["produit_validity"] == null || $product_details["produit_validity"] == "0000-00-00 00:00:00"){
+				$status = '0';
+			} else if($date_fin_utilisation < date("Y-m-d")){
 				$status = '2';
 			} else {
 				$status = '1';
