@@ -53,6 +53,8 @@ $(document).ready(function(){
 			if(product_details.subscription == 0){ // If the product is NOT an annual subscription
 				// Handling the sessions
 				computeRemainingHours(argument, true);
+			} else {
+				$(".participations-list").empty();
 			}
 			modal.find(".product-validity").empty();
 			modal.find(".product-validity").html(product_validity);
@@ -308,7 +310,7 @@ function fetchSessions(product_id){
 }
 
 function fillSessions(sessions){
-	$(".sessions-list").empty();
+	$(".participations-list").empty();
 	/*console.log(sessions);*/
 	var sessions_list = JSON.parse(sessions[0]), valid_sessions = "", over_sessions = "", out_sessions = "", previousSessions = [], valid_indicator = -1, over_indicator = -1;
 	for(var i = 0; i < sessions_list.length; i++){
@@ -341,7 +343,8 @@ function fillSessions(sessions){
 		out_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[previousSessions[j]].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[previousSessions[j]].start).format("HH:mm")+" - "+moment(sessions_list[previousSessions[j]].end).format("HH:mm")+"</p>";
 		out_sessions += "</li>";
 	}
-	$(".sessions-list").html("<ul class='purchase-inside-list'>"+out_sessions+over_sessions+valid_sessions+"</ul>");
+	$(".participations-list").append("<h2 class='modal-body-title'>Liste des cours</h2>");
+	$(".participations-list").append("<ul class='purchase-inside-list'>"+out_sessions+over_sessions+valid_sessions+"</ul>");
 }
 
 /** Fetch the products that can be target of a record reassignment **/

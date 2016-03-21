@@ -18,8 +18,8 @@
 								<div class="product-status-container product-validity"></div>
 							</div>
 						</div>
-						<h2 class="modal-body-title">Liste des cours</h2>
-						<div class="sessions-list container-fluid"></div>
+						<div class="participations-list container-fluid">
+						</div>
 					</div>
 					<div class="col-lg-3">
 						<h2 class="modal-body-title first">Actions</h2>
