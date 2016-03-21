@@ -46,38 +46,18 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 		<script src="assets/js/products.js"></script>
 		<script>
 			$(document).on("click", ".irregular-record", function(){
-				var record_id = document.getElementById($(this).attr("id")).dataset.argument;
-				$.when(fetchEligibleProducts(record_id)).done(function(data){
+				var participation_id = document.getElementById($(this).attr("id")).dataset.argument;
+				$.when(fetchEligibleProducts(participation_id)).done(function(data){
 					var construct = displayEligibleProducts(data);
-					construct += "<button class='btn btn-default btn-modal report-product' id='btn-product-report' data-session='"+record_id+"'><span class='glyphicon glyphicon-arrow-right'></span> Associer</button> ";
-					/*construct += "<button class='btn btn-danger delete-session' data-argument='"+record_id+"' id='btn-record-delete'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";*/
+					construct += "<button class='btn btn-default btn-modal report-product' id='btn-product-report' data-session='"+participation_id+"'><span class='glyphicon glyphicon-arrow-right'></span> Associer</button> ";
+					construct += "<button class='btn btn-danger pre-delete' data-session='"+participation_id+"' id='btn-record-delete'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";
 					$(".irregulars-target-container").html(construct);
 				})
+			}).on("click", ".pre-delete", function(){
+				$(this).addClass("delete-participation");
+				$(this).removeClass("pre-delete");
+				$(this).html("<span class='glyphicon glyphicon-trash'></span> Confirmer</button>");
 			})
-			/*function displayEligibleProducts(record_id){
-				$(".irregulars-target-container").empty();
-				$.post("functions/fetch_user_products.php", {record_id : record_id}).done(function(data){
-					var product_list = JSON.parse(data), product_status;
-					if(product_list == ""){
-						$(".irregulars-target-container").html("Aucun produit pour cet adhérent");
-					} else {
-						var display_list = "<ul class='purchase-inside-list'>";
-						for(var i = 0; i < product_list.length; i++){
-							if(product_list[i].status == '1'){
-								product_status = "item-active";
-							} else {
-								product_status = "item-pending";
-							}
-							display_list += "<li class='sub-modal-product "+product_status+"' data-argument='"+product_list[i].id+"'>";
-							display_list += product_list[i].title;
-							display_list += "</li>";
-						}
-						display_list += "</ul>";
-						display_list += "<button class='btn btn-success report-product' id='btn-product-report' data-session='"+record_id+"'>Associer à ce produit</button>";
-						$(".irregulars-target-container").append(display_list);
-					}
-				})
-			}*/
 		</script>
 	</body>
 </html>
