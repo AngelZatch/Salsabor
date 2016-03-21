@@ -181,7 +181,7 @@ $(document).ready(function(){
 	var date = moment($(".datepicker").val(),"DD/MM/YYYY").format("YYYY-MM-DD");
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
 	extendProduct(product_id, date);
-}).on('click', '.product-session', function(){
+}).on('click', '.product-participation', function(){
 	var session = $(this);
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
 	if(!$(this).hasClass("options-shown")){
@@ -322,7 +322,7 @@ function fillSessions(sessions){
 				valid_sessions += "<p id='over-session-alert'>Cours validés :</p>";
 				valid_indicator = 0;
 			}
-			valid_sessions += "<li class='product-session session-valid container-fluid' data-argument='"+sessions_list[i].id+"' id='session-"+sessions_list[i].id+"'>";
+			valid_sessions += "<li class='product-participation participation-valid container-fluid' data-argument='"+sessions_list[i].id+"' id='participation-"+sessions_list[i].id+"'>";
 			valid_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
 			valid_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
 			valid_sessions += "</li>";
@@ -336,7 +336,7 @@ function fillSessions(sessions){
 			out_sessions += "<p id='over-session-alert'>Cours hors forfait :</p>";
 			over_indicator = 0;
 		}
-		out_sessions += "<li class='product-session session-over container-fluid' data-argument='"+sessions_list[previousSessions[j]].id+"' id='session-"+sessions_list[previousSessions[j]].id+"'>";
+		out_sessions += "<li class='product-participation participation-over container-fluid' data-argument='"+sessions_list[previousSessions[j]].id+"' id='participation-"+sessions_list[previousSessions[j]].id+"'>";
 		out_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[previousSessions[j]].title+"</p>";
 		out_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[previousSessions[j]].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[previousSessions[j]].start).format("HH:mm")+" - "+moment(sessions_list[previousSessions[j]].end).format("HH:mm")+"</p>";
 		out_sessions += "</li>";
@@ -520,8 +520,8 @@ function extendProduct(product_id, end_date){
 	})
 }
 
-function reportSession(product_id, record_id){
-	$.post("functions/set_product_session.php", {record_id : record_id, product_id : product_id}).done(function(old_product){
+function reportSession(product_id, participation_id){
+	$.post("functions/set_product_session.php", {record_id : participation_id, product_id : product_id}).done(function(old_product){
 		$(".sub-modal").hide();
 		/** Once a session has been assigned to another product, various things have to happen
 		- Compute the remaning hours of the previous product : OK
@@ -530,13 +530,13 @@ function reportSession(product_id, record_id){
 		- Remove the moved session out of the previous product : OK
 		- Close the submodal : OK
 		**/
-		$("#session-"+record_id).remove();
+		$("#participation-"+participation_id).remove();
 		if(old_product != null){
 			computeRemainingHours(old_product, true);
 		}
 		computeRemainingHours(product_id, false);
-		if(top.location.pathname === '/Salsabor/regularisation/passages'){
-			$("#record-"+record_id).remove();
+		if(top.location.pathname === '/Salsabor/regularisation/participations'){
+			$("#participation-"+participation_id).remove();
 			$(".irregulars-target-container").empty();
 		}
 	})
@@ -545,9 +545,9 @@ function reportSession(product_id, record_id){
 function deleteParticipation(participation_id){
 	$.post("functions/delete_participation.php", {record_id : participation_id}).done(function(old_product){
 		$(".sub-modal").hide();
-		if(top.location.pathname === '/Salsabor/regularisation/passages'){
+		if(top.location.pathname === '/Salsabor/regularisation/participations'){
 			$(".irregulars-target-container").empty();
-			$("#record-"+participation_id).remove();
+			$("#participation-"+participation_id).remove();
 		} else {
 			computeRemainingHours(old_product, true);
 		}
