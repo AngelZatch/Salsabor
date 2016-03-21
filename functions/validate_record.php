@@ -12,12 +12,14 @@ $prof = $db->query("SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=$deta
 
 $date_now = date_create("now")->format("Y-m-d 00:00:00");
 
+/** This code has to find the appropriate product to use for every single type of record ever **/
+
 try{
 	$db->beginTransaction();
 
 	if($forfaitPrioriaire == ""){
 		// Vérification de la présence d'une invitation
-		$queryInvitation = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=$eleve AND produit_nom='Invitation' AND produits_adherents.actif='1'");
+		$queryInvitation = $db->query("SELECT *, produits_adherents.actif AS produitActif FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=$eleve AND produit_nom='Invitation' AND produits_adherents.actif='0'");
 		if($queryInvitation->rowCount() == '1'){
 			$produit = $queryInvitation->fetch(PDO::FETCH_ASSOC);
 			$actif = 0;
