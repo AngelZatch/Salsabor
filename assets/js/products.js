@@ -241,10 +241,12 @@ function fetchPurchase(purchase_id){
 					text_status = "Valide du <span> "+moment(purchase_list[i].activation).format("DD/MM/YYYY")+"</span> au <span>"+moment(purchase_list[i].validity).format("DD/MM/YYYY")+"</span>";
 				}
 				contents += "<li class='purchase-item "+item_status+" container-fluid' id='purchase-item-"+purchase_list[i].id+"' data-toggle='modal' data-target='#product-modal' data-argument='"+purchase_list[i].id+"'>";
-				contents += "<p class='col-lg-3 purchase-product-name'>"+purchase_list[i].product+"</p>";
+				contents += "<p class='col-lg-12 purchase-product-name bf'>"+purchase_list[i].product+"</p>";
+				contents += "<div class='purchase-product-subdetails'>";
 				contents += "<p class='col-lg-3 purchase-product-validity'>";
 				contents += text_status;
 				contents += "</p>";
+				contents += "<p class='col-lg-3 purchase-product-user'>"+purchase_list[i].user+"</p>";
 				contents += "<p class='col-lg-3 purchase-product-hours'>";
 				if(purchase_list[i].flag_hours == 1){
 					if(purchase_list[i].remaining_hours < 0){
@@ -257,6 +259,7 @@ function fetchPurchase(purchase_id){
 				contents += "<p class='col-lg-1 purchase-product-price align-right'>";
 				contents += purchase_list[i].price;
 				contents += " €</p>";
+				contents += "</div>";
 				contents += "</li>";
 				/*contents += "<div class='purchase-item-options'>Opérations sur le produit acheté</div>";*/
 			}
