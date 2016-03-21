@@ -25,6 +25,8 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 		<meta charset="UTF-8">
 		<title>Passages | Salsabor</title>
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/products.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -250,7 +252,6 @@ while($unlinked = $queryUnlinked->fetch(PDO::FETCH_ASSOC)){ ?>
 				</div>
 			</div>
 		</div>
-		<?php include "scripts.php";?>
 		<script>
 			$(document).ready(function(){
 				var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
@@ -279,6 +280,7 @@ while($unlinked = $queryUnlinked->fetch(PDO::FETCH_ASSOC)){ ?>
 					clicked.closest("li").addClass("list-group-item-success");
 					showSuccessNotif(data);
 					window.location.href = "passages.php";
+					/*computeRemainingHours(data, false);*/
 				});
 			}).on('click', '.move-record', function(){
 				/** Déplacer un enregistrement d'un cours à un autre **/
