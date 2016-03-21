@@ -80,7 +80,7 @@ body {
   margin-bottom: 20px; }
 
 /* line 80, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-.purchase-inside-list {
+.purchase-inside-list, .participations-list {
   padding-left: 0; }
 
 /* line 83, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
@@ -340,5 +340,6 @@ h2.modal-body-title.first {
     margin-bottom: 0; }
 
 /** ACTIVE SESSIONS **/
+/** PARTICIPATIONS **/
 
 /*# sourceMappingURL=default-style.css.map */
