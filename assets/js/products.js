@@ -148,7 +148,7 @@ $(document).ready(function(){
 			var record_id = product_id;
 			body += "Êtes-vous sûr de vouloir supprimer cette participation ?";
 			$(".sub-modal-body").html(body);
-			footer += "<button class='btn btn-danger delete-session col-lg-6' id='btn-product-delete' data-session='"+record_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			footer += "<button class='btn btn-danger delete-participation col-lg-6' id='btn-product-delete' data-session='"+record_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
 			$(".sub-modal").css({top : tpos.top-45+'px'});
 			break;
 
@@ -203,9 +203,9 @@ $(document).ready(function(){
 	var session_target = document.getElementById($(this).attr("id")).dataset.session;
 	var product_target = document.getElementById("product-selected").dataset.argument;
 	reportSession(product_target, session_target);
-}).on('click', '.delete-session', function(){
-	var session_target = document.getElementById($(this).attr("id")).dataset.session;
-	deleteSession(session_target);
+}).on('click', '.delete-participation', function(){
+	var participation_id = document.getElementById($(this).attr("id")).dataset.session;
+	deleteParticipation(participation_id);
 }).on('click', '.unlink-session', function(){
 	var session_target = document.getElementById($(this).attr("id")).dataset.session;
 	unlinkSession(session_target);
@@ -542,10 +542,15 @@ function reportSession(product_id, record_id){
 	})
 }
 
-function deleteSession(record_id){
-	$.post("functions/delete_session.php", {record_id : record_id}).done(function(old_product){
+function deleteParticipation(participation_id){
+	$.post("functions/delete_participation.php", {record_id : participation_id}).done(function(old_product){
 		$(".sub-modal").hide();
-		computeRemainingHours(old_product, true);
+		if(top.location.pathname === '/Salsabor/regularisation/passages'){
+			$(".irregulars-target-container").empty();
+			$("#record-"+participation_id).remove();
+		} else {
+			computeRemainingHours(old_product, true);
+		}
 	})
 }
 
