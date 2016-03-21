@@ -19,7 +19,7 @@
 
 		<li><a href="#collapse-irregulars" class="main-section" data-toggle="collapse"><span class="glyphicon glyphicon-equalizer"></span> Régularisation</a></li>
 		<ul class="nav nav-sidebar collapse" id="collapse-irregulars">
-			<li><a href="regularisation/passages" class="main-option"><span class="glyphicon glyphicon-pawn"></span> Participations</a></li>
+			<li><a href="regularisation/participations" class="main-option"><span class="glyphicon glyphicon-pawn"></span> Participations</a></li>
 			<li><a href="regularisation/forfaits" class="main-option"><span class="glyphicon glyphicon-queen"></span> Forfaits</a></li>
 		</ul>
 

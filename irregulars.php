@@ -30,7 +30,7 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 					<div class="col-lg-8 irregulars-container">
 						<ul class="irregulars-list">
 							<?php while($irregulars = $queryIrregulars->fetch(PDO::FETCH_ASSOC)){ ?>
-							<li class="irregular-record" id="record-<?php echo $irregulars["id"];?>" data-argument="<?php echo $irregulars["id"];?>">
+							<li class="irregular-participation" id="participation-<?php echo $irregulars["id"];?>" data-argument="<?php echo $irregulars["id"];?>">
 								<p><?php echo $irregulars["user_prenom"]." ".$irregulars["user_nom"];?> au cours de <?php echo $irregulars["cours_intitule"];?> du <?php echo date_create($irregulars["cours_start"])->format("d/m/Y\ \à\ H:i");?></p>
 							</li>
 							<?php } ?>
@@ -45,7 +45,7 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
 		<script>
-			$(document).on("click", ".irregular-record", function(){
+			$(document).on("click", ".irregular-participation", function(){
 				var participation_id = document.getElementById($(this).attr("id")).dataset.argument;
 				$.when(fetchEligibleProducts(participation_id)).done(function(data){
 					var construct = displayEligibleProducts(data);

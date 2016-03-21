@@ -8,7 +8,7 @@ RewriteRule ^vente$ catalogue.php
 RewriteRule ^reservation$ resa_add.php
 RewriteRule ^invitation$ eleve_inviter.php
 RewriteRule ^passages$ passages.php
-RewriteRule ^regularisation/passages$ irregulars.php
+RewriteRule ^regularisation/participations$ irregulars.php
 RewriteRule ^regularisation/forfaits$ irreg_products.php
 RewriteRule ^planning$ planning.php
 RewriteRule ^salles$ salles.php

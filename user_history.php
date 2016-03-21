@@ -23,7 +23,7 @@ $queryHistoryRecus->execute();
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Editer - <?php echo $details["user_prenom"]." ".$details["user_nom"];?> | Salsabor</title>
+		<title>Cours suivis par <?php echo $details["user_prenom"]." ".$details["user_nom"];?> | Salsabor</title>
 		<base href="../../">
 		<?php include "styles.php";?>
 	</head>
@@ -50,6 +50,17 @@ $queryHistoryRecus->execute();
 						<li role="presentation"><a>Statistiques</a></li>
 						<?php } ?>
 					</ul>
+					<div class="container-fluid participations-list-container">
+						<ul class="participations-list">
+							<?php while($history = $queryHistoryRecus->fetch(PDO::FETCH_ASSOC)){ ?>
+							<li class="participation container-fluid" data-argument="<?php echo $history["id"];?>" id="participation-<?php echo $history["id"];?>">
+								<p class="col-lg-12 session-title"><?php echo $history["cours_intitule"];?></p>
+								<p class="col-lg-12 session-hours"><?php echo $history["cours_start"];?></p>
+							</li>
+
+							<?php } ?>
+						</ul>
+					</div>
 					<section id="history-suivis">
 						<table class="table table-striped">
 							<thead>
