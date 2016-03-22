@@ -44,17 +44,17 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 				<div class="col-sm-10 main">
 					<p id="last-edit"><?php echo ($queryNextCours->rowCount()!=0)?"".$queryNextCours->rowCount()." cours sont actuellement ouvert(s) aux enregistrements":"Aucun cours n'est à venir";?></p>
 					<?php
-while($nextCours = $queryNextCours->fetch(PDO::FETCH_ASSOC)){
-	$queryPassages = $db->prepare("SELECT * FROM passages
+					while($nextCours = $queryNextCours->fetch(PDO::FETCH_ASSOC)){
+						$queryPassages = $db->prepare("SELECT * FROM passages
 							JOIN lecteurs_rfid ON passage_salle=lecteurs_rfid.lecteur_ip
 							JOIN users ON passage_eleve=users.user_rfid OR passage_eleve_id=users.user_id
 							WHERE ((status=0 OR status=3) AND lecteur_lieu=? AND passage_date>=? AND passage_date<=?) OR (status=2 AND cours_id=?)
 							ORDER BY user_nom ASC");
-	$queryPassages->bindParam(1, $nextCours["cours_salle"]);
-	$queryPassages->bindParam(2, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'-30MINUTES')));
-	$queryPassages->bindParam(3, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'+30MINUTES')));
-	$queryPassages->bindParam(4, $nextCours["cours_id"]);
-	$queryPassages->execute();
+						$queryPassages->bindParam(1, $nextCours["cours_salle"]);
+						$queryPassages->bindParam(2, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'-30MINUTES')));
+						$queryPassages->bindParam(3, date("Y-m-d H:i:s", strtotime($nextCours["cours_start"].'+30MINUTES')));
+						$queryPassages->bindParam(4, $nextCours["cours_id"]);
+						$queryPassages->execute();
 					?>
 					<div class="panel panel-default">
 						<div class="panel-heading">
@@ -95,23 +95,23 @@ while($nextCours = $queryNextCours->fetch(PDO::FETCH_ASSOC)){
 						</div>
 						<ul class="list-group">
 							<?php
-	while($passages = $queryPassages->fetch(PDO::FETCH_ASSOC)){
-		switch($passages["status"]){
-			case 0:
-			$status = "default";
-			break;
+						while($passages = $queryPassages->fetch(PDO::FETCH_ASSOC)){
+							switch($passages["status"]){
+								case 0:
+									$status = "default";
+									break;
 
-			case 2:
-			$status = "success";
-			break;
+								case 2:
+									$status = "success";
+									break;
 
-			case 3:
-			$status = "danger";
-			break;
-		};
-		$queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$passages[user_id]")->rowCount();
+								case 3:
+									$status = "danger";
+									break;
+							};
+							$queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$passages[user_id]")->rowCount();
 							?>
-							<li class="list-group-item list-group-item-<?php echo $status;?> col-sm-12" id="record-<?php echo $passages["passage_id"];?>" data-record="<?php $passages["passage_id"];?>" data-user="<?php echo $passages["user_id"];?>" data-bundle="">
+							<li class="list-group-item list-group-item-<?php echo $status;?> col-sm-12" id="record-<?php echo $passages["passage_id"];?>" data-record="<?php echo $passages["passage_id"];?>" data-user="<?php echo $passages["user_id"];?>" data-bundle="">
 								<p class="col-lg-3 eleve-infos">
 									<?php echo $passages["user_prenom"]." ".$passages["user_nom"];?>
 								</p>
@@ -161,11 +161,11 @@ while($nextCours = $queryNextCours->fetch(PDO::FETCH_ASSOC)){
 						</div>
 						<ul class="list-group">
 							<?php
-$queryUnidentified = $db->query("SELECT * FROM passages p
+							$queryUnidentified = $db->query("SELECT * FROM passages p
 							JOIN users u ON passage_eleve = u.user_rfid
 							WHERE status > 2
 							ORDER BY passage_date DESC");
-while($unidentified = $queryUnidentified->fetch(PDO::FETCH_ASSOC)){ ?>
+							while($unidentified = $queryUnidentified->fetch(PDO::FETCH_ASSOC)){ ?>
 							<li class="list-group-item" id="passage-<?php echo $unidentified["passage_id"];?>">
 								<div class="row">
 									<div class="col-lg-3">
@@ -204,10 +204,10 @@ while($unidentified = $queryUnidentified->fetch(PDO::FETCH_ASSOC)){ ?>
 						</div>
 						<ul class="list-group">
 							<?php
-$queryUnlinked = $db->query("SELECT * FROM passages p
+							$queryUnlinked = $db->query("SELECT * FROM passages p
 							WHERE status = 1
 							ORDER BY passage_date DESC");
-while($unlinked = $queryUnlinked->fetch(PDO::FETCH_ASSOC)){ ?>
+							while($unlinked = $queryUnlinked->fetch(PDO::FETCH_ASSOC)){ ?>
 							<li class="list-group-item" id="passage-<?php echo $unlinked["passage_id"];?>">
 								<div class="row">
 									<div class="col-lg-3">
@@ -222,7 +222,7 @@ while($unlinked = $queryUnlinked->fetch(PDO::FETCH_ASSOC)){ ?>
 										<p>Enregistré le <?php echo date_create($unlinked["passage_date"])->format('d/m')." à ".date_create($unlinked["passage_date"])->format('H:i:s');?></p>
 									</div>
 									<div class="col-lg-5">
-									<!--<p class="list-item-option link-record" title="Assigner le passage à un cours">
+										<!--<p class="list-item-option link-record" title="Assigner le passage à un cours">
 <span class="glyphicon glyphicon-link"></span> ASSOCIER
 </p>-->
 										<a href="actions/validate_deletion.php" data-title="Suppression de passage" data-toggle="lightbox" data-gallery="remoteload" data-record="<?php echo $unlinked["passage_id"];?>" class="list-item-option delete-trigger" title="Supprimer ce passage">
@@ -268,19 +268,27 @@ while($unlinked = $queryUnlinked->fetch(PDO::FETCH_ASSOC)){ ?>
 					});
 				})
 			}).on('click', '.validate-record', function(){
-				/** Valider un passage **/
 				var clicked = $(this);
 				var record_id = clicked.attr("data-record");
-				var eleve_id = clicked.attr("data-user");
-				var cours_id = clicked.closest(".panel").find("#cours-id").val();
-				var rfid = clicked.parents().siblings(".eleve-tag").html();
-				var bundle_id = $("#record-"+record_id).attr("data-bundle");
-				$.post("functions/validate_record.php", {cours_id : cours_id, eleve_id : eleve_id, passage_id : record_id, rfid : rfid, bundle_id : bundle_id}).done(function(data){
-					clicked.closest("li").removeClass('list-group-item-warning');
-					clicked.closest("li").addClass("list-group-item-success");
-					showSuccessNotif(data);
-					window.location.href = "passages.php";
-					/*computeRemainingHours(data, false);*/
+				var user_id = clicked.attr("data-user");
+				var session_id = clicked.closest(".panel").find("#cours-id").val();
+				var product_id = $("#record-"+record_id).attr("data-bundle");
+				$.post("functions/validate_record.php", {session_id : session_id, user_id : user_id, record_id : record_id, product_id : product_id}).done(function(product_id){
+					/*console.log(product_id);*/
+					$.when(computeRemainingHours(product_id, false)).done(function(){
+						window.location.href = "passages.php";
+					})
+				})
+			}).on('click', '.unvalidate-record', function(){
+				var clicked = $(this);
+				var record_id = $(this).attr("data-record");
+				var user_id = clicked.attr("data-user");
+				var session_id = clicked.closest(".panel").find("#cours-id").val();
+				$.post("functions/unvalidate_record.php", {session_id : session_id, user_id : user_id, record_id : record_id}).done(function(product_id){
+					/*console.log(product_id);*/
+					$.when(computeRemainingHours(product_id, false)).done(function(){
+						window.location.href = "passages.php";
+					})
 				});
 			}).on('click', '.move-record', function(){
 				/** Déplacer un enregistrement d'un cours à un autre **/
@@ -327,13 +335,6 @@ while($unlinked = $queryUnlinked->fetch(PDO::FETCH_ASSOC)){ ?>
 				$.post("functions/move_record.php", {passage_id : passage_id, target_id : target_id}).done(function(data){
 					window.location.href = "passages.php";
 				})
-			}).on('click', '.unvalidate-record', function(){
-				/** Annuler la validation d'un passage */
-				var clicked = $(this);
-				var passage_id = $(this).attr("data-record");
-				$.post("functions/unvalidate_record.php", {passage_id : passage_id}).done(function(data){
-					window.location.href = "passages.php";
-				});
 			}).on('click', '.delete-trigger', function(){
 				/** Supprimer un passage **/
 				window.passage_id = $(this).attr("data-record");
