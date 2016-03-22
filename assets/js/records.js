@@ -13,7 +13,6 @@ function displaySessions(fetched){
 		var as_display = "";
 		for(var i = 0; i < active_sessions.length; i++){
 			var cours_start = moment(active_sessions[i].start);
-			console.log(active_sessions[i]);
 			if(cours_start > moment()){
 				var relative_time = cours_start.toNow();
 			} else {
@@ -50,8 +49,39 @@ function displaySessions(fetched){
 }
 
 function fetchRecords(session_id){
-	console.log("Coucou "+session_id);
-	$.get("functions/fetch_records_session.php", {session_id : session_id}).done(function(data){
-		var records_list = JSON.parse(data);
-	})
+	if($("#body-session-"+session_id).hasClass("in")){
+		$("#body-session-"+session_id).collapse("hide");
+		$("#body-session-"+session_id).empty();
+	} else {
+		$.get("functions/fetch_records_session.php", {session_id : session_id}).done(function(data){
+			var records_list = JSON.parse(data);
+			console.log(records_list);
+			var contents = "<div class='row session-list-container' id='session-"+session_id+">";
+			contents += "<ul class='records-inside-list records-product-list'>";
+			for(var i = 0; i < records_list.length; i++){
+				var record_status;
+				switch(records_list[i].status){
+					case '0':
+						record_status = "record-default";
+						break;
+
+					case '2':
+						record_status = "record-success";
+						break;
+
+					case '3':
+						record_status = "record-danger";
+						break;
+				}
+				contents += "<li class='session-record "+record_status+" container-fluid' id='session-record-"+records_list[i].id+"'>";
+				contents += "<p class='col-lg-3 session-record-name'>"+records_list[i].user+"</p>";
+				contents += "<p class='col-lg-3 session-record-name'>"+records_list[i].card+"</p>";
+				contents += "<p class='col-lg-3 session-record-name'>"+moment(records_list[i].date).format("H:m:ss")+"</p>";
+			}
+			contents += "</ul>";
+			contents += "</div>";
+			$("#body-session-"+session_id).append(contents);
+			$("#body-session-"+session_id).collapse("show");
+		})
+	}
 }

@@ -252,14 +252,14 @@ a {
   padding-left: 0; }
 
 /* line 231, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-.purchase-item, .product-participation {
+.purchase-item, .product-participation, .session-record {
   margin-bottom: 10px;
   display: inherit;
   padding-left: 0;
   padding-right: 0;
   cursor: pointer; }
   /* line 237, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-  .purchase-item p, .product-participation p {
+  .purchase-item p, .product-participation p, .session-record p {
     padding: 10px;
     margin-top: 2px;
     margin-bottom: 0; }
@@ -584,5 +584,10 @@ h2.modal-body-title.first {
 /* line 494, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 p.legend {
   font-size: 38px; }
+
+/** RECORDS **/
+/* line 504, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.session-record:hover {
+  background-color: #87CE77; }
 
 /*# sourceMappingURL=default-style.css.map */

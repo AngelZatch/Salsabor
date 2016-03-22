@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $compare_start = date("Y-m-d H:i:s");
 $compare_end = date("Y-m-d H:i:s", strtotime($compare_start.'+90MINUTES'));
-if(!isset($_POST["fetched"])){
+if(!isset($_GET["fetched"])){
 	$load = $db->query("SELECT * FROM cours
 								JOIN salle ON cours_salle=salle.salle_id
 								JOIN users ON prof_principal=users.user_id
@@ -12,7 +12,7 @@ if(!isset($_POST["fetched"])){
 								WHERE ouvert=1
 								ORDER BY cours_start ASC, cours_id ASC");
 } else {
-	$fetched = $_POST["fetched"];
+	$fetched = $_GET["fetched"];
 	$load = $db->query("SELECT * FROM cours
 								JOIN salle ON cours_salle=salle.salle_id
 								JOIN users ON prof_principal=users.user_id
