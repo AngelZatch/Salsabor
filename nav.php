@@ -12,9 +12,9 @@ $queryPassages = $db->query("SELECT * FROM passages JOIN users ON passage_eleve=
 		<div class="navbar-header"><a href="dashboard" class="navbar-brand"><img src="assets/images/logotest.png" alt="Salsabor Gestion" style="height:100%;"></a></div>
 		<form action="search.php" class="navbar-form navbar-left" role="search">
 			<div class="form-group">
-				<input type="text" class="form-control" name="search_terms" placeholder="Chercher un utilisateur, cours, achat...">
+				<input type="text" class="form-control nav-input" name="search_terms" placeholder="Rechercher">
 			</div>
-			<button type="submit" class="btn btn-default">Rechercher</button>
+			<!--<button type="submit" class="btn btn-default">Rechercher</button>-->
 		</form>
 		<div id="navbar" class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
