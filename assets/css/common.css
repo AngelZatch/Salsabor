@@ -241,6 +241,9 @@
 }
 
 .details-list {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
 	display: flex;
 	border-top: 1px solid #C4C4C4;
 	padding: 10px;
@@ -264,18 +267,9 @@
 	text-align: center;
 }
 .notification-icon {
-	color: #4E001A !important;
 	font-size: 19px;
 	padding-left: 8px !important;
 	padding-right: 8px !important;
-}
-
-.notification-icon:hover{
-	color: #1B0009 !important;
-}
-
-.navbar-inverse .navbar-nav > li > a{
-	color: #FFF;
 }
 
 .error-messages {
@@ -335,10 +329,6 @@
 .main-section:hover{
 	background-color: #A9023A !important;
 	color: #111 !important;
-}
-
-.badge {
-	background-color: cornflowerblue;
 }
 
 .jumbotron {

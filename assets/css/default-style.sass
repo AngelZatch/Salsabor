@@ -1,4 +1,5 @@
 $salsabor-red: #A9023A
+$salsabor-yellow: #FAB913
 $system-color: #888888
 $success-color: #87CE77
 $warning-color: #F0AD4E
@@ -21,10 +22,6 @@ $break-large: 1200px
 body
 	margin-top: 50px
 
-.navbar
-	background-color: darken($salsabor-red, 10%)
-	border: 0
-
 .popover
 	z-index: 1060
 
@@ -34,12 +31,49 @@ body
 	font-weight: 600
 	font-family: 'globersemibold_free'
 
+/** NAV **/
+.navbar
+	background-color: darken($salsabor-red, 10%)
+	border: 0
+
+.navbar-right
+	margin-right: 0
+
+.notification-icon
+	color: white !important
+	&:hover
+		color: $salsabor-yellow !important
+	span.glyphicon
+		z-index: -1
+	span.badge
+		margin-left: -13px
+		padding: 3px 5px
+		background-color: darken($salsabor-yellow, 20%)
+
+.navbar-form
+	width: 65%
+	margin-left: 22px
+
+.nav-input
+	background-color: darken($salsabor-red, 5%)
+	color: white
+	font-size: 17px
+	border: 0
+	width: 133vh !important
+	border-radius: 0
+	&:hover
+		background-color: lighten($salsabor-red, 3%)
+	&:focus
+		background-color: lighten($salsabor-red, 10%)
+		border-color: $salsabor-yellow
+		box-shadow: inset 0 1px 1px $salsabor-yellow, 0 0 8px darken($salsabor-yellow, 20%)
+
 /** PAGE **/
 .page-title
 	font-family: 'globersemibold_free'
 	font-size: 28px
 	padding: 0
-	margin: 0
+	margin: 1px 0 0 0
 
 /** PURCHASES **/
 .panel-purchase
