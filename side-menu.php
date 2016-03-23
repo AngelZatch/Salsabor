@@ -29,7 +29,7 @@
 				<!--<li><a href="staff_liste.php?rank=0" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='staff_liste.php') echo "active";?>"><span class="glyphicon glyphicon-briefcase"></span> Gestion du staff</a></li>-->
 				<!--<li><a href="professeurs.php" class="main-option <?php if(basename($_SERVER['PHP_SELF']) == 'professeurs.php') echo "active";?>"><span class="glyphicon glyphicon-blackboard"></span> Base Professeurs</a></li>-->
 				<li class="main-option-container"><a href="salles" class="main-option"><span class="glyphicon glyphicon-pushpin"></span> Salles</a></li>
-				<li class="main-option-container"><a href="forfaits" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='forfaits.php') echo "active";?>"><span class="glyphicon glyphicon-credit-card"></span> forfaits</a></li>
+				<li class="main-option-container"><a href="forfaits" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='forfaits.php') echo "active";?>"><span class="glyphicon glyphicon-credit-card"></span> Forfaits</a></li>
 				<li class="main-option-container"><a href="tarifs" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='tarifs_liste.php') echo "active";?>"><span class="glyphicon glyphicon-scale"></span> Tarifs de Location</a></li>
 			</ul>
 
