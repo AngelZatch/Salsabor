@@ -40,18 +40,10 @@ if(isset($_POST['add'])){
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<form method="post" role="form">
-					<div class="fixed">
-						<div class="col-lg-6">
-							<p class="page-title"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</p>
-						</div>
-						<div class="col-lg-6">
-							<div class="btn-toolbar">
-								<a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-								<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
-							</div> <!-- btn-toolbar -->
-						</div>
-					</div>
 					<div class="col-lg-10 col-lg-offset-2 main">
+						<legend><span class="glyphicon glyphicon-plus"></span> Ajouter un cours
+							<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
+						</legend>
 						<div class="row">
 							<div class="col-lg-6">
 								<div class="form-group">

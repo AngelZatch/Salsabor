@@ -9,15 +9,8 @@
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div>
-					<div class="fixed">
-						<div class="col-lg-6">
-							<p class="page-title"><span class="glyphicon glyphicon-stats"></span> Statistiques</p>
-						</div>
-						<div class="col-lg-6"></div>
-					</div>
-				</div>
 				<div class="col-lg-10 col-lg-offset-2 main">
+					<legend><span class="glyphicon glyphicon-stats"></span> Statistiques</legend>
 				</div>
 			</div>
 		</div>

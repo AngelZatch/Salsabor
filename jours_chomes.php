@@ -13,17 +13,6 @@ $db = PDOFactory::getConnection();
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-<!--				<div class="fixed">
-					<div class="col-lg-6">
-						<p class="page-title"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés</p>
-					</div>
-					<div class="col-lg-6">
-						<div class="btn-toolbar">
-							<a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-							<button class="btn btn-info" id="add-holiday"><span class="glyphicon glyphicon-plus"></span> Ajouter un jour / une période chômé(e)</button>
-						</div>  btn-toolbar
-					</div>
-				</div>-->
 				<div class="col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-leaf"></span> Jours Chômés
 						<button class="btn btn-primary" id="add-holiday"><span class="glyphicon glyphicon-plus"></span> Ajouter un jour / une période chômé(e)</button>

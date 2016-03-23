@@ -14,6 +14,15 @@ $avatar-size-preview: 120px
 $break-small: 360px
 $break-medium: 768px
 $break-large: 1200px
+$avatar-size-preview: 120px
+$avatar-big-preview: 170px
+
+=circle-size($radius)
+	height: $radius !important
+	width: $radius !important
+	border-radius: $radius/2 !important
+	overflow: hidden !important
+	padding: 0 !important
 
 /** ADJUSTMENT TOOLS **/
 .align-right
@@ -126,6 +135,17 @@ legend
 /** SUB NAV **/
 .fixed
 	background-color: transparentize(darken($salsabor-red, 2%), 0.01)
+
+/** JUMBOTRON **/
+.main-home
+	padding: 0
+
+.jumbotron-home
+	border-radius: 0
+
+#jumbotron-btns
+	a
+		margin: 10px
 
 /** PAGE **/
 .page-title
@@ -368,7 +388,7 @@ h2.modal-body-title.first
 	border-left-style: dashed
 	border-left-color: $system-color
 	padding-bottom: 20px
-	height: 83.5vh
+	height: 75.5vh
 	position: fixed
 	left: 71.5%
 	overflow-y: scroll
@@ -396,3 +416,49 @@ h2.modal-body-title.first
 /** PARTICIPATIONS **/
 .participations-list
 	@extend .purchase-inside-list
+
+/** USER PAGE **/
+.user-banner
+	height: $avatar-big-preview
+	margin-bottom: 15px
+
+.user-pp
+	+circle-size($avatar-big-preview)
+	float: left
+	margin-right: 15px
+
+.user-summary
+	padding-left: $avatar-big-preview + 20px
+
+#profile-picture-sample
+	+circle-size($avatar-size-preview)
+	border: 2px solid #444 !important
+	text-align: inherit
+
+#avatar-container
+	.file-input
+		.file-preview
+			+circle-size($avatar-size-preview)
+
+.file-preview-frame
+	display: block !important
+	width: $avatar-size-preview !important
+	border: none !important
+	margin: 0 !important
+	padding: 0 !important
+
+.file-preview-image
+	width: inherit !important
+	height: auto !important
+
+.file-default-preview > img
+	min-height: $avatar-size-preview
+	width: inherit
+
+.profile-picture
+	min-height: $avatar-big-preview
+	width:inherit
+
+p.legend
+	@extend legend
+	font-size: 38px

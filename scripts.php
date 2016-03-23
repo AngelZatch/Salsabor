@@ -4,7 +4,6 @@
 
 <!-- libs -->
 <script src="bootstrap/js/bootstrap.min.js"></script>
-<!--<script src="assets/js/moment.min.js"></script>-->
 <script src="assets/js/moment-with-locales.js"></script>
 <script src="assets/js/fullcalendar.min.js"></script>
 <script src="assets/js/jquery.ui.timepicker.js"></script>
@@ -16,8 +15,6 @@
 <script src="assets/js/js.cookie.js"></script>
 <script src="assets/js/checkbox-x.min.js"></script>
 <script src="assets/js/notify.min.js"></script>
-<script src="assets/js/fileinput.min.js"></script>
-<script src="assets/js/fileinput_locale_fr.js"></script>
 <!--<script src="assets/js/raphael-min.js"></script>
 <script src="assets/js/morris.min.js"></script>
 <script src="assets/js/list.min.js"></script>-->

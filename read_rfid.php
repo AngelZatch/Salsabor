@@ -54,8 +54,8 @@ function add($tag, $ip){
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<div class="col-lg-10 col-lg-offset-2 main">
-					<p class="page-title"><span class="glyphicon glyphicon-qrcode"></span> RFID</p>
-					<p>Simulez un passage RFID</p>
+					<legend><span class="glyphicon glyphicon-qrcode"></span> Simuler un passage RFID</legend>
+					<p class="page-title"></p>
 					<form action="" method="post">
 						<label for="tag">Tag</label>
 						<input type="text" name="tag" class="form-control">
