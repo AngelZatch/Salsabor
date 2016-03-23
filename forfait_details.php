@@ -96,7 +96,7 @@ if(isset($_POST["edit"])){
 							</div><!-- btn-toolbar -->
 						</div>
 					</div>
-					<div class="col-sm-10 main">
+					<div class="col-lg-10 col-lg-offset-2 main">
 						<div class="form-group">
 							<label for="intitule">Intitulé</label>
 							<input type="text" class="form-control input-lg" name="intitule" value="<?php echo $produit["produit_nom"];?>" placeholder="Nom du produit">

@@ -30,20 +30,8 @@
 }
 @media(min-width:768px){
 	.sidebar{
-		display: block;
-		position: fixed;
-		background-color: #A9023A;
 		z-index: 100;
-		min-height: 100%;
-		height: inherit;
-		padding: 25px 0;
 	}
-}
-
-.main-option:hover,
-.main-option.active{
-	background-color: #720026 !important;
-	color: #FAB913 !important;
 }
 
 .span-mandatory {
@@ -92,12 +80,6 @@
 
 .nav-pills > li > a {
 	color: #FAB913;
-}
-
-.main{
-	margin-left: 16.66666667%;
-	padding-top: 60px;
-	padding-bottom: 20px;
 }
 
 .main.large {
@@ -319,16 +301,9 @@
 }
 
 .main-section {
-	color: #959595 !important;
 	font-weight: 800;
 	text-transform: uppercase;
 	font-family: 'globersemibold_free';
-	background-color: #A9023A !important;
-}
-
-.main-section:hover{
-	background-color: #A9023A !important;
-	color: #111 !important;
 }
 
 .jumbotron {
@@ -413,7 +388,6 @@
 	left: 16.667%;
 	z-index: 1000;
 	padding: 5px;
-	background-color: #8C002F;
 	width: 100%;
 	color: white;
 	min-height: 50px;

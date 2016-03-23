@@ -42,7 +42,7 @@ if(isset($_POST["submit"])){
 						<p class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Transaction <?php echo $transaction["id_transaction"]?></p>
 					</div>
 				</div>
-				<div class="col-sm-10 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
 					<ul style="padding-left:0 !important;">
 						<li class="details-list">
 							<div class="col-sm-5 list-name">Transaction effectuée le</div>

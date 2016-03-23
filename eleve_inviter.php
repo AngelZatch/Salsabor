@@ -32,18 +32,10 @@ if(isset($_POST["submit"])){
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<form action="" method="post" target="_blank">
-					<div class="fixed">
-						<div class="col-lg-6">
-							<p class="page-title"><span class="glyphicon glyphicon-heart-empty"></span> Inviter un élève</p>
-						</div>
-						<div class="col-lg-6">
-							<div class="btn-toolbar">
-								<a href="dashboard.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Annuler et retourner au panneau d'administration</a>
-								<input type="submit" name="submit" role="button" class="btn btn-primary" value="ENREGISTRER">
-							</div> <!-- btn-toolbar -->
-						</div>
-					</div>
-					<div class="col-sm-10 main">
+					<div class="col-lg-10 col-lg-offset-2 main">
+						<legend><span class="glyphicon glyphicon-heart-empty"></span> Inviter un élève
+							<input type="submit" name="submit" role="button" class="btn btn-primary" value="ENREGISTRER">
+						</legend>
 						<input type="hidden" value="<?php echo $invitation["produit_id"]?>" class="form-control" id="produit-select" name="produit">
 						<div class="form-group">
 							<label for="personne">Acheteur du forfait</label>

@@ -15,7 +15,7 @@ $date = date_create('now')->format('H:i:s');
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-sm-10 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
 					<div class="jumbotron">
 						<h1><?php if($date > "06:00:00" && $date <= "12:00:00"){ ?>
 							Vous êtes là tôt aujourd'hui... Bonjour !
@@ -26,7 +26,7 @@ $date = date_create('now')->format('H:i:s');
 							<?php } else if($date > "18:00:00" && $date <= "21:00:00") { ?>
 							Bonsoir !
 							<?php } else if($date > "21:00:00" && $date <= "23:00:00") { ?>
-							Courage, encore quelques heures !
+							Courage, c'est bientôt fini !
 							<?php } else { ?>
 							Il fait nuit... Vous êtes toujours là ? Bienvenue !
 							<?php } ?>

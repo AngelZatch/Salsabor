@@ -34,14 +34,9 @@ $queryIrregulars = $db->query("SELECT * FROM produits_adherents pa
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="fixed">
-					<div class="col-lg-6">
-						<p class="page-title"><span class="glyphicon glyphicon-queen"></span> Forfaits en sur-consommation</p>
-					</div>
-					<div class="col-lg-6"></div>
-				</div>
-				<div class="col-sm-10 main">
-					<legend><?php echo $queryIrregulars->rowCount();?> forfaits concernés.</legend>
+				<div class="col-lg-10 col-lg-offset-2 main">
+					<legend><span class="glyphicon glyphicon-queen"></span> Forfaits en sur-consommation</legend>
+					<p class="sub-legend"><?php echo $queryIrregulars->rowCount();?> forfaits concernés.</p>
 					<div class="container-fluid irregulars-container">
 						<ul class="purchase-inside-list purchase-product-list">
 							<?php while($irregulars = $queryIrregulars->fetch(PDO::FETCH_ASSOC)){ ?>

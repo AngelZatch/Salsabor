@@ -34,13 +34,8 @@ $numberTransactions = $searchTransactions->rowCount();
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="fixed">
-					<div class="col-lg-6">
-						<p class="page-title"><span class="glyphicon glyphicon-search"></span> Résultats de recherche</p>
-					</div>
-					<div class="col-lg-6"></div>
-				</div>
-				<div class="col-sm-10 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
+					<legend>Résultats de recherche</legend>
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<p class="panel-title">

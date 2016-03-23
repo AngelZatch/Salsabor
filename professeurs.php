@@ -23,7 +23,7 @@ $db = PDOFactory::getConnection();
 						</div> <!-- btn-toolbar -->
 					</div>
 				</div>
-				<div class="col-sm-10 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
 					<div class="input-group input-group-lg search-form">
 						<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
 						<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">

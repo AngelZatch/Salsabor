@@ -30,12 +30,8 @@ $queryTransactions = $db->query("SELECT * FROM produits_adherents WHERE id_user_
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="fixed">
-					<div class="col-lg-6">
-						<p class="page-title"><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?> - Achats</p>
-					</div>
-				</div>
-				<div class="col-sm-10 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
+					<legend><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?> - Achats</legend>
 					<ul class="nav nav-tabs">
 						<li role="presentation"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/abonnements">Abonnements</a></li>
@@ -50,13 +46,13 @@ $queryTransactions = $db->query("SELECT * FROM produits_adherents WHERE id_user_
 					</ul>
 					<div>
 						<?php while($achats = $queryAchats->fetch(PDO::FETCH_ASSOC)){
-						$productQty = $db->query("SELECT id_produit_adherent FROM produits_adherents WHERE id_transaction_foreign='$achats[id_transaction]'")->rowCount();?>
+	$productQty = $db->query("SELECT id_produit_adherent FROM produits_adherents WHERE id_transaction_foreign='$achats[id_transaction]'")->rowCount();?>
 						<div class="panel panel-purchase" id="purchase-<?php echo $achats["id_transaction"];?>">
 							<a class="panel-heading-container" onClick="fetchPurchase('<?php echo $achats["id_transaction"];?>')">
 								<div class="panel-heading container-fluid">
 									<p class="purchase-id col-lg-5">Transaction <?php echo $achats["id_transaction"];?></p>
-									<p class="col-lg-4">Contient <?php echo $productQty;?> produit(s)</p>
-									<p class="purchase-sub col-lg-3">Effectuée le <?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <?php echo $achats["prix_total"];?> €</p>
+									<p class="col-lg-3">Contient <?php echo $productQty;?> produit(s)</p>
+									<p class="purchase-sub col-lg-4">Effectuée le <?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <?php echo $achats["prix_total"];?> €</p>
 									<!--<button class="btn btn-default fetch-purchase" onClick="fetchPurchase('<?php echo $achats["id_transaction"];?>')">Détails</button>-->
 									<!--<a href="purchase_details.php?id=<?php echo $achats["id_transaction"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a>-->
 								</div>

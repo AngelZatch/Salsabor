@@ -72,7 +72,7 @@ if(isset($_POST["add"])){
 							</div><!-- btn-toolbar -->
 						</div>
 					</div>
-					<div class="col-sm-10 main">
+					<div class="col-lg-10 col-lg-offset-2 main">
 						<div class="form-group">
 							<label for="intitule">Intitulé</label>
 							<input type="text" class="form-control input-lg" name="intitule" placeholder="Nom du produit">

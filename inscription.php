@@ -170,17 +170,8 @@ if(isset($_POST['addSell'])){
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<form action="" method="post" role="form" id="add_adherent" enctype="multipart/form-data">
-					<div class="fixed">
-						<div class="col-lg-6">
-							<p class="page-title"><span class="glyphicon glyphicon-pencil"></span> <?php echo $titleText;?></p>
-						</div>
-						<div class="col-lg-6">
-							<div class="btn-toolbar">
-								<input type="submit" name="addAdherent" role="button" class="btn btn-primary" value="Enregistrer" id="submit-button" disabled>
-							</div> <!-- btn-toolbar -->
-						</div>
-					</div>
-					<div class="col-sm-10 main">
+					<div class="col-lg-10 col-lg-offset-2 main">
+						<legend><span class="glyphicon glyphicon-pencil"></span> <?php echo $titleText;?></legend>
 						<div class="content">
 							<p class="form-section">Informations personnelles</p>
 							<div class="row">
