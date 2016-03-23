@@ -78,7 +78,7 @@ if(isset($_POST['addAdherent'])){
 			$delete->execute();
 		}
 		$db->commit();
-		header('Location: adherents.php');
+		header('Location: dashboard');
 	} catch(PDOException $e){
 		$db->rollBack();
 		echo $e->getMessage();

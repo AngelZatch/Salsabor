@@ -11,24 +11,21 @@ $querySalle->execute();
 $salle = $querySalle->fetch(PDO::FETCH_ASSOC);
 ?>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>Détails de la salle <?php echo $salle["salle_name"];?> | Salsabor</title>
-    <?php include "styles.php";?>
-</head>
-<body>
-  <?php include "nav.php";?>
-   <div class="container-fluid">
-       <div class="row">
-           <?php include "side-menu.php";?>
-           <div class="col-lg-10 col-lg-offset-2 main">
-				<div class="btn-toolbar" id="top-page-buttons">
-                   <a href="salles.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des salles</a>
-                </div> <!-- btn-toolbar -->
-               <p class="page-title"><span class="glyphicon glyphicon-credit-card"></span> Salle <?php echo $salle["salle_name"];?></p>
-           </div>
-       </div>
-   </div>
-   <?php include "scripts.php";?>    
-</body>
+	<head>
+		<meta charset="UTF-8">
+		<title>Détails de la salle <?php echo $salle["salle_name"];?> | Salsabor</title>
+		<?php include "styles.php";?>
+	</head>
+	<body>
+		<?php include "nav.php";?>
+		<div class="container-fluid">
+			<div class="row">
+				<?php include "side-menu.php";?>
+				<div class="col-lg-10 col-lg-offset-2 main">
+					<legend><span class="glyphicon glyphicon-pushpin"></span> Salle <?php echo $salle["salle_name"];?></legend>
+				</div>
+			</div>
+		</div>
+		<?php include "scripts.php";?>
+	</body>
 </html>

@@ -61,18 +61,10 @@ if(isset($_POST["add"])){
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<form action="forfait_add.php" method="post">
-					<div class="fixed">
-						<div class="col-lg-6">
-							<p class="page-title"><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait</p>
-						</div>
-						<div class="col-lg-6">
-							<div class="btn-toolbar">
-								<a href="forfaits.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux forfaits</a>
-								<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER">
-							</div><!-- btn-toolbar -->
-						</div>
-					</div>
 					<div class="col-lg-10 col-lg-offset-2 main">
+						<legend><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait
+							<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER">
+						</legend>
 						<div class="form-group">
 							<label for="intitule">Intitulé</label>
 							<input type="text" class="form-control input-lg" name="intitule" placeholder="Nom du produit">

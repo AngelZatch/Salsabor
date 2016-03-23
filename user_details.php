@@ -3,11 +3,8 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 $data = $_GET['id'];
 
-// On obtient les détails de l'adhérent
-$queryDetails = $db->prepare('SELECT * FROM users WHERE user_id=?');
-$queryDetails->bindValue(1, $data);
-$queryDetails->execute();
-$details = $queryDetails->fetch(PDO::FETCH_ASSOC);
+// User details
+$details = $db->query("SELECT * FROM users WHERE user_id='$data'")->fetch(PDO::FETCH_ASSOC);
 
 // Si l'élève est un professeur
 if($details["est_professeur"] == 1){
@@ -34,108 +31,92 @@ if($details["est_professeur"] == 1){
 	$totalDue = 0;
 }
 
-// On obtient l'historique de ses cours
-$queryHistoryRecus = $db->prepare('SELECT * FROM cours_participants
-							JOIN cours ON cours_id_foreign=cours.cours_id
-							JOIN niveau ON cours.cours_niveau=niveau.niveau_id
-							JOIN salle ON cours.cours_salle=salle.salle_id
-							JOIN produits_adherents ON produit_adherent_id=produits_adherents.id_produit_adherent
-							JOIN produits ON id_produit_foreign=produits.produit_id
-							WHERE eleve_id_foreign=?');
-$queryHistoryRecus->bindValue(1, $data);
-$queryHistoryRecus->execute();
-
-// On obtient l'historique de ses réservations
-$queryResa = $db->prepare('SELECT * FROM reservations JOIN users ON reservation_personne=users.user_id JOIN prestations ON type_prestation=prestations_id JOIN salle ON reservation_salle=salle.salle_id WHERE reservation_personne=?');
-$queryResa->bindValue(1, $data);
-$queryResa->execute();
-
-// On obtient l'historique de ses forfaits
-$queryForfaits = $db->prepare('SELECT *, pa.date_activation AS dateActivation, pa.actif AS produitActif
-								FROM produits_adherents pa
-								JOIN users u ON id_user_foreign=u.user_id
-								JOIN produits p ON id_produit_foreign=p.produit_id
-								LEFT OUTER JOIN transactions t
-									ON id_transaction_foreign=t.id_transaction
-									AND t.id_transaction IS NOT NULL
-								WHERE id_user_foreign=?
-								ORDER BY produitActif DESC');
-$queryForfaits->bindValue(1, $data);
-$queryForfaits->execute();
-
-// Ainsi que les forfaits actifs
-$queryForfaitsActifs = $db->prepare("SELECT * FROM produits_adherents JOIN produits ON id_produit_foreign=produits.produit_id WHERE id_user_foreign=? AND produits_adherents.actif=1");
-$queryForfaitsActifs->bindParam(1, $data);
-$queryForfaitsActifs->execute();
-
 // Et on cherche à savoir si des échéances sont en retard
 $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$data")->rowCount();
 
-//Enfin, on obtient l'historique de tous les achats (mêmes les forfaits d'autres personnes)
-$queryAchats = $db->prepare("SELECT * FROM transactions WHERE payeur_transaction=?");
-$queryAchats->bindParam(1, $data);
-$queryAchats->execute();
-
 // Edit des informations
 if(isset($_POST["edit"])){
-	// Upload de l'image
-	if(isset($_FILES["photo_identite"]["name"])){
+	if($_FILES["profile-picture"]["name"]){
 		$target_dir = "assets/pictures/";
-		$target_file = $target_dir.basename($_FILES["photo_identite"]["name"]);
-		$uploadOk = 1;
-		//$imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
-		/**$check = getimagesize($_FILES['photo_identite']['tmp_name']);
-		if(!$check){
-			$uploadOk = 1;
-		} else {
-			echo "Fichier non conforme";
-			$uploadOk = 0;
-		}**/
-		if($uploadOk == 1){
-			if(move_uploaded_file($_FILES["photo_identite"]["tmp_name"], $target_file)){
-				echo "Fichier uploadé avec succès.";
-			} else {
-				echo "Erreur au transfert du fichier.";
-			}
-		}
-	}
-
-	try{
-		$db->beginTransaction();
-		$edit = $db->prepare('UPDATE users
+		$target_file = $target_dir.basename($_FILES["profile-picture"]["name"]);
+		$picture = $data.".".pathinfo($_FILES["profile-picture"]["name"], PATHINFO_EXTENSION);
+		move_uploaded_file($_FILES["profile-picture"]["tmp_name"], $target_dir.$picture);
+		try{
+			$db->beginTransaction();
+			$edit = $db->prepare('UPDATE users
 								SET user_prenom = :prenom, user_nom = :nom, user_rfid = :rfid,
 									date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville,
-									mail = :mail, telephone = :telephone, photo = :photo,
+									mail = :mail, telephone = :telephone, tel_secondaire = :tel_secondaire, photo = :photo,
 									est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre, commentaires = :commentaires
 													WHERE user_id = :id');
-		$edit->bindParam(':prenom', $_POST["identite_prenom"]);
-		$edit->bindParam(':nom', $_POST["identite_nom"]);
-		$edit->bindParam(':rfid', $_POST["rfid"]);
-		$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
-		$edit->bindParam(':rue', $_POST["rue"]);
-		$edit->bindParam(':code_postal', $_POST["code_postal"]);
-		$edit->bindParam(':ville', $_POST["ville"]);
-		$edit->bindParam(':mail', $_POST["mail"]);
-		$edit->bindParam(':telephone', $_POST["telephone"]);
-		$edit->bindParam(':photo', $target_file);
-		$edit->bindParam(':est_membre', $_POST["est_membre"]);
-		$edit->bindParam(':est_professeur', $_POST["est_professeur"]);
-		$edit->bindParam(':est_staff', $_POST["est_staff"]);
-		$edit->bindParam(':est_prestataire', $_POST["est_prestataire"]);
-		$edit->bindParam(':est_autre', $_POST["est_autre"]);
-		$edit->bindParam(':commentaires', $_POST["commentaires"]);
-		$edit->bindParam(':id', $data);
-		$edit->execute();
-		if(isset($_POST["rfid"])){
-			$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
-			$delete->bindParam(1, $_POST["rfid"]);
-			$delete->execute();
+			$edit->bindParam(':prenom', $_POST["identite_prenom"]);
+			$edit->bindParam(':nom', $_POST["identite_nom"]);
+			$edit->bindParam(':rfid', $_POST["rfid"]);
+			$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
+			$edit->bindParam(':rue', $_POST["rue"]);
+			$edit->bindParam(':code_postal', $_POST["code_postal"]);
+			$edit->bindParam(':ville', $_POST["ville"]);
+			$edit->bindParam(':mail', $_POST["mail"]);
+			$edit->bindParam(':telephone', $_POST["telephone"]);
+			$edit->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
+			$edit->bindParam(':photo', $picture);
+			$edit->bindParam(':est_membre', $_POST["est_membre"]);
+			$edit->bindParam(':est_professeur', $_POST["est_professeur"]);
+			$edit->bindParam(':est_staff', $_POST["est_staff"]);
+			$edit->bindParam(':est_prestataire', $_POST["est_prestataire"]);
+			$edit->bindParam(':est_autre', $_POST["est_autre"]);
+			$edit->bindParam(':commentaires', $_POST["commentaires"]);
+			$edit->bindParam(':id', $data);
+			$edit->execute();
+			if(isset($_POST["rfid"])){
+				$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
+				$delete->bindParam(1, $_POST["rfid"]);
+				$delete->execute();
+			}
+			$db->commit();
+			header("Location:$data");
+		} catch(PDOException $e){
+			$db->rollBack();
+			var_dump($e->getMessage());
 		}
-		$db->commit();
-		header("Location:$data");
-	} catch(PDOException $e){
-		$db->rollBack();
-		var_dump($e->getMessage());
+	} else {
+		try{
+			$db->beginTransaction();
+			$edit = $db->prepare('UPDATE users
+								SET user_prenom = :prenom, user_nom = :nom, user_rfid = :rfid,
+									date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville,
+									mail = :mail, telephone = :telephone, tel_secondaire = :tel_secondaire,
+									est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre, commentaires = :commentaires
+													WHERE user_id = :id');
+			$edit->bindParam(':prenom', $_POST["identite_prenom"]);
+			$edit->bindParam(':nom', $_POST["identite_nom"]);
+			$edit->bindParam(':rfid', $_POST["rfid"]);
+			$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
+			$edit->bindParam(':rue', $_POST["rue"]);
+			$edit->bindParam(':code_postal', $_POST["code_postal"]);
+			$edit->bindParam(':ville', $_POST["ville"]);
+			$edit->bindParam(':mail', $_POST["mail"]);
+			$edit->bindParam(':telephone', $_POST["telephone"]);
+			$edit->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
+			$edit->bindParam(':est_membre', $_POST["est_membre"]);
+			$edit->bindParam(':est_professeur', $_POST["est_professeur"]);
+			$edit->bindParam(':est_staff', $_POST["est_staff"]);
+			$edit->bindParam(':est_prestataire', $_POST["est_prestataire"]);
+			$edit->bindParam(':est_autre', $_POST["est_autre"]);
+			$edit->bindParam(':commentaires', $_POST["commentaires"]);
+			$edit->bindParam(':id', $data);
+			$edit->execute();
+			if(isset($_POST["rfid"])){
+				$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
+				$delete->bindParam(1, $_POST["rfid"]);
+				$delete->execute();
+			}
+			$db->commit();
+			header("Location:$data");
+		} catch(PDOException $e){
+			$db->rollBack();
+			var_dump($e->getMessage());
+		}
 	}
 }
 ?>
@@ -151,130 +132,141 @@ if(isset($_POST["edit"])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<form method="post" role="form" enctype="multipart/form-data">
-					<!--					<div class="fixed">
-<div class="col-lg-6">
-<p class="page-title"><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?></p>
-</div>
-<div class="col-lg-6">
-<div class="btn-toolbar">
-<input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER LES MODIFICATIONS">
-</div>
-</div>
-</div>-->
-					<div class="col-lg-10 col-lg-offset-2 main">
-						<legend><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?></legend>
-						<?php if($queryEcheances != 0){ ?>
-						<div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
+				<div class="col-lg-10 col-lg-offset-2 main">
+					<?php include "inserts/user_banner.php";?>
+					<legend>Informations</legend>
+					<?php if($queryEcheances != 0){ ?>
+					<div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
+					<?php } ?>
+					<ul class="nav nav-tabs">
+						<li role="presentation" class="active"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
+						<li role="presentation"><a href="user/<?php echo $data;?>/abonnements">Abonnements</a></li>
+						<li role="presentation"><a href="user/<?php echo $data;?>/historique">Cours suivis</a></li>
+						<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
+						<li role="presentation"><a href="user/<?php echo $data;?>/reservations">Réservations</a></li>
+						<?php if($details["est_professeur"] == 1){ ?>
+						<li role="presentation"><a>Cours donnés</a></li>
+						<li role="presentation"><a>Tarifs</a></li>
+						<li role="presentation"><a>Statistiques</a></li>
 						<?php } ?>
-						<ul class="nav nav-tabs">
-							<li role="presentation" class="active"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
-							<li role="presentation"><a href="user/<?php echo $data;?>/abonnements">Abonnements</a></li>
-							<li role="presentation"><a href="user/<?php echo $data;?>/historique">Cours suivis</a></li>
-							<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
-							<li role="presentation"><a href="user/<?php echo $data;?>/reservations">Réservations</a></li>
-							<?php if($details["est_professeur"] == 1){ ?>
-							<li role="presentation"><a>Cours donnés</a></li>
-							<li role="presentation"><a>Tarifs</a></li>
-							<li role="presentation"><a>Statistiques</a></li>
-							<?php } ?>
-						</ul>
-						<section id="infos">
-							<div class="container-fluid">
-								<div class="form-group col-lg-3 thumbnail" id="picture-container">
-									<label for="photo_identite">
-										<img src="<?php echo ($details["photo"])?$details["photo"]:"assets/images/logotype-white.png";?>" alt="" style="max-height:100%; max-width:100%;">
-									</label>
-									<input type="file" name="photo_identite">
-								</div>
-								<div class="col-lg-9">
-									<div class="row">
-										<div class="col-lg-6">
-											<div class="form-group">
-												<label for="identite_prenom" class="control-label">Prénom</label>
-												<input type="text" name="identite_prenom" id="identite_prenom" class="form-control input-lg" placeholder="Prénom" value="<?php echo $details["user_prenom"];?>">
-											</div>
-										</div>
-										<div class="col-lg-6">
-											<div class="form-group">
-												<label for="identite_nom" class="control-label">Nom</label>
-												<input type="text" name="identite_nom" id="identite_nom" class="form-control input-lg" placeholder="Nom" value="<?php echo $details["user_nom"];?>">
-											</div>
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="mail" class="control-label">Adresse mail</label>
-										<input type="mail" name="mail" id="mail" placeholder="Adresse mail" class="form-control input-lg" value="<?php echo $details["mail"];?>">
-									</div>
-									<div class="form-group">
-										<label for="statuts" class="control-label">Statut du contact <span class="label-tip">Cochez autant que nécessaire</span></label><br>
-										<label for="est_membre" class="control-label">Membre</label>
-										<input name="est_membre" id="est_membre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_membre"];?>">
-										<label for="est_professeur" class="control-label">Professeur</label>
-										<input name="est_professeur" id="est_professeur" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_professeur"];?>">
-										<label for="est_staff" class="control-label">Staff</label>
-										<input name="est_staff" id="est_staff" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_staff"];?>">
-										<label for="est_prestataire" class="control-label">Prestataire</label>
-										<input name="est_prestataire" id="est_prestataire" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_prestataire"];?>">
-										<label for="est_autre" class="contorl-label">Autre <span class="label-tip">Spécifiez ci-dessous</span></label>
-										<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_autre"];?>">
-									</div>
-									<div class="form-group">
-										<label for="rfid" class="control-label">Code carte</label>
-										<div class="input-group input-group-lg">
-											<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
-											<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
-										</div>
-									</div>
+					</ul>
+					<form method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
+						<div class="form-group">
+							<label for="identite_prenom" class="col-lg-3 control-label">Prénom</label>
+							<div class="col-sm-9">
+								<input type="text" name="identite_prenom" id="identite_prenom" class="form-control" placeholder="Prénom" value="<?php echo $details["user_prenom"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="identite_nom" class="col-lg-3 control-label">Nom</label>
+							<div class="col-sm-9">
+								<input type="text" name="identite_nom" id="identite_nom" class="form-control" placeholder="Nom de famille" value="<?php echo $details["user_nom"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="mail" class="col-lg-3 control-label">Adresse mail</label>
+							<div class="col-lg-9">
+								<input type="email" name="mail" id="mail" placeholder="Adresse mail" class="form-control" value="<?php echo $details["mail"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="statuts" class="col-lg-3 control-label">Statut(s) du contact</label>
+							<div class="col-lg-9">
+								<label for="est_membre" class="control-label">Membre</label>
+								<input name="est_membre" id="est_membre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_membre"];?>">
+								<label for="est_professeur" class="control-label">Professeur</label>
+								<input name="est_professeur" id="est_professeur" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_professeur"];?>">
+								<label for="est_staff" class="control-label">Staff</label>
+								<input name="est_staff" id="est_staff" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_staff"];?>">
+								<label for="est_prestataire" class="control-label">Prestataire</label>
+								<input name="est_prestataire" id="est_prestataire" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_prestataire"];?>">
+								<label for="est_autre" class="contorl-label">Autre <span class="label-tip">Spécifiez en commentaire</span></label>
+								<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_autre"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="avatar" class="col-lg-3 control-label">Photo de profil</label>
+							<div class="col-lg-9">
+								<div id="kv-avatar-errors" class="center-block" style="width:800px;display:none;"></div>
+								<div id="avatar-container">
+									<input type="file" id="avatar" name="profile-picture" class="file-loading">
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-lg-6">
-									<div class="form-group">
-										<label for="" class="control-label">Adresse postale</label>
-										<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control input-lg" value="<?php echo $details["rue"];?>">
-									</div>
-								</div>
-								<div class="col-lg-3">
-									<div class="form-group">
-										<label for="" class="control-label">Code postal</label>
-										<input type="number" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control input-lg" value="<?php echo $details["code_postal"];?>">
-									</div>
-								</div>
-								<div class="col-lg-3">
-									<div class="form-group">
-										<label for="" class="control-label">Ville</label>
-										<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control input-lg" value="<?php echo $details["ville"];?>">
-									</div>
+						</div>
+						<div class="form-group">
+							<label for="rfid" class="col-lg-3 control-label">Code carte</label>
+							<div class="col-lg-9">
+								<div class="input-group">
+									<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
+									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-lg-6">
-									<div class="form-group">
-										<label for="telephone" class="control-label">Téléphone principal</label>
-										<input type="tel" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control input-lg" value="<?php echo $details["telephone"];?>">
-									</div>
-								</div>
-								<div class="col-lg-6">
-									<div class="form-group"><label for="tel_secondaire" class="control-label">Téléphone secondaire</label><input type="tel" name="tel_secondaire" id="tel_secondaire" placeholder="Numéro de téléphone secondaire" class="form-control input-lg"></div>
-								</div>
+						</div>
+						<div class="form-group">
+							<label for="rue" class="col-lg-3 control-label">Adresse postale</label>
+							<div class="col-lg-9">
+								<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control" value="<?php echo $details["rue"];?>">
 							</div>
-							<div class="form-group">
-								<label for="date_naissance" class="control-label">Date de naissance</label>
-								<input type="date" name="date_naissance" id="date_naissance" class="form-control input-lg" value="<?php echo $details["date_naissance"];?>">
+						</div>
+						<div class="form-group">
+							<label for="code_postal" class="col-lg-3 control-label">Code postal</label>
+							<div class="col-lg-9">
+								<input type="number" name="code_postal" id="code_postal" placeholder="Code Postal" class="form-control" value="<?php echo $details["code_postal"];?>">
 							</div>
-							<div class="form-group">
-								<label for="commentaires" class="control-label">Commentaires</label>
-								<textarea rows="5" class="form-control input-lg" name="commentaires"><?php echo $details["commentaires"];?></textarea>
+						</div>
+						<div class="form-group">
+							<label for="ville" class="col-lg-3 control-label">Ville</label>
+							<div class="col-lg-9">
+								<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control" value="<?php echo $details["ville"];?>">
 							</div>
-							<input type="submit" name="edit" role="button" class="btn btn-primary btn-block" value="ENREGISTRER LES MODIFICATIONS">
-						</section>
-					</div>
-				</form>
+						</div>
+						<div class="form-group">
+							<label for="telephone" class="col-lg-3 control-label">Téléphone principal</label>
+							<div class="col-lg-9">
+								<input type="tel" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control" value="<?php echo $details["telephone"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="tel_secondaire" class="col-lg-3 control-label">Téléphone secondaire</label>
+							<div class="col-lg-9">
+								<input type="tel" name="tel_secondaire" id="tel_secondaire" placeholder="Numéro de téléphone secondaire" class="form-control" value="<?php echo $details["tel_secondaire"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="date_naissance" class="col-lg-3 control-label">Date de naissance</label>
+							<div class="col-lg-9">
+								<input type="date" name="date_naissance" id="date_naissance" class="form-control" value="<?php echo $details["date_naissance"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="commentaires" class="col-lg-3 control-label">Commentaires</label>
+							<div class="col-lg-9">
+								<textarea rows="5" class="form-control" name="commentaires"><?php echo $details["commentaires"];?></textarea>
+							</div>
+						</div>
+						<input type="submit" name="edit" role="button" class="btn btn-primary btn-block" value="ENREGISTRER LES MODIFICATIONS">
+					</form>
+				</div>
 			</div>
 		</div>
 		<?php include "scripts.php";?>
+		<script src="assets/js/fileinput.min.js"></script>
 		<script>
+			$("#avatar").fileinput({
+				overwriteInitial: true,
+				maxFileSize: 3000,
+				showClose: false,
+				showCaption: false,
+				browseLabel: '',
+				removeLabel: '',
+				browseIcon: '<i class="glyphicon glyphicon-folder-open"></i>',
+				removeTitle: 'Cancel or reset changes',
+				elErrorContainers: '#kv-avatar-errors',
+				elPreviewContainer: '#avatar-container',
+				msgErrorClass: 'alert alert-block alert-danger',
+				defaultPreviewContent: '<img src="assets/pictures/<?php echo $details["photo"];?>" style="width:118px;">',
+				layoutTemplates: {main2: '{preview} {browse}' },
+			});
 			var listening = false;
 			var wait;
 			$("[name='fetch-rfid']").click(function(){

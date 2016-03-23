@@ -3,11 +3,8 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 $data = $_GET['id'];
 
-// On obtient les détails de l'adhérent
-$queryDetails = $db->prepare('SELECT * FROM users WHERE user_id=?');
-$queryDetails->bindValue(1, $data);
-$queryDetails->execute();
-$details = $queryDetails->fetch(PDO::FETCH_ASSOC);
+// User details
+$details = $db->query("SELECT * FROM users WHERE user_id='$data'")->fetch(PDO::FETCH_ASSOC);
 
 // On obtient l'historique de ses forfaits
 $queryForfaits = $db->prepare('SELECT *, pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif,
@@ -41,7 +38,8 @@ $queryForfaits->execute();
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<div class="col-lg-10 col-lg-offset-2 main">
-					<legend><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?> - Abonnements</legend>
+					<?php include "inserts/user_banner.php";?>
+					<legend><span class="glyphicon glyphicon-user"></span> Abonnements</legend>
 					<ul class="nav nav-tabs">
 						<li role="presentation"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
 						<li role="presentation" class="active"><a href="user/<?php echo $data;?>/abonnements">Abonnements</a></li>
