@@ -94,8 +94,9 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 								<p id="cours-people">Actuellement <span class="cours-count"></span> participants, dont <span class="cours-count-checked">0</span> validés.</p>
 							</div>
 						</div>
-						<ul class="list-group">
-							<?php
+						<div class="panel-body">
+							<ul class="list-group">
+								<?php
 						while($passages = $queryPassages->fetch(PDO::FETCH_ASSOC)){
 							switch($passages["status"]){
 								case 0:
@@ -111,38 +112,39 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 									break;
 							};
 							$queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$passages[user_id]")->rowCount();
-							?>
-							<li class="list-group-item list-group-item-<?php echo $status;?> col-sm-12" id="record-<?php echo $passages["passage_id"];?>" data-record="<?php echo $passages["passage_id"];?>" data-user="<?php echo $passages["user_id"];?>" data-bundle="">
-								<p class="col-lg-3 eleve-infos">
-									<?php echo $passages["user_prenom"]." ".$passages["user_nom"];?>
-								</p>
-								<p class="col-lg-1 eleve-tag">
-									<?php echo ($passages["passage_eleve"] != "")?$passages["passage_eleve"]:"Pas de carte";?>
-								</p>
-								<p class="col-lg-2">Enregsitré à <?php echo date_create($passages["passage_date"])->format("H:i:s");?></p>
-								<div class="col-lg-6 record-options">
-									<?php if ($passages["status"] == 0 || $passages["status"] == 3){?>
-									<p class="list-item-option validate-record" data-record="<?php echo $passages["passage_id"];?>" data-user="<?php echo $passages["user_id"];?>" title="Valider l'enregistrement comme étant bien pour ce cours">
-										<span class="glyphicon glyphicon-ok"></span> VALIDER
+								?>
+								<li class="list-group-item list-group-item-<?php echo $status;?> col-sm-12" id="record-<?php echo $passages["passage_id"];?>" data-record="<?php echo $passages["passage_id"];?>" data-user="<?php echo $passages["user_id"];?>" data-bundle="">
+									<p class="col-lg-3 eleve-infos">
+										<?php echo $passages["user_prenom"]." ".$passages["user_nom"];?>
 									</p>
-									<p class="list-item-option move-record" id="record-<?php echo $passages["passage_id"];?>" data-record="<?php echo $passages["passage_id"];?>" title="Assigner le passage à un autre cours">
-										<span class="glyphicon glyphicon-circle-arrow-right"></span> DEPLACER
+									<p class="col-lg-1 eleve-tag">
+										<?php echo ($passages["passage_eleve"] != "")?$passages["passage_eleve"]:"Pas de carte";?>
 									</p>
-									<p class="list-item-option move-bundle" id="move-bundle-<?php echo $passages["user_id"];?>" data-user="<?php echo $passages["user_id"];?>" data-record="<?php echo $passages["passage_id"];?>" title="Modifier le forfait utilisé">
-										<span class="glyphicon glyphicon-credit-card"></span> FORFAIT
-									</p>
-									<a href="actions/validate_deletion.php" data-title="Suppression de passage" data-toggle="lightbox" data-gallery="remoteload" data-record="<?php echo $passages["passage_id"];?>" class="list-item-option delete-trigger" title="Supprimer ce passage">
-										<span class="glyphicon glyphicon-trash"></span> SUPPRIMER
-									</a>
-									<?php } else if($passages["status"] == 2) {  ?>
-									<p class="list-item-option unvalidate-record" data-record="<?php echo $passages["passage_id"];?>" data-user="<?php echo $passages["user_id"];?>" title="Annuler la validation de cet enregistrement">
-										<span class="glyphicon glyphicon-remove"></span> ANNULER
-									</p>
-									<?php } ?>
-								</div>
-							</li>
-							<?php }?>
-						</ul>
+									<p class="col-lg-2">Enregsitré à <?php echo date_create($passages["passage_date"])->format("H:i:s");?></p>
+									<div class="col-lg-6 record-options">
+										<?php if ($passages["status"] == 0 || $passages["status"] == 3){?>
+										<p class="list-item-option validate-record" data-record="<?php echo $passages["passage_id"];?>" data-user="<?php echo $passages["user_id"];?>" title="Valider l'enregistrement comme étant bien pour ce cours">
+											<span class="glyphicon glyphicon-ok"></span> VALIDER
+										</p>
+										<p class="list-item-option move-record" id="record-<?php echo $passages["passage_id"];?>" data-record="<?php echo $passages["passage_id"];?>" title="Assigner le passage à un autre cours">
+											<span class="glyphicon glyphicon-circle-arrow-right"></span> DEPLACER
+										</p>
+										<p class="list-item-option move-bundle" id="move-bundle-<?php echo $passages["user_id"];?>" data-user="<?php echo $passages["user_id"];?>" data-record="<?php echo $passages["passage_id"];?>" title="Modifier le forfait utilisé">
+											<span class="glyphicon glyphicon-credit-card"></span> FORFAIT
+										</p>
+										<a href="actions/validate_deletion.php" data-title="Suppression de passage" data-toggle="lightbox" data-gallery="remoteload" data-record="<?php echo $passages["passage_id"];?>" class="list-item-option delete-trigger" title="Supprimer ce passage">
+											<span class="glyphicon glyphicon-trash"></span> SUPPRIMER
+										</a>
+										<?php } else if($passages["status"] == 2) {  ?>
+										<p class="list-item-option unvalidate-record" data-record="<?php echo $passages["passage_id"];?>" data-user="<?php echo $passages["user_id"];?>" title="Annuler la validation de cet enregistrement">
+											<span class="glyphicon glyphicon-remove"></span> ANNULER
+										</p>
+										<?php } ?>
+									</div>
+								</li>
+								<?php }?>
+							</ul>
+						</div>
 						<div class="panel-footer">
 							<div class="input-group input-group-lg">
 								<input type="text" for="liste_participants" class="form-control liste-participants has-name-completion" placeholder="Ajouter un participant par passage">

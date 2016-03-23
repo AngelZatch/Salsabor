@@ -38,7 +38,7 @@ if(basename($_SERVER["PHP_SELF"]) == "echeances.php"){ ?>
 		<tr>
 			<td class="date col-lg-1"><span class="editable" id="date_echeance-<?php echo $echeances["produits_echeances_id"];?>"><?php echo date_create($echeances["date_echeance"])->format('d/m/Y');?></span></td>
 			<?php if(basename($_SERVER['PHP_SELF']) == "echeances.php"){ ?>
-			<td class="forfait-name"><a href="transaction_details.php?id=<?php echo $echeances["id_transaction_foreign"];?>&status=echeances"><?php echo $echeances["id_transaction_foreign"];?></a></td>
+			<td class="forfait-name"><a href="user/<?php echo $echeances["id_user_foreign"];?>/achats#purchase-<?php echo $echeances["id_transaction_foreign"];?>"><?php echo $echeances["id_transaction_foreign"];?></a></td>
 			<?php } ?>
 			<td class="montant"><span class="editable" id="montant-<?php echo $echeances["produits_echeances_id"];?>"><?php echo $echeances["montant"];?></span> €</td>
 			<td><span class="editable" id="methode_paiement-<?php echo $echeances["produits_echeances_id"];?>"><?php echo $echeances["methode_paiement"];?></span></td>
