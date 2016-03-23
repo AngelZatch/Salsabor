@@ -24,18 +24,19 @@ if($product_id == ""){ // If the product has not been manually set
 									ORDER BY date_achat ASC");
 		if($checkSpecific->rowCount() > 0){
 			$product = $checkSpecific->fetch(PDO::FETCH_ASSOC);
-		} else { // First, we search for any freebies
-			$checkInvitation = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
+		}
+	} else { // First, we search for any freebies
+		$checkInvitation = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
 									JOIN produits p ON pa.id_produit_foreign = p.produit_id
 									JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
 									AND produit_nom = 'Invitation'
 									AND pa.actif = '0'
 									ORDER BY date_achat ASC");
-			if($checkInvitation->rowCount() > 0){ // If there are freebies still available, we take the first one.
-				$product = $checkInvitation->fetch(PDO::FETCH_ASSOC);
-			} else { // If no freebies, we look for every currently active products.
-				$checkActive = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
+		if($checkInvitation->rowCount() > 0){ // If there are freebies still available, we take the first one.
+			$product = $checkInvitation->fetch(PDO::FETCH_ASSOC);
+		} else { // If no freebies, we look for every currently active products.
+			$checkActive = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
 									JOIN produits p ON pa.id_produit_foreign = p.produit_id
 									JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
@@ -44,10 +45,10 @@ if($product_id == ""){ // If the product has not been manually set
 									AND est_abonnement = '0'
 									AND est_cours_particulier = '0'
 									ORDER BY date_achat ASC");
-				if($checkActive->rowCount() > 0){ // If there are active products that are not an annual sub
-					$product = $checkActive->fetch(PDO::FETCH_ASSOC);
-				} else { // We check inactive products now.
-					$checkPending = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
+			if($checkActive->rowCount() > 0){ // If there are active products that are not an annual sub
+				$product = $checkActive->fetch(PDO::FETCH_ASSOC);
+			} else { // We check inactive products now.
+				$checkPending = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
 									JOIN produits p ON pa.id_produit_foreign = p.produit_id
 									JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
@@ -56,17 +57,18 @@ if($product_id == ""){ // If the product has not been manually set
 									AND est_abonnement = '0'
 									AND est_cours_particulier = '0'
 									ORDER BY date_achat ASC");
-					if($checkPending->rowCount() > 0){
-						$product = $checkPending->fetch(PDO::FETCH_ASSOC);
-					} else { // if there's NO product at all, we still accept but it goes into irregulars.
-						$product_id = NULL;
-					}
+				if($checkPending->rowCount() > 0){
+					$product = $checkPending->fetch(PDO::FETCH_ASSOC);
 				}
 			}
 		}
 	}
 }
-$product_id = $product["id_produit_adherent"];
+if(isset($product)){
+	$product_id = $product["id_produit_adherent"];
+} else {
+	$product = NULL;
+}
 
 // Confirming the record as a fleshed out participation
 $new = $db->prepare("INSERT INTO cours_participants(cours_id_foreign, eleve_id_foreign, produit_adherent_id)
