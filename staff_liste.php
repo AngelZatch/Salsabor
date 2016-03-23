@@ -43,7 +43,7 @@ if(isset($_POST['addRank'])){
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-10 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
 					<div class="input-group input-group-lg search-form">
 						<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
 						<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">
@@ -91,7 +91,7 @@ while($staff = $queryStaff->fetch(PDO::FETCH_ASSOC)){?>
 <button class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Modifier le rang</button>
 <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer le rang</button>
 </div> -->
-				</div> <!-- col-sm-10 main-->
+				</div> <!-- col-lg-10 col-lg-offset-2 main-->
 			</div> <!-- row -->
 		</div> <!-- container-fluid -->
 		<?php include "scripts.php";?>

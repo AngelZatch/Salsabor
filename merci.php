@@ -13,7 +13,7 @@ $db = PDOFactory::getConnection();
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-sm-10 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
 					<div class="jumbotron">
 						<h1>Merci beaucoup de cet achat !</h1>
 						<a href="dashboard.php" role="button" class="btn btn-default btn-block">Retour au panneau principal</a>

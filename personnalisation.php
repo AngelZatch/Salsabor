@@ -28,17 +28,10 @@ $indicePanier = $_GET["order"];
 		<?php include "nav.php";?>
 		<div class="container-fluid">
 			<div class="row">
-				<div class="fixed-full col-lg-12">
-					<div class="col-lg-6">
-						<p class="page-title"><span class="glyphicon glyphicon-shopping-cart"></span> Acheter des produits</p>
-					</div>
-					<div class="col-lg-6">
-						<div class="btn-toolbar">
-							<a href="catalogue.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-th"></span> Retourner au catalogue</a>
-						</div><!-- btn-toolbar -->
-					</div>
-				</div>
-				<div class="col-sm-8 main">
+				<div class="col-sm-10 col-lg-offset-1 main">
+					<legend><span class="glyphicon glyphicon-shopping-cart"></span> Acheter des produits
+						<a href="catalogue.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-th"></span> Retourner au catalogue</a>
+					</legend>
 					<div class="progress">
 						<div class="progress-bar" role="progressbar" aria-valuenow="66" aria-valuemin="33" aria-valuemax="100" style="width:66.67%;">
 							<span class="glyphicon glyphicon-erase"></span> Etape 2/3 : Personnalisation des produits

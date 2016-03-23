@@ -19,7 +19,7 @@ $db = PDOFactory::getConnection();
 					</div>
 					<div class="col-lg-6"></div>
 				</div>
-				<div class="col-sm-10 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
 					<?php
 					$eleve = 10507;
 					$product_id = "";

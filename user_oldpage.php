@@ -157,7 +157,7 @@ if(isset($_POST["edit"])){
 							<p class="page-title"><span class="glyphicon glyphicon-user"></span> <?php echo $details["user_prenom"]." ".$details["user_nom"];?></p>
 						</div>
 					</div>
-					<div class="col-sm-10 main">
+					<div class="col-lg-10 col-lg-offset-2 main">
 						<?php if($queryEcheances != 0){ ?>
 						<div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
 						<?php } ?>

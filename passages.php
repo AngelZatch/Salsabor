@@ -33,15 +33,16 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="fixed">
-					<div class="col-lg-6">
-						<p class="page-title"><span class="glyphicon glyphicon-map-marker"></span> Passages</p>
-					</div>
-					<div class="col-lg-6">
-						<p id="current-time"></p>
-					</div>
-				</div>
-				<div class="col-sm-10 main">
+				<!--				<div class="fixed">
+<div class="col-lg-6">
+<p class="page-title"><span class="glyphicon glyphicon-map-marker"></span> Passages</p>
+</div>
+<div class="col-lg-6">
+<p id="current-time"></p>
+</div>
+</div>-->
+				<div class="col-lg-10 col-lg-offset-2 main">
+					<legend><span class="glyphicon glyphicon-map-marker"></span> Passages</legend>
 					<p id="last-edit"><?php echo ($queryNextCours->rowCount()!=0)?"".$queryNextCours->rowCount()." cours sont actuellement ouvert(s) aux enregistrements":"Aucun cours n'est à venir";?></p>
 					<?php
 					while($nextCours = $queryNextCours->fetch(PDO::FETCH_ASSOC)){

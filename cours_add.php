@@ -51,7 +51,7 @@ if(isset($_POST['add'])){
 							</div> <!-- btn-toolbar -->
 						</div>
 					</div>
-					<div class="col-sm-10 main">
+					<div class="col-lg-10 col-lg-offset-2 main">
 						<div class="row">
 							<div class="col-lg-6">
 								<div class="form-group">

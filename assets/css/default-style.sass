@@ -1,4 +1,4 @@
-$salsabor-red: #A9023A
+$salsabor-red: #A80139
 $salsabor-yellow: #FAB913
 $system-color: #888888
 $success-color: #87CE77
@@ -25,16 +25,68 @@ body
 .popover
 	z-index: 1060
 
-/** SIDE MENU **/
-.main-option
-	color: white !important
-	font-weight: 600
+::-webkit-scrollbar
+	background-color: transparentize($salsabor-red, 0.7)
+	z-index: -1
+	width: 6px
+
+::-webkit-scrollbar-thumb
+	background-color: $salsabor-red
+	border-radius: 10px
+
+.main
+	padding: 40px 4% 20px
+	position: relative
+	overflow: auto
+
+legend
+	color: $salsabor-red
+	font-size: 28px
 	font-family: 'globersemibold_free'
+	a, input, button
+		float: right
+
+/** SIDE MENU **/
+.sidebar-container
+	position: relative
+
+.sidebar
+	/*background-color: lighten($salsabor-red, 5%)*/
+	position: fixed
+	background-color: white
+	color: black
+	padding: 10px 0 20px 0
+	overflow-y: scroll
+	max-height: 94.5vh
+
+.main-section
+	cursor: default
+	color: black
+	&:hover
+		color: black !important
+	&:focus
+		color: white !important
+
+.nav-sub-sidebar
+	color: black
+	padding-bottom: 20px
+
+.main-option
+	color: black
+	font-weight: 600
+	font-size: 17px
+	font-family: 'globersemibold_free'
+	&:hover
+		color: black
+	span
+		padding-right: 20px
+		color: $salsabor-red
 
 /** NAV **/
 .navbar
-	background-color: darken($salsabor-red, 10%)
+	background-color: $salsabor-red
 	border: 0
+	box-shadow: 0 2px 10px $system-color
 
 .navbar-right
 	margin-right: 0
@@ -48,25 +100,32 @@ body
 	span.badge
 		margin-left: -13px
 		padding: 3px 5px
-		background-color: darken($salsabor-yellow, 20%)
+		background-color: darken($salsabor-yellow, 10%)
 
 .navbar-form
 	width: 65%
 	margin-left: 22px
+	.input-group
+		span
+			@extend .nav-input
 
 .nav-input
-	background-color: darken($salsabor-red, 5%)
+	background-color: lighten($salsabor-red, 4%)
 	color: white
 	font-size: 17px
 	border: 0
-	width: 133vh !important
 	border-radius: 0
 	&:hover
-		background-color: lighten($salsabor-red, 3%)
+		background-color: lighten($salsabor-red, 7%)
 	&:focus
-		background-color: lighten($salsabor-red, 10%)
+		background-color: lighten($salsabor-red, 11%)
 		border-color: $salsabor-yellow
-		box-shadow: inset 0 1px 1px $salsabor-yellow, 0 0 8px darken($salsabor-yellow, 20%)
+		box-shadow: inset 0 1px 1px $salsabor-yellow, 0 0 8px lighten($salsabor-yellow, 10%)
+		//box-shadow: none !important
+
+/** SUB NAV **/
+.fixed
+	background-color: transparentize(darken($salsabor-red, 2%), 0.01)
 
 /** PAGE **/
 .page-title
@@ -74,6 +133,21 @@ body
 	font-size: 28px
 	padding: 0
 	margin: 1px 0 0 0
+
+/** BUTTONS **/
+.btn-danger
+	span
+		color: white
+
+.btn-info
+	background-color: $salsabor-red
+	border-color: lighten($salsabor-red, 1%)
+	&:hover
+		background-color: darken($salsabor-red, 3%)
+		border-color: lighten($salsabor-red, 1%)
+	&:active, &:focus
+		background-color: darken($salsabor-red, 7%)
+		border-color: lighten($salsabor-red, 1%)
 
 /** PURCHASES **/
 .panel-purchase
@@ -190,11 +264,6 @@ body
 	span
 		font-weight: 400
 		color: $salsabor-red
-
-.btn-danger
-	span
-		color: white
-	/*font-weight: 800*/
 
 .modal-body-title
 	font-size: 20px

@@ -15,17 +15,10 @@ $querySalles = $db->query('SELECT * FROM salle WHERE est_salle_cours=1 ORDER BY 
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="fixed">
-					<div class="col-lg-6">
-						<p class="page-title"><span class="glyphicon glyphicon-pushpin"></span> Salles</p>
-					</div>
-					<div class="col-lg-6">
-						<div class="btn-toolbar">
-							<a href="" role="button" class="btn btn-primary" disabled><span class="glyphicon glyphicon-plus"></span> Ajouter une salle</a>
-						</div> <!-- btn-toolbar -->
-					</div>
-				</div>
-				<div class="col-sm-10 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
+					<legend><span class="glyphicon glyphicon-pushpin"></span> Salles
+						<a href="" role="button" class="btn btn-primary" disabled><span class="glyphicon glyphicon-plus"></span> Ajouter une salle</a>
+					</legend>
 					<div class="input-group input-group-lg search-form">
 						<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
 						<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">

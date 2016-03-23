@@ -21,7 +21,7 @@ $salle = $querySalle->fetch(PDO::FETCH_ASSOC);
    <div class="container-fluid">
        <div class="row">
            <?php include "side-menu.php";?>
-           <div class="col-sm-10 main">
+           <div class="col-lg-10 col-lg-offset-2 main">
 				<div class="btn-toolbar" id="top-page-buttons">
                    <a href="salles.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des salles</a>
                 </div> <!-- btn-toolbar -->

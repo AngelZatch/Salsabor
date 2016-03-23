@@ -53,7 +53,7 @@ function add($tag, $ip){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-sm-10 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
 					<p class="page-title"><span class="glyphicon glyphicon-qrcode"></span> RFID</p>
 					<p>Simulez un passage RFID</p>
 					<form action="" method="post">

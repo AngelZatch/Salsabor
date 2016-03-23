@@ -26,14 +26,8 @@ if(isset($_POST["submit"])){
 		<div class="container-fluid">
 			<div class="row">
 				<form action="paiement.php" method="post">
-					<div class="fixed-full">
-						<div class="col-lg-6">
-							<p class="page-title"><span class="glyphicon glyphicon-shopping-cart"></span> Acheter des produits</p>
-						</div>
-						<div class="col-lg-6">
-						</div>
-					</div>
-					<div class="col-lg-12">
+					<div class="col-lg-10 col-lg-offset-1 main">
+						<legend><span class="glyphicon glyphicon-shopping-cart"></span> Acheter des produits</legend>
 						<div class="progress">
 							<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="25" aria-valuemax="100" style="width:100%;">
 								<span class="glyphicon glyphicon-repeat"></span> Etape 3/3 : Ajustement des échéances

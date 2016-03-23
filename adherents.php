@@ -25,7 +25,7 @@ $queryAdherents = $db->query('SELECT user_id, user_prenom, user_nom, user_rfid, 
 						</div> <!-- btn-toolbar -->
 					</div>
 				</div>
-				<div class="col-sm-10 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
 					<form action="search.php" role="search">
 						<div class="input-group input-group-lg">
 							<input type="text" class="form-control" name="search_terms" placeholder="Chercher un utilisateur, cours, achat...">

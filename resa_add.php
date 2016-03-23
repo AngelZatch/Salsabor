@@ -26,21 +26,13 @@ if(isset($_POST['addResa'])){
 	<body>
 		<?php include "nav.php";?>
 		<form method="post" target="_blank" role="form" id="add_resa">
-			<div class="fixed">
-				<div class="col-lg-6">
-					<p class="page-title"><span class="glyphicon glyphicon-record"></span> Effectuer une réservation</p>
-				</div>
-				<div class="col-lg-6">
-					<div class="btn-toolbar">
-						<a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-						<input type="submit" name="addResa" role="button" class="btn btn-primary confirm-add" value="ENREGISTRER" id="submit-button" disabled>
-					</div> <!-- btn-toolbar -->
-				</div>
-			</div>
 			<div class="container-fluid">
 				<div class="row">
 					<?php include "side-menu.php";?>
-					<div class="col-sm-10 main">
+					<div class="col-lg-10 col-lg-offset-2 main">
+						<legend><span class="glyphicon glyphicon-record"></span> Effectuer une réservation
+							<input type="submit" name="addResa" role="button" class="btn btn-primary confirm-add" value="ENREGISTRER" id="submit-button" disabled>
+						</legend>
 						<div class="form-group">
 							<label for="identite" class="control-label">Demandeur</label>
 							<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory has-check has-name-completion input-lg" placeholder="Nom">

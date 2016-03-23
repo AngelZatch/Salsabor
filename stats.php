@@ -17,7 +17,7 @@
 						<div class="col-lg-6"></div>
 					</div>
 				</div>
-				<div class="col-sm-10 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
 				</div>
 			</div>
 		</div>
