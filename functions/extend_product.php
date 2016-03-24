@@ -6,8 +6,14 @@ $db = PDOFactory::getConnection();
 
 $product_id = $_POST["product_id"];
 $end_date = $_POST["end_date"];
-
-$activate = $db->query("UPDATE produits_adherents
+if($end_date){
+	$end_date = $_POST["end_date"];
+	$activate = $db->query("UPDATE produits_adherents
 						SET date_prolongee = '$end_date'
 						WHERE id_produit_adherent = '$product_id'");
+} else {
+	$activate = $db->query("UPDATE produits_adherents
+						SET date_prolongee = null
+						WHERE id_produit_adherent = '$product_id'");
+}
 ?>

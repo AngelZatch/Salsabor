@@ -165,8 +165,8 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 						<ul class="list-group">
 							<?php
 							$queryUnidentified = $db->query("SELECT * FROM passages p
-							JOIN users u ON passage_eleve = u.user_rfid
-							WHERE status > 2
+							LEFT JOIN users u ON passage_eleve = u.user_rfid
+							WHERE status = 0 OR status = 3
 							ORDER BY passage_date DESC");
 							while($unidentified = $queryUnidentified->fetch(PDO::FETCH_ASSOC)){ ?>
 							<li class="list-group-item" id="passage-<?php echo $unidentified["passage_id"];?>">
