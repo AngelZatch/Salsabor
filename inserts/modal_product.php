@@ -26,15 +26,7 @@
 						<div class="modal-actions"></div>
 					</div>
 				</div>
-				<div class="col-lg-7 sub-modal">
-					<div class="sub-modal-header">
-						<button type="button" class="close sub-modal-close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<p class="sub-modal-title"></p>
-					</div>
-					<div class="sub-modal-body container-fluid">
-					</div>
-					<div class="sub-modal-footer"></div>
-				</div>
+				<?php include "sub_modal_product.php";?>
 			</div>
 		</div>
 	</div>

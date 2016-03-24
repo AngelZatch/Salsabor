@@ -7,7 +7,6 @@
 				<li class="main-option-container"><a href="inscription" class="main-option"><span class="glyphicon glyphicon-user"></span> Inscription</a></li>
 				<li class="main-option-container"><a href="vente" class="main-option"><span class="glyphicon glyphicon-th"></span> Vente</a></li>
 				<li class="main-option-container"><a href="reservation" class="main-option"><span class="glyphicon glyphicon-record"></span> Réservation</a></li>
-				<li class="main-option-container"><a href="invitation" class="main-option"><span class="glyphicon glyphicon-heart-empty"></span> Invitation</a></li>
 			</ul>
 
 			<li><a class="main-section"><span class="glyphicon glyphicon-transfer"></span> Emploi du temps</a></li>
