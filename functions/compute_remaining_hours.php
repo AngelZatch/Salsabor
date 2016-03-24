@@ -15,7 +15,7 @@ Yes. This code does everything to ensure the information can be tracked and stay
 
 $product_id = $_POST["product_id"];
 
-$product_details = $db->query("SELECT volume_horaire, est_illimite, est_abonnement, pa.date_activation AS produit_adherent_activation, validite_initiale, pa.actif AS produit_adherent_actif, date_achat, date_expiration,
+$product_details = $db->query("SELECT volume_horaire, est_illimite, est_abonnement, pa.date_activation AS produit_adherent_activation, validite_initiale, pa.actif AS produit_adherent_actif, date_achat, date_expiration, date_prolongee,
 						IF(date_prolongee IS NOT NULL, date_prolongee,
 							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
 							) AS produit_validity FROM produits_adherents pa
@@ -34,6 +34,7 @@ if($product_details["est_illimite"] == 1){
 $v = array();
 $computeEnd = false;
 $status = $product_details["produit_adherent_actif"];
+$date_activation = $product_details["produit_adherent_activation"];
 
 if($product_details["est_abonnement"] == '0'){
 	$sessions_list = $db->query("SELECT cours_unite, cours_start, cours_end FROM cours_participants cp
@@ -61,7 +62,11 @@ if($product_details["est_abonnement"] == '0'){
 			if($remaining_hours == 0 && $product_details["produit_adherent_activation"] == null && $product_details["produit_validity"] == null || $product_details["produit_validity"] == "0000-00-00 00:00:00"){
 				$status = '0';
 			} else if($date_fin_utilisation < date("Y-m-d")){
-				$status = '2';
+				if($product_details["date_prolongee"] != null && $product_details["date_prolongee"] > date("Y-m-d")){
+					$status = '1';
+				} else {
+					$status = '2';
+				}
 			} else {
 				$status = '1';
 			}
@@ -87,7 +92,11 @@ if($product_details["est_abonnement"] == '0'){
 		if($computeEnd){ // If the expiration date has to be computed.
 			$date_fin_utilisation = date_create(computeExpirationDate($db, $date_activation, $product_details["validite_initiale"]))->format("Y-m-d H:i:s");
 			if($date_fin_utilisation < date("Y-m-d")){ // If the computed expiration date is anterior to today, then the product should be expired.
-				$status = '2';
+				if($product_details["date_prolongee"] != null && $product_details["date_prolongee"] > date("Y-m-d")){
+					$status = '1';
+				} else {
+					$status = '2';
+				}
 			} else {
 				$status = '1';
 			}
@@ -108,8 +117,14 @@ if($product_details["est_abonnement"] == '0'){
 	$v["hours"] = 0;
 }
 
-$v["expiration"] = $date_fin_utilisation;
+$v["activation"] = $date_activation;
+if($product_details["date_prolongee"] != null && $product_details["date_prolongee"] != "0000-00-00 00:00:00"){
+	$v["expiration"] = $product_details["date_prolongee"];
+} else {
+	$v["expiration"] = $date_fin_utilisation;
+}
 $v["status"] = $status;
 $v["limit"] = $product_details["est_illimite"];
+$v["compute"] = $computeEnd;
 echo json_encode($v);
 ?>
