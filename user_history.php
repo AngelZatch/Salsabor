@@ -26,6 +26,8 @@ $queryHistoryRecus->execute();
 		<title>Cours suivis par <?php echo $details["user_prenom"]." ".$details["user_nom"];?> | Salsabor</title>
 		<base href="../../">
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/products.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -61,6 +63,7 @@ $queryHistoryRecus->execute();
 								<div class="col-lg-8">
 									<?php if($history["produit_adherent_id"] == null){ ?>
 									<p class="col-lg-12 session-title">Pas de produit associé</p>
+									<p class="col-lg-12 session-hours">Cliquer pour chercher un produit à associer</p>
 									<?php } else {
 		$achat = date_create($history["date_achat"])->format("d/m/Y");
 		$activation_date = date_create($history["produit_adherent_activation"])->format("d/m/Y");
@@ -71,13 +74,12 @@ $queryHistoryRecus->execute();
 									<?php } ?>
 								</div>
 							</li>
-
 							<?php } ?>
 						</ul>
 					</div>
 				</div>
 			</div>
 		</div>
-		<?php include "scripts.php";?>
+		<?php include "inserts/sub_modal_product.php";?>
 	</body>
 </html>

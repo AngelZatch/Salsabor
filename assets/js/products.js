@@ -135,6 +135,11 @@ $(document).ready(function(){
 		inline: true,
 		locale: "fr"
 	})
+	var re = /historique/i;
+	if(re.exec(top.location.pathname) != null){
+		console.log("Historique");
+		$(".sub-modal").css({left: 74+'%'});
+	}
 	$(".sub-modal").show(0);
 }).on('click', '.activate-product', function(){
 	var date = moment($(".datepicker").val(),"DD/MM/YYYY").format("YYYY-MM-DD");
@@ -174,7 +179,7 @@ $(document).ready(function(){
 	deleteParticipation(participation_id);
 }).on('click', '.unlink-session', function(){
 	var session_target = document.getElementById($(this).attr("id")).dataset.session;
-	unlinkSession(session_target);
+	unlinkParticipation(session_target);
 })
 
 /** Fetch the purchase : products and maturities of the purchase **/
@@ -364,6 +369,31 @@ function displayEligibleProducts(data){
 	return body;
 }
 
+function fetchSingleParticipation(participation_id){
+	return $.get("functions/fetch_single_participation.php", {participation_id : participation_id});
+}
+function displaySingleParticipation(participation_details){
+	var participation_details = JSON.parse(participation_details);
+	$("#participation-"+participation_details.id).removeClass("participation-over");
+	$("#participation-"+participation_details.id).removeClass("participation-valid");
+	var participation = "<div class='col-lg-4'>";
+	participation += "<p class='col-lg-12 session-title'>"+participation_details.cours_name+"</p>";
+	participation += "<p class='col-lg-12 session-hours'>"+moment(participation_details.date).format("DD/MM/YYYY")+" : "+moment(participation_details.hour_start).format("HH:mm")+" -  "+moment(participation_details.hour_end).format("HH:mm")+"</p>";
+	participation += "</div>";
+	participation += "<div class='col-lg-8'>";
+	if(participation_details.product == null){
+		participation += "<p class='col-lg-12 session-title'>Pas de produit associé</p>";
+		participation += "<p class='col-lg-12 session-hours'>Cliquez pour chercher un produit à associer</p>";
+		$("#participation-"+participation_details.id).addClass("participation-over");
+	} else {
+		participation += "<p class='col-lg-12 session-title'>"+participation_details.product_name+"</p>";
+		participation += "<p class='col-lg-12 session-hours'>Acheté le "+moment(participation_details.achat).format("DD/MM/YYYY")+" / Valide du "+moment(participation_details.product_activation).format("DD/MM/YYYY")+" au "+moment(participation_details.product_validity).format("DD/MM/YYYY")+"</p>";
+		$("#participation-"+participation_details.id).addClass("participation-valid");
+	}
+	participation += "</div>";
+	$("#participation-"+participation_details.id).html(participation);
+}
+
 /** Compute the remaining hours of a product **/
 function computeRemainingHours(product_id, refresh){
 	$.post("functions/compute_remaining_hours.php", {product_id : product_id}).done(function(value){
@@ -499,18 +529,15 @@ function extendProduct(product_id, end_date){
 function reportSession(product_id, participation_id){
 	$.post("functions/set_product_session.php", {record_id : participation_id, product_id : product_id}).done(function(old_product){
 		$(".sub-modal").hide();
-		/** Once a session has been assigned to another product, various things have to happen
-		- Compute the remaning hours of the previous product : OK
-		- Compute the remaining hours of the target product : OK
-			-> Activate it if necessary
-		- Remove the moved session out of the previous product : OK
-		- Close the submodal : OK
-		**/
-		$("#participation-"+participation_id).remove();
-		if(old_product != null){
+		var re = /historique/i;
+		if(re.exec(top.location.pathname) != null || old_product == null){
+			computeRemainingHours(product_id, false);
+			$.when(fetchSingleParticipation(participation_id)).done(function(participation){
+				displaySingleParticipation(participation);
+			});
+		} else {
 			computeRemainingHours(old_product, true);
 		}
-		computeRemainingHours(product_id, false);
 		if(top.location.pathname === '/Salsabor/regularisation/participations'){
 			$("#participation-"+participation_id).remove();
 			$(".irregulars-target-container").empty();
@@ -530,10 +557,18 @@ function deleteParticipation(participation_id){
 	})
 }
 
-function unlinkSession(record_id){
+function unlinkParticipation(participation_id){
 	// This function is used when a session has to be delinked from its product.
-	$.post("functions/unlink_session.php", {record_id : record_id}).done(function(old_product){
+	$.post("functions/unlink_participation.php", {participation_id : participation_id}).done(function(old_product){
 		$(".sub-modal").hide();
-		computeRemainingHours(old_product, true);
+		var re = /historique/i;
+		if(re.exec(top.location.pathname) != null){
+			computeRemainingHours(old_product, false);
+			$.when(fetchSingleParticipation(participation_id)).done(function(participation){
+				displaySingleParticipation(participation);
+			});
+		} else {
+			computeRemainingHours(old_product, true);
+		}
 	})
 }

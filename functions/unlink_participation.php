@@ -1,0 +1,12 @@
+<?php
+include "db_connect.php";
+$db = PDOFactory::getConnection();
+
+$participation_id = $_POST["participation_id"];
+
+$load = $db->query("SELECT produit_adherent_id FROM cours_participants WHERE id = '$participation_id'")->fetch(PDO::FETCH_ASSOC);
+
+$assign = $db->query("UPDATE cours_participants SET produit_adherent_id = NULL WHERE id='$participation_id'");
+
+echo $load["produit_adherent_id"];
+?>
