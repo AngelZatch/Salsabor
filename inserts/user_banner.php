@@ -1,6 +1,6 @@
 <div class="user-banner">
 	<div class="user-pp">
-		<img src="<?php echo ($details["photo"])?"assets/pictures/".$details["photo"]:"assets/images/logotype-white.png";?>" alt="" class="profile-picture">
+		<img src="<?php echo $details["photo"];?>" alt="" class="profile-picture">
 	</div>
 	<p class="legend"><?php echo $details["user_prenom"]." ".$details["user_nom"];?></p>
 	<div class="user-summary">
