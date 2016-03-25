@@ -55,6 +55,15 @@ legend
 	a, input, button
 		float: right
 
+.sub-legend
+	@extend legend
+	font-size: 19px
+
+a
+	text-decoration: none
+	&:hover, &:focus, &:active
+		color: $salsabor-red
+
 /** SIDE MENU **/
 .sidebar-container
 	position: relative
@@ -409,6 +418,11 @@ h2.modal-body-title.first
 		background-color: darken(white, 10%)
 	&:active
 		background-color: darken(white, 20%)
+	&.focused
+		font-weight: 700
+		background-color: darken(white, 5%)
+		&:hover
+			background-color: darken(white, 10%)
 	p
 		margin-bottom: 0
 
