@@ -539,6 +539,9 @@ function reportSession(product_id, participation_id){
 			computeRemainingHours(old_product, true);
 		}
 		if(top.location.pathname === '/Salsabor/regularisation/participations'){
+			if($("#participation-"+participation_id).next().is("p") && $("#participation-"+participation_id).prev().is("p")){
+				$("#participation-"+participation_id).prev().remove();
+			}
 			$("#participation-"+participation_id).remove();
 			$(".irregulars-target-container").empty();
 		}
