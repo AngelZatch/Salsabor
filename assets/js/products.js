@@ -531,7 +531,6 @@ function reportSession(product_id, participation_id){
 		$(".sub-modal").hide();
 		var re = /historique/i;
 		if(re.exec(top.location.pathname) != null || old_product == null){
-			computeRemainingHours(product_id, false);
 			$.when(fetchSingleParticipation(participation_id)).done(function(participation){
 				displaySingleParticipation(participation);
 			});
@@ -539,12 +538,13 @@ function reportSession(product_id, participation_id){
 			computeRemainingHours(old_product, true);
 		}
 		if(top.location.pathname === '/Salsabor/regularisation/participations'){
-			if($("#participation-"+participation_id).next().is("p") && $("#participation-"+participation_id).prev().is("p")){
+			if($("#participation-"+participation_id).next().is("a") && $("#participation-"+participation_id).prev().is("a")){
 				$("#participation-"+participation_id).prev().remove();
 			}
 			$("#participation-"+participation_id).remove();
 			$(".irregulars-target-container").empty();
 		}
+		computeRemainingHours(product_id, false);
 	})
 }
 

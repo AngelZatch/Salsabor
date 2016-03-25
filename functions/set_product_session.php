@@ -10,5 +10,9 @@ $load = $db->query("SELECT produit_adherent_id FROM cours_participants WHERE id 
 $assign = $db->query("UPDATE cours_participants SET
 produit_adherent_id='$product_id' WHERE id='$record_id'");
 
-echo $load["produit_adherent_id"];
+if($load["produit_adherent_id"] == null){
+	echo $product_id;
+} else {
+	echo $load["produit_adherent_id"];
+}
 ?>
