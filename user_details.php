@@ -39,8 +39,8 @@ if(isset($_POST["edit"])){
 	if($_FILES["profile-picture"]["name"]){
 		$target_dir = "assets/pictures/";
 		$target_file = $target_dir.basename($_FILES["profile-picture"]["name"]);
-		$picture = $data.".".pathinfo($_FILES["profile-picture"]["name"], PATHINFO_EXTENSION);
-		move_uploaded_file($_FILES["profile-picture"]["tmp_name"], $target_dir.$picture);
+		$picture = $target_dir.$data.".".pathinfo($_FILES["profile-picture"]["name"], PATHINFO_EXTENSION);
+		move_uploaded_file($_FILES["profile-picture"]["tmp_name"], $picture);
 		try{
 			$db->beginTransaction();
 			$edit = $db->prepare('UPDATE users
@@ -264,7 +264,7 @@ if(isset($_POST["edit"])){
 				elErrorContainers: '#kv-avatar-errors',
 				elPreviewContainer: '#avatar-container',
 				msgErrorClass: 'alert alert-block alert-danger',
-				defaultPreviewContent: '<img src="assets/pictures/<?php echo $details["photo"];?>" style="width:118px;">',
+				defaultPreviewContent: '<img src="<?php echo $details["photo"];?>" style="width:118px;">',
 				layoutTemplates: {main2: '{preview} {browse}' },
 			});
 			var listening = false;

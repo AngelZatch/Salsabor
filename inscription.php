@@ -21,8 +21,8 @@ if(isset($_POST['addAdherent'])){
 	if($_FILES["profile-picture"]["name"]){
 		$target_dir = "assets/pictures/";
 		$target_file = $target_dir.basename($_FILES["profile-picture"]["name"]);
-		$picture = $data.".".pathinfo($_FILES["profile-picture"]["name"], PATHINFO_EXTENSION);
-		move_uploaded_file($_FILES["profile-picture"]["tmp_name"], $target_dir.$picture);
+		$picture = $target_dir.$data.".".pathinfo($_FILES["profile-picture"]["name"], PATHINFO_EXTENSION);
+		move_uploaded_file($_FILES["profile-picture"]["tmp_name"], $picture);
 		try{
 			$db->beginTransaction();
 			$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
@@ -129,8 +129,8 @@ if(isset($_POST['addSell'])){
 	if($_FILES["profile-picture"]["name"]){
 		$target_dir = "assets/pictures/";
 		$target_file = $target_dir.basename($_FILES["profile-picture"]["name"]);
-		$picture = $data.".".pathinfo($_FILES["profile-picture"]["name"], PATHINFO_EXTENSION);
-		move_uploaded_file($_FILES["profile-picture"]["tmp_name"], $target_dir.$picture);
+		$picture = $target_dir.$data.".".pathinfo($_FILES["profile-picture"]["name"], PATHINFO_EXTENSION);
+		move_uploaded_file($_FILES["profile-picture"]["tmp_name"], $picture);
 		try{
 			$db->beginTransaction();
 			$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
