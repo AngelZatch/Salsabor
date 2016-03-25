@@ -10,7 +10,7 @@ $load = $db->query("SELECT *, pa.actif AS produit_adherent_actif, pa.date_activa
 						) AS produit_validity
 					FROM produits_adherents pa
 					JOIN produits p ON pa.id_produit_foreign = p.produit_id
-					JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
+					LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 					JOIN users u ON pa.id_user_foreign = u.user_id
 						WHERE id_produit_adherent = '$product_id'");
 
