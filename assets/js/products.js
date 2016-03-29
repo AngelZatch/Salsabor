@@ -46,6 +46,7 @@ $(document).ready(function(){
 
 				// Computing hours button
 				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+", true)'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='unlinkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-link'></span> Délier inval.</button>";
 			} else {
 				if(product_details.status == '1'){ // If the product is active
 					var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+moment(product_details.validity).toNow(true)+"</span><br> restants</p>";
@@ -576,5 +577,12 @@ function unlinkParticipation(participation_id){
 		} else {
 			computeRemainingHours(old_product, true);
 		}
+	})
+}
+
+function unlinkAll(){
+	// This function will find all invalid participations (identified in display by .participation-over) and log their data-argument
+	var invalidMap = $(".participation-over").map(function(){
+		unlinkParticipation(this.dataset.argument);
 	})
 }
