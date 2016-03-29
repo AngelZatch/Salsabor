@@ -147,7 +147,7 @@ $(document).ready(function(){
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
 	activateProductWithDate(product_id, date);
 }).on('click', '.extend-product', function(){
-	var date = moment($(".datepicker").val(),"DD/MM/YYYY").format("YYYY-MM-DD");
+	var date = moment($(".datepicker").val(),"DD/MM/YYYY").format("YYYY-MM-DD 23:59:59");
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
 	extendProduct(product_id, date);
 }).on('click', '.remove-extension', function(){
