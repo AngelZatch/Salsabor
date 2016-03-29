@@ -552,9 +552,11 @@ function reportSession(product_id, participation_id){
 function deleteParticipation(participation_id){
 	$.post("functions/delete_participation.php", {record_id : participation_id}).done(function(old_product){
 		$(".sub-modal").hide();
-		if(top.location.pathname === '/Salsabor/regularisation/participations'){
+		var re = /historique/i;
+		if(top.location.pathname === '/Salsabor/regularisation/participations' || re.exec(top.location.pathname) != null){
 			$(".irregulars-target-container").empty();
 			$("#participation-"+participation_id).remove();
+			computeRemainingHours(old_product, false);
 		} else {
 			computeRemainingHours(old_product, true);
 		}
