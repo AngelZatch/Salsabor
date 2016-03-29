@@ -90,7 +90,7 @@ if($product_details["est_abonnement"] == '0'){
 	} else { // If the hours are still in positive.
 		$v["hours"] = 1 * $remaining_hours;
 		if($computeEnd){ // If the expiration date has to be computed.
-			$date_fin_utilisation = date_create(computeExpirationDate($db, $date_activation, $product_details["validite_initiale"]))->format("Y-m-d H:i:s");
+			$date_fin_utilisation = date_create(computeExpirationDate($db, $date_activation, $product_details["validite_initiale"]))->format("Y-m-d 23:59:59");
 			if($date_fin_utilisation < date("Y-m-d")){ // If the computed expiration date is anterior to today, then the product should be expired.
 				if($product_details["date_prolongee"] != null && $product_details["date_prolongee"] > date("Y-m-d")){
 					$status = '1';

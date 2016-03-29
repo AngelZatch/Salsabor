@@ -21,7 +21,7 @@
 						<div class="participations-list container-fluid">
 						</div>
 					</div>
-					<div class="col-lg-3">
+					<div class="col-lg-3 modal-actions-container">
 						<h2 class="modal-body-title first">Actions</h2>
 						<div class="modal-actions"></div>
 					</div>
