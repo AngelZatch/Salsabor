@@ -31,7 +31,7 @@ while($session = $sessions_list->fetch(PDO::FETCH_ASSOC)){
 	$s["end"] = $session["cours_end"];
 	$s["duration"] = $session["cours_unite"];
 
-	if(date_create($s["start"])->format("Y-m-d") > date_create($product_details["produit_validity"])->format("Y-m-d") || date_create($s["start"])->format("Y-m-d") < date_create($product_details["produit_adherent_activation"])->format("Y-m-d") || ($remaining_hours <= 0 && $product_details["est_illimite"] != "1")){
+	if(date_create($s["start"])->format("Y-m-d H:i:s") > date_create($product_details["produit_validity"])->format("Y-m-d H:i:s") || date_create($s["start"])->format("Y-m-d H:i:s") < date_create($product_details["produit_adherent_activation"])->format("Y-m-d H:i:s") || ($remaining_hours <= 0 && $product_details["est_illimite"] != "1")){
 		$s["valid"] = "2"; // The session happened after the product expired or before it activated or the product didn't have any hours left.
 	} else {
 		$s["valid"] = "1";
