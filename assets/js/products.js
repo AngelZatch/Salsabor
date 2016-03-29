@@ -471,7 +471,7 @@ function activateProductWithDate(product_id, start_date){
 			$("#btn-activate-"+product_id).attr("data-argument", null);
 			$("#btn-activate-"+product_id).attr("data-subtype", null);
 		} else {
-			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Activé</span><br>le "+moment(activation).format("DD/MM/YYYY")"<br><span class='highlighted-value'>Expiré</span><br>le "+moment(expiration).format("DD/MM/YYYY"));
+			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Activé</span><br>le "+moment(activation).format("DD/MM/YYYY")+"<br><span class='highlighted-value'>Expiré</span><br>le "+moment(expiration).format("DD/MM/YYYY"));
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(expiration).format("DD/MM/YYYY"));
 			$("#purchase-item-"+product_id).removeClass("item-pending");
 			if(dates[2] < 0){
