@@ -28,7 +28,7 @@ $(document).ready(function(){
 					break;
 
 				case '2':
-					product_status += "<span class='highlighted-value'>Expiré</span><br>le "+moment(product_details.validity).format("DD/MM/YYYY");
+					product_status += "<span class='highlighted-value'>Activé</span><br>le "+moment(product_details.activation).format("DD/MM/YYYY")+"<span class='highlighted-value'>Expiré</span><br>le "+moment(product_details.validity).format("DD/MM/YYYY");
 					// Reactivation button
 					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-activate-"+product_details.id+"' data-argument='"+product_details.id+"' data-subtype='activate'><span class='glyphicon glyphicon-play-circle'></span> Réactiver</button>";
 					// Extension button
@@ -426,7 +426,7 @@ function computeRemainingHours(product_id, refresh){
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html("Heures épuisées");
 				$("#purchase-item-"+product_id).addClass("item-expired");
 			}
-			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Expiré</span><br>le "+moment(date).format("DD/MM/YYYY"));
+			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Activé</span><br>le "+moment(activation).format("DD/MM/YYYY")+"<br><span class='highlighted-value'>Expiré</span><br>le "+moment(date).format("DD/MM/YYYY"));
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(date).format("DD/MM/YYYY"));
 		} else if (status == 1){ // If the product is active
 			$("#product-validity-"+product_id).html("Valide du <span class='highlighted-value'>"+moment(activation).format("DD/MM/YYYY")+"</span><br>au<br><span class='highlighted-value'>"+moment(date).format("DD/MM/YYYY")+"</span>");
@@ -457,10 +457,11 @@ function computeRemainingHours(product_id, refresh){
 function activateProductWithDate(product_id, start_date){
 	$.post("functions/activate_product.php", {product_id : product_id, start_date : start_date}).done(function(data){
 		var dates = JSON.parse(data);
+		var activation = dates[0], expiration = dates[1];
 		/*console.log(dates);*/
 		if(moment(dates[1]).format("YYYY-MM-DD") > moment().format("YYYY-MM-DD")){
-			$("#product-validity-"+product_id).html("Valide du <br><span class='highlighted-value'> "+moment(dates[0]).format("DD/MM/YYYY")+"</span><br>au<br><span class='highlighted-value'>"+moment(dates[1]).format("DD/MM/YYYY")+"</span>");
-			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Valide du <span>"+moment(dates[0]).format("DD/MM/YYYY")+"</span> au <span>"+moment(dates[1]).format("DD/MM/YYYY")+"</span>");
+			$("#product-validity-"+product_id).html("Valide du <br><span class='highlighted-value'> "+moment(activation).format("DD/MM/YYYY")+"</span><br>au<br><span class='highlighted-value'>"+moment(expiration).format("DD/MM/YYYY")+"</span>");
+			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Valide du <span>"+moment(activation).format("DD/MM/YYYY")+"</span> au <span>"+moment(expiration).format("DD/MM/YYYY")+"</span>");
 			$("#purchase-item-"+product_id).removeClass("item-pending");
 			$("#purchase-item-"+product_id).removeClass("item-expired");
 			$("#purchase-item-"+product_id).addClass("item-active");
@@ -470,8 +471,8 @@ function activateProductWithDate(product_id, start_date){
 			$("#btn-activate-"+product_id).attr("data-argument", null);
 			$("#btn-activate-"+product_id).attr("data-subtype", null);
 		} else {
-			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Expiré</span><br>le "+moment(dates[1]).format("DD/MM/YYYY"));
-			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(dates[1]).format("DD/MM/YYYY"));
+			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Activé</span><br>le "+moment(activation).format("DD/MM/YYYY")"<br><span class='highlighted-value'>Expiré</span><br>le "+moment(expiration).format("DD/MM/YYYY"));
+			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(expiration).format("DD/MM/YYYY"));
 			$("#purchase-item-"+product_id).removeClass("item-pending");
 			if(dates[2] < 0){
 				$("#purchase-item-"+product_id).addClass("item-overused");
