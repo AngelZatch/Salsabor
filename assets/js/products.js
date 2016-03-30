@@ -41,6 +41,7 @@ $(document).ready(function(){
 				// Computing hours button
 				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+", true)'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
 				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='unlinkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-link'></span> Délier inval.</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.</button>";
 			} else {
 				if(product_details.status == '1'){ // If the product is active
 					var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+moment(product_details.validity).toNow(true)+"</span><br> restants</p>";
@@ -527,7 +528,8 @@ function extendProduct(product_id, end_date){
 }
 
 function reportSession(product_id, participation_id){
-	$.post("functions/set_product_session.php", {record_id : participation_id, product_id : product_id}).done(function(old_product){
+	$.post("functions/set_product_session.php", {participation_id : participation_id, product_id : product_id}).done(function(old_product){
+		console.log(old_product);
 		$(".sub-modal").hide();
 		var re = /historique/i;
 		if(re.exec(top.location.pathname) != null || old_product == null){
@@ -582,5 +584,12 @@ function unlinkAll(){
 	// This function will find all invalid participations (identified in display by .participation-over) and log their data-argument
 	var invalidMap = $(".participation-over").map(function(){
 		unlinkParticipation(this.dataset.argument);
-	})
-	}
+	});
+}
+
+function linkAll(){
+	// This function will try to find the correct product for every invalid participation.
+	var invalidMap = $(".participation-over").map(function(){
+		reportSession(this.dataset.argument, null);
+	});
+}
