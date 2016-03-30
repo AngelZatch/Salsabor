@@ -41,7 +41,7 @@ $(document).ready(function(){
 				// Computing hours button
 				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+", true)'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
 				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='unlinkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-link'></span> Délier inval.</button>";
-				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.</button>";
 			} else {
 				if(product_details.status == '1'){ // If the product is active
 					var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+moment(product_details.validity).toNow(true)+"</span><br> restants</p>";
@@ -392,6 +392,7 @@ function displaySingleParticipation(participation_details){
 
 /** Compute the remaining hours of a product **/
 function computeRemainingHours(product_id, refresh){
+	console.log("Computing product "+product_id);
 	$.post("functions/compute_remaining_hours.php", {product_id : product_id}).done(function(value){
 		/** Things to do here:
 			This function checks everything and sets everything if needed. It computes the remaining hours of a product, its status, it activates or deactivates if necessary and computes the activation and expiration dates as well. Once it's done, it'll call the function to refresh the list of sessions so they stay up-to-date as well.
@@ -411,20 +412,22 @@ function computeRemainingHours(product_id, refresh){
 				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ -1 * hours + " heures</span> de consommation excessive");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(-1 * hours + " heures en excès");
 				$("#purchase-item-"+product_id).addClass("item-overused");
+				$(".usage-slot-date").text(usage);
 			} else if(hours > 0){ // If the product still has remaining hours
 				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
 				if(limit != '1'){
 					$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
 				}
+				$(".usage-slot-date").text("-");
 				$("#purchase-item-"+product_id).addClass("item-expired");
 			} else { // If the product has no more hours.
 				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html("Heures épuisées");
 				$("#purchase-item-"+product_id).addClass("item-expired");
+				$(".usage-slot-date").text(usage);
 			}
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+date);
 			$(".activation-slot-date").text(activation);
-			$(".usage-slot-date").text(usage);
 			$(".expiration-slot-date").text(date);
 		} else if (status == 1){ // If the product is active
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Valide du "+activation+" au "+date);
@@ -446,11 +449,15 @@ function computeRemainingHours(product_id, refresh){
 			$("#purchase-item-"+product_id).addClass("item-pending");
 		}
 		if(refresh){
-			$.when(fetchProduct(product_id), fetchSessions(product_id)).done(function(product, sessions){
-				console.log(product_id);
-				fillSessions(sessions);
-			})
+			console.log("Refreshing participations");
+			(function(){
+				$.when(fetchProduct(product_id), fetchSessions(product_id)).done(function(product, sessions){
+					fillSessions(sessions);
+					console.log("Partcipations refreshed");
+				});
+			})();
 		}
+		console.log("Computing done.");
 	})
 }
 
@@ -527,27 +534,38 @@ function extendProduct(product_id, end_date){
 	})
 }
 
-function reportSession(product_id, participation_id){
-	$.post("functions/set_product_session.php", {participation_id : participation_id, product_id : product_id}).done(function(old_product){
-		console.log(old_product);
-		$(".sub-modal").hide();
-		var re = /historique/i;
-		if(re.exec(top.location.pathname) != null || old_product == null){
-			$.when(fetchSingleParticipation(participation_id)).done(function(participation){
-				displaySingleParticipation(participation);
-			});
-		} else {
-			computeRemainingHours(old_product, true);
-		}
-		if(top.location.pathname === '/Salsabor/regularisation/participations'){
-			if($("#participation-"+participation_id).next().is("a") && $("#participation-"+participation_id).prev().is("a")){
-				$("#participation-"+participation_id).prev().remove();
+function reportSession(target_product_id, participation_id){
+	if(target_product_id == null){
+		console.log("No product has been indicated for participation "+participation_id+". Finding product...");
+		$.post("functions/set_product_session.php", {participation_id : participation_id, product_id : target_product_id}).done(function(data){
+			var products = JSON.parse(data);
+			console.log("A target product has been found: "+products.new_product);
+			computeRemainingHours(products.new_product, false);
+			computeRemainingHours(products.old_product, true);
+		});
+	} else {
+		console.log("Reporting participation "+participation_id);
+		console.log("Product "+target_product_id+" has been indicated as target");
+		$.post("functions/set_product_session.php", {participation_id : participation_id, product_id : target_product_id}).done(function(old_product){
+			$(".sub-modal").hide();
+			var re = /historique/i;
+			if(re.exec(top.location.pathname) != null || old_product == null){
+				$.when(fetchSingleParticipation(participation_id)).done(function(participation){
+					displaySingleParticipation(participation);
+				});
+			} else {
+				computeRemainingHours(old_product, true);
 			}
-			$("#participation-"+participation_id).remove();
-			$(".irregulars-target-container").empty();
-		}
-		computeRemainingHours(product_id, false);
-	})
+			if(top.location.pathname === '/Salsabor/regularisation/participations'){
+				if($("#participation-"+participation_id).next().is("a") && $("#participation-"+participation_id).prev().is("a")){
+					$("#participation-"+participation_id).prev().remove();
+				}
+				$("#participation-"+participation_id).remove();
+				$(".irregulars-target-container").empty();
+			}
+			computeRemainingHours(target_product_id, false);
+		})
+	}
 }
 
 function deleteParticipation(participation_id){
@@ -589,7 +607,26 @@ function unlinkAll(){
 
 function linkAll(){
 	// This function will try to find the correct product for every invalid participation.
-	var invalidMap = $(".participation-over").map(function(){
-		reportSession(this.dataset.argument, null);
-	});
+	if(top.location.pathname == "/Salsabor/regularisation/participations"){
+		var invalidMap = $(".irregular-participation").map(function(){
+			return this.dataset.argument;
+		}).get();
+	} else {
+		var invalidMap = $(".participation-over").map(function(){
+			return this.dataset.argument;
+		}).get();
+	}
+	$("#link-all").text("En cours...");
+	link(invalidMap, 0);
+}
+
+function link(map, index){
+	if(map.length > index){
+		setTimeout(function(){
+			reportSession(null, map[index]);
+			link(map, ++index);
+		}, 700);
+	} else {
+		$("#link-all").html("<span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.");
+	}
 }
