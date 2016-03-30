@@ -10,17 +10,14 @@ $(document).ready(function(){
 			modal.find(".modal-title").text(product_details.product+" (ID : "+product_details.id+")");
 			modal.find(".purchase-sub").text("Transaction "+product_details.transaction+" du "+moment(product_details.transaction_date).format("DD/MM/YYYY")+"; utilisé par "+product_details.user);
 
-			var product_status = "<p id='product-validity-"+product_details.id+"'>";
 			switch(product_details.status){
 				case '0':
-					product_status += "<span class='highlighted-value'>En attente</span>";
 					/*buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-activate-"+product_details.id+"' onclick='activateProduct("+product_details.id+")'><span class='glyphicon glyphicon-play-circle'></span> Activer</button>";*/
 					// Activation button
 					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-activate-"+product_details.id+"' data-argument='"+product_details.id+"' data-subtype='activate'><span class='glyphicon glyphicon-play-circle'></span> Activer</button>";
 					break;
 
 				case '1':
-					product_status += "Valide du <br><span class='highlighted-value'> "+moment(product_details.activation).format("DD/MM/YYYY")+"</span><br>au<br><span class='highlighted-value'>"+moment(product_details.validity).format("DD/MM/YYYY")+"</span>";
 					// Deactivation button
 					buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-activate-"+product_details.id+"' onclick='deactivateProduct("+product_details.id+")'><span class='glyphicon glyphicon-ban-circle'></span> Désactiver</button>";
 					// Extension button
@@ -28,15 +25,12 @@ $(document).ready(function(){
 					break;
 
 				case '2':
-					product_status += "<span class='highlighted-value'>Activé</span><br>le "+moment(product_details.activation).format("DD/MM/YYYY")+"<span class='highlighted-value'>Expiré</span><br>le "+moment(product_details.validity).format("DD/MM/YYYY");
 					// Reactivation button
 					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-activate-"+product_details.id+"' data-argument='"+product_details.id+"' data-subtype='activate'><span class='glyphicon glyphicon-play-circle'></span> Réactiver</button>";
 					// Extension button
 					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-arep' data-argument='"+product_details.id+"' data-arep='"+product_details.extended+"' data-subtype='AREP'><span class='glyphicon glyphicon-calendar'></span> AREP</button>";
 					break;
 			}
-			product_status += "</p>";
-			modal.find(".product-status").html(product_status);
 			if(product_details.flag_hours == '1'){ // If the product is not an illimited, a private lesson or an annual subscription
 				if(product_details.remaining_hours < 0){
 					var product_validity = "<p id='product-status-"+product_details.id+"'><span class='highlighted-value'>"+-1 * product_details.remaining_hours+" heures</span> de consommation excessive</p>";
@@ -410,7 +404,7 @@ function computeRemainingHours(product_id, refresh){
 		$("#purchase-item-"+product_id).removeClass("item-consumed");
 		var values = JSON.parse(value);
 		console.log(values);
-		var date = values.expiration, activation = values.activation, hours = values.hours, status = values.status, limit = values.limit;
+		var date = moment(values.expiration).format("DD/MM/YYYY"), activation = moment(values.activation).format("DD/MM/YYYY"), usage = moment(values.usage).format("DD/MM/YYYY"), hours = values.hours, status = values.status, limit = values.limit;
 		if(status == 2){ // If the product is expired
 			if(hours < 0){ // If the product is overused
 				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ -1 * hours + " heures</span> de consommation excessive");
@@ -427,16 +421,20 @@ function computeRemainingHours(product_id, refresh){
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html("Heures épuisées");
 				$("#purchase-item-"+product_id).addClass("item-expired");
 			}
-			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Activé</span><br>le "+moment(activation).format("DD/MM/YYYY")+"<br><span class='highlighted-value'>Expiré</span><br>le "+moment(date).format("DD/MM/YYYY"));
-			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(date).format("DD/MM/YYYY"));
+			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+date);
+			$(".activation-slot-date").text(activation);
+			$(".usage-slot-date").text(usage);
+			$(".expiration-slot-date").text(date);
 		} else if (status == 1){ // If the product is active
-			$("#product-validity-"+product_id).html("Valide du <span class='highlighted-value'>"+moment(activation).format("DD/MM/YYYY")+"</span><br>au<br><span class='highlighted-value'>"+moment(date).format("DD/MM/YYYY")+"</span>");
-			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Valide du "+moment(activation).format("DD/MM/YYYY")+" au "+moment(date).format("DD/MM/YYYY"));
+			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Valide du "+activation+" au "+date);
 			$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
 			if(limit != '1'){
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
 			}
 			$("#purchase-item-"+product_id).addClass("item-active");
+			$(".activation-slot-date").text(activation);
+			$(".expiration-slot-date").text(date);
+			$(".usage-slot-date").text("-");
 		} else { // If the product is pending
 			$("#product-status-"+product_id).html("<span class='highlighted-value'>En attente</span>");
 			if(limit != '1'){
@@ -585,4 +583,4 @@ function unlinkAll(){
 	var invalidMap = $(".participation-over").map(function(){
 		unlinkParticipation(this.dataset.argument);
 	})
-}
+	}

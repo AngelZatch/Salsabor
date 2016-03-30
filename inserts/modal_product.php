@@ -12,7 +12,11 @@
 						<h2 class="modal-body-title first">Statut</h2>
 						<div class="container-fluid">
 							<div class="col-lg-6">
-								<div class="product-status-container product-status"></div>
+								<div class="product-status-container product-status">
+									<p class="activation-slot" title="Date d'activation"><span class="glyphicon glyphicon-play-circle"></span><span class="activation-slot-date"> - </span></p>
+									<p class="expiration-slot" title="Date d'expiration"><span class="glyphicon glyphicon-time"></span><span class="expiration-slot-date"> - </span></p>
+									<p class="full-consommation-slot" title="Date de fin de consommation"><span class="glyphicon glyphicon-scale"></span><span class="usage-slot-date"> - </span></p>
+								</div>
 							</div>
 							<div class="col-lg-6">
 								<div class="product-status-container product-validity"></div>

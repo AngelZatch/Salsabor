@@ -121,8 +121,9 @@ $v["activation"] = $date_activation;
 if($product_details["date_prolongee"] != null && $product_details["date_prolongee"] != "0000-00-00 00:00:00"){
 	$v["expiration"] = $product_details["date_prolongee"];
 } else {
-	$v["expiration"] = $date_fin_utilisation;
+	$v["expiration"] = $product_details["date_expiration"];
 }
+$v["usage"] = $date_fin_utilisation;
 $v["status"] = $status;
 $v["limit"] = $product_details["est_illimite"];
 $v["compute"] = $computeEnd;
