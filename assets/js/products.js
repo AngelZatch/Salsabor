@@ -37,17 +37,16 @@ $(document).ready(function(){
 				} else {
 					var product_validity = "<p id='product-status-"+product_details.id+"'><span class='highlighted-value'>"+product_details.remaining_hours+" heures</span><br>restantes</p>";
 				}
-
-				// Computing hours button
-				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+", true)'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
-				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='unlinkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-link'></span> Délier inval.</button>";
-				buttons += "<button class='btn btn-default btn-block btn-modal' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.</button>";
 			} else {
 				if(product_details.status == '1'){ // If the product is active
 					var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+moment(product_details.validity).toNow(true)+"</span><br> restants</p>";
 				}
 			}
 			if(product_details.subscription == 0){ // If the product is NOT an annual subscription
+				// Computing hours button
+				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+", true)'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='unlinkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-link'></span> Délier inval.</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.</button>";
 				// Handling the sessions
 				computeRemainingHours(argument, true);
 			} else {
@@ -545,11 +544,11 @@ function reportSession(target_product_id, participation_id){
 		var products = JSON.parse(data), old_product = products.old_product, new_product = products.new_product;
 		if(new_product != null){
 			console.log("A target product has been found: "+products.new_product);
+			computeRemainingHours(new_product, false);
 		} else {
 			console.log("No product has been found");
 		}
 		$(".sub-modal").hide();
-		if(new_product != null) computeRemainingHours(new_product, false);
 		var re = /historique/i;
 		if(re.exec(top.location.pathname) != null){
 			if(new_product != null){
@@ -557,6 +556,7 @@ function reportSession(target_product_id, participation_id){
 					displaySingleParticipation(participation);
 				});
 			}
+			if(old_product != null) computeRemainingHours(old_product, false);
 		} else {
 			if(old_product != null) computeRemainingHours(old_product, true);
 		}
@@ -566,8 +566,8 @@ function reportSession(target_product_id, participation_id){
 			}
 			$("#participation-"+participation_id).remove();
 			$(".irregulars-target-container").empty();
+			if(old_product != null) computeRemainingHours(old_product, true);
 		}
-		if(old_product != null) computeRemainingHours(old_product, true);
 	})
 }
 

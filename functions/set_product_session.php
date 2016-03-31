@@ -23,7 +23,7 @@ if($_POST["product_id"] != null){
 	$user_id = $load["eleve_id_foreign"];
 	$old_product = $load["produit_adherent_id"];
 
-	if(preg_match("/jazz/i", $cours_name, $matches) || preg_match("/pilates/i", $cours_name, $matches) || preg_match("/particulier/i", $cours_name, $matches) || preg_match("/stage/i", $cours_name, $matches)){ // Search for specific Jazz, Pilates or private sessions
+	if(preg_match("/jazz/i", $cours_name, $matches) || preg_match("/pilates/i", $cours_name, $matches) || preg_match("/particulier/i", $cours_name, $matches)){ // Search for specific Jazz, Pilates or private sessions
 		/*echo $matches[0];*/
 		$checkSpecific = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
 									JOIN produits p ON pa.id_produit_foreign = p.produit_id
@@ -52,6 +52,7 @@ if($_POST["product_id"] != null){
 									WHERE id_user_foreign='$user_id'
 									AND produit_nom != 'Invitation'
 									AND (volume_cours > 0 OR (volume_cours <= 0 AND est_illimite = '1'))
+									AND (date_expiration >= '$load[cours_start]' OR date_prolongee >= '$load[cours_start]')
 									AND pa.actif = '1'
 									AND est_abonnement = '0'
 									AND est_cours_particulier = '0'
@@ -64,8 +65,8 @@ if($_POST["product_id"] != null){
 									JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
 									AND produit_nom != 'Invitation'
-									AND (volume_cours > 0 OR
-										(volume_cours <= 0 AND est_illimite = '1' AND date_expiration >= '$load[cours_start]' OR date_prolongee >= '$load[cours_start]'))
+									AND (volume_cours > 0 OR (volume_cours <= 0 AND est_illimite = '1'))
+									AND (date_expiration >= '$load[cours_start]' OR date_prolongee >= '$load[cours_start]')
 									AND pa.actif = '2'
 									AND est_abonnement = '0'
 									AND est_cours_particulier = '0'
