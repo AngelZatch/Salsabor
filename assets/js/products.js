@@ -447,6 +447,9 @@ function computeRemainingHours(product_id, refresh){
 			$("#product-validity-"+product_id).html("<span class='highlighted-value'>En attente</span>");
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("En attente");
 			$("#purchase-item-"+product_id).addClass("item-pending");
+			$(".activation-slot-date").text("-");
+			$(".expiration-slot-date").text("-");
+			$(".usage-slot-date").text("-");
 		}
 		if(refresh){
 			console.log("Refreshing participations");
@@ -546,6 +549,7 @@ function reportSession(target_product_id, participation_id){
 			console.log("No product has been found");
 		}
 		$(".sub-modal").hide();
+		if(new_product != null) computeRemainingHours(new_product, false);
 		var re = /historique/i;
 		if(re.exec(top.location.pathname) != null){
 			if(new_product != null){
@@ -563,7 +567,7 @@ function reportSession(target_product_id, participation_id){
 			$("#participation-"+participation_id).remove();
 			$(".irregulars-target-container").empty();
 		}
-		if(new_product != null) computeRemainingHours(new_product, false);
+		if(old_product != null) computeRemainingHours(old_product, true);
 	})
 }
 

@@ -16,7 +16,7 @@ if($_POST["product_id"] != null){
 	- BUG : all participations are affected to the same product.
 	- It messes with the dates heavily.
 	**/
-	$load = $db->query("SELECT cours_intitule, eleve_id_foreign, produit_adherent_id FROM cours_participants cp
+	$load = $db->query("SELECT cours_intitule, eleve_id_foreign, produit_adherent_id, cours_start FROM cours_participants cp
 						JOIN cours c ON cp.cours_id_foreign = c.cours_id
 						WHERE id = '$participation_id'")->fetch(PDO::FETCH_ASSOC);
 	$cours_name = $load["cours_intitule"];
@@ -51,38 +51,40 @@ if($_POST["product_id"] != null){
 									JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
 									AND produit_nom != 'Invitation'
-									AND (volume_cours > 0 OR (volume_cours < 0 AND est_illimite = '1'))
+									AND (volume_cours > 0 OR (volume_cours <= 0 AND est_illimite = '1'))
 									AND pa.actif = '1'
 									AND est_abonnement = '0'
 									AND est_cours_particulier = '0'
 									ORDER BY date_achat ASC");
 			if($checkActive->rowCount() > 0){ // If there are active products that are not an annual sub
 				$product = $checkActive->fetch(PDO::FETCH_ASSOC);
-			} else { // We check pending products now.
-				$checkPending = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
+			} else { // We check epxired products now.
+				$checkExpired = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
 									JOIN produits p ON pa.id_produit_foreign = p.produit_id
 									JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
 									AND produit_nom != 'Invitation'
-									AND pa.actif = '0'
-									AND est_abonnement = '0'
-									AND est_cours_particulier = '0'
-									ORDER BY date_achat ASC");
-				if($checkPending->rowCount() > 0){
-					$product = $checkPending->fetch(PDO::FETCH_ASSOC);
-				} else {
-					$checkExpired = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
-									JOIN produits p ON pa.id_produit_foreign = p.produit_id
-									JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
-									WHERE id_user_foreign='$user_id'
-									AND produit_nom != 'Invitation'
-									AND (volume_cours > 0 OR (volume_cours < 0 AND est_illimite = '1'))
+									AND (volume_cours > 0 OR
+										(volume_cours <= 0 AND est_illimite = '1' AND date_expiration >= '$load[cours_start]' OR date_prolongee >= '$load[cours_start]'))
 									AND pa.actif = '2'
 									AND est_abonnement = '0'
 									AND est_cours_particulier = '0'
 									ORDER BY date_achat ASC");
-					if($checkExpired->rowCount() > 0){
-						$product = $checkExpired->fetch(PDO::FETCH_ASSOC);
+				if($checkExpired->rowCount() > 0){
+					$product = $checkExpired->fetch(PDO::FETCH_ASSOC);
+				} else { // We check pending last
+					$checkPending = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
+									JOIN produits p ON pa.id_produit_foreign = p.produit_id
+									JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
+									WHERE id_user_foreign='$user_id'
+									AND produit_nom != 'Invitation'
+									AND (volume_cours > 0 OR (volume_cours <= 0 AND est_illimite = '1'))
+									AND pa.actif = '0'
+									AND est_abonnement = '0'
+									AND est_cours_particulier = '0'
+									ORDER BY date_achat ASC");
+					if($checkPending->rowCount() > 0){
+						$product = $checkPending->fetch(PDO::FETCH_ASSOC);
 					}
 				}
 			}
