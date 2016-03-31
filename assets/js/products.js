@@ -537,35 +537,34 @@ function extendProduct(product_id, end_date){
 function reportSession(target_product_id, participation_id){
 	if(target_product_id == null){
 		console.log("No product has been indicated for participation "+participation_id+". Finding product...");
-		$.post("functions/set_product_session.php", {participation_id : participation_id, product_id : target_product_id}).done(function(data){
-			var products = JSON.parse(data);
+	}
+	$.post("functions/set_product_session.php", {participation_id : participation_id, product_id : target_product_id}).done(function(data){
+		var products = JSON.parse(data), old_product = products.old_product, new_product = products.new_product;
+		if(new_product != null){
 			console.log("A target product has been found: "+products.new_product);
-			computeRemainingHours(products.new_product, false);
-			computeRemainingHours(products.old_product, true);
-		});
-	} else {
-		console.log("Reporting participation "+participation_id);
-		console.log("Product "+target_product_id+" has been indicated as target");
-		$.post("functions/set_product_session.php", {participation_id : participation_id, product_id : target_product_id}).done(function(old_product){
-			$(".sub-modal").hide();
-			var re = /historique/i;
-			if(re.exec(top.location.pathname) != null || old_product == null){
+		} else {
+			console.log("No product has been found");
+		}
+		$(".sub-modal").hide();
+		var re = /historique/i;
+		if(re.exec(top.location.pathname) != null){
+			if(new_product != null){
 				$.when(fetchSingleParticipation(participation_id)).done(function(participation){
 					displaySingleParticipation(participation);
 				});
-			} else {
-				computeRemainingHours(old_product, true);
 			}
-			if(top.location.pathname === '/Salsabor/regularisation/participations'){
-				if($("#participation-"+participation_id).next().is("a") && $("#participation-"+participation_id).prev().is("a")){
-					$("#participation-"+participation_id).prev().remove();
-				}
-				$("#participation-"+participation_id).remove();
-				$(".irregulars-target-container").empty();
+		} else {
+			if(old_product != null) computeRemainingHours(old_product, true);
+		}
+		if(top.location.pathname === '/Salsabor/regularisation/participations' && new_product != null){
+			if($("#participation-"+participation_id).next().is("a") && $("#participation-"+participation_id).prev().is("a")){
+				$("#participation-"+participation_id).prev().remove();
 			}
-			computeRemainingHours(target_product_id, false);
-		})
-	}
+			$("#participation-"+participation_id).remove();
+			$(".irregulars-target-container").empty();
+		}
+		if(new_product != null) computeRemainingHours(new_product, false);
+	})
 }
 
 function deleteParticipation(participation_id){
@@ -612,9 +611,16 @@ function linkAll(){
 			return this.dataset.argument;
 		}).get();
 	} else {
-		var invalidMap = $(".participation-over").map(function(){
-			return this.dataset.argument;
-		}).get();
+		var re = /historique/i;
+		if(re.exec(top.location.pathname) != null){
+			var invalidMap = $(".participation-over").map(function(){
+				return this.dataset.argument;
+			}).get().reverse();
+		} else {
+			var invalidMap = $(".participation-over").map(function(){
+				return this.dataset.argument;
+			}).get();
+		}
 	}
 	$("#link-all").text("En cours...");
 	link(invalidMap, 0);
@@ -627,6 +633,11 @@ function link(map, index){
 			link(map, ++index);
 		}, 700);
 	} else {
-		$("#link-all").html("<span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.");
+		var re = /historique/i;
+		if(top.location.pathname == "/Salsabor/regularisation/participations" || re.exec(top.location.pathname) != null){
+			$("#link-all").html("<span class='glyphicon glyphicon-arrow-right'></span> Associer toutes les participations irrégulières");
+		} else {
+			$("#link-all").html("<span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.");
+		}
 	}
 }
