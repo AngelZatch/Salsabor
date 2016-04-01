@@ -46,7 +46,7 @@ $(document).ready(function(){
 				// Computing hours button
 				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+", true)'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
 				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='unlinkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-link'></span> Délier inval.</button>";
-				/*buttons += "<button class='btn btn-default btn-block btn-modal' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.</button>";*/
+				buttons += "<button class='btn btn-default btn-block btn-modal' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.</button>";
 				// Handling the sessions
 				computeRemainingHours(argument, true);
 			} else {
