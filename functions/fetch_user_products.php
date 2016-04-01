@@ -21,7 +21,6 @@ $load = $db->query("SELECT id_produit_adherent, pa.actif AS produit_adherent_act
 						(SELECT eleve_id_foreign
 							FROM cours_participants
 							WHERE id='$record_id')
-						AND (pa.actif != '2' OR (pa.actif = '2' AND pa.date_activation < '$passage_date'))
 						AND est_abonnement != '1'");
 
 $productList = array();

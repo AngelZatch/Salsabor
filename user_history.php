@@ -50,6 +50,7 @@ $queryHistoryRecus->execute();
 						<?php } ?>
 					</ul>
 					<div class="container-fluid participations-list-container">
+						<!--<button class='btn btn-default btn-modal btn-link-all' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Associer toutes les participations irrégulières</button>-->
 						<ul class="participations-list">
 							<?php while($history = $queryHistoryRecus->fetch(PDO::FETCH_ASSOC)){
 	$date = date_create($history["cours_start"])->format("d/m/Y");

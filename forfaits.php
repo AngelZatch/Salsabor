@@ -39,7 +39,7 @@ $queryForfaits = $db->query("SELECT * FROM produits");
 									<td><?php echo $produits["validite_initiale"];?></td>
 									<td><?php echo $produits["tarif_horaire"];?> €</td>
 									<td><?php echo $produits["tarif_global"];?> €</td>
-									<td><a href="forfait_details.php?id=<?php echo $produits["produit_id"];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
+									<td><a href="forfait/<?php echo $produits["produit_id"];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
 								</tr>
 								<?php } ?>
 							</tbody>

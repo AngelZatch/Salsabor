@@ -5,7 +5,7 @@ $db = PDOFactory::getConnection();
 $queryIrregulars = $db->query("SELECT * FROM cours_participants
 								JOIN users ON eleve_id_foreign=users.user_id
 								JOIN cours ON cours_id_foreign=cours.cours_id
-								WHERE produit_adherent_id IS NULL
+								WHERE produit_adherent_id IS NULL OR produit_adherent_id = ''
 								ORDER BY user_nom, cours_start ASC");
 ?>
 <html>
@@ -23,13 +23,14 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 				<div class="col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-pawn"></span> Participations non associées à un forfait</legend>
 					<div class="col-lg-8 irregulars-container">
+						<!--<button class='btn btn-default btn-modal btn-link-all' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Associer toutes les participations irrégulières</button>-->
 						<ul class="irregulars-list">
 							<?php
 							$currentUser = "";
 							while($irregulars = $queryIrregulars->fetch(PDO::FETCH_ASSOC)){
-							if($currentUser != $irregulars["user_nom"]){
-								echo "<a href='user/".$irregulars["user_id"]."' class='sub-legend'>".$irregulars["user_prenom"]." ".$irregulars["user_nom"]."</a>";
-							}
+								if($currentUser != $irregulars["user_nom"]){
+									echo "<a href='user/".$irregulars["user_id"]."' class='sub-legend'>".$irregulars["user_prenom"]." ".$irregulars["user_nom"]."</a>";
+								}
 							?>
 							<li class="irregular-participation" id="participation-<?php echo $irregulars["id"];?>" data-argument="<?php echo $irregulars["id"];?>">
 								<p><?php echo $irregulars["user_prenom"]." ".$irregulars["user_nom"];?> au cours de <?php echo $irregulars["cours_intitule"];?> du <?php echo date_create($irregulars["cours_start"])->format("d/m/Y\ \à\ H:i");?></p>

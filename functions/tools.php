@@ -49,7 +49,8 @@ function generateReference() {
 }
 
 function computeExpirationDate($db, $date_activation, $validity){
-	$date_expiration = date("Y-m-d 00:00:00", strtotime($date_activation.'+'.$validity.'DAYS'));
+	$validity--;
+	$date_expiration = date("Y-m-d 23:59:59", strtotime($date_activation.'+'.$validity.'DAYS'));
 	$queryHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= ? AND date_chomee <= ?");
 	$queryHoliday->bindParam(1, $date_activation);
 	$queryHoliday->bindParam(2, $date_expiration);
@@ -57,8 +58,8 @@ function computeExpirationDate($db, $date_activation, $validity){
 
 	$j = 0;
 
-	for($i = 0; $i <= $queryHoliday->rowCount(); $i++){
-		$exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$i.'DAYS'));
+	for($i = 0; $i < $queryHoliday->rowCount(); $i++){
+		$exp_date = date("Y-m-d 23:59:59",strtotime($date_expiration.'+'.$i.'DAYS'));
 		$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
 		$checkHoliday->bindParam(1, $exp_date);
 		$checkHoliday->execute();
@@ -66,7 +67,7 @@ function computeExpirationDate($db, $date_activation, $validity){
 			$j++;
 		}
 		$totalOffset = $i + $j;
-		$new_exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$totalOffset.'DAYS'));
+		$new_exp_date = date("Y-m-d 23:59:59",strtotime($date_expiration.'+'.$totalOffset.'DAYS'));
 	}
 	if(!isset($new_exp_date)){
 		$new_exp_date = $date_expiration;

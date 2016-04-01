@@ -10,17 +10,14 @@ $(document).ready(function(){
 			modal.find(".modal-title").text(product_details.product+" (ID : "+product_details.id+")");
 			modal.find(".purchase-sub").text("Transaction "+product_details.transaction+" du "+moment(product_details.transaction_date).format("DD/MM/YYYY")+"; utilisé par "+product_details.user);
 
-			var product_status = "<p id='product-validity-"+product_details.id+"'>";
 			switch(product_details.status){
 				case '0':
-					product_status += "<span class='highlighted-value'>En attente</span>";
 					/*buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-activate-"+product_details.id+"' onclick='activateProduct("+product_details.id+")'><span class='glyphicon glyphicon-play-circle'></span> Activer</button>";*/
 					// Activation button
 					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-activate-"+product_details.id+"' data-argument='"+product_details.id+"' data-subtype='activate'><span class='glyphicon glyphicon-play-circle'></span> Activer</button>";
 					break;
 
 				case '1':
-					product_status += "Valide du <br><span class='highlighted-value'> "+moment(product_details.activation).format("DD/MM/YYYY")+"</span><br>au<br><span class='highlighted-value'>"+moment(product_details.validity).format("DD/MM/YYYY")+"</span>";
 					// Deactivation button
 					buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-activate-"+product_details.id+"' onclick='deactivateProduct("+product_details.id+")'><span class='glyphicon glyphicon-ban-circle'></span> Désactiver</button>";
 					// Extension button
@@ -28,31 +25,28 @@ $(document).ready(function(){
 					break;
 
 				case '2':
-					product_status += "<span class='highlighted-value'>Activé</span><br>le "+moment(product_details.activation).format("DD/MM/YYYY")+"<span class='highlighted-value'>Expiré</span><br>le "+moment(product_details.validity).format("DD/MM/YYYY");
 					// Reactivation button
 					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-activate-"+product_details.id+"' data-argument='"+product_details.id+"' data-subtype='activate'><span class='glyphicon glyphicon-play-circle'></span> Réactiver</button>";
 					// Extension button
 					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-arep' data-argument='"+product_details.id+"' data-arep='"+product_details.extended+"' data-subtype='AREP'><span class='glyphicon glyphicon-calendar'></span> AREP</button>";
 					break;
 			}
-			product_status += "</p>";
-			modal.find(".product-status").html(product_status);
 			if(product_details.flag_hours == '1'){ // If the product is not an illimited, a private lesson or an annual subscription
 				if(product_details.remaining_hours < 0){
 					var product_validity = "<p id='product-status-"+product_details.id+"'><span class='highlighted-value'>"+-1 * product_details.remaining_hours+" heures</span> de consommation excessive</p>";
 				} else {
 					var product_validity = "<p id='product-status-"+product_details.id+"'><span class='highlighted-value'>"+product_details.remaining_hours+" heures</span><br>restantes</p>";
 				}
-
-				// Computing hours button
-				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+", true)'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
-				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='unlinkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-link'></span> Délier inval.</button>";
 			} else {
 				if(product_details.status == '1'){ // If the product is active
 					var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+moment(product_details.validity).toNow(true)+"</span><br> restants</p>";
 				}
 			}
 			if(product_details.subscription == 0){ // If the product is NOT an annual subscription
+				// Computing hours button
+				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+", true)'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='unlinkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-link'></span> Délier inval.</button>";
+				/*buttons += "<button class='btn btn-default btn-block btn-modal' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.</button>";*/
 				// Handling the sessions
 				computeRemainingHours(argument, true);
 			} else {
@@ -397,6 +391,7 @@ function displaySingleParticipation(participation_details){
 
 /** Compute the remaining hours of a product **/
 function computeRemainingHours(product_id, refresh){
+	console.log("Computing product "+product_id);
 	$.post("functions/compute_remaining_hours.php", {product_id : product_id}).done(function(value){
 		/** Things to do here:
 			This function checks everything and sets everything if needed. It computes the remaining hours of a product, its status, it activates or deactivates if necessary and computes the activation and expiration dates as well. Once it's done, it'll call the function to refresh the list of sessions so they stay up-to-date as well.
@@ -410,33 +405,39 @@ function computeRemainingHours(product_id, refresh){
 		$("#purchase-item-"+product_id).removeClass("item-consumed");
 		var values = JSON.parse(value);
 		console.log(values);
-		var date = values.expiration, activation = values.activation, hours = values.hours, status = values.status, limit = values.limit;
+		var date = moment(values.expiration).format("DD/MM/YYYY"), activation = moment(values.activation).format("DD/MM/YYYY"), usage = moment(values.usage).format("DD/MM/YYYY"), hours = values.hours, status = values.status, limit = values.limit;
 		if(status == 2){ // If the product is expired
 			if(hours < 0){ // If the product is overused
 				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ -1 * hours + " heures</span> de consommation excessive");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(-1 * hours + " heures en excès");
 				$("#purchase-item-"+product_id).addClass("item-overused");
+				$(".usage-slot-date").text(usage);
 			} else if(hours > 0){ // If the product still has remaining hours
 				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
 				if(limit != '1'){
 					$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
 				}
+				$(".usage-slot-date").text("-");
 				$("#purchase-item-"+product_id).addClass("item-expired");
 			} else { // If the product has no more hours.
 				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html("Heures épuisées");
 				$("#purchase-item-"+product_id).addClass("item-expired");
+				$(".usage-slot-date").text(usage);
 			}
-			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Activé</span><br>le "+moment(activation).format("DD/MM/YYYY")+"<br><span class='highlighted-value'>Expiré</span><br>le "+moment(date).format("DD/MM/YYYY"));
-			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(date).format("DD/MM/YYYY"));
+			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+date);
+			$(".activation-slot-date").text(activation);
+			$(".expiration-slot-date").text(date);
 		} else if (status == 1){ // If the product is active
-			$("#product-validity-"+product_id).html("Valide du <span class='highlighted-value'>"+moment(activation).format("DD/MM/YYYY")+"</span><br>au<br><span class='highlighted-value'>"+moment(date).format("DD/MM/YYYY")+"</span>");
-			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Valide du "+moment(activation).format("DD/MM/YYYY")+" au "+moment(date).format("DD/MM/YYYY"));
+			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Valide du "+activation+" au "+date);
 			$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
 			if(limit != '1'){
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
 			}
 			$("#purchase-item-"+product_id).addClass("item-active");
+			$(".activation-slot-date").text(activation);
+			$(".expiration-slot-date").text(date);
+			$(".usage-slot-date").text("-");
 		} else { // If the product is pending
 			$("#product-status-"+product_id).html("<span class='highlighted-value'>En attente</span>");
 			if(limit != '1'){
@@ -445,13 +446,20 @@ function computeRemainingHours(product_id, refresh){
 			$("#product-validity-"+product_id).html("<span class='highlighted-value'>En attente</span>");
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("En attente");
 			$("#purchase-item-"+product_id).addClass("item-pending");
+			$(".activation-slot-date").text("-");
+			$(".expiration-slot-date").text("-");
+			$(".usage-slot-date").text("-");
 		}
 		if(refresh){
-			$.when(fetchProduct(product_id), fetchSessions(product_id)).done(function(product, sessions){
-				console.log(product_id);
-				fillSessions(sessions);
-			})
+			console.log("Refreshing participations");
+			(function(){
+				$.when(fetchProduct(product_id), fetchSessions(product_id)).done(function(product, sessions){
+					fillSessions(sessions);
+					console.log("Partcipations refreshed");
+				});
+			})();
 		}
+		console.log("Computing done.");
 	})
 }
 
@@ -528,25 +536,38 @@ function extendProduct(product_id, end_date){
 	})
 }
 
-function reportSession(product_id, participation_id){
-	$.post("functions/set_product_session.php", {record_id : participation_id, product_id : product_id}).done(function(old_product){
+function reportSession(target_product_id, participation_id){
+	if(target_product_id == null){
+		console.log("No product has been indicated for participation "+participation_id+". Finding product...");
+	}
+	$.post("functions/set_product_session.php", {participation_id : participation_id, product_id : target_product_id}).done(function(data){
+		var products = JSON.parse(data), old_product = products.old_product, new_product = products.new_product;
+		if(new_product != null){
+			console.log("A target product has been found: "+products.new_product);
+			computeRemainingHours(new_product, false);
+		} else {
+			console.log("No product has been found");
+		}
 		$(".sub-modal").hide();
 		var re = /historique/i;
-		if(re.exec(top.location.pathname) != null || old_product == null){
-			$.when(fetchSingleParticipation(participation_id)).done(function(participation){
-				displaySingleParticipation(participation);
-			});
+		if(re.exec(top.location.pathname) != null){
+			if(new_product != null){
+				$.when(fetchSingleParticipation(participation_id)).done(function(participation){
+					displaySingleParticipation(participation);
+				});
+			}
+			if(old_product != null) computeRemainingHours(old_product, false);
 		} else {
-			computeRemainingHours(old_product, true);
+			if(old_product != null) computeRemainingHours(old_product, true);
 		}
-		if(top.location.pathname === '/Salsabor/regularisation/participations'){
+		if(top.location.pathname === '/Salsabor/regularisation/participations' && new_product != null){
 			if($("#participation-"+participation_id).next().is("a") && $("#participation-"+participation_id).prev().is("a")){
 				$("#participation-"+participation_id).prev().remove();
 			}
 			$("#participation-"+participation_id).remove();
 			$(".irregulars-target-container").empty();
+			if(old_product != null) computeRemainingHours(old_product, true);
 		}
-		computeRemainingHours(product_id, false);
 	})
 }
 
@@ -584,5 +605,43 @@ function unlinkAll(){
 	// This function will find all invalid participations (identified in display by .participation-over) and log their data-argument
 	var invalidMap = $(".participation-over").map(function(){
 		unlinkParticipation(this.dataset.argument);
-	})
+	});
+}
+
+function linkAll(){
+	// This function will try to find the correct product for every invalid participation.
+	if(top.location.pathname == "/Salsabor/regularisation/participations"){
+		var invalidMap = $(".irregular-participation").map(function(){
+			return this.dataset.argument;
+		}).get();
+	} else {
+		var re = /historique/i;
+		if(re.exec(top.location.pathname) != null){
+			var invalidMap = $(".participation-over").map(function(){
+				return this.dataset.argument;
+			}).get().reverse();
+		} else {
+			var invalidMap = $(".participation-over").map(function(){
+				return this.dataset.argument;
+			}).get();
+		}
+	}
+	$("#link-all").text("En cours...");
+	link(invalidMap, 0);
+}
+
+function link(map, index){
+	if(map.length > index){
+		setTimeout(function(){
+			reportSession(null, map[index]);
+			link(map, ++index);
+		}, 700);
+	} else {
+		var re = /historique/i;
+		if(top.location.pathname == "/Salsabor/regularisation/participations" || re.exec(top.location.pathname) != null){
+			$("#link-all").html("<span class='glyphicon glyphicon-arrow-right'></span> Associer toutes les participations irrégulières");
+		} else {
+			$("#link-all").html("<span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.");
+		}
+	}
 }
