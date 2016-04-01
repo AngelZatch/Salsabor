@@ -1,5 +1,6 @@
 <?php
 require_once "db_connect.php";
+include "tools.php";
 $db = PDOFactory::getConnection();
 
 /** Forcefully activates a product **/
@@ -20,28 +21,7 @@ if($details["produit_adherent_activation"] != "0000-00-00 00:00:00" && $details[
 	} else {
 		$date_activation = date_create("now")->format("Y-m-d");
 	}
-	$date_expiration = date("Y-m-d 00:00:00", strtotime($date_activation.'+'.$details["validite_initiale"].'DAYS'));
-	$queryHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= ? AND date_chomee <= ?");
-	$queryHoliday->bindParam(1, $date_activation);
-	$queryHoliday->bindParam(2, $date_expiration);
-	$queryHoliday->execute();
-
-	$j = 0;
-
-	for($i = 0; $i <= $queryHoliday->rowCount(); $i++){
-		$exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$i.'DAYS'));
-		$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
-		$checkHoliday->bindParam(1, $exp_date);
-		$checkHoliday->execute();
-		if($checkHoliday->rowCount() != 0){
-			$j++;
-		}
-		$totalOffset = $i + $j;
-		$new_exp_date = date("Y-m-d 00:00:00",strtotime($date_expiration.'+'.$totalOffset.'DAYS'));
-	}
-	if(!isset($new_exp_date)){
-		$new_exp_date = $date_expiration;
-	}
+	$new_exp_date = date_create(computeExpirationDate($db, $date_activation, $details["validite_initiale"]))->format("Y-m-d H:i:s");
 }
 
 if($new_exp_date < date_create("now")->format("Y-m-d")){
