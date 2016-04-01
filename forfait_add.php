@@ -60,89 +60,101 @@ if(isset($_POST["add"])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<form action="forfait_add.php" method="post">
-					<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-lg-10 col-lg-offset-2 main">
+					<form action="forfait_add.php" class="form-horizontal" method="post">
 						<legend><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait
 							<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER">
 						</legend>
 						<div class="form-group">
-							<label for="intitule">Intitulé</label>
-							<input type="text" class="form-control input-lg" name="intitule" placeholder="Nom du produit">
+							<label for="intitule" class="control-label col-lg-3">Intitulé</label>
+							<div class="col-lg-9">
+								<input type="text" class="form-control" name="intitule" placeholder="Nom du produit">
+							</div>
 						</div>
 						<div class="form-group">
-							<label for="flags">Type de produit</label><br>
-							<label for="est_recharge" class="control-label">Recharge Liberté</label>
-							<input name="est_recharge" id="est_recharge" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
-							<label for="est_illimite" class="control-label">Offre Illimitée</label>
-							<input name="est_illimite" id="est_illimite" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
-							<label for="est_sans_engagement" class="control-label">Sans Engagement</label>
-							<input name="est_sans_engagement" id="est_sans_engagement" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
-							<label for="est_cours_particulier" class="control-label">Cours Particulier</label>
-							<input name="est_cours_particulier" id="est_cours_particulier" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
-							<label for="est_formation_professionnelle" class="contorl-label">Formation Professionnelle</label>
-							<input name="est_formation_professionnelle" id="est_formation_professionnelle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
-							<label for="est_abonnement" class="contorl-label">Abonnement</label>
-							<input name="est_abonnement" id="est_abonnement" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
-							<label for="est_autre" class="contorl-label">Divers</label>
-							<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+							<label for="flags" class="control-label col-lg-3">Type de produit</label><br>
+							<div class="col-lg-9">
+								<label for="est_recharge" class="control-label">Recharge Liberté</label>
+								<input name="est_recharge" id="est_recharge" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+								<label for="est_illimite" class="control-label">Illimité</label>
+								<input name="est_illimite" id="est_illimite" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+								<label for="est_sans_engagement" class="control-label">Sans Engagement</label>
+								<input name="est_sans_engagement" id="est_sans_engagement" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+								<label for="est_cours_particulier" class="control-label">Cours Particulier</label>
+								<input name="est_cours_particulier" id="est_cours_particulier" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+								<label for="est_formation_professionnelle" class="contorl-label">Formation Pro.</label>
+								<input name="est_formation_professionnelle" id="est_formation_professionnelle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+								<label for="est_abonnement" class="contorl-label">Abonnement</label>
+								<input name="est_abonnement" id="est_abonnement" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+								<label for="est_autre" class="contorl-label">Divers</label>
+								<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+							</div>
 						</div>
 						<div class="form-group">
-							<label for="description">Description</label>
-							<textarea rows="5" class="form-control input-lg" name="description" placeholder="Facultatif. Tentez d'être succinct !"></textarea>
-						</div>
-						<div class="form-group" id="volume_horaire">
-							<label for="volume_horaire">Volume de cours (en heures)</label>
-							<input type="number" class="form-control input-lg" name="volume_horaire" placeholder="Exemple : 10">
-						</div>
-						<div class="row">
-							<div class="col-lg-4">
-								<div class="form-group">
-									<label for="validite">Durée de validité (à partir de l'achat, en semaines)</label>
-									<input type="number" class="form-control input-lg" name="validite" placeholder="Exemple : 48">
-								</div>
-							</div>
-							<div class="col-lg-4">
-								<div class="form-group">
-									<label for="tarif_global">Prix d'achat</label>
-									<div class="input-group input-group-lg">
-										<input type="number" step="any" class="form-control" name="tarif_global">
-										<span class="input-group-addon">€</span>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-4">
-								<div class="form-group">
-									<label for="echeances">Nombre d'échéances de paiement autorisées</label>
-									<input type="number" class="form-control input-lg" name="echeances">
-								</div>
+							<label for="description" class="col-lg-3 control-label">Description</label>
+							<div class="col-lg-9">
+								<textarea rows="5" class="form-control" name="description" placeholder=""></textarea>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="date_activation">Date de mise à disposition à l'achat</label>
-									<div class="input-group input-group-lg">
-										<input type="date" class="form-control" name="date_activation">
-										<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
-									</div>
-								</div>
+						<div class="form-group">
+							<label for="volume_horaire" class="col-lg-3 control-label">Volume de cours (en heures)</label>
+							<div class="col-lg-9">
+								<input type="number" class="form-control" name="volume_horaire" placeholder="Exemple : 10">
 							</div>
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="date_limite_achat">Date limite d'achat possible</label>
-									<div class="input-group input-group-lg">
-										<input type="date" class="form-control" name="date_limite_achat">
-										<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
-									</div>
+						</div>
+						<div class="form-group">
+							<label for="validite" class="col-lg-3 control-label">Durée de validité</label>
+							<div class="col-lg-9">
+								<input type="number" class="form-control" name="validite" placeholder="Exemple : 48">
+								<label for="est_recharge" class="control-label">Jours</label>
+								<input name="validite_jour" id="validite_jour" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1"><span class="label-tip">Si décoché, la durée sera calculée en semaines.</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="arep" class="col-lg-3 control-label">Autoriser l'extension de validité ?</label>
+							<div class="col-lg-9">
+								<input name="arep" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="tarif_global" class="col-lg-3 control-label">Prix d'achat</label>
+							<div class="col-lg-9">
+								<div class="input-group">
+									<input type="number" step="any" class="form-control" name="tarif_global">
+									<span class="input-group-addon">€</span>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="arep">Autoriser l'extension de validité ? (AREP)</label>
-							<input type="checkbox" value="1" name="arep">
+							<label for="echeances" class="col-lg-3 control-label">Nombre d'échéances autorisées</label>
+							<div class="col-lg-9">
+								<input type="number" class="form-control" name="echeances">
+							</div>
 						</div>
-					</div>
-				</form>
+						<p class="form-section">Période de vente</p>
+						<span class="label-tip">Dans le cas d'une offre promotionnelle limitée dans le temps</span>
+						<div class="form-group">
+							<label for="date_activation" class="col-lg-3 control-label">Ouverture à l'achat</label>
+							<div class="col-lg-9">
+								<div class="input-group">
+									<input type="date" class="form-control" name="date_activation">
+									<span role="button" class="input-group-btn">
+										<a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="date_limite_achat" class="col-lg-3 control-label">Fermeture à l'achat</label>
+							<div class="col-lg-9">
+								<div class="input-group">
+									<input type="date" class="form-control" name="date_limite_achat">
+									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 		<?php include "scripts.php";?>

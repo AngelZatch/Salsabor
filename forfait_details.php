@@ -22,11 +22,6 @@ if(isset($_POST["edit"])){
 		$validite = 7 * $_POST["validite"];
 	}
 	$actif = 1;
-	if(isset($_POST["arep"])){
-		$arep = $_POST["arep"];
-	} else {
-		$arep = 0;
-	}
 
 	try{
 		$db->beginTransaction();
@@ -59,7 +54,7 @@ if(isset($_POST["edit"])){
 		$edit->bindParam(':date_limite_achat', $_POST["date_limite_achat"]);
 		$edit->bindParam(':actif', $actif);
 		$edit->bindParam(':echeances', $_POST["echeances"]);
-		$edit->bindParam(':autorisation_report', $arep);
+		$edit->bindParam(':autorisation_report', $_POST["arep"]);
 		$edit->bindParam(':est_recharge', $_POST["est_recharge"]);
 		$edit->bindParam(':est_illimite', $_POST["est_illimite"]);
 		$edit->bindParam(':est_sans_engagement', $_POST["est_sans_engagement"]);
@@ -70,7 +65,6 @@ if(isset($_POST["edit"])){
 		$edit->bindParam(':id', $data);
 		$edit->execute();
 		$db->commit();
-		header("Location: forfaits.php");
 	}catch (PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());
@@ -140,6 +134,12 @@ if(isset($_POST["edit"])){
 							</div>
 						</div>
 						<div class="form-group">
+							<label for="arep" class="col-lg-3 control-label">Autoriser l'extension de validité ?</label>
+							<div class="col-lg-9">
+								<input name="arep" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1">
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="tarif_global" class="col-lg-3 control-label">Prix d'achat</label>
 							<div class="col-lg-9">
 								<div class="input-group">
@@ -175,10 +175,6 @@ if(isset($_POST["edit"])){
 									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
 								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="arep">Autoriser l'extension de validité ?</label>
-							<input type="checkbox" value="1" name="arep">
 						</div>
 					</form>
 				</div>
