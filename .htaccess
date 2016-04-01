@@ -25,4 +25,4 @@ RewriteRule ^user/([0-9-]+)/abonnements user_subscriptions.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/historique user_history.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/reservations user_reservations.php?id=$1 [NC,L]
 
-RewriteRule ^transaction/([A-Za-z0-9-]+)$ transaction_details.php?id=$1
+RewriteRule ^forfait/([A-Za-z0-9-]+)$ forfait_details.php?id=$1
