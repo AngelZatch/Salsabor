@@ -6,7 +6,7 @@ $product_id = $_GET["product_id"];
 
 $product_details = $db->query("SELECT volume_horaire, est_illimite, pa.date_activation AS produit_adherent_activation,
 						IF(date_prolongee IS NOT NULL, date_prolongee,
-							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
+							IF (date_fin_utilisation IS NOT NULL AND date_fin_utilisation != '0000-00-00 00:00:00', date_fin_utilisation, date_expiration)
 							) AS produit_validity FROM produits_adherents pa
 						JOIN produits p
 							ON pa.id_produit_foreign = p.produit_id
@@ -31,8 +31,14 @@ while($session = $sessions_list->fetch(PDO::FETCH_ASSOC)){
 	$s["end"] = $session["cours_end"];
 	$s["duration"] = $session["cours_unite"];
 
-	if(date_create($s["start"])->format("Y-m-d H:i:s") > date_create($product_details["produit_validity"])->format("Y-m-d H:i:s") || date_create($s["start"])->format("Y-m-d H:i:s") < date_create($product_details["produit_adherent_activation"])->format("Y-m-d H:i:s") || ($remaining_hours <= 0 && $product_details["est_illimite"] != "1")){
+	if($s["start"] > $product_details["produit_validity"] || $s["start"] < $product_details["produit_adherent_activation"] || ($remaining_hours <= 0 && $product_details["est_illimite"] != "1")){
 		$s["valid"] = "2"; // The session happened after the product expired or before it activated or the product didn't have any hours left.
+		if($s["start"] > $product_details["produit_validity"]){
+			$s["reason"] = "Start (".$s["start"].") is after the expiration date (".$product_details["produit_validity"].")";
+		}
+		if($s["start"] < $product_details["produit_adherent_activation"]){
+			$s["reason"] = "Start is before the activation date (".$product_details["produit_adherent_activation"].")";
+		}
 	} else {
 		$s["valid"] = "1";
 	}
