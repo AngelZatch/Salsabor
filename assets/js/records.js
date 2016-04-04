@@ -11,7 +11,7 @@ function displaySessions(fetched){
 	$.get("functions/fetch_active_sessions.php", {fetched : fetched}).done(function(data){
 		var active_sessions = JSON.parse(data);
 		var as_display = "";
-		as_display += "<p class='sub-legend active-sessions-title'>"+active_sessions.length+" cours sont actuellement ouverts</legend>";
+		$(".active-sessions-container").append(as_display);
 		for(var i = 0; i < active_sessions.length; i++){
 			var cours_start = moment(active_sessions[i].start);
 			if(cours_start > moment().format("DD/MM/YYYY HH:mm")){
@@ -43,6 +43,7 @@ function displaySessions(fetched){
 			fetched.push(active_sessions[i].id);
 		}
 		$(".active-sessions-container").append(as_display);
+		$(".sub-legend>span").html($(".panel-session").length);
 		/*console.log(fetched);*/
 		/*setTimeout(displaySessions, 5000, fetched);*/
 		setTimeout(displaySessions, 900000, fetched);
@@ -81,12 +82,13 @@ function fetchRecords(session_id){
 				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].card+"</p>";
 				contents += "<p class='col-lg-12 session-record-details'><span class='glyphicon glyphicon-queen'></span> "+records_list[i].product_name+"</p>";
 				if(records_list[i].status == '2'){
-					contents += "<p class='col-lg-4 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+records_list[i].id+")'></span></p>";
+					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+records_list[i].id+")' title='Annuler la validation'></span></p>";
 				} else {
-					contents += "<p class='col-lg-4 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+records_list[i].id+")'></span></p>";
+					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+records_list[i].id+")' title='Valider le passage'></span></p>";
 				}
-				contents += "<p class='col-lg-4 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button'></span></p>";
-				contents += "<p class='col-lg-4 panel-item-options'><span class='glyphicon glyphicon-option-vertical glyphicon-button'></span></p>";
+				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button' title='Changer le produit'></span></p>";
+				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-pushpin glyphicon-button' title='Changer le cours'></span></p>";
+				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' title='Supprimer le passage (IRREVERSIBLE)'></span></p>";
 			}
 			contents += "</ul>";
 			contents += "</div>";
@@ -101,7 +103,23 @@ function validateRecord(record_id){
 		$("#session-record-"+record_id).removeClass("status-pre-success");
 		$("#session-record-"+record_id).removeClass("status-over");
 		$("#session-record-"+record_id).addClass("status-success");
-		$("#session-record-"+record_id+">#option-validate").html("<span class='glyphicon glyphicon-remove glyphicon-button'></span>")
+		$("#session-record-"+record_id+">#option-validate").html("<span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+record_id+")' title='Annuler la validation'></span>")
 		computeRemainingHours(product_id);
+	})
+}
+
+function unvalidateRecord(record_id){
+	$.post("functions/unvalidate_record.php", {record_id : record_id}).done(function(result){
+		var data = JSON.parse(result);
+		console.log(data);
+		var status = data.status, product_id = data.product_id;
+		$("#session-record-"+record_id).removeClass("status-success");
+		if(status == 0){
+			$("#session-record-"+record_id).addClass("status-pre-success");
+			computeRemainingHours(product_id);
+		} else {
+			$("#session-record-"+record_id).addClass("status-over");
+		}
+		$("#session-record-"+record_id+">#option-validate").html("<span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+record_id+")' title='Valider le passage'></span>");
 	})
 }
