@@ -153,7 +153,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 						</div>
 					</div>
 					<?php }?>
-					<div class="panel panel-default">
+					<!--<div class="panel panel-default">
 						<div class="panel-heading">
 							<div class="panel-title">
 								<p>Passages non traités</p>
@@ -183,9 +183,9 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 										<p>Enregistré le <?php echo date_create($unidentified["passage_date"])->format('d/m')." à ".date_create($unidentified["passage_date"])->format('H:i:s');?></p>
 									</div>
 									<div class="col-lg-5">
-										<!--<p class="list-item-option move-record" data-toggle="popover-x" data-target="#popoverPassages" data-trigger="focus" data-placement="bottom bottom-right" title="Assigner le passage à un cours">
+										<p class="list-item-option move-record" data-toggle="popover-x" data-target="#popoverPassages" data-trigger="focus" data-placement="bottom bottom-right" title="Assigner le passage à un cours">
 <span class="glyphicon glyphicon-circle-arrow-right"></span> ASSIGNER
-</p>-->
+</p>
 
 										<a href="actions/validate_deletion.php" data-title="Suppression de passage" data-toggle="lightbox" data-gallery="remoteload" data-record="<?php echo $unidentified["passage_id"];?>" class="list-item-option delete-trigger" title="Supprimer ce passage">
 											<span class="glyphicon glyphicon-trash"></span> SUPPRIMER
@@ -195,7 +195,7 @@ while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
 							</li>
 							<?php } ?>
 						</ul>
-					</div>
+					</div>-->
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<div class="panel-title">
