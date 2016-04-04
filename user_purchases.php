@@ -71,7 +71,7 @@ $queryTransactions = $db->query("SELECT * FROM produits_adherents WHERE id_user_
 				$.post("functions/check_maturity.php", {maturity_id : maturity_id}).done(function(data){
 					/*console.log(data);*/
 					$("#date-reception-"+maturity_id).text(moment(data).format("DD/MM/YYYY"));
-					$("#icon-reception-"+maturity_id).addClass("status-success");
+					$("#icon-reception-"+maturity_id).addClass("icon-success");
 					document.getElementById("icon-reception-"+maturity_id).onclick = function(){ uncheckReception(maturity_id); };
 				})
 			}
@@ -83,7 +83,7 @@ $queryTransactions = $db->query("SELECT * FROM produits_adherents WHERE id_user_
 					} else {
 						$("#date-reception-"+maturity_id).text("En attente");
 					}
-					$("#icon-reception-"+maturity_id).removeClass("status-success");
+					$("#icon-reception-"+maturity_id).removeClass("icon-success");
 					document.getElementById("icon-reception-"+maturity_id).onclick = function(){ checkReception(maturity_id); };
 				})
 			}
@@ -91,7 +91,7 @@ $queryTransactions = $db->query("SELECT * FROM produits_adherents WHERE id_user_
 				/*console.log(maturity_id);*/
 				$.post("functions/check_bank.php", {maturity_id : maturity_id}).done(function(data){
 					$("#date-bank-"+maturity_id).text(moment(data).format("DD/MM/YYYY"));
-					$("#icon-bank-"+maturity_id).addClass("status-success");
+					$("#icon-bank-"+maturity_id).addClass("icon-success");
 					document.getElementById("icon-bank-"+maturity_id).onclick = function(){ uncheckBank(maturity_id); };
 				})
 			}
@@ -99,7 +99,7 @@ $queryTransactions = $db->query("SELECT * FROM produits_adherents WHERE id_user_
 				/*console.log(maturity_id);*/
 				$.post("functions/uncheck_bank.php", {maturity_id : maturity_id}).done(function(data){
 					$("#date-bank-"+maturity_id).text("En attente");
-					$("#icon-bank-"+maturity_id).removeClass("status-success");
+					$("#icon-bank-"+maturity_id).removeClass("icon-success");
 					document.getElementById("icon-bank-"+maturity_id).onclick = function(){ checkBank(maturity_id); };
 				})
 			}

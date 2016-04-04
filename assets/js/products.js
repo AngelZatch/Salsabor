@@ -204,8 +204,8 @@ function fetchPurchase(purchase_id){
 					item_status = "item-active";
 					text_status = "Valide du <span> "+moment(purchase_list[i].activation).format("DD/MM/YYYY")+"</span> au <span>"+moment(purchase_list[i].validity).format("DD/MM/YYYY")+"</span>";
 				}
-				contents += "<li class='purchase-item "+item_status+" container-fluid' id='purchase-item-"+purchase_list[i].id+"' data-toggle='modal' data-target='#product-modal' data-argument='"+purchase_list[i].id+"'>";
-				contents += "<p class='col-lg-12 purchase-product-name bf'>"+purchase_list[i].product+"</p>";
+				contents += "<li class='purchase-item panel-item "+item_status+" container-fluid' id='purchase-item-"+purchase_list[i].id+"' data-toggle='modal' data-target='#product-modal' data-argument='"+purchase_list[i].id+"'>";
+				contents += "<p class='col-lg-12 panel-item-title bf'>"+purchase_list[i].product+"</p>";
 				contents += "<div class='purchase-product-subdetails'>";
 				contents += "<p class='col-lg-3 purchase-product-validity'>";
 				contents += text_status;
@@ -234,20 +234,20 @@ function fetchPurchase(purchase_id){
 			contents += "<div class='row purchase-maturities-container' id='maturities-"+purchase_id+"'>";
 			contents += "<ul class='purchase-inside-list maturities-list'>";
 			for(var i = 0; i < maturities_list.length; i++){
-				contents += "<li class='purchase-item maturity-item container-fluid'>";
+				contents += "<li class='purchase-item panel-item maturity-item container-fluid'>";
 				contents += "<p class='col-lg-1'>"+moment(maturities_list[i].date).format("DD/MM/YYYY")+"</p>";
 				contents += "<p class='col-lg-1'>"+maturities_list[i].price+" €</p>";
 				contents += "<p class='col-lg-2'>"+maturities_list[i].method+"</p>";
 				contents += "<p class='col-lg-2'>"+maturities_list[i].payer+"</p>";
 				if(maturities_list[i].reception_status == '1'){
-					contents += "<p class='col-lg-1 status-icon status-success' id='icon-reception-"+maturities_list[i].id+"' title='Annuler réception' onClick='uncheckReception("+maturities_list[i].id+")'><span class='glyphicon glyphicon-ok'></span></p>";
+					contents += "<p class='col-lg-1 status-icon icon-success' id='icon-reception-"+maturities_list[i].id+"' title='Annuler réception' onClick='uncheckReception("+maturities_list[i].id+")'><span class='glyphicon glyphicon-ok'></span></p>";
 					contents += "<p class='col-lg-1' id='date-reception-"+maturities_list[i].id+"'>"+moment(maturities_list[i].date_reception).format("DD/MM/YYYY")+"</p>";
 				} else {
 					contents += "<p class='col-lg-1 status-icon' id='icon-reception-"+maturities_list[i].id+"' title='Valider réception' onClick='checkReception("+maturities_list[i].id+")'><span class='glyphicon glyphicon-ok'></span></p>";
 					contents += "<p class='col-lg-1' id='date-reception-"+maturities_list[i].id+"'>En attente</p>";
 				}
 				if(maturities_list[i].bank_status == '1'){
-					contents += "<p class='col-lg-1 status-icon status-success' id='icon-bank-"+maturities_list[i].id+"' title='Annuler encaissement' onClick='uncheckBank("+maturities_list[i].id+")'><span class='glyphicon glyphicon-download-alt'></span></p>";
+					contents += "<p class='col-lg-1 status-icon icon-success' id='icon-bank-"+maturities_list[i].id+"' title='Annuler encaissement' onClick='uncheckBank("+maturities_list[i].id+")'><span class='glyphicon glyphicon-download-alt'></span></p>";
 					contents += "<p class='col-lg-1' id='date-bank-"+maturities_list[i].id+"'>"+moment(maturities_list[i].date_bank).format("DD/MM/YYYY")+"</p>";
 				} else {
 					contents += "<p class='col-lg-1 status-icon' id='icon-bank-"+maturities_list[i].id+"' title='Valider encaissement' onClick='checkBank("+maturities_list[i].id+")'><span class='glyphicon glyphicon-download-alt'></span></p>";

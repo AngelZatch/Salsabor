@@ -16,6 +16,10 @@ $db = PDOFactory::getConnection();
 				<div class="col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-warning-sign"></span> Page Test !</legend>
 					<?php
+					$loading = microtime();
+					$loading = explode(' ', $loading);
+					$loading = $loading[1] + $loading[0];
+					$start = $loading;
 					//$user_id = 10356;
 					$product_id = "";
 					$cours_id = 2052;
@@ -104,6 +108,12 @@ $db = PDOFactory::getConnection();
 						echo $product_id;
 					}
 					echo "<br>";
+					$loading = microtime();
+					$loading = explode(' ', $loading);
+					$loading = $loading[1] + $loading[0];
+					$finish = $loading;
+					$total = round(($finish - $start), 4);
+					echo "Traitement effectué en ".$total." secondes";
 					?>
 				</div>
 			</div>

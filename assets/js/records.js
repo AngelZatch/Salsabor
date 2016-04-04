@@ -11,9 +11,10 @@ function displaySessions(fetched){
 	$.get("functions/fetch_active_sessions.php", {fetched : fetched}).done(function(data){
 		var active_sessions = JSON.parse(data);
 		var as_display = "";
+		as_display += "<p class='sub-legend active-sessions-title'>"+active_sessions.length+" cours sont actuellement ouverts</legend>";
 		for(var i = 0; i < active_sessions.length; i++){
 			var cours_start = moment(active_sessions[i].start);
-			if(cours_start > moment()){
+			if(cours_start > moment().format("DD/MM/YYYY HH:mm")){
 				var relative_time = cours_start.toNow();
 			} else {
 				var relative_time = cours_start.fromNow();
@@ -25,7 +26,7 @@ function displaySessions(fetched){
 			// Container fluid for session name and hour
 			as_display += "<div class='container-fluid'>";
 			as_display += "<p class='session-id col-lg-4'>"+active_sessions[i].title+"</p>";
-			as_display += "<p class='session-date col-lg-8'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("H:m")+" à "+moment(active_sessions[i].end).format("H:m")+" (<span class='relative-start'>"+relative_time+"</span>)</p>";
+			as_display += "<p class='session-date col-lg-8'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+" (<span class='relative-start'>"+relative_time+"</span>)</p>";
 			as_display += "</div>";
 			// Container fluid for session level, teacher...
 			as_display += "<div class='container-fluid'>";
@@ -38,7 +39,7 @@ function displaySessions(fetched){
 			as_display += "</a>";
 			// Panel body
 			as_display += "<div class='panel-body collapse' id='body-session-"+active_sessions[i].id+"'>";
-			as_display += "</div>";
+			as_display += "</div></div>";
 			fetched.push(active_sessions[i].id);
 		}
 		$(".active-sessions-container").append(as_display);
@@ -62,21 +63,30 @@ function fetchRecords(session_id){
 				var record_status;
 				switch(records_list[i].status){
 					case '0':
-						record_status = "record-default";
+						record_status = "status-pre-success";
 						break;
 
 					case '2':
-						record_status = "record-success";
+						record_status = "status-success";
 						break;
 
 					case '3':
-						record_status = "record-danger";
+						record_status = "status-over";
 						break;
 				}
-				contents += "<li class='session-record "+record_status+" container-fluid' id='session-record-"+records_list[i].id+"'>";
-				contents += "<p class='col-lg-3 session-record-name'>"+records_list[i].user+"</p>";
-				contents += "<p class='col-lg-3 session-record-name'>"+records_list[i].card+"</p>";
-				contents += "<p class='col-lg-3 session-record-name'>"+moment(records_list[i].date).format("H:m:ss")+"</p>";
+				contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-lg-3' id='session-record-"+records_list[i].id+"'>";
+				contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"'></div>";
+				contents += "<p class='col-lg-12 panel-item-title bf'>"+records_list[i].user+"</p>";
+				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
+				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].card+"</p>";
+				contents += "<p class='col-lg-12 session-record-details'><span class='glyphicon glyphicon-queen'></span> "+records_list[i].product_name+"</p>";
+				if(records_list[i].status == '2'){
+					contents += "<p class='col-lg-4 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+records_list[i].id+")'></span></p>";
+				} else {
+					contents += "<p class='col-lg-4 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+records_list[i].id+")'></span></p>";
+				}
+				contents += "<p class='col-lg-4 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button'></span></p>";
+				contents += "<p class='col-lg-4 panel-item-options'><span class='glyphicon glyphicon-option-vertical glyphicon-button'></span></p>";
 			}
 			contents += "</ul>";
 			contents += "</div>";
@@ -84,4 +94,14 @@ function fetchRecords(session_id){
 			$("#body-session-"+session_id).collapse("show");
 		})
 	}
+}
+
+function validateRecord(record_id){
+	$.post("functions/validate_record.php", {record_id : record_id}).done(function(product_id){
+		$("#session-record-"+record_id).removeClass("status-pre-success");
+		$("#session-record-"+record_id).removeClass("status-over");
+		$("#session-record-"+record_id).addClass("status-success");
+		$("#session-record-"+record_id+">#option-validate").html("<span class='glyphicon glyphicon-remove glyphicon-button'></span>")
+		computeRemainingHours(product_id);
+	})
 }

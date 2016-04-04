@@ -2,10 +2,25 @@
 require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 
-$session_id = $_POST["session_id"];
-$user_id = $_POST["user_id"];
 $record_id = $_POST["record_id"];
-$product_id = $_POST["product_id"];
+
+if(isset($_POST["session_id"])){
+	$session_id = $_POST["session_id"];
+}
+if(isset($_POST["product_id"])){
+	$product_id = $_POST["product_id"];
+}
+if(isset($_POST["user_id"])){
+	$user_id = $_POST["user_id"];
+}
+
+
+if(!isset($_POST["user_id"]) || !isset($_POST["product_id"]) || !isset($_POST["session_id"])){
+	$record_detais = $db->query("SELECT passage_eleve_id, cours_id, produit_adherent_cible FROM passages WHERE passage_id = '$record_id'")->fetch(PDO::FETCH_ASSOC);
+	$user_id = $record_detais["passage_eleve_id"];
+	$product_id = $record_detais["produit_adherent_cible"];
+	$session_id = $record_detais["cours_id"];
+}
 
 $cours_name = $db->query("SELECT cours_intitule FROM cours WHERE cours_id = '$session_id'")->fetch(PDO::FETCH_COLUMN);
 

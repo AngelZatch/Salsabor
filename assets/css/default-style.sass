@@ -1,13 +1,14 @@
+@import 'panel-items'
 $salsabor-red: #A80139
 $salsabor-yellow: #FAB913
 $system-color: #888888
+$pre-success-color: #79C3E5
 $success-color: #87CE77
 $warning-color: #F0AD4E
 $danger-color: #D9534F
 $pending-color: #9491D6
 $near-danger-color: #F0684B
 $light-red-color: lighten($danger-color, 20%)
-/*$skip-color: #D08AC3*/
 $play-color: #7DB8E0
 $whisper-color: #D5D5D5
 $avatar-size-preview: 120px
@@ -16,6 +17,8 @@ $break-medium: 768px
 $break-large: 1200px
 $avatar-size-preview: 120px
 $avatar-big-preview: 170px
+
+@import 'status'
 
 =circle-size($radius)
 	height: $radius !important
@@ -184,6 +187,11 @@ a
 .remove-extension
 	float: right
 
+.glyphicon-button
+	cursor: pointer
+	&:hover
+		color: white
+
 /** PURCHASES **/
 .panel-purchase
 	box-shadow: 0px 0px 10px $system-color
@@ -214,10 +222,8 @@ a
 .purchase-sub
 	font-style: italic
 
-.purchase-product-name
-	font-weight: 600
-	&.bf
-		font-size: 18px
+.bf
+	font-size: 18px
 
 .purchase-product-subdetails>p
 	padding-top: 0 !important
@@ -227,17 +233,6 @@ a
 
 .purchase-inside-list
 	padding-left: 0
-
-.purchase-item
-	margin-bottom: 10px
-	display: inherit
-	padding-left: 0
-	padding-right: 0
-	cursor: pointer
-	p
-		padding: 10px
-		margin-top: 2px
-		margin-bottom: 0
 
 .purchase-item-options
 	padding: 0 0 20px 30px
@@ -284,7 +279,7 @@ a
 	&:hover
 		color: darken($system-color, 30%)
 
-.status-success
+.icon-success
 	color: $success-color
 	&:hover
 		color: darken($success-color, 20%)
@@ -336,7 +331,7 @@ a
 	color: $salsabor-red
 
 .product-participation
-	@extend .purchase-item
+	@extend .panel-item
 	padding: 1px 5px
 	margin-bottom: 5px
 	cursor: pointer
@@ -459,6 +454,12 @@ h2.modal-body-title.first
 	float: left
 	margin-right: 15px
 
+.small-user-pp
+	+circle-size($avatar-size-preview)
+	margin: 0 auto
+	img
+		width: inherit
+
 .user-summary
 	padding-left: $avatar-big-preview + 20px
 
@@ -498,8 +499,3 @@ p.legend
 /** RECORDS **/
 .records-product-list
 	@extend .purchase-product-list
-
-.session-record
-	@extend .purchase-item
-	&:hover
-		background-color: $success-color
