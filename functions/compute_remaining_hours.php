@@ -40,7 +40,9 @@ if($product_details["est_abonnement"] == '0'){
 		if(!$computeEnd){
 			// If the product's current hours are max OR there's no set activation date, we compute the activation date. This will only occur one time to ensure the date of activation is always accurate.
 			$date_activation = date_create($session["cours_start"])->format("Y-m-d H:i:s");
-			$computeEnd = true;
+			if($date_activation != null && $date_activation != "0000-00-00 00:00:00"){
+				$computeEnd = true;
+			}
 		}
 	}
 	if($computeEnd){ // We compute the date of expiration
@@ -55,22 +57,31 @@ if($product_details["est_abonnement"] == '0'){
 		}
 		$remaining_hours -= floatval($session["cours_unite"]);
 	}
+	// We update the number of hours
 	if($remaining_hours <= 0){ // If the number of remaining hours is negative
 		if($product_details["est_illimite"] == "1"){
-			if($remaining_hours == 0 && $product_details["produit_adherent_activation"] == null && $product_details["produit_validity"] == null || $product_details["produit_validity"] == "0000-00-00 00:00:00"){
+			if($remaining_hours == '0'){
 				$status = '0';
+				$date_activation = NULL;
+				$date_expiration = NULL;
+				$deactivate = $db->query("UPDATE produits_adherents
+							SET date_activation = NULL, actif='$status', volume_cours = '$remaining_hours', date_expiration = NULL
+							WHERE id_produit_adherent = '$product_id'");
 			} else if($date_expiration < date("Y-m-d")){
 				if($product_details["date_prolongee"] != null && $product_details["date_prolongee"] > date("Y-m-d H:i:s")){
 					$status = '1';
 				} else {
 					$status = '2';
 				}
-			} else {
-				$status = '1';
-			}
-			$deactivate = $db->query("UPDATE produits_adherents
+				$deactivate = $db->query("UPDATE produits_adherents
 							SET date_activation = '$date_activation', actif='$status', volume_cours = '$remaining_hours', date_expiration = '$date_expiration'
 							WHERE id_produit_adherent = '$product_id'");
+			} else {
+				$status = '1';
+				$deactivate = $db->query("UPDATE produits_adherents
+							SET date_activation = '$date_activation', actif='$status', volume_cours = '$remaining_hours', date_expiration = '$date_expiration'
+							WHERE id_produit_adherent = '$product_id'");
+			}
 			$v["hours"] = -1 * $remaining_hours;
 		} else {
 			$status = '2';
