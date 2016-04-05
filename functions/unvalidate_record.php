@@ -22,6 +22,7 @@ if(!isset($_POST["user_id"]) || !isset($_POST["session_id"])){
 // First, we delete the participation
 $deleteParticipation = $db->query("DELETE FROM cours_participants WHERE cours_id_foreign = '$session_id' AND eleve_id_foreign = '$user_id'");
 
+$s = array();
 if(!isset($product_id)){
 	$status = '3';
 	$s["product_id"] = null;
@@ -33,7 +34,6 @@ if(!isset($product_id)){
 // Update the record as handled with the correct session and status
 $update = $db->query("UPDATE passages SET status='$status' WHERE passage_id='$record_id'");
 
-$s = array();
 $s["status"] = $status;
 echo json_encode($s);
 ?>
