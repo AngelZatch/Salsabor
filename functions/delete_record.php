@@ -2,6 +2,6 @@
 require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 
-$passage_id = $_POST["passage_id"];
-$db->query("DELETE FROM passages WHERE passage_id=$passage_id");
+$record_id = $_POST["record_id"];
+$db->query("DELETE FROM passages WHERE passage_id = '$record_id'");
 ?>
