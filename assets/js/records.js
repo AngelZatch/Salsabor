@@ -2,7 +2,7 @@ $(document).ready(function(){
 	// Init by display all the active sessions
 	/* The goal here is to fetch all the active sessions when the page is loaded, then to wait 15 minutes before going to see if new sessions were activated. Thus, every 15 minutes we have to only get the newly activated sessions, which means the sessions that will begin in less than 90 minutes away from the time we're checking. As the sessions could have been added in a deorganised manner, we will construct an array of currently displayed sessions by ID to cross check what can be ignored by subsequent fetches.
 
-	The same goes the participations. We have to fetch the participations of only the sessions that are not collapsed. To do that, we create an array that will contain the non collapsed sessions, and every so often we'll refresh everything at once.
+	The same goes for the participations. We have to fetch the participations of only the sessions that are not collapsed. To do that, we create an array that will contain the non collapsed sessions, and every so often we'll refresh everything at once.
 	*/
 	var fetched = [];
 	displaySessions(fetched);
@@ -95,9 +95,8 @@ function fetchRecords(session_id){
 	$("#body-session-"+session_id).collapse("toggle");
 }
 
+/** To have up-to-date info on every non collapsed session, this function ensures the info is refreshed every so often. Of course, when something big such as a deletion is done, displayRecords can be called independently as it won't affect the global tick. **/
 function refreshTick(openedSessions){
-	/** To have up-to-date info on every non collapsed session, this function ensures the info is refreshed every so often. Of course, when something big such as a deletion is done, displayRecords can be called independently as it won't affect the global tick.
-	**/
 	/*console.log(openedSessions);*/
 	for(var i = 0; i < openedSessions.length; i++){
 		displayRecords(openedSessions[i]);
@@ -184,4 +183,8 @@ function deleteRecord(record_id){
 	$.post("functions/delete_record.php", {record_id}).done(function(){
 		$("#session-record-"+record_id).remove();
 	})
+}
+
+function changeProduct(record_id){
+
 }

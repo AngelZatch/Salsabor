@@ -1,5 +1,7 @@
 =status-border($width, $color)
+	border-top: $width solid $color
 	border-bottom: $width solid $color
+	background-color: transparentize($color, 0.7)
 
 .status-over
 	&.panel-record

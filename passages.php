@@ -20,5 +20,6 @@
 				</div>
 			</div>
 		</div>
+		<?php include "inserts/sub_modal_product.php";?>
 	</body>
 </html>

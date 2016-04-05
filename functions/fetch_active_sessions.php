@@ -9,7 +9,7 @@ if(!isset($_GET["fetched"])){
 								JOIN salle ON cours_salle=salle.salle_id
 								JOIN users ON prof_principal=users.user_id
 								JOIN niveau ON cours_niveau=niveau.niveau_id
-								WHERE ouvert=1
+								WHERE ouvert != 0
 								ORDER BY cours_start ASC, cours_id ASC");
 } else {
 	$fetched = $_GET["fetched"];
@@ -17,7 +17,7 @@ if(!isset($_GET["fetched"])){
 								JOIN salle ON cours_salle=salle.salle_id
 								JOIN users ON prof_principal=users.user_id
 								JOIN niveau ON cours_niveau=niveau.niveau_id
-								WHERE ouvert=1 AND cours_id NOT IN ('".implode($fetched, "','")."')
+								WHERE ouvert != 0 AND cours_id NOT IN ('".implode($fetched, "','")."')
 								ORDER BY cours_start ASC, cours_id ASC");
 }
 

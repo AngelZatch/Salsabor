@@ -20,39 +20,45 @@
   text-align: center;
   padding: 5px; }
 
-/* line 5, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
-.status-over.panel-record {
-  border-bottom: 3px solid #D9534F; }
-
 /* line 7, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
+.status-over.panel-record {
+  border-top: 3px solid #D9534F;
+  border-bottom: 3px solid #D9534F;
+  background-color: rgba(217, 83, 79, 0.3); }
+
+/* line 9, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
 .status-over:not(.panel-record) {
   border-left: 7px solid #D9534F; }
 
-/* line 9, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
+/* line 11, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
 .status-over:hover {
   background-color: #D9534F; }
 
-/* line 13, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
-.status-pre-success.panel-record {
-  border-bottom: 3px solid #79C3E5; }
-
 /* line 15, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
+.status-pre-success.panel-record {
+  border-top: 3px solid #79C3E5;
+  border-bottom: 3px solid #79C3E5;
+  background-color: rgba(121, 195, 229, 0.3); }
+
+/* line 17, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
 .status-pre-success:not(.panel-record) {
   border-left: 7px solid #79C3E5; }
 
-/* line 17, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
+/* line 19, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
 .status-pre-success:hover {
   background-color: #79C3E5; }
 
-/* line 21, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
-.status-success.panel-record {
-  border-bottom: 3px solid #87CE77; }
-
 /* line 23, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
+.status-success.panel-record {
+  border-top: 3px solid #87CE77;
+  border-bottom: 3px solid #87CE77;
+  background-color: rgba(135, 206, 119, 0.3); }
+
+/* line 25, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
 .status-success:not(.panel-record) {
   border-left: 7px solid #87CE77; }
 
-/* line 25, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
+/* line 27, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
 .status-success:hover {
   background-color: #87CE77; }
 
