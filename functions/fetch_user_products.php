@@ -2,14 +2,11 @@
 include "db_connect.php";
 $db = PDOFactory::getConnection();
 
-$record_id = $_POST["record_id"];
+$type = $_POST["type"];
+if($type == "participation"){
+	$participation_id = $_POST["argument_id"];
 
-$record = $db->query("SELECT passage_date FROM passages
-					WHERE passage_id = '$record_id'")->fetch(PDO::FETCH_ASSOC);
-
-$passage_date = date_create($record["passage_date"])->format("Y-m-d");
-
-$load = $db->query("SELECT id_produit_adherent, pa.actif AS produit_adherent_actif, pa.date_activation AS produit_adherent_activation, produit_nom, date_achat, est_illimite, volume_cours,
+	$load = $db->query("SELECT id_produit_adherent, pa.actif AS produit_adherent_actif, pa.date_activation AS produit_adherent_activation, produit_nom, date_achat, est_illimite, volume_cours,
 					IF(date_prolongee IS NOT NULL, date_prolongee,
 						IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
 						) AS produit_validity FROM produits_adherents pa
@@ -20,8 +17,22 @@ $load = $db->query("SELECT id_produit_adherent, pa.actif AS produit_adherent_act
 					WHERE id_user_foreign =
 						(SELECT eleve_id_foreign
 							FROM cours_participants
-							WHERE id='$record_id')
+							WHERE id='$participation_id')
 						AND est_abonnement != '1'");
+} else if($type == "record"){
+	$record_id = $_POST["argument_id"];
+
+	$load = $db->query("SELECT id_produit_adherent, pa.actif AS produit_adherent_actif, pa.date_activation AS produit_adherent_activation, produit_nom, date_achat, est_illimite, volume_cours,
+					IF(date_prolongee IS NOT NULL, date_prolongee,
+						IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
+						) AS produit_validity FROM produits_adherents pa
+					JOIN produits p
+						ON pa.id_produit_foreign = p.produit_id
+					LEFT JOIN transactions t
+						ON pa.id_transaction_foreign = t.id_transaction
+					WHERE id_user_foreign = (SELECT passage_eleve_id FROM passages WHERE passage_id = '$record_id')
+						AND est_abonnement != '1'");
+}
 
 $productList = array();
 while($details = $load->fetch(PDO::FETCH_ASSOC)){

@@ -24,6 +24,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$r = array();
 	$r["id"] = $details["passage_id"];
 	$r["card"] = $details["passage_eleve"];
+	$r["user_id"] = $details["passage_eleve_id"];
 	$r["user"] = $details["user_prenom"]." ".$details["user_nom"];
 	$r["photo"] = $details["photo"];
 	$r["date"] = $details["passage_date"];

@@ -31,6 +31,10 @@ $(document).ready(function(){
 				return arr !== session_id;
 			})
 	}
+}).on('click', '.report-product-record', function(){
+	var record_target = document.getElementById($(this).attr("id")).dataset.record;
+	var product_target = document.getElementById("product-selected").dataset.argument;
+	changeProductRecord(record_target, product_target);
 })
 
 function displaySessions(fetched){
@@ -133,13 +137,13 @@ function displayRecords(session_id){
 				contents += "<p class='col-lg-12 panel-item-title bf'>"+records_list[i].user+"</p>";
 				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
 				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].card+"</p>";
-				contents += "<p class='col-lg-12 session-record-details'><span class='glyphicon glyphicon-queen'></span> "+records_list[i].product_name+"</p>";
+				contents += "<p class='col-lg-12 session-record-details srd-product'><span class='glyphicon glyphicon-queen'></span> "+records_list[i].product_name+"</p>";
 				if(records_list[i].status == '2'){
 					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+records_list[i].id+")' title='Annuler la validation'></span></p>";
 				} else {
 					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+records_list[i].id+")' title='Valider le passage'></span></p>";
 				}
-				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button' title='Changer le produit'></span></p>";
+				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='report-record' data-argument='"+records_list[i].id+"' title='Changer le produit'></span></p>";
 				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-pushpin glyphicon-button' title='Changer le cours'></span></p>";
 				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' onclick='deleteRecord("+records_list[i].id+")' title='Supprimer le passage (IRREVERSIBLE)'></span></p>";
 			}
@@ -185,6 +189,25 @@ function deleteRecord(record_id){
 	})
 }
 
-function changeProduct(record_id){
-
+function changeProductRecord(record_id, target_product_id){
+	if(target_product_id == null){
+		console.log("No product has been indicated. Avorting...");
+	} else {
+		var wasValid = false;
+		if($("#session-record-"+record_id).hasClass("status-success")){
+			$.when(unvalidateRecord(record_id)).done(function(){
+				console.log("Unvalidate record "+record_id);
+				wasValid = true;
+			});
+		}
+		$.post("functions/set_product_record.php", {record_id : record_id, product_id : target_product_id}).done(function(product_name){
+			console.log("Product changed "+record_id);
+			$("#session-record-"+record_id+">p.srd-product").html("<span class='glyphicon glyphicon-queen'></span> "+product_name);
+			$(".sub-modal").hide();
+			if(wasValid){
+				console.log("Validating record "+record_id);
+				validateRecord(record_id);
+			}
+		})
+	}
 }

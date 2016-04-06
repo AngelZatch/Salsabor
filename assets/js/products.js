@@ -63,9 +63,7 @@ $(document).ready(function(){
 	$(".sub-modal").hide(0);
 	$(".sub-modal-body").empty();
 	var target = document.getElementById($(this).attr("id"));
-	var tpos = $(this).position();
-	var product_id = target.dataset.argument;
-	var type = target.dataset.subtype;
+	var tpos = $(this).position(), product_id = target.dataset.argument, type = target.dataset.subtype, toffset = $(this).offset();
 	console.log(product_id, type);
 
 	var title, body = "", footer = "";
@@ -91,14 +89,31 @@ $(document).ready(function(){
 
 		case 'report':
 			title = "Assigner à un autre produit";
-			var record_id = product_id;
+			var participation_id = product_id;
 			//displayEligibleProducts(record_id);
-			$.when(fetchEligibleProducts(record_id)).done(function(data){
+			$.when(fetchEligibleProducts(participation_id, "participation")).done(function(data){
 				var construct = displayEligibleProducts(data);
 				$(".sub-modal-body").html(construct);
 			})
 			footer += "<button class='btn btn-success report-product' id='btn-product-report' data-session='"+record_id+"'>Reporter</button>";
 			$(".sub-modal").css({top : tpos.top-45+'px'});
+			break;
+
+		case 'report-record':
+			title = "Changer le produit à utiliser";
+			var record_id = product_id;
+			$.when(fetchEligibleProducts(record_id, "record")).done(function(data){
+				var construct = displayEligibleProducts(data);
+				$(".sub-modal-body").html(construct);
+			})
+			footer += "<button class='btn btn-success report-product-record' id='btn-product-report-record' data-record='"+record_id+"'>Reporter</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-500+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			console.log(tpos);
 			break;
 
 		case 'delete':
@@ -315,8 +330,8 @@ function fillSessions(sessions){
 }
 
 /** Fetch the products that can be target of a record reassignment **/
-function fetchEligibleProducts(record_id){
-	return $.post("functions/fetch_user_products.php", {record_id : record_id});
+function fetchEligibleProducts(argument_id, argument_type){
+	return $.post("functions/fetch_user_products.php", {argument_id : argument_id, type : argument_type});
 }
 function displayEligibleProducts(data){
 	var products_list = JSON.parse(data), product_status, product_flavor_text, product_hours, product_purchase_date;
