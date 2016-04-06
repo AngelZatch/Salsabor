@@ -144,15 +144,15 @@ function displayRecords(session_id){
 				contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"'></div>";
 				contents += "<p class='col-lg-12 panel-item-title bf'>"+records_list[i].user+"</p>";
 				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
-				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].card+"</p>";
-				contents += "<p class='col-lg-12 session-record-details srd-product'><span class='glyphicon glyphicon-queen'></span> "+records_list[i].product_name+"</p>";
+				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-qrcode'></span> "+records_list[i].card+"</p>";
+				contents += "<p class='col-lg-12 session-record-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
 				if(records_list[i].status == '2'){
 					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+records_list[i].id+")' title='Annuler la validation'></span></p>";
 				} else {
 					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+records_list[i].id+")' title='Valider le passage'></span></p>";
 				}
 				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='report-record' data-argument='"+records_list[i].id+"' title='Changer le produit'></span></p>";
-				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-pushpin glyphicon-button' title='Changer le cours'></span></p>";
+				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-pushpin glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-session-record' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
 				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
 			}
 			contents += "</ul>";
@@ -200,7 +200,7 @@ function deleteRecord(record_id){
 /** This function will change the product the record will use when it's validated. If the record was valid before, then it'll be unvalidated to allow computing of the previous product, switched and then validated again for computing. **/
 function changeProductRecord(record_id, target_product_id){
 	if(target_product_id == null){
-		console.log("No product has been indicated. Avorting...");
+		console.log("No product has been indicated. Aborting...");
 	} else {
 		var wasValid = false;
 		if($("#session-record-"+record_id).hasClass("status-success")){
@@ -219,4 +219,26 @@ function changeProductRecord(record_id, target_product_id){
 			}
 		})
 	}
+}
+
+/** Similarly to the function above, this one will also fiddle with the validation if need be. Its main goal is changing the session attached to a record if a user just validated in the wrong place. It happens. More often that not. **/
+function changeSessionRecord(record_id, target_session_id){
+	if(target_session_id == null){
+		console.log("No session has been indicated. Aborting...");
+	} else {
+		var wasValid = false;
+		if($("#session-record-"+record_id).hasClass("status-success")){
+			$.when(unvalidateRecord(record_id)).done(function(){
+				wasValid = true;
+			})
+		}
+		$.post("functions/set_session_record.php", {record_id : record_id, session_id : target_session_id}).done(function(){
+			$("#session-record-"+record_id).remove();
+			if(wasValid){
+				validateRecord(record_id);
+			}
+			displayRecords(target_session_id);
+		})
+	}
+
 }

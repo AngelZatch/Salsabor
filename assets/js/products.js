@@ -64,12 +64,13 @@ $(document).ready(function(){
 	$(".sub-modal").hide(0);
 	$(".sub-modal-body").empty();
 	var target = document.getElementById($(this).attr("id"));
-	var tpos = $(this).position(), product_id = target.dataset.argument, type = target.dataset.subtype, toffset = $(this).offset();
+	var tpos = $(this).position(), type = target.dataset.subtype, toffset = $(this).offset();
 	/*console.log(product_id, type);*/
 
 	var title, body = "", footer = "";
 	switch(type){
 		case 'AREP':
+			var product_id = target.dataset.argument;
 			title = "Prolonger";
 			body += "<input type='text' class='form-control datepicker'/>";
 			footer += "<button class='btn btn-success extend-product' data-argument='"+product_id+"' id='btn-sm-extend'>Prolonger</button>";
@@ -81,6 +82,7 @@ $(document).ready(function(){
 			break;
 
 		case 'activate':
+			var product_id = target.dataset.argument;
 			title = "Activer";
 			body += "<input type='text' class='form-control datepicker'/>";
 			footer += "<button class='btn btn-success activate-product' data-argument='"+product_id+"' id='btn-sm-activate'>Activer</button>";
@@ -90,7 +92,7 @@ $(document).ready(function(){
 
 		case 'report':
 			title = "Assigner à un autre produit";
-			var participation_id = product_id;
+			var participation_id = target.dataset.argument;
 			//displayEligibleProducts(record_id);
 			$.when(fetchEligibleProducts(participation_id, "participation")).done(function(data){
 				var construct = displayEligibleProducts(data);
@@ -102,7 +104,7 @@ $(document).ready(function(){
 
 		case 'report-record':
 			title = "Changer le produit à utiliser";
-			var record_id = product_id;
+			var record_id = target.dataset.argument;
 			$.when(fetchEligibleProducts(record_id, "record")).done(function(data){
 				var construct = displayEligibleProducts(data);
 				$(".sub-modal-body").html(construct);
@@ -117,9 +119,21 @@ $(document).ready(function(){
 			}
 			break;
 
+		case 'change-session-record':
+			title = "Changer le lieu du passage";
+			var record_id = target.dataset.argument;
+			footer += "<button class='btn btn-success report-session-record' id='btn-session-changer-record' data-record='"+record_id+"'>Changer</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			break;
+
 		case 'delete':
 			title = "Supprimer une participation";
-			var participation_id = product_id;
+			var participation_id = target.dataset.argument;
 			body += "Êtes-vous sûr de vouloir supprimer cette participation ?";
 			$(".sub-modal-body").html(body);
 			footer += "<button class='btn btn-danger delete-participation col-lg-6' id='btn-product-delete' data-session='"+participation_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
@@ -128,7 +142,7 @@ $(document).ready(function(){
 
 		case 'delete-record':
 			title = "Supprimer un passage";
-			var record_id = product_id;
+			var record_id = target.dataset.argument;
 			body += "Êtes-vous sûr de vouloir supprimer ce passage ?";
 			$(".sub-modal-body").html(body);
 			footer += "<button class='btn btn-danger delete-record col-lg-6' id='btn-record-delete' data-record='"+record_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
@@ -142,10 +156,10 @@ $(document).ready(function(){
 
 		case 'unlink':
 			title = "Délier une participation";
-			var record_id = product_id;
+			var participation_id = target.dataset.argument;
 			body += "Êtes vous sûr de vouloir délier cette participation ? Vous la retrouverez dans les passages non régularisés";
 			$(".sub-modal-body").html(body);
-			footer += "<button class='btn btn-default unlink-session col-lg-6' id='btn-product-unlink' data-session='"+record_id+"'><span class='glyphicon glyphicon-link'></span> Délier</button> <button class='btn btn-default col-lg-6'>Annuler</button>";
+			footer += "<button class='btn btn-default unlink-session col-lg-6' id='btn-product-unlink' data-session='"+participation_id+"'><span class='glyphicon glyphicon-link'></span> Délier</button> <button class='btn btn-default col-lg-6'>Annuler</button>";
 			$(".sub-modal").css({top : tpos.top-45+'px'});
 			break;
 
