@@ -35,6 +35,14 @@ $(document).ready(function(){
 	var record_target = document.getElementById($(this).attr("id")).dataset.record;
 	var product_target = document.getElementById("product-selected").dataset.argument;
 	changeProductRecord(record_target, product_target);
+}).on('click', '.delete-record', function(){
+	var record_id = document.getElementById($(this).attr("id")).dataset.record;
+	console.log(record_id);
+	deleteRecord(record_id);
+}).on('click', function(e){ // Simulate closure of popover
+	if($(".sub-modal:hidden")){
+		$(".sub-modal").hide();
+	}
 })
 
 function displaySessions(fetched){
@@ -105,8 +113,8 @@ function refreshTick(openedSessions){
 	for(var i = 0; i < openedSessions.length; i++){
 		displayRecords(openedSessions[i]);
 	}
-	// The tick is set to every 60 seconds.
-	setTimeout(refreshTick, 60000, openedSessions);
+	// The tick is set to every 10 seconds.
+	setTimeout(refreshTick, 10000, openedSessions);
 }
 
 function displayRecords(session_id){
@@ -132,7 +140,7 @@ function displayRecords(session_id){
 						record_status = "status-over";
 						break;
 				}
-				contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-lg-2' id='session-record-"+records_list[i].id+"'>";
+				contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-lg-3' id='session-record-"+records_list[i].id+"'>";
 				contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"'></div>";
 				contents += "<p class='col-lg-12 panel-item-title bf'>"+records_list[i].user+"</p>";
 				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
@@ -145,7 +153,7 @@ function displayRecords(session_id){
 				}
 				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='report-record' data-argument='"+records_list[i].id+"' title='Changer le produit'></span></p>";
 				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-pushpin glyphicon-button' title='Changer le cours'></span></p>";
-				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' onclick='deleteRecord("+records_list[i].id+")' title='Supprimer le passage (IRREVERSIBLE)'></span></p>";
+				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
 			}
 			contents += "</ul>";
 			contents += "</div>";
@@ -189,6 +197,7 @@ function deleteRecord(record_id){
 	})
 }
 
+/** This function will change the product the record will use when it's validated. If the record was valid before, then it'll be unvalidated to allow computing of the previous product, switched and then validated again for computing. **/
 function changeProductRecord(record_id, target_product_id){
 	if(target_product_id == null){
 		console.log("No product has been indicated. Avorting...");
