@@ -98,7 +98,7 @@ $(document).ready(function(){
 				var construct = displayEligibleProducts(data);
 				$(".sub-modal-body").html(construct);
 			})
-			footer += "<button class='btn btn-success report-product' id='btn-product-report' data-session='"+record_id+"'>Reporter</button>";
+			footer += "<button class='btn btn-success report-product' id='btn-product-report' data-session='"+participation_id+"'>Reporter</button>";
 			$(".sub-modal").css({top : tpos.top-45+'px'});
 			break;
 
