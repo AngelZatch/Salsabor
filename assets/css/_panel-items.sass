@@ -15,3 +15,13 @@
 .panel-record
 	text-align: center
 	padding: 5px
+	height: 300px
+	cursor: default
+
+.panel-add-record
+	cursor: pointer
+	+status-border(3px, $empty-container-color)
+	&:hover
+		background-color: $empty-container-color
+		.empty-pp
+			border-color: white

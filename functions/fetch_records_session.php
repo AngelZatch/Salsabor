@@ -16,7 +16,7 @@ $load = $db->query("SELECT * FROM passages pg
 					JOIN users u ON pg.passage_eleve = u.user_rfid OR pg.passage_eleve_id = u.user_id
 					LEFT JOIN produits_adherents pa ON pg.produit_adherent_cible = pa.id_produit_adherent
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
-					WHERE ((status = '0' OR status = '3') AND lecteur_lieu = '$session[cours_salle]' AND passage_date >= '$limit_start' AND passage_date <= '$limit_end') OR (status = '2' AND cours_id = '$session_id')
+					WHERE lecteur_lieu = '$session[cours_salle]' AND cours_id = '$session_id'
 					ORDER BY user_nom ASC");
 
 $recordsList = array();

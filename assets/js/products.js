@@ -154,6 +154,20 @@ $(document).ready(function(){
 			}
 			break;
 
+		case 'add-record':
+			title = "Ajouter un passage manuellement";
+			var session_id = target.dataset.session;
+			body += "<input type='text' class='form-control name-input'>";
+			$(".sub-modal-body").html(body);
+			footer += "<button class='btn btn-success add-record col-lg-6' id='btn-add-record' data-session='"+session_id+"'><span class='glyphicon glyphicon-plus'></span> Ajouter </button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			break;
+
 		case 'unlink':
 			title = "Délier une participation";
 			var participation_id = target.dataset.argument;
@@ -204,7 +218,8 @@ $(document).ready(function(){
 		$(this).find(".session-options").remove();
 		session.removeClass("options-shown");
 	}
-}).on('click', '.sub-modal-product', function(){
+}).on('click', '.sub-modal-product', function(e){
+	e.stopPropagation();
 	$(".sub-modal-product>span").remove();
 	$(".sub-modal-product").attr("id", "");
 	$(this).append("<span class='glyphicon glyphicon-ok'></span>");
@@ -219,6 +234,8 @@ $(document).ready(function(){
 }).on('click', '.unlink-session', function(){
 	var session_target = document.getElementById($(this).attr("id")).dataset.session;
 	unlinkParticipation(session_target);
+}).on('click', '.form-control', function(e){
+	e.stopPropagation();
 })
 
 /** Fetch the purchase : products and maturities of the purchase **/

@@ -39,10 +39,38 @@ $(document).ready(function(){
 	var record_id = document.getElementById($(this).attr("id")).dataset.record;
 	console.log(record_id);
 	deleteRecord(record_id);
-}).on('click', function(e){ // Simulate closure of popover
+}).on('click', function(e){
 	if($(".sub-modal:hidden")){
 		$(".sub-modal").hide();
 	}
+}).on('focus', '.name-input', function(){
+	$.post("functions/get_user_list.php").done(function(data){
+		var userList = JSON.parse(data);
+		var autocompleteList = [];
+		for(var i = 0; i < userList.length; i++){
+			autocompleteList.push(userList[i].user);
+		}
+		$(".name-input").textcomplete([{
+			match: /(^|\b)(\w{2,})$/,
+			search: function(term, callback){
+				callback($.map(autocompleteList, function(item){
+					return item.indexOf(term) === 0 ? item : null;
+				}));
+			},
+			replace: function(item){
+				return item;
+			}
+		}]);
+	});
+	/*$(this).keypress(function(event){
+		if(event.which == 13){
+			console.log("coucou");
+		}
+	})*/
+}).on('click', '.add-record', function(){
+	var name = $(".name-input").val();
+	var session_id = document.getElementById($(this).attr("id")).dataset.session;
+	addRecord(session_id, name);
 })
 
 function displaySessions(fetched){
@@ -154,6 +182,13 @@ function displayRecords(session_id){
 				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='report-record' data-argument='"+records_list[i].id+"' title='Changer le produit'></span></p>";
 				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-pushpin glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-session-record' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
 				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+				contents += "</li>";
+				if(i == records_list.length - 1){
+					contents += "<li class='panel-item panel-record panel-add-record container-fluid trigger-sub col-lg-3' id='add-record-"+session_id+"' data-subtype='add-record' data-session='"+session_id+"'>";
+					contents += "<div class='small-user-pp empty-pp'></div>";
+					contents += "<p class='col-lg-12 panel-item-title bf'>Ajouter un passage manuellement</p>";
+					contents += "</li>";
+				}
 			}
 			contents += "</ul>";
 			contents += "</div>";
@@ -211,7 +246,7 @@ function changeProductRecord(record_id, target_product_id){
 		}
 		$.post("functions/set_product_record.php", {record_id : record_id, product_id : target_product_id}).done(function(product_name){
 			console.log("Product changed "+record_id);
-			$("#session-record-"+record_id+">p.srd-product").html("<span class='glyphicon glyphicon-queen'></span> "+product_name);
+			$("#session-record-"+record_id+">p.srd-product").html("<span class='glyphicon glyphicon-credit-card'></span> "+product_name);
 			$(".sub-modal").hide();
 			if(wasValid){
 				console.log("Validating record "+record_id);
@@ -241,4 +276,11 @@ function changeSessionRecord(record_id, target_session_id){
 		})
 	}
 
+}
+
+function addRecord(target_session_id, user_name){
+	$.post("functions/add_record.php", {name : user_name, session_id : target_session_id}).done(function(){
+		console.log("Record added");
+		displayRecords(target_session_id);
+	})
 }

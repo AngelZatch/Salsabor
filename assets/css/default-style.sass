@@ -1,4 +1,3 @@
-@import 'panel-items'
 $salsabor-red: #A80139
 $salsabor-yellow: #FAB913
 $system-color: #888888
@@ -8,17 +7,16 @@ $warning-color: #F0AD4E
 $danger-color: #D9534F
 $pending-color: #9491D6
 $near-danger-color: #F0684B
+$empty-container-color: #888888
 $light-red-color: lighten($danger-color, 20%)
-$play-color: #7DB8E0
-$whisper-color: #D5D5D5
 $avatar-size-preview: 120px
 $break-small: 360px
 $break-medium: 768px
 $break-large: 1200px
 $avatar-size-preview: 120px
 $avatar-big-preview: 170px
-
 @import 'status'
+@import 'panel-items'
 
 =circle-size($radius)
 	height: $radius !important
@@ -459,6 +457,10 @@ h2.modal-body-title.first
 	margin: 0 auto
 	img
 		width: inherit
+
+.empty-pp
+	+circle-size($avatar-size-preview)
+	border: 2px dashed $empty-container-color
 
 .user-summary
 	padding-left: $avatar-big-preview + 20px
