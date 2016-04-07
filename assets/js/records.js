@@ -161,7 +161,11 @@ function displayRecords(session_id){
 						break;
 
 					case '2':
-						record_status = "status-success";
+						if(records_list[i].product_name == "-"){
+							record_status = "status-partial-success";
+						} else {
+							record_status = "status-success";
+						}
 						break;
 
 					case '3':
@@ -201,9 +205,13 @@ function validateRecord(record_id){
 	$.post("functions/validate_record.php", {record_id : record_id}).done(function(product_id){
 		$("#session-record-"+record_id).removeClass("status-pre-success");
 		$("#session-record-"+record_id).removeClass("status-over");
-		$("#session-record-"+record_id).addClass("status-success");
+		if(product_id == 0 || product_id == null){
+			$("#session-record-"+record_id).addClass("status-partial-success");
+		} else {
+			$("#session-record-"+record_id).addClass("status-success");
+			computeRemainingHours(product_id);
+		}
 		$("#session-record-"+record_id+">#option-validate").html("<span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+record_id+")' title='Annuler la validation'></span>")
-		computeRemainingHours(product_id);
 	})
 }
 
@@ -213,6 +221,7 @@ function unvalidateRecord(record_id){
 		console.log(data);
 		var status = data.status, product_id = data.product_id;
 		$("#session-record-"+record_id).removeClass("status-success");
+		$("#session-record-"+record_id).removeClass("status-partial-success");
 		if(status == 0){
 			$("#session-record-"+record_id).addClass("status-pre-success");
 			computeRemainingHours(product_id);
@@ -244,13 +253,21 @@ function changeProductRecord(record_id, target_product_id){
 				wasValid = true;
 			});
 		}
-		$.post("functions/set_product_record.php", {record_id : record_id, product_id : target_product_id}).done(function(product_name){
-			console.log("Product changed "+record_id);
+		$.post("functions/set_product_record.php", {record_id : record_id, product_id : target_product_id}).done(function(response){
+			var data = JSON.parse(response);
+			var product_name = data.product_name, status = data.status;
 			$("#session-record-"+record_id+">p.srd-product").html("<span class='glyphicon glyphicon-credit-card'></span> "+product_name);
 			$(".sub-modal").hide();
 			if(wasValid){
-				console.log("Validating record "+record_id);
 				validateRecord(record_id);
+			} else {
+				$("#session-record-"+record_id).addClass("status-pre-success");
+				$("#session-record-"+record_id).addClass("status-over");
+				if(status == 0){
+					$("#session-record-"+record_id).addClass("status-pre-success");
+				} else {
+					$("#session-record-"+record_id).addClass("status-over");
+				}
 			}
 		})
 	}

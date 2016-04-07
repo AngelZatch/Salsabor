@@ -23,9 +23,9 @@ if(!isset($_POST["user_id"]) || !isset($_POST["session_id"])){
 $deleteParticipation = $db->query("DELETE FROM cours_participants WHERE cours_id_foreign = '$session_id' AND eleve_id_foreign = '$user_id'");
 
 $s = array();
-if(!isset($product_id)){
+if(!isset($product_id) || $product_id == null || $product_id == '0'){
 	$status = '3';
-	$s["product_id"] = null;
+	$s["product_id"] = 'NULL';
 } else {
 	$status = '0';
 	$s["product_id"] = $product_id;

@@ -79,22 +79,26 @@ if($product_id == ""){ // If the product has not been manually set
 		}
 	}
 }
-if(isset($product)){
-	$product_id = $product["id_produit_adherent"];
-} else {
-	$product = NULL;
-}
 
 // Confirming the record as a fleshed out participation
 $new = $db->prepare("INSERT INTO cours_participants(cours_id_foreign, eleve_id_foreign, produit_adherent_id)
 						VALUES(:cours, :eleve, :produit)");
 $new->bindParam(':cours', $session_id);
 $new->bindParam(':eleve', $user_id);
-$new->bindParam(':produit', $product_id);
-$new->execute();
 
-// Update the record as handled with the correct session and status
-$update = $db->query("UPDATE passages SET cours_id='$session_id', status=2 WHERE passage_id='$record_id'");
+if(isset($product)){
+	$product_id = $product["id_produit_adherent"];
+	// Update the record as handled with the correct session and status
+	$update = $db->query("UPDATE passages SET cours_id='$session_id', produit_adherent_cible = $product_id, status=2 WHERE passage_id='$record_id'");
+
+	$new->bindValue(':produit', $product_id, PDO::PARAM_INT);
+} else {
+	// Update the record as handled with the correct session and status
+	$update = $db->query("UPDATE passages SET cours_id='$session_id', produit_adherent_cible = NULL, status=2 WHERE passage_id='$record_id'");
+
+	$new->bindValue(':produit', NULL, PDO::PARAM_INT);
+}
+$new->execute();
 
 echo $product_id;
 ?>

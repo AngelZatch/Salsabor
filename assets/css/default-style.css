@@ -40,6 +40,20 @@
 .status-success:hover {
   background-color: #87CE77; }
 
+/* line 31, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
+.status-partial-success.panel-record {
+  border-top: 3px solid #F0AD4E;
+  border-bottom: 3px solid #F0AD4E;
+  background-color: rgba(240, 173, 78, 0.3); }
+
+/* line 33, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
+.status-partial-success:not(.panel-record) {
+  border-left: 7px solid #F0AD4E; }
+
+/* line 35, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
+.status-partial-success:hover {
+  background-color: #F0AD4E; }
+
 /* line 1, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .panel-item, .product-participation {
   margin-bottom: 10px;

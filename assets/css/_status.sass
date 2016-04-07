@@ -26,3 +26,11 @@
 		border-left: 7px solid $success-color
 	&:hover
 		background-color: $success-color
+
+.status-partial-success
+	&.panel-record
+		+status-border(3px, $warning-color)
+	&:not(.panel-record)
+		border-left: 7px solid $warning-color
+	&:hover
+		background-color: $warning-color
