@@ -11,7 +11,9 @@ $session = $db->query("SELECT cours_salle, cours_start
 $limit_start = date("Y-m-d H:i:s", strtotime($session["cours_start"].'-30MINUTES'));
 $limit_end = date("Y-m-d H:i:s", strtotime($session["cours_start"].'+30MINUTES'));
 
-$load = $db->query("SELECT * FROM passages pg
+$load = $db->query("SELECT *, IF(date_prolongee IS NOT NULL, date_prolongee,
+							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
+							) AS produit_validity FROM passages pg
 					JOIN lecteurs_rfid lr ON pg.passage_salle = lr.lecteur_ip
 					JOIN users u ON pg.passage_eleve = u.user_rfid OR pg.passage_eleve_id = u.user_id
 					LEFT JOIN produits_adherents pa ON pg.produit_adherent_cible = pa.id_produit_adherent
@@ -31,6 +33,12 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$r["status"] = $details["status"];
 	if($details["produit_nom"] != null){
 		$r["product_name"] = $details["produit_nom"];
+		$r["product_expiration"] = $details["produit_validity"];
+		if($details["est_illimite"] == "1"){
+			$r["product_hours"] = 9999;
+		} else {
+			$r["product_hours"] = $details["volume_cours"];
+		}
 	} else {
 		$r["product_name"] = "-";
 	}

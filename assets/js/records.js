@@ -5,10 +5,11 @@ $(document).ready(function(){
 	The same goes for the participations. We have to fetch the participations of only the sessions that are not collapsed. To do that, we create an array that will contain the non collapsed sessions, and every so often we'll refresh everything at once.
 	*/
 	var fetched = [];
-	displaySessions(fetched);
-	moment.locale('fr');
 	window.openedSessions = [];
-	refreshTick();
+	moment.locale('fr');
+	$.when(displaySessions(fetched)).done(function(){
+		refreshTick();
+	});
 }).on('click', '.panel-heading-container', function(){
 	var id = document.getElementById($(this).attr("id")).dataset.session;
 	fetchRecords(id);
@@ -17,14 +18,6 @@ $(document).ready(function(){
 	displayRecords(session_id);
 }).on('hidden.bs.collapse', ".panel-body", function(){
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
-	switch(window.openedSessions.length){
-		case 0:
-			break;
-
-		case 1:
-			window.openedSessions.length = 0;
-			break;
-	}
 }).on('click', '.report-product-record', function(){
 	var record_target = document.getElementById($(this).attr("id")).dataset.record;
 	var product_target = document.getElementById("product-selected").dataset.argument;
@@ -199,7 +192,15 @@ function displayRecords(session_id){
 				contents += "<p class='col-lg-12 panel-item-title bf'>"+records_list[i].user+"</p>";
 				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
 				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-qrcode'></span> "+records_list[i].card+"</p>";
-				contents += "<p class='col-lg-12 session-record-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+				// Indicating the product will soon expire
+				if(moment(records_list[i].product_expiration).isBefore(moment('now').add(5, 'days'))){
+					contents += "<p class='col-lg-12 session-record-details srd-product product-soon' title='Expiration prochaine : "+moment(records_list[i].product_expiration).format("DD/MM/YYYY")+"'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+				} else if(records_list[i].product_hours <= 3){
+					contents += "<p class='col-lg-12 session-record-details srd-product product-soon' title='Expiration prochaine : "+records_list[i].product_hours+" heures restantes'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+				} else {
+					contents += "<p class='col-lg-12 session-record-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+				}
+				// Different button depending on the status of the record
 				if(records_list[i].status == '2'){
 					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+records_list[i].id+")' title='Annuler la validation'></span></p>";
 				} else {
@@ -326,8 +327,19 @@ function addRecord(target_session_id, user_name){
 function closeSession(session_id){
 	$.post("functions/close_session.php", {session_id : session_id}).done(function(){
 		$("#session-"+session_id).remove();
-		window.openedSessions = jQuery.grep(window.openedSessions, function(arr){
-			return arr !== parseInt(session_id);
-		})
+		// We remove the recently closed session from the list to be refreshed.
+		switch(window.openedSessions.length){
+			case 0:
+				break;
+
+			case 1: // jQuery.grep() cannot empty an array
+				window.openedSessions.length = 0;
+				break;
+
+			default:
+				window.openedSessions = jQuery.grep(window.openedSessions, function(arr){
+					return arr !== parseInt(session_id);
+				})
+		}
 	})
 }

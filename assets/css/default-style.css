@@ -54,6 +54,11 @@
 .status-partial-success:hover {
   background-color: #F0AD4E; }
 
+/* line 38, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
+.product-soon {
+  font-weight: 700;
+  background-color: rgba(0, 0, 0, 0.3); }
+
 /* line 1, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .panel-item, .product-participation {
   margin-bottom: 10px;
