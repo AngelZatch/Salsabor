@@ -8,7 +8,7 @@ $(document).ready(function(){
 	displaySessions(fetched);
 	moment.locale('fr');
 	window.openedSessions = [];
-	refreshTick(window.openedSessions);
+	refreshTick();
 }).on('click', '.panel-heading-container', function(){
 	var id = document.getElementById($(this).attr("id")).dataset.session;
 	fetchRecords(id);
@@ -73,6 +73,10 @@ $(document).ready(function(){
 			validateRecord(document.getElementById($(this).attr("id")).dataset.record);
 		}
 	});
+}).on('click', '.close-session', function(e){
+	e.stopPropagation();
+	var session_id = document.getElementById($(this).attr("id")).dataset.session;
+	closeSession(session_id);
 })
 
 function displaySessions(fetched){
@@ -95,7 +99,7 @@ function displaySessions(fetched){
 			as_display += "<div class='container-fluid'>";
 			as_display += "<p class='session-id col-lg-5'>"+active_sessions[i].title+"</p>";
 			as_display += "<p class='session-date col-lg-5'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+" (<span class='relative-start'>"+relative_time+"</span>)</p>";
-			as_display += "<p class='col-lg-1 session-option'><span class='glyphicon glyphicon-lock' title='Verrouiller le cours'></span></p>";
+			as_display += "<p class='col-lg-1 session-option'><span class='glyphicon glyphicon-lock close-session' id='close-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Verrouiller le cours'></span></p>";
 			as_display += "<p class='col-lg-1 session-option'><span class='glyphicon glyphicon-ok-sign validate-session' id='validate-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Valider tous les passages'></span></p>";
 			as_display += "</div>";
 			// Container fluid for session level, teacher...
@@ -144,18 +148,19 @@ function fetchRecords(session_id){
 }
 
 /** To have up-to-date info on every non collapsed session, this function ensures the info is refreshed every so often. Of course, when something big such as a deletion is done, displayRecords can be called independently as it won't affect the global tick. **/
-function refreshTick(openedSessions){
-	/*console.log(openedSessions);*/
+function refreshTick(){
+	var openedSessions = window.openedSessions;
+	console.log(openedSessions);
 	for(var i = 0; i < openedSessions.length; i++){
 		displayRecords(openedSessions[i]);
 	}
 	// The tick is set to every 10 seconds.
-	setTimeout(refreshTick, 10000, openedSessions);
+	setTimeout(refreshTick, 10000);
 }
 
 function displayRecords(session_id){
 	$.get("functions/fetch_records_session.php", {session_id : session_id}).done(function(data){
-		console.log("showing");
+		console.log("showing"+session_id);
 		var records_list = JSON.parse(data);
 		$("#body-session-"+session_id).empty();
 		var contents = "<div class='row session-list-container' id='session-"+session_id+">";
@@ -313,5 +318,16 @@ function addRecord(target_session_id, user_name){
 	$.post("functions/add_record.php", {name : user_name, session_id : target_session_id}).done(function(){
 		console.log("Record added");
 		displayRecords(target_session_id);
+	})
+}
+
+/** Close a session will make it disappear from the records page by changing its state to 0.
+(0 : closed, 1 : opened and available for automatic records, 2 : opened but closed to automatic records)**/
+function closeSession(session_id){
+	$.post("functions/close_session.php", {session_id : session_id}).done(function(){
+		$("#session-"+session_id).remove();
+		window.openedSessions = jQuery.grep(window.openedSessions, function(arr){
+			return arr !== parseInt(session_id);
+		})
 	})
 }
