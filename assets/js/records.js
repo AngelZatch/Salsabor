@@ -15,7 +15,6 @@ $(document).ready(function(){
 }).on('shown.bs.collapse', ".panel-body", function(){
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
 	displayRecords(session_id);
-	window.openedSessions.push(parseInt(session_id));
 }).on('hidden.bs.collapse', ".panel-body", function(){
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
 	switch(window.openedSessions.length){
@@ -25,11 +24,6 @@ $(document).ready(function(){
 		case 1:
 			window.openedSessions.length = 0;
 			break;
-
-		default:
-			window.openedSessions = jQuery.grep(window.openedSessions, function(arr){
-				return arr !== session_id;
-			})
 	}
 }).on('click', '.report-product-record', function(){
 	var record_target = document.getElementById($(this).attr("id")).dataset.record;
@@ -106,6 +100,9 @@ function displaySessions(fetched){
 			as_display += "</div>";
 			// Container fluid for session level, teacher...
 			as_display += "<div class='container-fluid'>";
+			as_display += "<p class='col-lg-1'><span class='glyphicon glyphicon-user'></span> <span class='user-total-count' id='user-total-count-"+active_sessions[i].id+"'></span></p>";
+			as_display += "<p class='col-lg-1'><span class='glyphicon glyphicon-ok'></span> <span class='user-ok-count' id='user-ok-count-"+active_sessions[i].id+"'></span></p>";
+			as_display += "<p class='col-lg-1'><span class='glyphicon glyphicon-warning-sign'></span> <span class='user-warning-count' id='user-warning-count-"+active_sessions[i].id+"'></span></p>";
 			as_display += "<p class='col-lg-3'><span class='glyphicon glyphicon-signal'></span> "+active_sessions[i].level+"</p>";
 			as_display += "<p class='col-lg-3'><span class='glyphicon glyphicon-pushpin'></span> "+active_sessions[i].room+"</p>";
 			as_display += "<p class='col-lg-3'><span class='glyphicon glyphicon-blackboard'></span> "+active_sessions[i].teacher+"</p>";
@@ -117,6 +114,7 @@ function displaySessions(fetched){
 			as_display += "<div class='panel-body collapse' id='body-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"'>";
 			as_display += "</div></div>";
 			fetched.push(active_sessions[i].id);
+			window.openedSessions.push(parseInt(active_sessions[i].id));
 		}
 		$(".active-sessions-container").append(as_display);
 		var opened = $(".panel-session").length;
@@ -156,60 +154,65 @@ function refreshTick(openedSessions){
 }
 
 function displayRecords(session_id){
-	if($("#body-session-"+session_id).hasClass("in")){
-		$.get("functions/fetch_records_session.php", {session_id : session_id}).done(function(data){
-			console.log("showing");
-			var records_list = JSON.parse(data);
-			$("#body-session-"+session_id).empty();
-			var contents = "<div class='row session-list-container' id='session-"+session_id+">";
-			contents += "<ul class='records-inside-list records-product-list'>";
-			for(var i = 0; i <= records_list.length; i++){
-				if(i == records_list.length){
-					contents += "<li class='panel-item panel-record panel-add-record container-fluid trigger-sub col-lg-3' id='add-record-"+session_id+"' data-subtype='add-record' data-session='"+session_id+"'>";
-					contents += "<div class='small-user-pp empty-pp'></div>";
-					contents += "<p class='col-lg-12 panel-item-title bf'>Ajouter un passage manuellement</p>";
-					contents += "</li>";
-				} else {
-					var record_status;
-					switch(records_list[i].status){
-						case '0':
-							record_status = "status-pre-success";
-							break;
+	$.get("functions/fetch_records_session.php", {session_id : session_id}).done(function(data){
+		console.log("showing");
+		var records_list = JSON.parse(data);
+		$("#body-session-"+session_id).empty();
+		var contents = "<div class='row session-list-container' id='session-"+session_id+">";
+		contents += "<ul class='records-inside-list records-product-list'>";
+		var users = 0, ok = 0, warning = 0;
+		for(var i = 0; i <= records_list.length; i++){
+			if(i == records_list.length){
+				contents += "<li class='panel-item panel-record panel-add-record container-fluid trigger-sub col-lg-3' id='add-record-"+session_id+"' data-subtype='add-record' data-session='"+session_id+"'>";
+				contents += "<div class='small-user-pp empty-pp'></div>";
+				contents += "<p class='col-lg-12 panel-item-title bf'>Ajouter un passage manuellement</p>";
+				contents += "</li>";
+			} else {
+				var record_status;
+				switch(records_list[i].status){
+					case '0':
+						record_status = "status-pre-success";
+						break;
 
-						case '2':
-							if(records_list[i].product_name == "-"){
-								record_status = "status-partial-success";
-							} else {
-								record_status = "status-success";
-							}
-							break;
+					case '2':
+						if(records_list[i].product_name == "-"){
+							record_status = "status-partial-success";
+						} else {
+							record_status = "status-success";
+						}
+						ok++;
+						break;
 
-						case '3':
-							record_status = "status-over";
-							break;
-					}
-					contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-lg-3' id='session-record-"+records_list[i].id+"' data-record='"+records_list[i].id+"'>";
-					contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"'></div>";
-					contents += "<p class='col-lg-12 panel-item-title bf'>"+records_list[i].user+"</p>";
-					contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
-					contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-qrcode'></span> "+records_list[i].card+"</p>";
-					contents += "<p class='col-lg-12 session-record-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
-					if(records_list[i].status == '2'){
-						contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+records_list[i].id+")' title='Annuler la validation'></span></p>";
-					} else {
-						contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+records_list[i].id+")' title='Valider le passage'></span></p>";
-					}
-					contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='report-record' data-argument='"+records_list[i].id+"' title='Changer le produit'></span></p>";
-					contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-pushpin glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-session-record' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
-					contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
-					contents += "</li>";
+					case '3':
+						record_status = "status-over";
+						warning++;
+						break;
 				}
+				users++;
+				contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-lg-3' id='session-record-"+records_list[i].id+"' data-record='"+records_list[i].id+"'>";
+				contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"'></div>";
+				contents += "<p class='col-lg-12 panel-item-title bf'>"+records_list[i].user+"</p>";
+				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
+				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-qrcode'></span> "+records_list[i].card+"</p>";
+				contents += "<p class='col-lg-12 session-record-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+				if(records_list[i].status == '2'){
+					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+records_list[i].id+")' title='Annuler la validation'></span></p>";
+				} else {
+					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+records_list[i].id+")' title='Valider le passage'></span></p>";
+				}
+				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='report-record' data-argument='"+records_list[i].id+"' title='Changer le produit'></span></p>";
+				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-pushpin glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-session-record' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
+				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+				contents += "</li>";
 			}
-			contents += "</ul>";
-			contents += "</div>";
-			$("#body-session-"+session_id).append(contents);
-		})
-	}
+		}
+		contents += "</ul>";
+		contents += "</div>";
+		$("#body-session-"+session_id).append(contents);
+		$("#user-total-count-"+session_id).text(users);
+		$("#user-ok-count-"+session_id).text(ok);
+		$("#user-warning-count-"+session_id).text(warning);
+	})
 }
 
 function validateRecord(record_id){
