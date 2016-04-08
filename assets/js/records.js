@@ -71,6 +71,14 @@ $(document).ready(function(){
 	var name = $(".name-input").val();
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
 	addRecord(session_id, name);
+}).on('click', '.validate-session', function(e){
+	e.stopPropagation();
+	var session_id = document.getElementById($(this).attr("id")).dataset.session;
+	var record_ids = $("#body-session-"+session_id).find("li:not(.panel-add-record)").each(function(){
+		if($(this).hasClass("status-pre-success") || $(this).hasClass("status-over")){
+			validateRecord(document.getElementById($(this).attr("id")).dataset.record);
+		}
+	});
 })
 
 function displaySessions(fetched){
@@ -93,6 +101,8 @@ function displaySessions(fetched){
 			as_display += "<div class='container-fluid'>";
 			as_display += "<p class='session-id col-lg-5'>"+active_sessions[i].title+"</p>";
 			as_display += "<p class='session-date col-lg-5'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+" (<span class='relative-start'>"+relative_time+"</span>)</p>";
+			as_display += "<p class='col-lg-1 session-option'><span class='glyphicon glyphicon-lock' title='Verrouiller le cours'></span></p>";
+			as_display += "<p class='col-lg-1 session-option'><span class='glyphicon glyphicon-ok-sign validate-session' id='validate-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Valider tous les passages'></span></p>";
 			as_display += "</div>";
 			// Container fluid for session level, teacher...
 			as_display += "<div class='container-fluid'>";
@@ -178,7 +188,7 @@ function displayRecords(session_id){
 							record_status = "status-over";
 							break;
 					}
-					contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-lg-3' id='session-record-"+records_list[i].id+"'>";
+					contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-lg-3' id='session-record-"+records_list[i].id+"' data-record='"+records_list[i].id+"'>";
 					contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"'></div>";
 					contents += "<p class='col-lg-12 panel-item-title bf'>"+records_list[i].user+"</p>";
 					contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
@@ -206,11 +216,11 @@ function validateRecord(record_id){
 	$.post("functions/validate_record.php", {record_id : record_id}).done(function(product_id){
 		$("#session-record-"+record_id).removeClass("status-pre-success");
 		$("#session-record-"+record_id).removeClass("status-over");
-		if(product_id == 0 || product_id == null){
+		if(product_id == ""){
 			$("#session-record-"+record_id).addClass("status-partial-success");
 		} else {
 			$("#session-record-"+record_id).addClass("status-success");
-			computeRemainingHours(product_id);
+			computeRemainingHours(product_id, false);
 		}
 		$("#session-record-"+record_id+">#option-validate").html("<span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+record_id+")' title='Annuler la validation'></span>")
 	})
@@ -225,7 +235,7 @@ function unvalidateRecord(record_id){
 		$("#session-record-"+record_id).removeClass("status-partial-success");
 		if(status == 0){
 			$("#session-record-"+record_id).addClass("status-pre-success");
-			computeRemainingHours(product_id);
+			computeRemainingHours(product_id, false);
 		} else {
 			$("#session-record-"+record_id).addClass("status-over");
 		}
