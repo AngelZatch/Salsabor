@@ -20,7 +20,11 @@ $(document).ready(function(){
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
 }).on('click', '.report-product-record', function(){
 	var record_target = document.getElementById($(this).attr("id")).dataset.record;
-	var product_target = document.getElementById("product-selected").dataset.argument;
+	if($(this).attr("id") == "btn-product-null-record"){
+		var product_target = "-1";
+	} else {
+		var product_target = document.getElementById("product-selected").dataset.argument;
+	}
 	changeProductRecord(record_target, product_target);
 }).on('click', '.delete-record', function(){
 	var record_id = document.getElementById($(this).attr("id")).dataset.record;
@@ -79,11 +83,11 @@ function displaySessions(fetched){
 		$(".active-sessions-container").append(as_display);
 		for(var i = 0; i < active_sessions.length; i++){
 			var cours_start = moment(active_sessions[i].start);
-			if(cours_start > moment().format("DD/MM/YYYY HH:mm")){
+			/*if(cours_start > moment().format("DD/MM/YYYY HH:mm")){
 				var relative_time = cours_start.toNow();
 			} else {
 				var relative_time = cours_start.fromNow();
-			}
+			}*/
 			as_display += "<div class='panel panel-session' id='session-"+active_sessions[i].id+"'>";
 			// Panel heading
 			as_display += "<a class='panel-heading-container' id='ph-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"'>";
@@ -91,7 +95,7 @@ function displaySessions(fetched){
 			// Container fluid for session name and hour
 			as_display += "<div class='container-fluid'>";
 			as_display += "<p class='session-id col-lg-5'>"+active_sessions[i].title+"</p>";
-			as_display += "<p class='session-date col-lg-5'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+" (<span class='relative-start'>"+relative_time+"</span>)</p>";
+			as_display += "<p class='session-date col-lg-5'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+"</p>";
 			as_display += "<p class='col-lg-1 session-option'><span class='glyphicon glyphicon-lock close-session' id='close-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Verrouiller le cours'></span></p>";
 			as_display += "<p class='col-lg-1 session-option'><span class='glyphicon glyphicon-ok-sign validate-session' id='validate-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Valider tous les passages'></span></p>";
 			as_display += "</div>";
@@ -276,14 +280,15 @@ function changeProductRecord(record_id, target_product_id){
 		$.post("functions/set_product_record.php", {record_id : record_id, product_id : target_product_id}).done(function(response){
 			var data = JSON.parse(response);
 			var product_name = data.product_name, status = data.status;
+			console.log(status);
 			$("#session-record-"+record_id+">p.srd-product").html("<span class='glyphicon glyphicon-credit-card'></span> "+product_name);
 			$(".sub-modal").hide();
 			if(wasValid){
 				validateRecord(record_id);
 			} else {
-				$("#session-record-"+record_id).addClass("status-pre-success");
-				$("#session-record-"+record_id).addClass("status-over");
-				if(status == 0){
+				$("#session-record-"+record_id).removeClass("status-pre-success");
+				$("#session-record-"+record_id).removeClass("status-over");
+				if(status == '0'){
 					$("#session-record-"+record_id).addClass("status-pre-success");
 				} else {
 					$("#session-record-"+record_id).addClass("status-over");

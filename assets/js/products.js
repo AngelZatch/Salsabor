@@ -110,7 +110,7 @@ $(document).ready(function(){
 				$(".sub-modal-body").html(construct);
 			})
 			footer += "<button class='btn btn-success report-product-record' id='btn-product-report-record' data-record='"+record_id+"'>Reporter</button>";
-			/*footer += " <button class='btn btn-default btn-modal'><span class='glyphicon glyphicon-link'></span> Retirer</button>";*/
+			footer += " <button class='btn btn-default btn-modal report-product-record' id='btn-product-null-record' data-record='"+record_id+"'><span class='glyphicon glyphicon-link'></span> Retirer</button>";
 			$(".sub-modal").css({top : toffset.top+'px'});
 			if(toffset.left > 1000){
 				$(".sub-modal").css({left : toffset.left-350+'px'});
