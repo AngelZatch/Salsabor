@@ -91,12 +91,12 @@ function displaySessions(fetched){
 			as_display += "<div class='panel-heading'>";
 			// Container fluid for session name and hour
 			as_display += "<div class='container-fluid'>";
-			as_display += "<p class='session-id col-lg-4'>"+active_sessions[i].title+"</p>";
-			as_display += "<p class='session-date col-lg-8'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+" (<span class='relative-start'>"+relative_time+"</span>)</p>";
+			as_display += "<p class='session-id col-lg-5'>"+active_sessions[i].title+"</p>";
+			as_display += "<p class='session-date col-lg-5'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+" (<span class='relative-start'>"+relative_time+"</span>)</p>";
 			as_display += "</div>";
 			// Container fluid for session level, teacher...
 			as_display += "<div class='container-fluid'>";
-			as_display += "<p class='col-lg-2 col-lg-offset-4'><span class='glyphicon glyphicon-signal'></span> "+active_sessions[i].level+"</p>";
+			as_display += "<p class='col-lg-3'><span class='glyphicon glyphicon-signal'></span> "+active_sessions[i].level+"</p>";
 			as_display += "<p class='col-lg-3'><span class='glyphicon glyphicon-pushpin'></span> "+active_sessions[i].room+"</p>";
 			as_display += "<p class='col-lg-3'><span class='glyphicon glyphicon-blackboard'></span> "+active_sessions[i].teacher+"</p>";
 			as_display += "</div>";
@@ -127,7 +127,7 @@ function displaySessions(fetched){
 		}
 		/*console.log(fetched);*/
 		/*setTimeout(displaySessions, 5000, fetched);*/
-		setTimeout(displaySessions, 900000, fetched);
+		setTimeout(displaySessions, 60000, fetched);
 	})
 }
 
@@ -153,44 +153,45 @@ function displayRecords(session_id){
 			$("#body-session-"+session_id).empty();
 			var contents = "<div class='row session-list-container' id='session-"+session_id+">";
 			contents += "<ul class='records-inside-list records-product-list'>";
-			for(var i = 0; i < records_list.length; i++){
-				var record_status;
-				switch(records_list[i].status){
-					case '0':
-						record_status = "status-pre-success";
-						break;
-
-					case '2':
-						if(records_list[i].product_name == "-"){
-							record_status = "status-partial-success";
-						} else {
-							record_status = "status-success";
-						}
-						break;
-
-					case '3':
-						record_status = "status-over";
-						break;
-				}
-				contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-lg-3' id='session-record-"+records_list[i].id+"'>";
-				contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"'></div>";
-				contents += "<p class='col-lg-12 panel-item-title bf'>"+records_list[i].user+"</p>";
-				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
-				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-qrcode'></span> "+records_list[i].card+"</p>";
-				contents += "<p class='col-lg-12 session-record-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
-				if(records_list[i].status == '2'){
-					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+records_list[i].id+")' title='Annuler la validation'></span></p>";
-				} else {
-					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+records_list[i].id+")' title='Valider le passage'></span></p>";
-				}
-				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='report-record' data-argument='"+records_list[i].id+"' title='Changer le produit'></span></p>";
-				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-pushpin glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-session-record' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
-				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
-				contents += "</li>";
-				if(i == records_list.length - 1){
+			for(var i = 0; i <= records_list.length; i++){
+				if(i == records_list.length){
 					contents += "<li class='panel-item panel-record panel-add-record container-fluid trigger-sub col-lg-3' id='add-record-"+session_id+"' data-subtype='add-record' data-session='"+session_id+"'>";
 					contents += "<div class='small-user-pp empty-pp'></div>";
 					contents += "<p class='col-lg-12 panel-item-title bf'>Ajouter un passage manuellement</p>";
+					contents += "</li>";
+				} else {
+					var record_status;
+					switch(records_list[i].status){
+						case '0':
+							record_status = "status-pre-success";
+							break;
+
+						case '2':
+							if(records_list[i].product_name == "-"){
+								record_status = "status-partial-success";
+							} else {
+								record_status = "status-success";
+							}
+							break;
+
+						case '3':
+							record_status = "status-over";
+							break;
+					}
+					contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-lg-3' id='session-record-"+records_list[i].id+"'>";
+					contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"'></div>";
+					contents += "<p class='col-lg-12 panel-item-title bf'>"+records_list[i].user+"</p>";
+					contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
+					contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-qrcode'></span> "+records_list[i].card+"</p>";
+					contents += "<p class='col-lg-12 session-record-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+					if(records_list[i].status == '2'){
+						contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+records_list[i].id+")' title='Annuler la validation'></span></p>";
+					} else {
+						contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+records_list[i].id+")' title='Valider le passage'></span></p>";
+					}
+					contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='report-record' data-argument='"+records_list[i].id+"' title='Changer le produit'></span></p>";
+					contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-pushpin glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-session-record' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
+					contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
 					contents += "</li>";
 				}
 			}
