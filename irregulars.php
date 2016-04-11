@@ -52,7 +52,7 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 				var participation_id = document.getElementById($(this).attr("id")).dataset.argument;
 				$(".irregular-participation").removeClass("focused");
 				$(this).addClass("focused");
-				$.when(fetchEligibleProducts(participation_id)).done(function(data){
+				$.when(fetchEligibleProducts(participation_id, "participation")).done(function(data){
 					var construct = displayEligibleProducts(data);
 					construct += "<button class='btn btn-default btn-modal report-product' id='btn-product-report' data-session='"+participation_id+"'><span class='glyphicon glyphicon-arrow-right'></span> Associer</button> ";
 					construct += "<button class='btn btn-danger pre-delete' data-session='"+participation_id+"' id='btn-record-delete'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";

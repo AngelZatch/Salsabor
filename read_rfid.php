@@ -1,44 +1,37 @@
 <?php
 require_once 'functions/db_connect.php';
+include "functions/tools.php";
 $db = PDOFactory::getConnection();
 
 if(isset($_GET["carte"])){
 	$data = explode('*', $_GET["carte"]);
 	$tag_rfid = $data[0];
 	$ip_rfid = $data[1];
-	add($tag_rfid, $ip_rfid);
+	prepareRecord($db, $tag_rfid, $ip_rfid);
 }
 
 if(isset($_POST["add"])){
 	$tag_rfid = $_POST["tag"];
 	$ip_rfid = $_POST["salle"];
-	add($tag_rfid, $ip_rfid);
+	prepareRecord($db, $tag_rfid, $ip_rfid);
 }
 
-function add($tag, $ip){
-	$db = PDOFactory::getConnection();
-	$today = date_create('now')->format('Y-m-d H:i:s');
-
+function prepareRecord($db, $tag, $ip){
 	if($ip == "192.168.0.3"){
 		$status = "1";
 	} else {
-		$search = $db->query("SELECT * FROM users JOIN produits_adherents ON user_id=produits_adherents.id_user_foreign WHERE user_rfid='$tag'");
-		$res = $search->fetch(PDO::FETCH_ASSOC);
-		if($search->rowCount() == 0 || $res["date_expiration"] <= $today){
-			$status = "3";
-		} else {
-			$status = "0";
-		}
+		// If the tag is not for associating, we search a product that could be used for this session.
+		// First, we get the name of the session and the ID of the user.
+		// For the session, we have to find it based on the time of the record and the position.
+		$session = $db->query("SELECT cours_intitule, cours_id FROM cours c
+								JOIN lecteurs_rfid lr ON c.cours_salle = lr.lecteur_lieu
+								WHERE ouvert = '1' AND lecteur_ip = '$ip'")->fetch(PDO::FETCH_GROUP);
+		$cours_name = $session["cours_intitule"];
+		$session_id = $session["cours_id"];
+		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$tag'")->fetch(PDO::FETCH_COLUMN);
+
+		addRecord($db, $cours_name, $session_id, $user_id, $ip, $tag);
 	}
-
-	$new = $db->prepare("INSERT INTO passages(passage_eleve, passage_salle, passage_date, status)
-	VALUE(:tag, :salle, :date, :status)");
-	$new->bindParam(':tag', $tag);
-	$new->bindParam(':salle', $ip);
-	$new->bindParam(':date', $today);
-	$new->bindParam(':status', $status);
-	$new->execute();
-
 	header('Location: passages.php');
 }
 ?>
