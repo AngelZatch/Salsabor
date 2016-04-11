@@ -40,8 +40,8 @@ $queryIrregulars = $db->query("SELECT * FROM produits_adherents pa
 					<div class="container-fluid irregulars-container">
 						<ul class="purchase-inside-list purchase-product-list">
 							<?php while($irregulars = $queryIrregulars->fetch(PDO::FETCH_ASSOC)){ ?>
-							<li class="purchase-item item-overconsumed container-fluid" id="purchase-item-<?php echo $irregulars["id_produit_adherent"];?>" data-toggle='modal' data-target="#product-modal" data-argument="<?php echo $irregulars["id_produit_adherent"];?>">
-								<p class="col-lg-3 purchase-product-name"><?php echo $irregulars["produit_nom"];?></p>
+							<li class="purchase-item panel-item item-overconsumed container-fluid" id="purchase-item-<?php echo $irregulars["id_produit_adherent"];?>" data-toggle='modal' data-target="#product-modal" data-argument="<?php echo $irregulars["id_produit_adherent"];?>">
+								<p class="col-lg-3 panel-item-title"><?php echo $irregulars["produit_nom"];?></p>
 								<p class="col-lg-3 purchase-product-owner"><?php echo $irregulars["user_prenom"]." ".$irregulars["user_nom"];?></p>
 								<p class="col-lg-3 purchase-product-hours"><?php echo -1 * $irregulars["volume_cours"];?> heures en excès</p>
 								<p class="col-lg-1 purchase-price align-right"><?php echo $irregulars["prix_achat"];?> €</p>

@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="assets/css/fonts.css">
 
 <link rel="stylesheet" href="assets/css/jquery-ui.min.css">
+<link rel="stylesheet" href="assets/css/jquery.textcomplete.css">
 <link rel="stylesheet" href="assets/css/fullcalendar.min.css">
 <link rel="stylesheet" href="assets/css/jquery.ui.timepicker.css">
 <link rel="stylesheet" href="assets/css/bootstrap-popover-x.min.css">

@@ -2,16 +2,27 @@
 require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 
-$session_id = $_POST["session_id"];
-$user_id = $_POST["user_id"];
 $record_id = $_POST["record_id"];
-$product_id = $_POST["product_id"];
 
-$cours_name = $db->query("SELECT cours_intitule FROM cours WHERE cours_id = '$session_id'")->fetch(PDO::FETCH_COLUMN);
+$record_detais = $db->query("SELECT passage_eleve_id, cours_id, produit_adherent_cible FROM passages WHERE passage_id = '$record_id'")->fetch(PDO::FETCH_ASSOC);
+$user_id = $record_detais["passage_eleve_id"];
+$product_id = $record_detais["produit_adherent_cible"];
+$session_id = $record_detais["cours_id"];
+
+if(isset($_POST["session_id"])){
+	$session_id = $_POST["session_id"];
+}
+if(isset($_POST["product_id"])){
+	$product_id = $_POST["product_id"];
+}
+if(isset($_POST["user_id"])){
+	$user_id = $_POST["user_id"];
+}
 
 /** This code has to find the appropriate product to use for every single type of record ever. Once it has found the appropriate record, it will return his number and then the JS will call "Compute" with it. **/
 
-if($product_id == ""){ // If the product has not been manually set
+if($product_id == "" || !isset($product_id)){ // If the product has not been manually set
+	$cours_name = $db->query("SELECT cours_intitule FROM cours WHERE cours_id = '$session_id'")->fetch(PDO::FETCH_COLUMN);
 	// CASE WHERE THIS IS NOT A PRIVATE SESSION
 	if(preg_match("/jazz/i", $cours_name, $matches) || preg_match("/pilates/i", $cours_name, $matches) || preg_match("/particulier/i", $cours_name, $matches)){ // Search for specific Jazz, Pilates or private sessions
 		/*echo $matches[0];*/
@@ -64,22 +75,28 @@ if($product_id == ""){ // If the product has not been manually set
 		}
 	}
 }
-if(isset($product)){
-	$product_id = $product["id_produit_adherent"];
-} else {
-	$product = NULL;
-}
 
 // Confirming the record as a fleshed out participation
 $new = $db->prepare("INSERT INTO cours_participants(cours_id_foreign, eleve_id_foreign, produit_adherent_id)
 						VALUES(:cours, :eleve, :produit)");
 $new->bindParam(':cours', $session_id);
 $new->bindParam(':eleve', $user_id);
-$new->bindParam(':produit', $product_id);
-$new->execute();
 
-// Update the record as handled with the correct session and status
-$update = $db->query("UPDATE passages SET cours_id='$session_id', status=2 WHERE passage_id='$record_id'");
+if(isset($product) || $product_id != ""){
+	if(isset($product)){
+		$product_id = $product["id_produit_adherent"];
+	}
+	// Update the record as handled with the correct session and status
+	$update = $db->query("UPDATE passages SET cours_id='$session_id', produit_adherent_cible = '$product_id', status=2 WHERE passage_id='$record_id'");
+
+	$new->bindValue(':produit', $product_id, PDO::PARAM_INT);
+} else {
+	// Update the record as handled with the correct session and status
+	$update = $db->query("UPDATE passages SET cours_id='$session_id', produit_adherent_cible = NULL, status=2 WHERE passage_id='$record_id'");
+
+	$new->bindValue(':produit', NULL, PDO::PARAM_INT);
+}
+$new->execute();
 
 echo $product_id;
 ?>

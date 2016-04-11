@@ -1,0 +1,40 @@
+=status-border($width, $color)
+	border-top: $width solid $color
+	border-bottom: $width solid $color
+	background-color: transparentize($color, 0.7)
+
+.status-over
+	&.panel-record
+		+status-border(3px, $danger-color)
+	&:not(.panel-record)
+		border-left: 7px solid $danger-color
+	&:hover
+		background-color: $danger-color
+
+.status-pre-success
+	&.panel-record
+		+status-border(3px, $pre-success-color)
+	&:not(.panel-record)
+		border-left: 7px solid $pre-success-color
+	&:hover
+		background-color: $pre-success-color
+
+.status-success
+	&.panel-record
+		+status-border(3px, $success-color)
+	&:not(.panel-record)
+		border-left: 7px solid $success-color
+	&:hover
+		background-color: $success-color
+
+.status-partial-success
+	&.panel-record
+		+status-border(3px, $warning-color)
+	&:not(.panel-record)
+		border-left: 7px solid $warning-color
+	&:hover
+		background-color: $warning-color
+
+.product-soon
+	font-weight: 700
+	background-color: transparentize(black, 0.7)

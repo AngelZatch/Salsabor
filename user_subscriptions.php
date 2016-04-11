@@ -69,8 +69,8 @@ $queryForfaits->execute();
 			$item_class = "item-active";
 		}
 	}?>
-							<li class="purchase-item <?php echo $item_class;?> container-fluid" id="purchase-item-<?php echo $forfaits["id_produit_adherent"];?>" data-toggle='modal' data-target='#product-modal' data-argument="<?php echo $forfaits["id_produit_adherent"];?>">
-								<p class="col-lg-3 purchase-product-name"><?php echo $forfaits["produit_nom"];?></p>
+							<li class="purchase-item panel-item <?php echo $item_class;?> container-fluid" id="purchase-item-<?php echo $forfaits["id_produit_adherent"];?>" data-toggle='modal' data-target='#product-modal' data-argument="<?php echo $forfaits["id_produit_adherent"];?>">
+								<p class="col-lg-3 panel-item-title"><?php echo $forfaits["produit_nom"];?></p>
 								<p class="col-lg-3 purchase-product-validity">
 									<?php if($forfaits["produit_adherent_actif"] == '0'){
 		echo "En attente";

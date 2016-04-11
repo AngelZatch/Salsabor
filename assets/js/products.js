@@ -60,17 +60,17 @@ $(document).ready(function(){
 		$(".sub-modal").hide();
 	})
 }).on('click', '.trigger-sub', function(e){
+	e.stopPropagation();
 	$(".sub-modal").hide(0);
 	$(".sub-modal-body").empty();
 	var target = document.getElementById($(this).attr("id"));
-	var tpos = $(this).position();
-	var product_id = target.dataset.argument;
-	var type = target.dataset.subtype;
-	console.log(product_id, type);
+	var tpos = $(this).position(), type = target.dataset.subtype, toffset = $(this).offset();
+	/*console.log(product_id, type);*/
 
 	var title, body = "", footer = "";
 	switch(type){
 		case 'AREP':
+			var product_id = target.dataset.argument;
 			title = "Prolonger";
 			body += "<input type='text' class='form-control datepicker'/>";
 			footer += "<button class='btn btn-success extend-product' data-argument='"+product_id+"' id='btn-sm-extend'>Prolonger</button>";
@@ -82,6 +82,7 @@ $(document).ready(function(){
 			break;
 
 		case 'activate':
+			var product_id = target.dataset.argument;
 			title = "Activer";
 			body += "<input type='text' class='form-control datepicker'/>";
 			footer += "<button class='btn btn-success activate-product' data-argument='"+product_id+"' id='btn-sm-activate'>Activer</button>";
@@ -91,31 +92,93 @@ $(document).ready(function(){
 
 		case 'report':
 			title = "Assigner à un autre produit";
-			var record_id = product_id;
+			var participation_id = target.dataset.argument;
 			//displayEligibleProducts(record_id);
-			$.when(fetchEligibleProducts(record_id)).done(function(data){
+			$.when(fetchEligibleProducts(participation_id, "participation")).done(function(data){
 				var construct = displayEligibleProducts(data);
 				$(".sub-modal-body").html(construct);
 			})
-			footer += "<button class='btn btn-success report-product' id='btn-product-report' data-session='"+record_id+"'>Reporter</button>";
+			footer += "<button class='btn btn-success report-product' id='btn-product-report' data-session='"+participation_id+"'>Reporter</button>";
 			$(".sub-modal").css({top : tpos.top-45+'px'});
+			break;
+
+		case 'report-record':
+			title = "Changer le produit à utiliser";
+			var record_id = target.dataset.argument;
+			$.when(fetchEligibleProducts(record_id, "record")).done(function(data){
+				var construct = displayEligibleProducts(data);
+				$(".sub-modal-body").html(construct);
+			})
+			footer += "<button class='btn btn-success report-product-record' id='btn-product-report-record' data-record='"+record_id+"'>Reporter</button>";
+			footer += " <button class='btn btn-default btn-modal report-product-record' id='btn-product-null-record' data-record='"+record_id+"'><span class='glyphicon glyphicon-link'></span> Retirer</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			break;
+
+		case 'change-session-record':
+			title = "Changer le lieu du passage";
+			$.when(fetchActiveSessions()).done(function(data){
+				console.log(data);
+				var construct = displayTargetSessions(data);
+				$(".sub-modal-body").html(construct);
+			})
+			var record_id = target.dataset.argument;
+			footer += "<button class='btn btn-success report-session-record' id='btn-session-changer-record' data-record='"+record_id+"'>Changer</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
 			break;
 
 		case 'delete':
 			title = "Supprimer une participation";
-			var record_id = product_id;
+			var participation_id = target.dataset.argument;
 			body += "Êtes-vous sûr de vouloir supprimer cette participation ?";
 			$(".sub-modal-body").html(body);
-			footer += "<button class='btn btn-danger delete-participation col-lg-6' id='btn-product-delete' data-session='"+record_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			footer += "<button class='btn btn-danger delete-participation col-lg-6' id='btn-product-delete' data-session='"+participation_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
 			$(".sub-modal").css({top : tpos.top-45+'px'});
+			break;
+
+		case 'delete-record':
+			title = "Supprimer un passage";
+			var record_id = target.dataset.argument;
+			body += "Êtes-vous sûr de vouloir supprimer ce passage ?";
+			$(".sub-modal-body").html(body);
+			footer += "<button class='btn btn-danger delete-record col-lg-6' id='btn-record-delete' data-record='"+record_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			break;
+
+		case 'add-record':
+			title = "Ajouter un passage manuellement";
+			var session_id = target.dataset.session;
+			body += "<input type='text' class='form-control name-input'>";
+			$(".sub-modal-body").html(body);
+			footer += "<button class='btn btn-success add-record col-lg-6' id='btn-add-record' data-session='"+session_id+"'><span class='glyphicon glyphicon-plus'></span> Ajouter </button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
 			break;
 
 		case 'unlink':
 			title = "Délier une participation";
-			var record_id = product_id;
+			var participation_id = target.dataset.argument;
 			body += "Êtes vous sûr de vouloir délier cette participation ? Vous la retrouverez dans les passages non régularisés";
 			$(".sub-modal-body").html(body);
-			footer += "<button class='btn btn-default unlink-session col-lg-6' id='btn-product-unlink' data-session='"+record_id+"'><span class='glyphicon glyphicon-link'></span> Délier</button> <button class='btn btn-default col-lg-6'>Annuler</button>";
+			footer += "<button class='btn btn-default unlink-session col-lg-6' id='btn-product-unlink' data-session='"+participation_id+"'><span class='glyphicon glyphicon-link'></span> Délier</button> <button class='btn btn-default col-lg-6'>Annuler</button>";
 			$(".sub-modal").css({top : tpos.top-45+'px'});
 			break;
 
@@ -160,7 +223,8 @@ $(document).ready(function(){
 		$(this).find(".session-options").remove();
 		session.removeClass("options-shown");
 	}
-}).on('click', '.sub-modal-product', function(){
+}).on('click', '.sub-modal-product', function(e){
+	e.stopPropagation();
 	$(".sub-modal-product>span").remove();
 	$(".sub-modal-product").attr("id", "");
 	$(this).append("<span class='glyphicon glyphicon-ok'></span>");
@@ -175,6 +239,8 @@ $(document).ready(function(){
 }).on('click', '.unlink-session', function(){
 	var session_target = document.getElementById($(this).attr("id")).dataset.session;
 	unlinkParticipation(session_target);
+}).on('click', '.form-control', function(e){
+	e.stopPropagation();
 })
 
 /** Fetch the purchase : products and maturities of the purchase **/
@@ -204,8 +270,8 @@ function fetchPurchase(purchase_id){
 					item_status = "item-active";
 					text_status = "Valide du <span> "+moment(purchase_list[i].activation).format("DD/MM/YYYY")+"</span> au <span>"+moment(purchase_list[i].validity).format("DD/MM/YYYY")+"</span>";
 				}
-				contents += "<li class='purchase-item "+item_status+" container-fluid' id='purchase-item-"+purchase_list[i].id+"' data-toggle='modal' data-target='#product-modal' data-argument='"+purchase_list[i].id+"'>";
-				contents += "<p class='col-lg-12 purchase-product-name bf'>"+purchase_list[i].product+"</p>";
+				contents += "<li class='purchase-item panel-item "+item_status+" container-fluid' id='purchase-item-"+purchase_list[i].id+"' data-toggle='modal' data-target='#product-modal' data-argument='"+purchase_list[i].id+"'>";
+				contents += "<p class='col-lg-12 panel-item-title bf'>"+purchase_list[i].product+"</p>";
 				contents += "<div class='purchase-product-subdetails'>";
 				contents += "<p class='col-lg-3 purchase-product-validity'>";
 				contents += text_status;
@@ -234,20 +300,20 @@ function fetchPurchase(purchase_id){
 			contents += "<div class='row purchase-maturities-container' id='maturities-"+purchase_id+"'>";
 			contents += "<ul class='purchase-inside-list maturities-list'>";
 			for(var i = 0; i < maturities_list.length; i++){
-				contents += "<li class='purchase-item maturity-item container-fluid'>";
+				contents += "<li class='purchase-item panel-item maturity-item container-fluid'>";
 				contents += "<p class='col-lg-1'>"+moment(maturities_list[i].date).format("DD/MM/YYYY")+"</p>";
 				contents += "<p class='col-lg-1'>"+maturities_list[i].price+" €</p>";
 				contents += "<p class='col-lg-2'>"+maturities_list[i].method+"</p>";
 				contents += "<p class='col-lg-2'>"+maturities_list[i].payer+"</p>";
 				if(maturities_list[i].reception_status == '1'){
-					contents += "<p class='col-lg-1 status-icon status-success' id='icon-reception-"+maturities_list[i].id+"' title='Annuler réception' onClick='uncheckReception("+maturities_list[i].id+")'><span class='glyphicon glyphicon-ok'></span></p>";
+					contents += "<p class='col-lg-1 status-icon icon-success' id='icon-reception-"+maturities_list[i].id+"' title='Annuler réception' onClick='uncheckReception("+maturities_list[i].id+")'><span class='glyphicon glyphicon-ok'></span></p>";
 					contents += "<p class='col-lg-1' id='date-reception-"+maturities_list[i].id+"'>"+moment(maturities_list[i].date_reception).format("DD/MM/YYYY")+"</p>";
 				} else {
 					contents += "<p class='col-lg-1 status-icon' id='icon-reception-"+maturities_list[i].id+"' title='Valider réception' onClick='checkReception("+maturities_list[i].id+")'><span class='glyphicon glyphicon-ok'></span></p>";
 					contents += "<p class='col-lg-1' id='date-reception-"+maturities_list[i].id+"'>En attente</p>";
 				}
 				if(maturities_list[i].bank_status == '1'){
-					contents += "<p class='col-lg-1 status-icon status-success' id='icon-bank-"+maturities_list[i].id+"' title='Annuler encaissement' onClick='uncheckBank("+maturities_list[i].id+")'><span class='glyphicon glyphicon-download-alt'></span></p>";
+					contents += "<p class='col-lg-1 status-icon icon-success' id='icon-bank-"+maturities_list[i].id+"' title='Annuler encaissement' onClick='uncheckBank("+maturities_list[i].id+")'><span class='glyphicon glyphicon-download-alt'></span></p>";
 					contents += "<p class='col-lg-1' id='date-bank-"+maturities_list[i].id+"'>"+moment(maturities_list[i].date_bank).format("DD/MM/YYYY")+"</p>";
 				} else {
 					contents += "<p class='col-lg-1 status-icon' id='icon-bank-"+maturities_list[i].id+"' title='Valider encaissement' onClick='checkBank("+maturities_list[i].id+")'><span class='glyphicon glyphicon-download-alt'></span></p>";
@@ -315,8 +381,8 @@ function fillSessions(sessions){
 }
 
 /** Fetch the products that can be target of a record reassignment **/
-function fetchEligibleProducts(record_id){
-	return $.post("functions/fetch_user_products.php", {record_id : record_id});
+function fetchEligibleProducts(argument_id, argument_type){
+	return $.post("functions/fetch_user_products.php", {argument_id : argument_id, type : argument_type});
 }
 function displayEligibleProducts(data){
 	var products_list = JSON.parse(data), product_status, product_flavor_text, product_hours, product_purchase_date;
