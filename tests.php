@@ -20,8 +20,6 @@ $db = PDOFactory::getConnection();
 					$loading = explode(' ', $loading);
 					$loading = $loading[1] + $loading[0];
 					$start = $loading;
-					$product = null;
-					echo isset($product);
 					$loading = microtime();
 					$loading = explode(' ', $loading);
 					$loading = $loading[1] + $loading[0];
