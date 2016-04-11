@@ -7,9 +7,11 @@ $(document).ready(function(){
 	var fetched = [];
 	window.openedSessions = [];
 	moment.locale('fr');
-	$.when(displaySessions(fetched)).done(function(){
-		refreshTick();
-	});
+	$.when(fetchActiveSessions(fetched)).done(function(data){
+		$.when(displaySessions(data, fetched)).done(function(){
+			refreshTick();
+		});
+	})
 }).on('click', '.panel-heading-container', function(){
 	var id = document.getElementById($(this).attr("id")).dataset.session;
 	fetchRecords(id);
@@ -26,6 +28,10 @@ $(document).ready(function(){
 		var product_target = document.getElementById("product-selected").dataset.argument;
 	}
 	changeProductRecord(record_target, product_target);
+}).on('click', '.report-session-record', function(){
+	var record_id = document.getElementById($(this).attr("id")).dataset.record;
+	var session_target = document.getElementById("product-selected").dataset.session;
+	changeSessionRecord(record_id, session_target);
 }).on('click', '.delete-record', function(){
 	var record_id = document.getElementById($(this).attr("id")).dataset.record;
 	console.log(record_id);
@@ -76,68 +82,92 @@ $(document).ready(function(){
 	closeSession(session_id);
 })
 
-function displaySessions(fetched){
-	$.get("functions/fetch_active_sessions.php", {fetched : fetched}).done(function(data){
-		var active_sessions = JSON.parse(data);
-		var as_display = "";
-		$(".active-sessions-container").append(as_display);
-		for(var i = 0; i < active_sessions.length; i++){
-			var cours_start = moment(active_sessions[i].start);
-			/*if(cours_start > moment().format("DD/MM/YYYY HH:mm")){
+function fetchActiveSessions(fetched){
+	return $.get("functions/fetch_active_sessions.php", {fetched : fetched});
+}
+
+/** Two functions to display the active sessions : one for the page, one for the modal to report**/
+function displaySessions(data, fetched){
+	var active_sessions = JSON.parse(data);
+	var as_display = "";
+	$(".active-sessions-container").append(as_display);
+	for(var i = 0; i < active_sessions.length; i++){
+		var cours_start = moment(active_sessions[i].start);
+		/*if(cours_start > moment().format("DD/MM/YYYY HH:mm")){
 				var relative_time = cours_start.toNow();
 			} else {
 				var relative_time = cours_start.fromNow();
 			}*/
-			as_display += "<div class='panel panel-session' id='session-"+active_sessions[i].id+"'>";
-			// Panel heading
-			as_display += "<a class='panel-heading-container' id='ph-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"'>";
-			as_display += "<div class='panel-heading'>";
-			// Container fluid for session name and hour
-			as_display += "<div class='container-fluid'>";
-			as_display += "<p class='session-id col-lg-5'>"+active_sessions[i].title+"</p>";
-			as_display += "<p class='session-date col-lg-5'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+"</p>";
-			as_display += "<p class='col-lg-1 session-option'><span class='glyphicon glyphicon-lock close-session' id='close-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Verrouiller le cours'></span></p>";
-			as_display += "<p class='col-lg-1 session-option'><span class='glyphicon glyphicon-ok-sign validate-session' id='validate-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Valider tous les passages'></span></p>";
-			as_display += "</div>";
-			// Container fluid for session level, teacher...
-			as_display += "<div class='container-fluid'>";
-			as_display += "<p class='col-lg-1'><span class='glyphicon glyphicon-user'></span> <span class='user-total-count' id='user-total-count-"+active_sessions[i].id+"'></span></p>";
-			as_display += "<p class='col-lg-1'><span class='glyphicon glyphicon-ok'></span> <span class='user-ok-count' id='user-ok-count-"+active_sessions[i].id+"'></span></p>";
-			as_display += "<p class='col-lg-1'><span class='glyphicon glyphicon-warning-sign'></span> <span class='user-warning-count' id='user-warning-count-"+active_sessions[i].id+"'></span></p>";
-			as_display += "<p class='col-lg-3'><span class='glyphicon glyphicon-signal'></span> "+active_sessions[i].level+"</p>";
-			as_display += "<p class='col-lg-3'><span class='glyphicon glyphicon-pushpin'></span> "+active_sessions[i].room+"</p>";
-			as_display += "<p class='col-lg-3'><span class='glyphicon glyphicon-blackboard'></span> "+active_sessions[i].teacher+"</p>";
-			as_display += "</div>";
+		as_display += "<div class='panel panel-session' id='session-"+active_sessions[i].id+"'>";
+		// Panel heading
+		as_display += "<a class='panel-heading-container' id='ph-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"'>";
+		as_display += "<div class='panel-heading'>";
+		// Container fluid for session name and hour
+		as_display += "<div class='container-fluid'>";
+		as_display += "<p class='session-id col-lg-5'>"+active_sessions[i].title+"</p>";
+		as_display += "<p class='session-date col-lg-5'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+"</p>";
+		as_display += "<p class='col-lg-1 session-option'><span class='glyphicon glyphicon-lock close-session' id='close-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Verrouiller le cours'></span></p>";
+		as_display += "<p class='col-lg-1 session-option'><span class='glyphicon glyphicon-ok-sign validate-session' id='validate-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Valider tous les passages'></span></p>";
+		as_display += "</div>";
+		// Container fluid for session level, teacher...
+		as_display += "<div class='container-fluid'>";
+		as_display += "<p class='col-lg-1'><span class='glyphicon glyphicon-user'></span> <span class='user-total-count' id='user-total-count-"+active_sessions[i].id+"'></span></p>";
+		as_display += "<p class='col-lg-1'><span class='glyphicon glyphicon-ok'></span> <span class='user-ok-count' id='user-ok-count-"+active_sessions[i].id+"'></span></p>";
+		as_display += "<p class='col-lg-1'><span class='glyphicon glyphicon-warning-sign'></span> <span class='user-warning-count' id='user-warning-count-"+active_sessions[i].id+"'></span></p>";
+		as_display += "<p class='col-lg-3'><span class='glyphicon glyphicon-signal'></span> "+active_sessions[i].level+"</p>";
+		as_display += "<p class='col-lg-3'><span class='glyphicon glyphicon-pushpin'></span> "+active_sessions[i].room+"</p>";
+		as_display += "<p class='col-lg-3'><span class='glyphicon glyphicon-blackboard'></span> "+active_sessions[i].teacher+"</p>";
+		as_display += "</div>";
 
-			as_display += "</div>";
-			as_display += "</a>";
-			// Panel body
-			as_display += "<div class='panel-body collapse' id='body-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"'>";
-			as_display += "</div></div>";
-			fetched.push(active_sessions[i].id);
-			window.openedSessions.push(parseInt(active_sessions[i].id));
+		as_display += "</div>";
+		as_display += "</a>";
+		// Panel body
+		as_display += "<div class='panel-body collapse' id='body-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"'>";
+		as_display += "</div></div>";
+		fetched.push(active_sessions[i].id);
+		window.openedSessions.push(parseInt(active_sessions[i].id));
+	}
+	$(".active-sessions-container").append(as_display);
+	var opened = $(".panel-session").length;
+	switch(opened){
+		case 0:
+			$(".sub-legend").html("<span></span> Aucun cours n'est ouvert");
+			break;
+
+		case 1:
+			$(".sub-legend").html("<span></span> cours est actuellement ouvert");
+			$(".sub-legend>span").html(opened);
+			break;
+
+		default:
+			$(".sub-legend").html("<span></span> cours sont actuellements ouverts");
+			$(".sub-legend>span").html(opened);
+			break;
+	}
+	/*console.log(fetched);*/
+	/*setTimeout(displaySessions, 5000, fetched);*/
+	setTimeout(fetchActiveSessions, 60000, fetched);
+}
+function displayTargetSessions(data){
+	var sessions_list = JSON.parse(data);
+	var body = "<ul class='purchase-inside-list'>";
+	if(sessions_list.length == 0){
+		body += "Aucun cours n'est ouvert";
+	} else {
+		for(var i = 0; i < sessions_list.length; i++){
+			body += "<li class='sub-modal-product item-available' data-session='"+sessions_list[i].id+"'>";
+			body += "<p class='smp-title'>"+sessions_list[i].title+"</p>";
+			body += "<div class='row'>";
+			body += "<p class='col-xs-6'><span class='glyphicon glyphicon-time'></span> "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
+			body += "<p class='col-xs-6'><span class='glyphicon glyphicon-signal'></span> "+sessions_list[i].level+"</p>";
+			body += "<p class='col-xs-6'><span class='glyphicon glyphicon-pushpin'></span> "+sessions_list[i].room+"</p>";
+			body += "<p class='col-xs-6'><span class='glyphicon glyphicon-blackboard'></span> "+sessions_list[i].teacher+"</p>";
+			body += "</div>";
+			body += "</li>";
 		}
-		$(".active-sessions-container").append(as_display);
-		var opened = $(".panel-session").length;
-		switch(opened){
-			case 0:
-				$(".sub-legend").html("<span></span> Aucun cours n'est ouvert");
-				break;
-
-			case 1:
-				$(".sub-legend").html("<span></span> cours est actuellement ouvert");
-				$(".sub-legend>span").html(opened);
-				break;
-
-			default:
-				$(".sub-legend").html("<span></span> cours sont actuellements ouverts");
-				$(".sub-legend>span").html(opened);
-				break;
-		}
-		/*console.log(fetched);*/
-		/*setTimeout(displaySessions, 5000, fetched);*/
-		setTimeout(displaySessions, 60000, fetched);
-	})
+	}
+	body += "</ul>";
+	return body;
 }
 
 function fetchRecords(session_id){

@@ -273,6 +273,10 @@ a
 	@extend .item-overconsumed
 	background-color: lighten($danger-color, 20%)
 
+.item-available
+	&:hover
+		background-color: darken(white, 10%)
+
 .status-icon
 	text-align: center
 	color: $system-color
@@ -389,7 +393,7 @@ h2.modal-body-title.first
 	cursor: pointer
 	padding: 10px
 	margin: 5px 0
-	span
+	span.glyphicon-ok
 		float: right
 	p
 		margin-bottom: 0
