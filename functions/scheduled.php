@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $compare_start = date_create('now')->format('Y-m-d H:i:s');
 $compare_end = date("Y-m-d H:i:s", strtotime($compare_start.'+90MINUTES'));
-$compare_close = date("Y-m-d H:i:s", strtotime($compare_start).'+30MINUTES');
+$compare_close = date("Y-m-d H:i:s", strtotime($compare_start.'+30MINUTES'));
 
 try{
 	$db->beginTransaction();
@@ -15,7 +15,7 @@ try{
 	$update->execute();
 
 	// Leaves the sesssions open but doesn't accept records anymore for sessions that will end in the next 30 minutes.
-	$partial_close = $db->query("UPDATE cours SET ouvert = 2 WHERE cours_end <= '$compare_close'");
+	$partial_close = $db->query("UPDATE cours SET ouvert = 2 WHERE cours_end <= '$compare_close' AND ouvert = 1");
 	$db->commit();
 } catch(PDOException $e){
 	$db->rollBack();
