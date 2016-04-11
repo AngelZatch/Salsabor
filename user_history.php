@@ -50,6 +50,9 @@ $queryHistoryRecus->execute();
 						<?php } ?>
 					</ul>
 					<div class="container-fluid participations-list-container">
+						<p class="col-md-4"><span id="total-count"></span> Participations</p>
+						<p class="col-md-4"><span id="valid-count"></span> Participations valides</p>
+						<p class="col-md-4"><span id="over-count"></span> Participations hors forfait</p>
 						<button class='btn btn-default btn-modal btn-link-all' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Associer toutes les participations irrégulières</button>
 						<ul class="participations-list">
 							<?php while($history = $queryHistoryRecus->fetch(PDO::FETCH_ASSOC)){
@@ -82,5 +85,12 @@ $queryHistoryRecus->execute();
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
+		<script>
+			$(document).ready(function(){
+				$("#total-count").text($(".product-participation").length);
+				$("#valid-count").text($(".participation-valid").length);
+				$("#over-count").text($(".participation-over").length);
+			})
+		</script>
 	</body>
 </html>

@@ -428,6 +428,9 @@ function deleteParticipation(participation_id){
 			$(".irregulars-target-container").empty();
 			$("#participation-"+participation_id).remove();
 			computeRemainingHours(old_product, false);
+			$("#total-count").text($(".product-participation").length);
+			$("#valid-count").text($(".participation-valid").length);
+			$("#over-count").text($(".participation-over").length);
 		} else {
 			computeRemainingHours(old_product, true);
 		}
@@ -728,6 +731,9 @@ function reportSession(target_product_id, participation_id){
 			if(new_product != null){
 				$.when(fetchSingleParticipation(participation_id)).done(function(participation){
 					displaySingleParticipation(participation);
+					$("#total-count").text($(".product-participation").length);
+					$("#valid-count").text($(".participation-valid").length);
+					$("#over-count").text($(".participation-over").length);
 				});
 			}
 			if(old_product != null) computeRemainingHours(old_product, false);
@@ -788,6 +794,8 @@ function unlinkParticipation(participation_id){
 			computeRemainingHours(old_product, false);
 			$.when(fetchSingleParticipation(participation_id)).done(function(participation){
 				displaySingleParticipation(participation);
+				$("#valid-count").text($(".participation-valid").length);
+				$("#over-count").text($(".participation-over").length);
 			});
 		} else {
 			computeRemainingHours(old_product, true);
