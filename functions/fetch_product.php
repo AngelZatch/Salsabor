@@ -38,5 +38,7 @@ if($details["est_illimite"] == 1 || $details["est_cours_particulier"] == 1 || $d
 	$p["flag_hours"] = 1;
 }
 $p["status"] = $details["produit_adherent_actif"];
+$p["auto_status"] = $details["auto_status"];
+$p["auto_dates"] = $details["auto_dates"];
 echo json_encode($p);
 ?>

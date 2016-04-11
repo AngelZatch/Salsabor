@@ -56,7 +56,10 @@ $queryForfaits->execute();
 						<ul class="purchase-inside-list purchase-product-list">
 							<?php while($forfaits = $queryForfaits->fetch(PDO::FETCH_ASSOC)){
 	$date_activation = date_create($forfaits["produit_adherent_activation"]);
-	$date_expiration = date_create($forfaits["produit_validity"]);
+	$date_expiration = "-";
+	if($forfaits["produit_validity"] != null){
+		$date_expiration = date_create($forfaits["produit_validity"])->format('d/m/Y');
+	}
 	$today = date('Y-m-d');
 	if($forfaits["volume_cours"] < '0' && $forfaits["est_illimite"] != '1'){
 		$item_class = "item-overused";
@@ -75,9 +78,9 @@ $queryForfaits->execute();
 									<?php if($forfaits["produit_adherent_actif"] == '0'){
 		echo "En attente";
 	} else if($forfaits["produit_adherent_actif"] == '2'){
-		echo "Expiré le ".$date_expiration->format('d/m/Y');
+		echo "Expiré le ".$date_expiration;
 	} else {
-		echo "Valide du <span>".$date_activation->format('d/m/Y')."</span> au <span>".$date_expiration->format('d/m/Y')."</span>";
+		echo "Valide du <span>".$date_activation->format('d/m/Y')."</span> au <span>".$date_expiration."</span>";
 	}?>
 								</p>
 								<p class="col-lg-3 purchase-product-hours">

@@ -299,6 +299,15 @@ a
 	span
 		font-weight: 400
 		color: $salsabor-red
+	&.status-enabled
+		background-color: $salsabor-red
+		color: white
+		span
+			color: white
+	&.status-disabled:hover
+		background-color: transparentize($salsabor-red, 0.7)
+	&.disabled
+		background-color: $system-color
 
 .modal-body-title
 	font-size: 20px

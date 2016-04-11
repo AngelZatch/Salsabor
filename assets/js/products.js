@@ -52,6 +52,24 @@ $(document).ready(function(){
 			} else {
 				$(".participations-list").empty();
 			}
+			if(product_details.auto_status == 1){
+				var expiredAffix = "disabled";
+			} else {
+				var expiredAffix = "enabled";
+			}
+			buttons += "<button class='btn btn-default btn-block btn-modal "+expiredAffix+"' id='manual-expire' onclick='deactivateProduct("+product_details.id+", 2)'><span class='glyphicon glyphicon-hourglass'></span> Expirer</button>";
+			buttons += "<h2 class='modal-body-title'>Calculs auto.</h2>";
+			// Button to toggle automatic computing of this product.
+			if(product_details.auto_status == 1){
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='auto_status' data-product='"+product_details.id+"' data-boolean='"+product_details.auto_status+"'><span class='glyphicon glyphicon-floppy-saved'></span> Etat</button>";
+			} else {
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='auto_status' data-product='"+product_details.id+"' data-boolean='"+product_details.auto_status+"'><span class='glyphicon glyphicon-floppy-remove'></span> Etat</button>";
+			}
+			if(product_details.auto_dates == 1){
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='auto_dates' data-product='"+product_details.id+"' data-boolean='"+product_details.auto_dates+"'><span class='glyphicon glyphicon-floppy-saved'></span> Dates</button>";
+			} else {
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='auto_dates' data-product='"+product_details.id+"' data-boolean='"+product_details.auto_dates+"'><span class='glyphicon glyphicon-floppy-remove'></span> Dates</button>";
+			}
 			modal.find(".product-validity").empty();
 			modal.find(".product-validity").html(product_validity);
 			modal.find(".modal-actions").html(buttons);
@@ -241,7 +259,37 @@ $(document).ready(function(){
 	unlinkParticipation(session_target);
 }).on('click', '.form-control', function(e){
 	e.stopPropagation();
+}).on('click', '.btn-boolean', function(e){
+	e.stopPropagation();
+	var button = $(this);
+	var boolean_name = $(this).attr("id");
+	var product_id = document.getElementById($(this).attr("id")).dataset.product;
+	var old_value = document.getElementById($(this).attr("id")).dataset.boolean;
+	toggleBoolean(button, boolean_name, product_id, old_value);
 })
+
+function toggleBoolean(button, boolean_name, product_id, old_value){
+	$.post("functions/set_boolean.php", {boolean_name : boolean_name, product_id : product_id, old_value : old_value}).done(function(){
+		if(old_value == 0){ // Then the new value is 1.
+			button.removeClass("status-disabled");
+			button.addClass("status-enabled");
+			document.getElementById(button.attr("id")).dataset.boolean = 1;
+			computeRemainingHours(product_id, true);
+			if(button.attr("id") == "auto_status"){
+				$("#manual-expire").removeClass("enabled");
+				$("#manual-expire").addClass("disabled");
+			}
+		} else {
+			button.removeClass("status-enabled");
+			button.addClass("status-disabled");
+			document.getElementById(button.attr("id")).dataset.boolean = 0;
+			if(button.attr("id") == "auto_status"){
+				$("#manual-expire").removeClass("disabled");
+				$("#manual-expire").addClass("enabled");
+			}
+		}
+	})
+}
 
 /** Fetch the purchase : products and maturities of the purchase **/
 function fetchPurchase(purchase_id){
@@ -471,7 +519,11 @@ function computeRemainingHours(product_id, refresh){
 		$("#purchase-item-"+product_id).removeClass("item-consumed");
 		var values = JSON.parse(value);
 		console.log(values);
-		var date = moment(values.expiration).format("DD/MM/YYYY"), activation = moment(values.activation).format("DD/MM/YYYY"), usage = moment(values.usage).format("DD/MM/YYYY"), hours = values.hours, status = values.status, limit = values.limit;
+		var date = "-", activation = "-", usage = "-", hours = values.hours, status = values.status, limit = values.limit;
+		if(values.expiration != null){ var date = moment(values.expiration).format("DD/MM/YYYY"); }
+		if(values.activation != null){ var activation = moment(values.activation).format("DD/MM/YYYY"); }
+		if(values.usage != null){ var usage = moment(values.usage).format("DD/MM/YYYY"); }
+
 		if(status == 2){ // If the product is expired
 			if(hours < 0){ // If the product is overused
 				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ -1 * hours + " heures</span> de consommation excessive");
@@ -565,8 +617,8 @@ function activateProductWithDate(product_id, start_date){
 	})
 }
 
-function deactivateProduct(product_id){
-	$.post("functions/deactivate_product.php", {product_id : product_id}).done(function(data){
+function deactivateProduct(product_id, value){
+	$.post("functions/deactivate_product.php", {product_id : product_id, value : value}).done(function(data){
 		var value = JSON.parse(data);
 		if(value == 0){
 			$("#product-validity-"+product_id).html("<span class='highlighted-value'>En attente</span><br>d'activation");
@@ -578,7 +630,7 @@ function deactivateProduct(product_id){
 			$("#product-validity-"+product_id).html("<span class='highlighted-value'>Expiré</span><br>le "+moment(value).format("DD/MM/YYYY"));
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+moment(value).format("DD/MM/YYYY"));
 			$("#purchase-item-"+product_id).removeClass("item-pending");
-			$("#purchase-item-"+product_id).addClass("item-overused");
+			$("#purchase-item-"+product_id).addClass("item-expired");
 			$("#btn-activate-"+product_id).html("<span class='glyphicon glyphicon-play-circle'></span> Réactiver");
 		}
 		$("#purchase-item-"+product_id).removeClass("item-active");
