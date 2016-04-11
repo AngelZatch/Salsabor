@@ -757,6 +757,8 @@ function toggleBoolean(button, boolean_name, product_id, old_value){
 		if(old_value == 0){ // Then the new value is 1.
 			button.removeClass("status-disabled");
 			button.addClass("status-enabled");
+			button.children("span").removeClass("glyphicon-floppy-remove");
+			button.children("span").addClass("glyphicon-floppy-saved");
 			document.getElementById(button.attr("id")).dataset.boolean = 1;
 			computeRemainingHours(product_id, true);
 			if(button.attr("id") == "auto_status"){
@@ -766,6 +768,8 @@ function toggleBoolean(button, boolean_name, product_id, old_value){
 		} else {
 			button.removeClass("status-enabled");
 			button.addClass("status-disabled");
+			button.children("span").removeClass("glyphicon-floppy-saved");
+			button.children("span").addClass("glyphicon-floppy-remove");
 			document.getElementById(button.attr("id")).dataset.boolean = 0;
 			if(button.attr("id") == "auto_status"){
 				$("#manual-expire").removeClass("disabled");
