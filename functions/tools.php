@@ -142,5 +142,6 @@ function addRecord($db, $cours_name, $session_id, $user_id, $ip, $tag){
 		$new = $db->query("INSERT INTO passages(passage_eleve, passage_eleve_id, passage_salle, passage_date, status)
 					VALUES('$tag', '$user_id', '$ip', '$today', '$status')");
 	}
+	echo $ligne = $today.";".$tag.";".$ip."$-".$status;
 }
 ?>
