@@ -10,9 +10,10 @@ $ip_rfid = $data[1];
 prepareRecord($db, $tag_rfid, $ip_rfid);
 
 function prepareRecord($db, $tag, $ip){
+	$today = date_create('now')->format('Y-m-d H:i:s');
+	//$limit = date("Y-m-d H:i:s", strtotime($today.'+20MINUTES'));
 	if($ip == "192.168.0.3"){
 		$status = "1";
-		$today = date_create('now')->format('Y-m-d H:i:s');
 		$new = $db->query("INSERT INTO passages(passage_eleve, passage_salle, passage_date, status)
 					VALUES('$tag', '$ip', '$today', '$status')");
 		echo $ligne = $today.";".$tag.";".$ip."$";
@@ -31,7 +32,6 @@ function prepareRecord($db, $tag, $ip){
 		$duplicates = $db->query("SELECT * FROM passages WHERE passage_eleve = '$tag' AND cours_id='$session_id'")->rowCount();
 
 		if($duplicates > 0){
-			$today = date_create('now')->format('Y-m-d H:i:s');
 			echo $ligne = $today.";".$tag.";".$ip."$-3";
 		} else {
 			addRecord($db, $cours_name, $session_id, $user_id, $ip, $tag);
