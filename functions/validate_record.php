@@ -28,7 +28,7 @@ if($product_id == "" || !isset($product_id)){ // If the product has not been man
 		/*echo $matches[0];*/
 		$checkSpecific = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
 									JOIN produits p ON pa.id_produit_foreign = p.produit_id
-									JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
+									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
 									AND produit_nom LIKE '%$matches[0]%'
 									AND pa.actif != '2'
@@ -39,7 +39,7 @@ if($product_id == "" || !isset($product_id)){ // If the product has not been man
 	} else { // First, we search for any freebies
 		$checkInvitation = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
 									JOIN produits p ON pa.id_produit_foreign = p.produit_id
-									JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
+									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
 									AND produit_nom = 'Invitation'
 									AND pa.actif = '0'
@@ -49,7 +49,7 @@ if($product_id == "" || !isset($product_id)){ // If the product has not been man
 		} else { // If no freebies, we look for every currently active products.
 			$checkActive = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
 									JOIN produits p ON pa.id_produit_foreign = p.produit_id
-									JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
+									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
 									AND produit_nom != 'Invitation'
 									AND pa.actif = '1'
@@ -61,7 +61,7 @@ if($product_id == "" || !isset($product_id)){ // If the product has not been man
 			} else { // We check inactive products now.
 				$checkPending = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
 									JOIN produits p ON pa.id_produit_foreign = p.produit_id
-									JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
+									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
 									AND produit_nom != 'Invitation'
 									AND pa.actif = '0'

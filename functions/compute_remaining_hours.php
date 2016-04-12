@@ -21,7 +21,7 @@ $product_details = $db->query("SELECT volume_horaire, est_illimite, est_abonneme
 							) AS produit_validity FROM produits_adherents pa
 						JOIN produits p
 							ON pa.id_produit_foreign = p.produit_id
-						JOIN transactions t
+						LEFT JOIN transactions t
 							ON pa.id_transaction_foreign = t.id_transaction
 						WHERE id_produit_adherent = '$product_id'")->fetch(PDO::FETCH_ASSOC);
 
@@ -164,7 +164,7 @@ if($product_details["date_prolongee"] != null && $product_details["date_prolonge
 		$v["expiration"] = null;
 	}
 }
-if(isset($date_fin_utilisation)){
+if(isset($date_fin_utilisation) && $status == "2"){
 	$v["usage"] = $date_fin_utilisation;
 } else {
 	$v["usage"] = null;
