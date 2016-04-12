@@ -16,24 +16,27 @@
 		+status-border(3px, $pre-success-color)
 	&:not(.panel-record)
 		border-left: 7px solid $pre-success-color
-	&:hover
-		background-color: $pre-success-color
+	&:not(.options-shown)
+		&:hover
+			background-color: $pre-success-color
 
 .status-success
 	&.panel-record
 		+status-border(3px, $success-color)
 	&:not(.panel-record)
 		border-left: 7px solid $success-color
-	&:hover
-		background-color: $success-color
+	&:not(.options-shown)
+		&:hover
+			background-color: $success-color
 
 .status-partial-success
 	&.panel-record
 		+status-border(3px, $warning-color)
 	&:not(.panel-record)
 		border-left: 7px solid $warning-color
-	&:hover
-		background-color: $warning-color
+	&:not(.options-shown)
+		&:hover
+			background-color: $warning-color
 
 .product-soon
 	font-weight: 700

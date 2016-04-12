@@ -64,6 +64,7 @@ $queryTransactions = $db->query("SELECT * FROM produits_adherents WHERE id_user_
 			</div>
 		</div>
 		<?php include "inserts/modal_product.php";?>
+		<?php include "inserts/modal_maturity.php";?>
 		<script>
 			/** Check reception and banking of maturities **/
 			function checkReception(maturity_id){
