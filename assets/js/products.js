@@ -102,6 +102,10 @@ $(document).ready(function(){
 
 			// Buttons
 			var buttons = "";
+			/*buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-reception-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='reception-maturity'><span class='glyphicon glyphicon-ok'></span> Recevoir</button>";
+			buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-bank-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='bank-maturity'><span class='glyphicon glyphicon-download-alt'></span> Encaisser</button>";
+			buttons += "<button class='btn btn-default btn-block btn-modal'><span class='glyphicon glyphicon-euro'></span> Changer mont.</button>";
+			buttons += "<button class='btn btn-danger btn-block btn-modal triger-sub' id='btn-delete-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='delete-maturity'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";*/
 			buttons += "<h2 class='modal-body-title'>Calculs auto.</h2>";
 			if(maturity_details.auto_montant == 1){
 				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='auto_montant' data-maturity='"+maturity_details.id+"' data-boolean='"+maturity_details.auto_montant+"'><span class='glyphicon glyphicon-floppy-saved'></span> Montant</button>";
