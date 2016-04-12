@@ -471,7 +471,11 @@ function displayEligibleProducts(data){
 		body += "Aucun produit n'est disponible";
 	} else{
 		for(var i = 0; i < products_list.length; i++){
-			product_purchase_date = "Acheté le "+moment(products_list[i].transaction_achat).format("DD/MM/YYYY");
+			if(products_list[i].transaction_achat != null){
+				product_purchase_date = "Acheté le "+moment(products_list[i].transaction_achat).format("DD/MM/YYYY");
+			} else {
+				product_purchase_date = "Pas de transaction";
+			}
 			switch(products_list[i].status){
 				case '1':
 					product_status = "item-active";
