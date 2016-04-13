@@ -82,6 +82,9 @@ $new = $db->prepare("INSERT INTO cours_participants(cours_id_foreign, eleve_id_f
 $new->bindParam(':cours', $session_id);
 $new->bindParam(':eleve', $user_id);
 
+$today = date_create('now')->format('Y-m-d H:i:s');
+$activateUser = $db->query("UPDATE users SET actif = '1', date_last='$today' WHERE user_id='$user_id'");
+
 if(isset($product) || $product_id != ""){
 	if(isset($product)){
 		$product_id = $product["id_produit_adherent"];
