@@ -3,7 +3,7 @@ require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $compare_start = date_create('now')->format('Y-m-d');
-$activationLimit = date("Y-m-d H:i:s", strtotime($compare_start.'-90DAYS'));
+$activationLimit = date("Y-m-d H:i:s", strtotime($compare_start.'-1YEAR'));
 
 try{
 	$db->beginTransaction();
