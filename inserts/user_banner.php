@@ -14,10 +14,14 @@
 		</div>
 		<div class="col-lg-6">
 			<?php if($details["actif"] == 1){ ?>
-				<span class="label label-success">Actif</span>
+			<span class="label label-success">Actif</span>
+			<?php } else {
+	if(isset($details["date_last"]) && $details["date_last"] != "0000-00-00 00:00:00"){ ?>
+			<span class="label label-danger">Inactif depuis le <?php echo date_create($details["date_last"])->format("d/m/Y");?></span>
 			<?php } else { ?>
-				<span class="label label-danger">Inactif</span>
-			<?php } ?>
+			<span class="label label-danger">Inactif</span>
+			<?php }
+} ?>
 		</div>
 	</div>
 </div>
