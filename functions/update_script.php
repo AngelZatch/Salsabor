@@ -8,6 +8,6 @@ $findActive = $db->query("SELECT date_achat, payeur_transaction FROM transaction
 while($active = $findActive->fetch(PDO::FETCH_ASSOC)){
 	$lastDate = $active["date_achat"];
 	$user_id = $active["payeur_transaction"];
-	$activateUser = $db->query("UPDATE users SET actif = '1', date_last='$lastDate' WHERE user_d='$user_id'");
+	$activateUser = $db->query("UPDATE users SET actif = '1', date_last='$lastDate' WHERE user_id='$user_id'");
 }
 ?>
