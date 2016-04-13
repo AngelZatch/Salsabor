@@ -102,9 +102,13 @@ $(document).ready(function(){
 
 			// Buttons
 			var buttons = "";
-			/*buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-reception-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='reception-maturity'><span class='glyphicon glyphicon-ok'></span> Recevoir</button>";
+			if(maturity_details.reception_status == 1){
+				buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-reception-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='reception-maturity'><span class='glyphicon glyphicon-ok'></span> Annuler réc.</button>";
+			} else {
+				buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-reception-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='reception-maturity'><span class='glyphicon glyphicon-ok'></span> Recevoir</button>";
+			}
 			buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-bank-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='bank-maturity'><span class='glyphicon glyphicon-download-alt'></span> Encaisser</button>";
-			buttons += "<button class='btn btn-default btn-block btn-modal'><span class='glyphicon glyphicon-euro'></span> Changer mont.</button>";
+			/*buttons += "<button class='btn btn-default btn-block btn-modal'><span class='glyphicon glyphicon-euro'></span> Changer mont.</button>";
 			buttons += "<button class='btn btn-danger btn-block btn-modal triger-sub' id='btn-delete-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='delete-maturity'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";*/
 			buttons += "<h2 class='modal-body-title'>Calculs auto.</h2>";
 			if(maturity_details.auto_montant == 1){
@@ -249,6 +253,15 @@ $(document).ready(function(){
 			$(".sub-modal").css({top : tpos.top-45+'px'});
 			break;
 
+		case 'reception-maturity':
+			var maturity_id = target.dataset.maturity;
+			title = "Réception de l'échéance";
+			body += "<input type='text' class='form-control datepicker'/>";
+			footer += "<button class='btn btn-success receive-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
 		default:
 			title = "Sub modal";
 			break;
@@ -334,6 +347,10 @@ $(document).ready(function(){
 }).on('click', '.delete-product', function(){
 	var product_id = document.getElementById($(this).attr("id")).dataset.product;
 	deleteProduct(product_id);
+}).on('click', '.receive-maturity', function(){
+	var date = moment($("#maturity-modal").find($(".datepicker")).val(),"DD/MM/YYYY").format("YYYY-MM-DD");
+	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
+	receiveMaturity(maturity_id, date);
 })
 
 function activateProductWithDate(product_id, start_date){
@@ -771,6 +788,18 @@ function linkAll(){
 	}
 	$("#link-all").text("En cours...");
 	link(invalidMap, 0);
+}
+
+function receiveMaturity(maturity_id, date){
+	console.log(maturity_id, date);
+	$.post("functions/receive_maturity.php", {maturity_id : maturity_id, date : date}).done(function(){
+		if(moment(date).isValid()){
+
+		} else {
+			$(".reception-slot-date").text(moment(date).format("DD/MM/YYYY"));
+		}
+		$(".sub-modal").hide();
+	})
 }
 
 function reportSession(target_product_id, participation_id){
