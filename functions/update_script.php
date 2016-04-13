@@ -5,7 +5,7 @@ $db = PDOFactory::getConnection();
 /** Script to call after a system update when a database update is required **/
 $update = $db->query("ALTER TABLE users
 					CHANGE date_inactivation date_last DATETIME
-					ALTER actif SET DEFAULT '1'");
+					ALTER actif DEFAULT '1'");
 
 /** Now we have to see all active users **/
 $findActive = $db->query("SELECT date_achat, payeur_transaction FROM transactions GROUP BY payeur_transaction");
