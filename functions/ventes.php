@@ -209,6 +209,8 @@ function vente(){
 			$pdf->Write(0, $infos);*/
 		}
 
+		$activateUser = $db->query("UPDATE users SET actif = '1', date_last='$date_achat' WHERE user_id='$payeur[user_id]'");
+
 		$db->commit();
 
 		//		$pdf->Output();

@@ -1,8 +1,9 @@
-s<?php
+<?php
 require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $compare_start = date_create('now')->format('Y-m-d');
+$activationLimit = date("Y-m-d H:i:s", strtotime($compare_start.'-90DAYS'));
 
 try{
 	$db->beginTransaction();
@@ -26,6 +27,11 @@ try{
 	$deactivateProduit = $db->prepare("UPDATE produits SET actif=0 WHERE date_desactivation<=?");
 	$deactivateProduit->bindParam(1, $compare_start);
 	$deactivateProduit->execute();
+
+	$findActive = $db->query("SELECT date_achat, payeur_transaction FROM transactions GROUP BY payeur_transaction");
+
+	// We deactivate any user that didn't buy a product or attended a session for more than 3 months.
+	$deactivateUser = $db->query("UPDATE users SET actif = 0 WHERE actif = '1' AND date_last < '$activationLimit'");
 
 	$db->commit();
 } catch(PDOException $e){

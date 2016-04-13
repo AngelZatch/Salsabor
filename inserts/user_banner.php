@@ -12,5 +12,12 @@
 			<p><span class="glyphicon glyphicon-earphone"></span> <?php echo $details["telephone"];?></p>
 			<p><span class="glyphicon glyphicon-home"></span> <?php echo $details["rue"];?> - <?php echo $details["code_postal"]." ".$details["ville"];?></p>
 		</div>
+		<div class="col-lg-6">
+			<?php if($details["actif"] == 1){ ?>
+				<span class="label label-success">Actif</span>
+			<?php } else { ?>
+				<span class="label label-danger">Inactif</span>
+			<?php } ?>
+		</div>
 	</div>
 </div>
