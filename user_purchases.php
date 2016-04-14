@@ -19,8 +19,10 @@ $queryTransactions = $db->query("SELECT * FROM produits_adherents WHERE id_user_
 		<title>Achats - <?php echo $details["user_prenom"]." ".$details["user_nom"];?> | Salsabor</title>
 		<base href="../../">
 		<?php include "styles.php";?>
+		<link rel="stylesheet" href="assets/css/bootstrap-slider.min.css">
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
+		<script src="assets/js/bootstrap-slider.min.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>

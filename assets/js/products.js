@@ -368,6 +368,12 @@ $(document).ready(function(){
 	var date = moment($("#maturity-modal").find($(".datepicker")).val(),"DD/MM/YYYY").format("YYYY-MM-DD");
 	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
 	bankMaturity(maturity_id, date);
+}).on('click', '.slider', function(e){
+	e.stopPropagation();
+}).on('slide', '.slider', function(e){
+	var target_id = $(this).data().maturity;
+	$("#maturity-"+target_id+"-price").text(e.value+".00 €");
+	//console.log(document.getElementById($(this).next("p").attr("id")).dataset.maturity);
 })
 
 function activateProductWithDate(product_id, start_date){
@@ -667,32 +673,31 @@ function fetchPurchase(purchase_id){
 			contents += "<p class='purchase-subtitle'>Echéancier</p>";
 			contents += "<div class='row purchase-maturities-container' id='maturities-"+purchase_id+"'>";
 			contents += "<ul class='purchase-inside-list maturities-list'>";
+			var totalPrice = 0;
 			for(var i = 0; i < maturities_list.length; i++){
 				contents += "<li class='purchase-item panel-item maturity-item container-fluid' id='maturity-"+maturities_list[i].id+"' data-toggle='modal' data-target='#maturity-modal' data-maturity='"+maturities_list[i].id+"'>";
 				contents += "<div class='container-fluid'>";
-				contents += "<p class='panel-item-title bf'>"+maturities_list[i].method+" pour "+maturities_list[i].price+" € <span class='label label-danger'></p>";
-				contents += "</div><div class='container-fluid'>";
-				contents += "<p class='col-lg-3'>Prévue le "+moment(maturities_list[i].date).format("DD/MM/YYYY")+"</p>";
-				contents += "<p class='col-lg-3'>"+maturities_list[i].payer+"</p>";
-				if(maturities_list[i].reception_status == '1'){
-					contents += "<p class='col-lg-1 status-icon icon-success' id='icon-reception-"+maturities_list[i].id+"' title='Annuler réception' onClick='uncheckReception("+maturities_list[i].id+")'><span class='glyphicon glyphicon-ok'></span></p>";
-					contents += "<p class='col-lg-2' id='date-reception-"+maturities_list[i].id+"'>"+moment(maturities_list[i].date_reception).format("DD/MM/YYYY")+"</p>";
-				} else {
-					contents += "<p class='col-lg-1 status-icon' id='icon-reception-"+maturities_list[i].id+"' title='Valider réception' onClick='checkReception("+maturities_list[i].id+")'><span class='glyphicon glyphicon-ok'></span></p>";
-					contents += "<p class='col-lg-2' id='date-reception-"+maturities_list[i].id+"'>En attente</p>";
-				}
-				if(maturities_list[i].bank_status == '1'){
-					contents += "<p class='col-lg-1 status-icon icon-success' id='icon-bank-"+maturities_list[i].id+"' title='Annuler encaissement' onClick='uncheckBank("+maturities_list[i].id+")'><span class='glyphicon glyphicon-download-alt'></span></p>";
-					contents += "<p class='col-lg-2' id='date-bank-"+maturities_list[i].id+"'>"+moment(maturities_list[i].date_bank).format("DD/MM/YYYY")+"</p>";
-				} else {
-					contents += "<p class='col-lg-1 status-icon' id='icon-bank-"+maturities_list[i].id+"' title='Valider encaissement' onClick='checkBank("+maturities_list[i].id+")'><span class='glyphicon glyphicon-download-alt'></span></p>";
-					contents += "<p class='col-lg-2' id='date-bank-"+maturities_list[i].id+"'>En attente</p>";
-				}
+				contents += "<p class='col-lg-3'>"+maturities_list[i].method+"</p>";
+				contents += "<p class='col-lg-4'><input type='text' class='slider' id='slider-"+maturities_list[i].id+"' data-slider-id='slider-id-"+maturities_list[i].id+"' data-slider-value='"+parseFloat(maturities_list[i].price)+"' data-maturity='"+maturities_list[i].id+"'/></p>";
+				contents += "<p class='col-lg-1' id='maturity-"+maturities_list[i].id+"-price'>"+maturities_list[i].price+" €</p>";
+				contents += "<p class='col-lg-2'><span class='glyphicon glyphicon-time'></span>  "+moment(maturities_list[i].date).format("DD/MM/YYYY")+"</p>";
+				contents += "<p class='col-lg-2'>"+maturities_list[i].payer+"</p>";
 				contents += "</div></li>";
+				totalPrice += parseFloat(maturities_list[i].price);
 			}
 			contents += "</ul></div>";
 			$("#body-purchase-"+purchase_id).append(contents);
 			$("#body-purchase-"+purchase_id).collapse("show");
+			$(".slider").bootstrapSlider({
+				min: 0,
+				max: totalPrice,
+				step: 1,
+				handle: 'round',
+				tooltip: 'hide',
+				formatter: function(value){
+					return 'Current value:'+value;
+				}
+			});
 		})
 	}
 }
