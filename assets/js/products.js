@@ -52,7 +52,7 @@ $(document).ready(function(){
 			} else {
 				$(".participations-list").empty();
 			}
-			if(product_details.lock_status == 1){
+			if(product_details.lock_status == 0){
 				var expiredAffix = "disabled";
 			} else {
 				var expiredAffix = "enabled";
@@ -895,8 +895,8 @@ function toggleBoolean(button, boolean_name, value_id, value_name, old_value){
 			button.children("span").addClass("glyphicon-lock");
 			document.getElementById(button.attr("id")).dataset.boolean = 1;
 			if(button.attr("id") == "lock_status"){
-				$("#manual-expire").removeClass("enabled");
-				$("#manual-expire").addClass("disabled");
+				$("#manual-expire").removeClass("disabled");
+				$("#manual-expire").addClass("enabled");
 			}
 			switch(button.attr("id")){
 				case "lock_montant":
@@ -924,8 +924,8 @@ function toggleBoolean(button, boolean_name, value_id, value_name, old_value){
 			}
 			document.getElementById(button.attr("id")).dataset.boolean = 0;
 			if(button.attr("id") == "lock_status"){
-				$("#manual-expire").removeClass("disabled");
-				$("#manual-expire").addClass("enabled");
+				$("#manual-expire").removeClass("enabled");
+				$("#manual-expire").addClass("disabled");
 			}
 			switch(button.attr("id")){
 				case "lock_montant":
