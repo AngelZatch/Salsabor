@@ -52,7 +52,7 @@ $(document).ready(function(){
 			} else {
 				$(".participations-list").empty();
 			}
-			if(product_details.lock_status == 1){
+			if(product_details.lock_status == 0){
 				var expiredAffix = "disabled";
 			} else {
 				var expiredAffix = "enabled";
