@@ -52,24 +52,24 @@ $(document).ready(function(){
 			} else {
 				$(".participations-list").empty();
 			}
-			if(product_details.auto_status == 1){
+			if(product_details.lock_status == 1){
 				var expiredAffix = "disabled";
 			} else {
 				var expiredAffix = "enabled";
 			}
 			buttons += "<button class='btn btn-default btn-block btn-modal "+expiredAffix+"' id='manual-expire' onclick='deactivateProduct("+product_details.id+", 2)'><span class='glyphicon glyphicon-hourglass'></span> Expirer</button>";
 			buttons += "<button class='btn btn-danger btn-block btn-modal trigger-sub' id='delete-product' data-subtype='delete-product' data-product='"+product_details.id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";
-			buttons += "<h2 class='modal-body-title'>Calculs auto.</h2>";
+			buttons += "<h2 class='modal-body-title'>Verrous</h2>";
 			// Button to toggle automatic computing of this product.
-			if(product_details.auto_status == 1){
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='auto_status' data-product='"+product_details.id+"' data-boolean='"+product_details.auto_status+"'><span class='glyphicon glyphicon-floppy-saved'></span> Etat</button>";
+			if(product_details.lock_status == 1){
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_status' data-product='"+product_details.id+"' data-boolean='"+product_details.lock_status+"' title='Verrouillé : le système n&apos;a désormais pas l&apos;autorisation de changer l&apos;état (en attente, valide, expiré) du produit. Vous pouvez cependant toujours le modifier.'><span class='glyphicon glyphicon-lock'></span> Etat</button>";
 			} else {
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='auto_status' data-product='"+product_details.id+"' data-boolean='"+product_details.auto_status+"'><span class='glyphicon glyphicon-floppy-remove'></span> Etat</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_status' data-product='"+product_details.id+"' data-boolean='"+product_details.lock_status+"' title='Libre : le système modifiera l&apos;état du produit de façon appropriée en fonction des dates de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Etat</button>";
 			}
-			if(product_details.auto_dates == 1){
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='auto_dates' data-product='"+product_details.id+"' data-boolean='"+product_details.auto_dates+"'><span class='glyphicon glyphicon-floppy-saved'></span> Dates</button>";
+			if(product_details.lock_dates == 1){
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_dates' data-product='"+product_details.id+"' data-boolean='"+product_details.lock_dates+"' title='Verrouilé : le système n&apos;a désormais pas l&apos;autorisation de changer les dates de validité, d&apos;activation ni d&apos;expiration du produit. Vous pouvez néanmoins fixer toutes ces dates.'><span class='glyphicon glyphicon-lock'></span> Dates</button>";
 			} else {
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='auto_dates' data-product='"+product_details.id+"' data-boolean='"+product_details.auto_dates+"'><span class='glyphicon glyphicon-floppy-remove'></span> Dates</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_dates' data-product='"+product_details.id+"' data-boolean='"+product_details.lock_dates+"' title='Libre : le système modifiera les dates en fonction du premier cours enregistré, de la validité du produit et d&apos;une potentielle extension de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Dates</button>";
 			}
 			modal.find(".product-validity").empty();
 			modal.find(".product-validity").html(product_validity);
@@ -103,18 +103,22 @@ $(document).ready(function(){
 			// Buttons
 			var buttons = "";
 			if(maturity_details.reception_status == 1){
-				buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-reception-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='reception-maturity'><span class='glyphicon glyphicon-ok'></span> Annuler réc.</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-reception-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' onclick='receiveMaturity("+maturity_details.id+")'><span class='glyphicon glyphicon-ok'></span> Annuler réc.</button>";
 			} else {
 				buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-reception-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='reception-maturity'><span class='glyphicon glyphicon-ok'></span> Recevoir</button>";
 			}
-			buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-bank-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='bank-maturity'><span class='glyphicon glyphicon-download-alt'></span> Encaisser</button>";
+			if(maturity_details.bank_status == 1){
+				buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-bank-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' onclick='bankMaturity("+maturity_details.id+")'><span class='glyphicon glyphicon-download-alt'></span> Annuler enc.</button>";
+			} else {
+				buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-bank-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='bank-maturity'><span class='glyphicon glyphicon-download-alt'></span> Encaisser</button>";
+			}
 			/*buttons += "<button class='btn btn-default btn-block btn-modal'><span class='glyphicon glyphicon-euro'></span> Changer mont.</button>";
 			buttons += "<button class='btn btn-danger btn-block btn-modal triger-sub' id='btn-delete-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='delete-maturity'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";*/
-			buttons += "<h2 class='modal-body-title'>Calculs auto.</h2>";
-			if(maturity_details.auto_montant == 1){
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='auto_montant' data-maturity='"+maturity_details.id+"' data-boolean='"+maturity_details.auto_montant+"'><span class='glyphicon glyphicon-floppy-saved'></span> Montant</button>";
+			buttons += "<h2 class='modal-body-title'>Verrous</h2>";
+			if(maturity_details.lock_montant == 1){
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_montant' data-maturity='"+maturity_details.id+"' data-boolean='"+maturity_details.lock_montant+"' title='Verrouillé : le montant de l&apos;échéance ne variera pas, peu importe les autres échéances de la transaction.'><span class='glyphicon glyphicon-lock'></span> Montant</button>";
 			} else {
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='auto_montant' data-maturity='"+maturity_details.id+"' data-boolean='"+maturity_details.auto_montant+"'><span class='glyphicon glyphicon-floppy-remove'></span> Montant</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_montant' data-maturity='"+maturity_details.id+"' data-boolean='"+maturity_details.lock_montant+"' title='Non verrouillé : le montant de l&apos;échéance sera affecté par des changements dans d&apos;autres échéances'><span class='glyphicon glyphicon-floppy-remove'></span> Montant</button>";
 			}
 			modal.find(".modal-actions").html(buttons);
 		})
@@ -262,6 +266,15 @@ $(document).ready(function(){
 			$(".sub-modal-body").html(body);
 			break;
 
+		case 'bank-maturity':
+			var maturity_id = target.dataset.maturity;
+			title = "Encaissement de l'échéance";
+			body += "<input type='text' class='form-control datepicker'/>";
+			footer += "<button class='btn btn-success bank-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
 		default:
 			title = "Sub modal";
 			break;
@@ -351,6 +364,10 @@ $(document).ready(function(){
 	var date = moment($("#maturity-modal").find($(".datepicker")).val(),"DD/MM/YYYY").format("YYYY-MM-DD");
 	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
 	receiveMaturity(maturity_id, date);
+}).on('click', '.bank-maturity', function(){
+	var date = moment($("#maturity-modal").find($(".datepicker")).val(),"DD/MM/YYYY").format("YYYY-MM-DD");
+	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
+	bankMaturity(maturity_id, date);
 })
 
 function activateProductWithDate(product_id, start_date){
@@ -791,12 +808,27 @@ function linkAll(){
 }
 
 function receiveMaturity(maturity_id, date){
-	console.log(maturity_id, date);
+	/*console.log(maturity_id, date);*/
 	$.post("functions/receive_maturity.php", {maturity_id : maturity_id, date : date}).done(function(){
-		if(moment(date).isValid()){
-
-		} else {
+		if(date != undefined){
 			$(".reception-slot-date").text(moment(date).format("DD/MM/YYYY"));
+			$("#btn-reception-"+maturity_id).replaceWith("<button class='btn btn-default btn-block btn-modal' id='btn-reception-"+maturity_id+"' data-maturity='"+maturity_id+"' onclick='receiveMaturity("+maturity_id+")'><span class='glyphicon glyphicon-ok'></span> Annuler réc.</button>");
+		} else {
+			$(".reception-slot-date").text("-");
+			$("#btn-reception-"+maturity_id).replaceWith("<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-reception-"+maturity_id+"' data-maturity='"+maturity_id+"' data-subtype='reception-maturity'><span class='glyphicon glyphicon-ok'></span> Recevoir</button>");
+		}
+		$(".sub-modal").hide();
+	})
+}
+
+function bankMaturity(maturity_id, date){
+	$.post("functions/bank_maturity.php", {maturity_id : maturity_id, date : date}).done(function(){
+		if(date != undefined){
+			$(".bank-slot-date").text(moment(date).format("DD/MM/YYYY"));
+			$("#btn-bank-"+maturity_id).replaceWith("<button class='btn btn-default btn-block btn-modal' id='btn-bank-"+maturity_id+"' data-maturity='"+maturity_id+"' onclick='bankMaturity("+maturity_id+")'><span class='glyphicon glyphicon-download-alt'></span> Annuler enc.</button>")
+		} else {
+			$(".bank-slot-date").text("-");
+			$("#btn-bank-"+maturity_id).replaceWith("<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-bank-"+maturity_id+"' data-maturity='"+maturity_id+"' data-subtype='bank-maturity'><span class='glyphicon glyphicon-download-alt'></span> Encaisser</button>");
 		}
 		$(".sub-modal").hide();
 	})
@@ -854,31 +886,62 @@ function toggleBoolean(button, boolean_name, value_id, value_name, old_value){
 		"old_value": old_value
 	};
 	data[value_name] = value_id;
-	console.log(data);
-	//data["value_name"] = value_name;
+	/*console.log(data);*/
 	$.post("functions/set_boolean.php", {data : data}).done(function(){
 		if(old_value == 0){ // Then the new value is 1.
 			button.removeClass("status-disabled");
 			button.addClass("status-enabled");
 			button.children("span").removeClass("glyphicon-floppy-remove");
-			button.children("span").addClass("glyphicon-floppy-saved");
+			button.children("span").addClass("glyphicon-lock");
 			document.getElementById(button.attr("id")).dataset.boolean = 1;
-			if(data[value_name] == "product_id"){
-				computeRemainingHours(value_id, true);
-			}
-			if(button.attr("id") == "auto_status"){
+			if(button.attr("id") == "lock_status"){
 				$("#manual-expire").removeClass("enabled");
 				$("#manual-expire").addClass("disabled");
+			}
+			switch(button.attr("id")){
+				case "lock_montant":
+					button.attr("title", "Verrouillé : le montant de l'échéance ne variera pas, peu importe les autres échéances de la transaction.");
+					break;
+
+				case "lock_status":
+					button.attr("title", "Verrouillé : le système n'a désormais pas l'autorisation de changer l'état (en attente, valide, expiré) du produit. Vous pouvez cependant toujours le modifier.");
+					break;
+
+				case "lock_dates":
+					button.attr("title", "Verrouilé : le système n'a désormais pas l'autorisation de changer les dates de validité, d'activation ni d'expiration du produit. Vous pouvez néanmoins fixer toutes ces dates.");
+					break;
+
+				default:
+					break;
 			}
 		} else {
 			button.removeClass("status-enabled");
 			button.addClass("status-disabled");
-			button.children("span").removeClass("glyphicon-floppy-saved");
+			button.children("span").removeClass("glyphicon-lock");
 			button.children("span").addClass("glyphicon-floppy-remove");
+			if(data[value_name] == "product_id"){
+				computeRemainingHours(value_id, true);
+			}
 			document.getElementById(button.attr("id")).dataset.boolean = 0;
-			if(button.attr("id") == "auto_status"){
+			if(button.attr("id") == "lock_status"){
 				$("#manual-expire").removeClass("disabled");
 				$("#manual-expire").addClass("enabled");
+			}
+			switch(button.attr("id")){
+				case "lock_montant":
+					button.attr("title", "Non verrouillé : le montant de l'échéance sera affecté par des changements dans d'autres échéances");
+					break;
+
+				case "lock_status":
+					button.attr("title", "Libre : le système modifiera l'état du produit de façon appropriée en fonction des dates de validité.");
+					break;
+
+				case "lock_dates":
+					button.attr("title", "Libre : le système modifiera les dates en fonction du premier cours enregistré, de la validité du produit et d'une potentielle extension de validité.");
+					break;
+
+				default:
+					break;
 			}
 		}
 	})

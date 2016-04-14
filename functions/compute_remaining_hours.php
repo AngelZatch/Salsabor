@@ -15,7 +15,7 @@ Yes. This code does everything to ensure the information can be tracked and stay
 
 $product_id = $_POST["product_id"];
 
-$product_details = $db->query("SELECT volume_horaire, est_illimite, est_abonnement, pa.date_activation AS produit_adherent_activation, validite_initiale, pa.actif AS produit_adherent_actif, date_achat, date_expiration, date_prolongee, date_fin_utilisation, auto_status, auto_dates,
+$product_details = $db->query("SELECT volume_horaire, est_illimite, est_abonnement, pa.date_activation AS produit_adherent_activation, validite_initiale, pa.actif AS produit_adherent_actif, date_achat, date_expiration, date_prolongee, date_fin_utilisation, lock_status, lock_dates,
 						IF(date_prolongee IS NOT NULL, date_prolongee,
 							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
 							) AS produit_validity FROM produits_adherents pa
@@ -31,8 +31,8 @@ $computeEnd = false;
 $status = $product_details["produit_adherent_actif"];
 $date_activation = $product_details["produit_adherent_activation"];
 $date_expiration = $product_details["produit_validity"];
-$auto_dates = ($product_details["auto_dates"]==1)?true:false;
-$auto_status = ($product_details["auto_status"]==1)?true:false;
+$lock_dates = ($product_details["lock_dates"]==1)?true:false;
+$lock_status = ($product_details["lock_status"]==1)?true:false;
 
 if($product_details["est_abonnement"] == '0'){
 	$sessions = $db->query("SELECT cours_unite, cours_start, cours_end FROM cours_participants cp
@@ -42,7 +42,7 @@ if($product_details["est_abonnement"] == '0'){
 	foreach($sessions as $session){
 		if(!$computeEnd){
 			// If the product's current hours are max OR there's no set activation date, we compute the activation date. This will only occur one time to ensure the date of activation is always accurate.
-			if($auto_dates){
+			if(!$lock_dates){
 				$date_activation = date_create($session["cours_start"])->format("Y-m-d H:i:s");
 				if($date_activation != null && $date_activation != "0000-00-00 00:00:00"){
 					$computeEnd = true;
@@ -56,7 +56,7 @@ if($product_details["est_abonnement"] == '0'){
 	}
 	$sessions->execute();
 	foreach($sessions as $session){
-		if($auto_dates){
+		if(!$lock_dates){
 			if($farthest >= $session["cours_end"] && $remaining_hours >= 0){
 				// If there's no expiration date set for the product or (it is ANTERIOR to the date of the session BUT there's still hours on the product) or (it is POSTERIOR to the date of the session BUT there's no more hours on the product), the expiration date is set to the last session that happened.
 				$date_fin_utilisation = $session["cours_end"];
@@ -68,10 +68,10 @@ if($product_details["est_abonnement"] == '0'){
 	if($remaining_hours <= 0){ // If the number of remaining hours is negative
 		if($product_details["est_illimite"] == "1"){
 			if($remaining_hours == '0'){
-				if($auto_status){
+				if(!$lock_status){
 					$status = '0';
 				}
-				if($auto_dates){
+				if(!$lock_dates){
 					$date_activation = NULL;
 					$date_expiration = NULL;
 				}
@@ -79,7 +79,7 @@ if($product_details["est_abonnement"] == '0'){
 							SET date_activation = NULL, actif='$status', volume_cours = '$remaining_hours', date_expiration = NULL
 							WHERE id_produit_adherent = '$product_id'");
 			} else if($date_expiration < date("Y-m-d")){
-				if($auto_status){
+				if(!$lock_status){
 					if($product_details["date_prolongee"] != null && $product_details["date_prolongee"] > date("Y-m-d H:i:s")){
 						$status = '1';
 					} else {
@@ -90,7 +90,7 @@ if($product_details["est_abonnement"] == '0'){
 							SET date_activation = '$date_activation', actif='$status', volume_cours = '$remaining_hours', date_expiration = '$date_expiration'
 							WHERE id_produit_adherent = '$product_id'");
 			} else {
-				if($auto_status){
+				if(!$lock_status){
 					$status = '1';
 				}
 				$deactivate = $db->query("UPDATE produits_adherents
@@ -99,7 +99,7 @@ if($product_details["est_abonnement"] == '0'){
 			}
 			$v["hours"] = -1 * $remaining_hours;
 		} else {
-			if($auto_status){
+			if(!$lock_status){
 				$status = '2';
 			}
 			if($date_fin_utilisation < $product_details["produit_validity"]){
@@ -114,7 +114,7 @@ if($product_details["est_abonnement"] == '0'){
 			$v["hours"] = 1 * $remaining_hours;
 		}
 	} else if($remaining_hours == $product_details["volume_horaire"]){
-		if($auto_status){
+		if(!$lock_status){
 			$status = '0';
 		}
 		$v["hours"] = 1 * $remaining_hours;
@@ -124,7 +124,7 @@ if($product_details["est_abonnement"] == '0'){
 	} else { // If the hours are still in positive.
 		$v["hours"] = 1 * $remaining_hours;
 		if($computeEnd){ // If the expiration date has to be computed.
-			if($auto_status){
+			if(!$lock_status){
 				if($date_expiration < date("Y-m-d")){ // If the computed expiration date is anterior to today, then the product should be expired.
 					if($product_details["date_prolongee"] != null && $product_details["date_prolongee"] > date("Y-m-d H:i:s")){
 						$status = '1';
@@ -140,7 +140,7 @@ if($product_details["est_abonnement"] == '0'){
 						SET actif='$status', date_activation = '$date_activation', date_expiration='$date_expiration', date_fin_utilisation = NULL, volume_cours = '$remaining_hours'
 						WHERE id_produit_adherent = '$product_id'");
 		} else { // It the expiration date doesn't have to be computed
-			if($auto_status){
+			if(!$lock_status){
 				if($product_details["produit_validity"] != '' && date_create($product_details["produit_validity"])->format("Y-m-d H:i:s") < date("Y-m-d H:i:s")){ // If there's an expiration date set AND it's anterior to today
 					$status = '2';
 				} else {
@@ -172,6 +172,6 @@ if(isset($date_fin_utilisation) && $status == "2"){
 $v["status"] = $status;
 $v["limit"] = $product_details["est_illimite"];
 $v["compute"] = $computeEnd;
-$v["auto_status"] = $auto_status;
+$v["lock_status"] = $lock_status;
 echo json_encode($v);
 ?>

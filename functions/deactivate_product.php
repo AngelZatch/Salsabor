@@ -12,7 +12,7 @@ if(isset($_POST["value"])){
 	echo $_POST["value"];
 } else {
 	/** Check if the product has already been activated before **/
-	$details = $db->query("SELECT pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif, date_expiration, date_fin_utilisation, volume_cours, volume_horaire, auto_dates, auto_status FROM produits_adherents pa
+	$details = $db->query("SELECT pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif, date_expiration, date_fin_utilisation, volume_cours, volume_horaire, lock_dates, lock_status FROM produits_adherents pa
 						JOIN produits p ON pa.id_produit_foreign = p.produit_id
 						WHERE id_produit_adherent = '$product_id'")->fetch(PDO::FETCH_ASSOC);
 

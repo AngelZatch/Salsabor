@@ -20,6 +20,6 @@ $m["reception_status"] = $load["echeance_effectuee"];
 $m["date_reception"] = $load["date_paiement"];
 $m["bank_status"] = $load["statut_banque"];
 $m["date_bank"] = $load["date_encaissement"];
-$m["auto_montant"] = $load["auto_montant"];
+$m["lock_montant"] = $load["lock_montant"];
 echo json_encode($m);
 ?>
