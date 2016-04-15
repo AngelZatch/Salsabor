@@ -14,7 +14,7 @@
 							<div class="col-lg-6">
 								<div class="product-status-container maturity-status">
 									<p class="value-slot" title="Montant"><span class="glyphicon glyphicon-euro"></span><span class="value-slot-value"> - </span></p>
-									<p class="method-slot" title="Méthode"><span class="glyphicon glyphicon-time"></span><span class="method-slot-value"> - </span></p>
+									<p class="method-slot" title="Méthode"><span class="glyphicon glyphicon-transfer"></span><span class="method-slot-value"> - </span></p>
 								</div>
 							</div>
 							<div class="col-lg-6">
@@ -24,8 +24,6 @@
 									<p class="bank-slot" title="Date d'encaissement"><span class="glyphicon glyphicon-download-alt"></span><span class="bank-slot-date"> - </span></p>
 								</div>
 							</div>
-						</div>
-						<div class="participations-list container-fluid">
 						</div>
 					</div>
 					<div class="col-lg-3 modal-actions-container">

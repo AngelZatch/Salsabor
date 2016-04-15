@@ -20,6 +20,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$m["date_reception"] = $details["date_paiement"];
 	$m["bank_status"] = $details["statut_banque"];
 	$m["date_bank"] = $details["date_encaissement"];
+	$m["lock_montant"] = $details["lock_montant"];
 	array_push($maturitys_list, $m);
 }
 echo json_encode($maturitys_list);
