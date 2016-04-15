@@ -146,7 +146,7 @@ if(isset($_POST["submit"])){
 					"En attente"
 				];
 				// Gestion des échéances (nombre et valeur)
-				$("[name='echeances']").keyup(function(){
+				$("[name='echeances']").on('keyup keydown change', function(){
 					var nbEcheances = $(this).val();
 					var i = 1;
 					var start_date = moment();

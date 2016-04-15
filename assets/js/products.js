@@ -261,6 +261,8 @@ $(document).ready(function(){
 			var maturity_id = target.dataset.maturity;
 			title = "Réception de l'échéance";
 			body += "<input type='text' class='form-control datepicker'/>";
+			body += "<label class='control-label'>Méthode de paiement</label>";
+			body += "<input type='text' class='form-control reception-method'></input>";
 			footer += "<button class='btn btn-success receive-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
 			$(".sub-modal").css({top : tpos.top+51+'px'});
 			$(".sub-modal-body").html(body);
@@ -316,18 +318,7 @@ $(document).ready(function(){
 		$(this).find(".session-options").remove();
 		session.removeClass("options-shown");
 	}
-})/**.on('click', '.maturity-item', function(){
-	var maturity = $(this);
-	var maturity_id = document.getElementById($(this).attr("id")).dataset.argument;
-	if(!$(this).hasClass("options-shown")){
-		maturity.addClass("options-shown");
-		var contents = "<div class='maturity-options'><button class='btn btn-default btn-modal' data-maturity='"+maturity_id+"'><span class='glyphicon glyphicon-euro' title='Verrouiller le montant'></span> Verouiller le montant</button> ";
-		contents += "<button class='btn btn-danger btn-modal' data-maturity='"+maturity_id+"'><span class='glyphicon glyphicon-trash' title='Supprimer l&apos;échéance'></span> Supprimer</button></div>";
-		maturity.append(contents);
-	} else {
-		maturity.removeClass("option-shown");
-	}
-})**/.on('click', '.sub-modal-product', function(e){
+}).on('click', '.sub-modal-product', function(e){
 	e.stopPropagation();
 	$(".sub-modal-product>span").remove();
 	$(".sub-modal-product").attr("id", "");
@@ -363,7 +354,8 @@ $(document).ready(function(){
 }).on('click', '.receive-maturity', function(){
 	var date = moment($("#maturity-modal").find($(".datepicker")).val(),"DD/MM/YYYY").format("YYYY-MM-DD");
 	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
-	receiveMaturity(maturity_id, date);
+	var method = $("#maturity-modal").find($(".reception-method")).val();
+	receiveMaturity(maturity_id, date, method);
 }).on('click', '.bank-maturity', function(){
 	var date = moment($("#maturity-modal").find($(".datepicker")).val(),"DD/MM/YYYY").format("YYYY-MM-DD");
 	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
@@ -371,9 +363,25 @@ $(document).ready(function(){
 }).on('click', '.slider', function(e){
 	e.stopPropagation();
 }).on('slide', '.slider', function(e){
+	e.stopPropagation();
 	var target_id = $(this).data().maturity;
+	var purchase_id = $(this).data().purchase;
+	console.log($("[data-purchase='"+purchase_id+"']"));
 	$("#maturity-"+target_id+"-price").text(e.value+".00 €");
 	//console.log(document.getElementById($(this).next("p").attr("id")).dataset.maturity);
+}).on('focus', '.reception-method', function(){
+	$(".reception-method").textcomplete([{
+		match: /(^|\b)(\w{2,})$/,
+		search: function(term, callback){
+			var methods = ["Carte bancaire","Chèque n°","Espèces","Virement compte à compte","Chèques vacances","En attente"];
+			callback($.map(methods, function(item){
+				return item.indexOf(term) === 0 ? item : null;
+			}));
+		},
+		replace: function(item){
+			return item;
+		}
+	}]);
 })
 
 function activateProductWithDate(product_id, start_date){
@@ -677,8 +685,8 @@ function fetchPurchase(purchase_id){
 			for(var i = 0; i < maturities_list.length; i++){
 				contents += "<li class='purchase-item panel-item maturity-item container-fluid' id='maturity-"+maturities_list[i].id+"' data-toggle='modal' data-target='#maturity-modal' data-maturity='"+maturities_list[i].id+"'>";
 				contents += "<div class='container-fluid'>";
-				contents += "<p class='col-lg-3'>"+maturities_list[i].method+"</p>";
-				contents += "<p class='col-lg-4'><input type='text' class='slider' id='slider-"+maturities_list[i].id+"' data-slider-id='slider-id-"+maturities_list[i].id+"' data-slider-value='"+parseFloat(maturities_list[i].price)+"' data-maturity='"+maturities_list[i].id+"'/></p>";
+				contents += "<p class='col-lg-3' id='maturity-"+maturities_list[i].id+"-method'>"+maturities_list[i].method+"</p>";
+				contents += "<p class='col-lg-4'><input type='text' class='slider' id='slider-"+maturities_list[i].id+"' data-slider-id='slider-id-"+maturities_list[i].id+"' data-slider-value='"+parseFloat(maturities_list[i].price)+"' data-maturity='"+maturities_list[i].id+"' data-purchase='"+purchase_id+"'/></p>";
 				contents += "<p class='col-lg-1' id='maturity-"+maturities_list[i].id+"-price'>"+maturities_list[i].price+" €</p>";
 				contents += "<p class='col-lg-2'><span class='glyphicon glyphicon-time'></span>  "+moment(maturities_list[i].date).format("DD/MM/YYYY")+"</p>";
 				contents += "<p class='col-lg-2'>"+maturities_list[i].payer+"</p>";
@@ -686,6 +694,8 @@ function fetchPurchase(purchase_id){
 				totalPrice += parseFloat(maturities_list[i].price);
 			}
 			contents += "</ul></div>";
+			// Add the total price to each input once it's calculated.
+			// Lock the appropriate sliders.
 			$("#body-purchase-"+purchase_id).append(contents);
 			$("#body-purchase-"+purchase_id).collapse("show");
 			$(".slider").bootstrapSlider({
@@ -694,6 +704,7 @@ function fetchPurchase(purchase_id){
 				step: 1,
 				handle: 'round',
 				tooltip: 'hide',
+				enabled: false,
 				formatter: function(value){
 					return 'Current value:'+value;
 				}
@@ -812,15 +823,20 @@ function linkAll(){
 	link(invalidMap, 0);
 }
 
-function receiveMaturity(maturity_id, date){
+function receiveMaturity(maturity_id, date, method){
 	/*console.log(maturity_id, date);*/
-	$.post("functions/receive_maturity.php", {maturity_id : maturity_id, date : date}).done(function(){
+	console.log(method);
+	$.post("functions/receive_maturity.php", {maturity_id : maturity_id, date : date, method : method}).done(function(){
 		if(date != undefined){
 			$(".reception-slot-date").text(moment(date).format("DD/MM/YYYY"));
 			$("#btn-reception-"+maturity_id).replaceWith("<button class='btn btn-default btn-block btn-modal' id='btn-reception-"+maturity_id+"' data-maturity='"+maturity_id+"' onclick='receiveMaturity("+maturity_id+")'><span class='glyphicon glyphicon-ok'></span> Annuler réc.</button>");
+			$(".method-slot-value").text(method);
+			$("#maturity-"+maturity_id+"-method").text(method);
 		} else {
 			$(".reception-slot-date").text("-");
 			$("#btn-reception-"+maturity_id).replaceWith("<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-reception-"+maturity_id+"' data-maturity='"+maturity_id+"' data-subtype='reception-maturity'><span class='glyphicon glyphicon-ok'></span> Recevoir</button>");
+			$(".method-slot-value").text("En attente");
+			$("#maturity-"+maturity_id+"-method").text("En attente");
 		}
 		$(".sub-modal").hide();
 	})
