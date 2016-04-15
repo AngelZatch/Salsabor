@@ -248,8 +248,11 @@ if(isset($_POST['deleteCoursAll'])){
 							<a class="panel-heading-container" id='ph-session-<?php echo $id;?>' data-session='<?php echo $id;?>'>
 								<div class="panel-heading">
 									<div class="container-fluid">
-										<p class="col-md-11">Liste des participants</p>
-										<p class="col-md-1 session-option"><span class="glyphicon glyphicon-ok-sign validate-session" id="validate-session-<?php echo $id;?>" data-session="<?php echo $id;?>" title="Valider tous les passages"></span></p>
+										<p class="col-md-3">Liste des participants</p>
+										<p class="col-lg-1"><span class="glyphicon glyphicon-user"></span> <span class="user-total-count" id="user-total-count-<?php echo $id;?>"></span></p>
+										<p class="col-lg-1"><span class="glyphicon glyphicon-ok"></span> <span class="user-ok-count" id="user-ok-count-<?php echo $id;?>"></span></p>
+										<p class="col-lg-1"><span class="glyphicon glyphicon-warning-sign"></span> <span class="user-warning-count" id="user-warning-count-<?php echo $id;?>"></span></p>
+										<p class="col-md-1 col-md-offset-5 session-option"><span class="glyphicon glyphicon-ok-sign validate-session" id="validate-session-<?php echo $id;?>" data-session="<?php echo $id;?>" title="Valider tous les passages"></span></p>
 									</div>
 								</div>
 							</a>
