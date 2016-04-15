@@ -32,7 +32,7 @@ function prepareRecord($db, $tag, $ip){
 
 		addRecord($db, $cours_name, $session_id, $user_id, $ip, $tag);
 	}
-	header('Location: passages.php');
+	header('Location: passages');
 }
 ?>
 <html>

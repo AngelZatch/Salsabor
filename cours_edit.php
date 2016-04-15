@@ -4,9 +4,6 @@ $db = PDOFactory::getConnection();
 require_once 'functions/cours.php';
 /** Récupération des valeurs dans la base de données des champs **/
 $id = $_GET['id'];
-if(isset($_GET["drive"])){
-	$drive = $_GET["drive"];
-}
 $queryCours = $db->prepare('SELECT * FROM cours WHERE cours_id=?');
 $queryCours->bindParam(1, $id);
 $queryCours->execute();
@@ -22,26 +19,15 @@ $queryProf->bindParam(1, $cours['prof_principal']);
 $queryProf->execute();
 $data_prof = $queryProf->fetch(PDO::FETCH_ASSOC);
 
-$queryParticipants = $db->prepare('SELECT * FROM cours_participants JOIN users ON eleve_id_foreign=users.user_id WHERE cours_id_foreign=?');
-$queryParticipants->bindParam(1, $id);
-$queryParticipants->execute();
-$nombre_eleves = $queryParticipants->rowCount();
-
-$queryTarif = $db->prepare('SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=? AND type_prestation=?');
+/*$queryTarif = $db->prepare('SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=? AND type_prestation=?');
 $queryTarif->bindParam(1, $cours['prof_principal']);
 $queryTarif->bindParam(2, $cours['cours_type']);
 $queryTarif->execute();
-$tarif = $queryTarif->fetch(PDO::FETCH_ASSOC);
+$tarif = $queryTarif->fetch(PDO::FETCH_ASSOC);*/
 
 $queryTypes = $db->query('SELECT * FROM prestations WHERE est_cours=1');
 
 $querySalles = $db->query("SELECT * FROM salle WHERE est_salle_cours=1");
-
-$queryEleves = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
-$array_eleves = array();
-while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
-	array_push($array_eleves, $eleves["user_prenom"]." ".$eleves["user_nom"]);
-}
 
 if(isset($_POST['editOne'])){
 	$db = PDOFactory::getConnection();
@@ -79,11 +65,7 @@ if(isset($_POST['editOne'])){
 		$db->rollBack();
 		var_dump($e->getMessage());
 	}
-	if(isset($_GET["drive"])){
-		header('Location: passages.php');
-	} else {
-		header('Location: planning.php');
-	}
+	header('Location: planning.php');
 }
 
 if(isset($_POST['editNext'])){
@@ -128,11 +110,7 @@ if(isset($_POST['editNext'])){
 		$db->rollBack();
 		var_dump($e->getMessage());
 	}
-	if(isset($_GET["drive"])){
-		header('Location: passages.php');
-	} else {
-		header('Location: planning.php');
-	}
+	header('Location: planning.php');
 }
 
 if(isset($_POST['editAll'])){
@@ -161,6 +139,7 @@ if(isset($_POST['deleteCoursAll'])){
 		<base href="../">
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
+		<script src="assets/js/products.js"></script>
 		<script src="assets/js/records.js"></script>
 	</head>
 	<body>
@@ -175,11 +154,7 @@ if(isset($_POST['deleteCoursAll'])){
 						</div>
 						<div class="col-lg-6">
 							<div class="btn-toolbar">
-								<?php if(isset($_GET["drive"])){ ?>
-								<a href="passages.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux passages</a>
-								<?php } else { ?>
-								<a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-								<?php } if($res_recurrence == '0'){ ?>
+								<?php if($res_recurrence == '0'){ ?>
 								<input type='submit' name='editOne' role='button' class='btn btn-success' value='ENREGISTRER'>
 								<?php } else { ?>
 								<a href='#save-options' class='btn btn-primary' role='button' data-toggle='collapse' aria-expanded='false' aria-controls='saveOptions'>ENREGISTRER</a>
@@ -269,51 +244,26 @@ if(isset($_POST['deleteCoursAll'])){
 								<textarea name="edit-comment" id="edit-comment" cols="30" rows="5" class="form-control"></textarea>
 							</div>
 						</div>
-						<div class="form-group">
-							<div class="panel panel-default">
+						<div class="panel panel-session" id="session-<?php echo $id;?>">
+							<a class="panel-heading-container" id='ph-session-<?php echo $id;?>' data-session='<?php echo $id;?>'>
 								<div class="panel-heading">
-									<label for="professeur">Professeur : </label>
-									<p>
-										<?php echo $data_prof['user_prenom']." ".$data_prof['user_nom'];?>
-									</p>
-								</div>
-								<div class="panel-body">
-									<label for="liste_participants">Participants enregistrés :</label>
-									<div class="input-group input-group-lg">
-										<input type="text" for="liste_participants" class="form-control" id="liste-participants" placeholder="Ajouter un participant">
-										<span role="buttton" class="input-group-btn" id="add-eleve"><a class="btn btn-info" role="button">Ajouter l'élève</a></span>
+									<div class="container-fluid">
+										<p class="col-md-11">Liste des participants</p>
+										<p class="col-md-1 session-option"><span class="glyphicon glyphicon-ok-sign validate-session" id="validate-session-<?php echo $id;?>" data-session="<?php echo $id;?>" title="Valider tous les passages"></span></p>
 									</div>
 								</div>
-								<ul class="list-group">
-									<?php while($participants = $queryParticipants->fetch(PDO::FETCH_ASSOC)){?>
-									<li class='list-group-item'>
-										<span class="glyphicon glyphicon-<?php echo (isset($participants["produit_adherent_id"]))?"ok":"remove";?>"></span>
-										<?php echo $participants['user_prenom']." ".$participants['user_nom'];?>
-										<span class="list-item-option delete-participant glyphicon glyphicon-trash" title="Supprimer l'élève de ce cours"><input type="hidden" value="<?php echo $participants["user_id"];?>"></span>
-									</li>
-									<?php } ?>
-									<li class="list-group-item" id="prix-calcul">Somme due à l'enseignant :
-										<div class="input-group">
-											<span class='input-group-addon' id='currency-addon'>€</span>
-											<input type="number" step="any" name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $cours["cours_prix"];?>" aria-describedby='currency-addon'>
-										</div>
-										<input type="checkbox" <?php if($cours['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
-										<input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $cours['paiement_effectue'];?>">
-									</li>
-								</ul>
-							</div>
+							</a>
+							<div class="panel-body collapse" id="body-session-<?php echo $id;?>" data-session="<?php echo $id;?>"></div>
 						</div>
 					</div>
 				</form>
 			</div>
 		</div>
+		<?php include "inserts/sub_modal_product.php";?>
 		<script>
 			$(document).ready(function(){
-				var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
-				$("#liste-participants").autocomplete({
-					source: listeAdherents,
-					select: $(this).empty()
-				});
+				window.openedSessions = [<?php echo $id;?>];
+				refreshTick();
 			});
 
 			$('#paiement').change(function(){

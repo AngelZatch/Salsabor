@@ -26,7 +26,7 @@ $queryPassages = $db->query("SELECT * FROM passages JOIN users ON passage_eleve=
 				<ul class="nav navbar-nav navbar-right">
 					<!--<li><a href=""><span class="glyphicon glyphicon-user"></span> ver.1.3.2</a></li>-->
 					<li class="notification-option" title="Passages en attente de traitement">
-						<a href="passages.php" class="notification-icon">
+						<a href="passages" class="notification-icon">
 							<span class="glyphicon glyphicon-map-marker"></span>
 							<span class="badge" id="badge-passages"></span>
 						</a>

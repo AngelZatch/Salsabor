@@ -7,11 +7,13 @@ $(document).ready(function(){
 	var fetched = [];
 	window.openedSessions = [];
 	moment.locale('fr');
-	$.when(fetchActiveSessions(fetched)).done(function(data){
-		$.when(displaySessions(data, fetched)).done(function(){
-			refreshTick();
-		});
-	})
+	if(top.location.pathname === '/Salsabor/passages'){
+		$.when(fetchActiveSessions(fetched)).done(function(data){
+			$.when(displaySessions(data, fetched)).done(function(){
+				refreshTick();
+			});
+		})
+	}
 }).on('click', '.panel-heading-container', function(){
 	var id = document.getElementById($(this).attr("id")).dataset.session;
 	fetchRecords(id);
