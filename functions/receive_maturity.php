@@ -11,6 +11,8 @@ if(isset($_POST["date"])){
 	$method = $_POST["method"];
 	$update = $db->query("UPDATE produits_echeances SET echeance_effectuee = '1', date_paiement = '$date_reception', methode_paiement = '$method' WHERE produits_echeances_id='$id'");
 } else {
+	$date = $db->query("SELECT date_echeance FROM produits_echeances WHERE produits_echeances_id = '$id'")->fetch(PDO::FETCH_COLUMN);
 	$update = $db->query("UPDATE produits_echeances SET echeance_effectuee = '0', date_paiement = NULL WHERE produits_echeances_id = '$id'");
+	echo $date;
 }
 ?>

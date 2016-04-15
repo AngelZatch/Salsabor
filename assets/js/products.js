@@ -683,7 +683,19 @@ function fetchPurchase(purchase_id){
 			contents += "<ul class='purchase-inside-list maturities-list'>";
 			var totalPrice = 0;
 			for(var i = 0; i < maturities_list.length; i++){
-				contents += "<li class='purchase-item panel-item maturity-item container-fluid' id='maturity-"+maturities_list[i].id+"' data-toggle='modal' data-target='#maturity-modal' data-maturity='"+maturities_list[i].id+"'>";
+				var item_status = "";
+				if(maturities_list[i].reception_status == '1' && maturities_list[i].bank_status == '1'){
+					item_status = "item-active";
+				} else {
+					if(maturities_list[i].reception_status == '1'){
+						item_status = "item-pending";
+					} else {
+						if(moment(maturities_list[i].date) < moment()){
+							item_status = "item-overused";
+						}
+					}
+				}
+				contents += "<li class='purchase-item panel-item maturity-item "+item_status+" container-fluid' id='maturity-"+maturities_list[i].id+"' data-toggle='modal' data-target='#maturity-modal' data-maturity='"+maturities_list[i].id+"'>";
 				contents += "<div class='container-fluid'>";
 				contents += "<p class='col-lg-3' id='maturity-"+maturities_list[i].id+"-method'>"+maturities_list[i].method+"</p>";
 				contents += "<p class='col-lg-4'><input type='text' class='slider' id='slider-"+maturities_list[i].id+"' data-slider-id='slider-id-"+maturities_list[i].id+"' data-slider-value='"+parseFloat(maturities_list[i].price)+"' data-maturity='"+maturities_list[i].id+"' data-purchase='"+purchase_id+"'/></p>";
@@ -826,17 +838,23 @@ function linkAll(){
 function receiveMaturity(maturity_id, date, method){
 	/*console.log(maturity_id, date);*/
 	console.log(method);
-	$.post("functions/receive_maturity.php", {maturity_id : maturity_id, date : date, method : method}).done(function(){
+	$.post("functions/receive_maturity.php", {maturity_id : maturity_id, date : date, method : method}).done(function(return_date){
+		$("#maturity-"+maturity_id).removeClass("item-pending");
+		$("#maturity-"+maturity_id).removeClass("item-overused");
 		if(date != undefined){
 			$(".reception-slot-date").text(moment(date).format("DD/MM/YYYY"));
 			$("#btn-reception-"+maturity_id).replaceWith("<button class='btn btn-default btn-block btn-modal' id='btn-reception-"+maturity_id+"' data-maturity='"+maturity_id+"' onclick='receiveMaturity("+maturity_id+")'><span class='glyphicon glyphicon-ok'></span> Annuler réc.</button>");
 			$(".method-slot-value").text(method);
 			$("#maturity-"+maturity_id+"-method").text(method);
+			$("#maturity-"+maturity_id).addClass("item-pending");
 		} else {
 			$(".reception-slot-date").text("-");
 			$("#btn-reception-"+maturity_id).replaceWith("<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-reception-"+maturity_id+"' data-maturity='"+maturity_id+"' data-subtype='reception-maturity'><span class='glyphicon glyphicon-ok'></span> Recevoir</button>");
 			$(".method-slot-value").text("En attente");
 			$("#maturity-"+maturity_id+"-method").text("En attente");
+			if(moment(return_date) < moment()){
+				$("#maturity-"+maturity_id).addClass("item-overused");
+			}
 		}
 		$(".sub-modal").hide();
 	})
@@ -844,12 +862,17 @@ function receiveMaturity(maturity_id, date, method){
 
 function bankMaturity(maturity_id, date){
 	$.post("functions/bank_maturity.php", {maturity_id : maturity_id, date : date}).done(function(){
+		$("#maturity-"+maturity_id).removeClass("item-pending");
+		$("#maturity-"+maturity_id).removeClass("item-overused");
+		$("#maturity-"+maturity_id).removeClass("item-active");
 		if(date != undefined){
 			$(".bank-slot-date").text(moment(date).format("DD/MM/YYYY"));
-			$("#btn-bank-"+maturity_id).replaceWith("<button class='btn btn-default btn-block btn-modal' id='btn-bank-"+maturity_id+"' data-maturity='"+maturity_id+"' onclick='bankMaturity("+maturity_id+")'><span class='glyphicon glyphicon-download-alt'></span> Annuler enc.</button>")
+			$("#btn-bank-"+maturity_id).replaceWith("<button class='btn btn-default btn-block btn-modal' id='btn-bank-"+maturity_id+"' data-maturity='"+maturity_id+"' onclick='bankMaturity("+maturity_id+")'><span class='glyphicon glyphicon-download-alt'></span> Annuler enc.</button>");
+			$("#maturity-"+maturity_id).addClass("item-active");
 		} else {
 			$(".bank-slot-date").text("-");
 			$("#btn-bank-"+maturity_id).replaceWith("<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-bank-"+maturity_id+"' data-maturity='"+maturity_id+"' data-subtype='bank-maturity'><span class='glyphicon glyphicon-download-alt'></span> Encaisser</button>");
+			$("#maturity-"+maturity_id).addClass("item-pending");
 		}
 		$(".sub-modal").hide();
 	})
