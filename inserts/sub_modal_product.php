@@ -1,4 +1,4 @@
-<?php if(preg_match("/historique/",$_SERVER["REQUEST_URI"],$matches) || preg_match("/passages/",$_SERVER["REQUEST_URI"],$matches)){
+<?php if(preg_match("/historique/",$_SERVER["REQUEST_URI"],$matches) || preg_match("/passages/",$_SERVER["REQUEST_URI"],$matches) || preg_match("/cours/",$_SERVER["REQUEST_URI"],$matches)){
 	$width = "3";
 } else {
 	$width = "7";

@@ -192,8 +192,8 @@ function displayRecords(session_id){
 		console.log("showing"+session_id);
 		var records_list = JSON.parse(data);
 		$("#body-session-"+session_id).empty();
-		var contents = "<div class='row session-list-container' id='session-"+session_id+">";
-		contents += "<ul class='records-inside-list records-product-list'>";
+		var contents = "<div class='row session-list-container' id='session-"+session_id+"'>";
+		contents += "<ul class='container-fluid records-inside-list records-product-list'>";
 		var users = 0, ok = 0, warning = 0;
 		for(var i = 0; i <= records_list.length; i++){
 			if(i == records_list.length){
