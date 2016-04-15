@@ -4,9 +4,6 @@ $db = PDOFactory::getConnection();
 require_once 'functions/cours.php';
 /** Récupération des valeurs dans la base de données des champs **/
 $id = $_GET['id'];
-if(isset($_GET["drive"])){
-	$drive = $_GET["drive"];
-}
 $queryCours = $db->prepare('SELECT * FROM cours WHERE cours_id=?');
 $queryCours->bindParam(1, $id);
 $queryCours->execute();
@@ -22,26 +19,15 @@ $queryProf->bindParam(1, $cours['prof_principal']);
 $queryProf->execute();
 $data_prof = $queryProf->fetch(PDO::FETCH_ASSOC);
 
-$queryParticipants = $db->prepare('SELECT * FROM cours_participants JOIN users ON eleve_id_foreign=users.user_id WHERE cours_id_foreign=?');
-$queryParticipants->bindParam(1, $id);
-$queryParticipants->execute();
-$nombre_eleves = $queryParticipants->rowCount();
-
-$queryTarif = $db->prepare('SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=? AND type_prestation=?');
+/*$queryTarif = $db->prepare('SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=? AND type_prestation=?');
 $queryTarif->bindParam(1, $cours['prof_principal']);
 $queryTarif->bindParam(2, $cours['cours_type']);
 $queryTarif->execute();
-$tarif = $queryTarif->fetch(PDO::FETCH_ASSOC);
+$tarif = $queryTarif->fetch(PDO::FETCH_ASSOC);*/
 
 $queryTypes = $db->query('SELECT * FROM prestations WHERE est_cours=1');
 
 $querySalles = $db->query("SELECT * FROM salle WHERE est_salle_cours=1");
-
-$queryEleves = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
-$array_eleves = array();
-while($eleves = $queryEleves->fetch(PDO::FETCH_ASSOC)){
-	array_push($array_eleves, $eleves["user_prenom"]." ".$eleves["user_nom"]);
-}
 
 if(isset($_POST['editOne'])){
 	$db = PDOFactory::getConnection();
@@ -79,11 +65,7 @@ if(isset($_POST['editOne'])){
 		$db->rollBack();
 		var_dump($e->getMessage());
 	}
-	if(isset($_GET["drive"])){
-		header('Location: passages.php');
-	} else {
-		header('Location: planning.php');
-	}
+	header('Location: planning.php');
 }
 
 if(isset($_POST['editNext'])){
@@ -128,11 +110,7 @@ if(isset($_POST['editNext'])){
 		$db->rollBack();
 		var_dump($e->getMessage());
 	}
-	if(isset($_GET["drive"])){
-		header('Location: passages.php');
-	} else {
-		header('Location: planning.php');
-	}
+	header('Location: planning.php');
 }
 
 if(isset($_POST['editAll'])){
@@ -157,26 +135,26 @@ if(isset($_POST['deleteCoursAll'])){
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Editer - <?php echo $cours['cours_intitule'];?> (<?php echo date_create($cours['cours_start'])->format('d/m/Y');?> : <?php echo date_create($cours['cours_start'])->format('H:i')?> / <?php echo date_create($cours['cours_end'])->format('H:i');?>) | Salsabor</title>
+		<title>Cours de <?php echo $cours['cours_intitule'];?> (<?php echo date_create($cours['cours_start'])->format('d/m/Y');?> : <?php echo date_create($cours['cours_start'])->format('H:i')?> / <?php echo date_create($cours['cours_end'])->format('H:i');?>) | Salsabor</title>
+		<base href="../">
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/products.js"></script>
+		<script src="assets/js/records.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<form method="post" role="form">
+				<form method="post" role="form" class="form-horizontal">
 					<div class="fixed">
 						<div class="col-lg-6">
 							<p class="page-title"><span class="glyphicon glyphicon-eye-open"></span> Cours de <?php echo $cours['cours_intitule'];?></p>
 						</div>
 						<div class="col-lg-6">
 							<div class="btn-toolbar">
-								<?php if(isset($_GET["drive"])){ ?>
-								<a href="passages.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour aux passages</a>
-								<?php } else { ?>
-								<a href="planning.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Retour au planning</a>
-								<?php } if($res_recurrence == '0'){ ?>
+								<?php if($res_recurrence == '0'){ ?>
 								<input type='submit' name='editOne' role='button' class='btn btn-success' value='ENREGISTRER'>
 								<?php } else { ?>
 								<a href='#save-options' class='btn btn-primary' role='button' data-toggle='collapse' aria-expanded='false' aria-controls='saveOptions'>ENREGISTRER</a>
@@ -203,124 +181,89 @@ if(isset($_POST['deleteCoursAll'])){
 					<div class="col-lg-10 col-lg-offset-2 main">
 						<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
 						<div class="form-group">
-							<input type="text" class="form-control" name="intitule" style="font-size:30px; height:inherit;" value="<?php echo $cours['cours_intitule'];?>">
-						</div>
-						<div class="row">
-							<div class="col-lg-4">
-								<div class="form-group">
-									<label for="" class="control-label">Date</label>
-									<input type="date" class="col-sm-3 form-control input-lg" name="date_debut" id="date_debut" value="<?php echo date_create($cours['cours_start'])->format('Y-m-d');?>">
-								</div>
-							</div>
-							<div class="col-lg-4">
-								<div class="form-group">
-									<label for="" class="control-label">Heure de début</label>
-									<input type="time" class="col-sm-3 form-control input-lg" name="heure_debut" id="heure_debut" value="<?php echo date_create($cours['cours_start'])->format('H:i')?>">
-								</div>
-							</div>
-							<div class="col-lg-4">
-								<div class="form-group">
-									<label for="" class="control-label">Heure de fin</label>
-									<input type="time" class="col-sm-3 form-control input-lg" name="heure_fin" id="heure_fin" value="<?php echo date_create($cours['cours_end'])->format('H:i');?>">
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="type" class="control-label">Type de cours</label>
-									<select name="type" class="form-control input-lg">
-										<?php while($types = $queryTypes->fetch(PDO::FETCH_ASSOC)){
-	if($cours["cours_type"] == $types["prestations_id"]) { ?>
-										<option selected="selected" value="<?php echo $types['prestations_id'];?>"><?php echo $types['prestations_name'];?></option>;
-										<?php } else { ?>
-										<option value="<?php echo $types['prestations_id'];?>"><?php echo $types['prestations_name'];?></option>;
-										<?php }
-} ?>
-									</select>
-								</div>
-							</div>
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="salle" class="control-label">Salle</label>
-									<select name="salle" class="form-control input-lg">
-										<?php while($salles = $querySalles->fetch(PDO::FETCH_ASSOC)){
-	if($cours["cours_salle"] == $salles["salle_id"]) {?>
-										<option selected="selected" value="<?php echo $salles["salle_id"];?>"><?php echo $salles["salle_name"];?></option>
-										<?php } else { ?>
-										<option value="<?php echo $salles["salle_id"];?>"><?php echo $salles["salle_name"];?></option>
-										<?php }
-} ?>
-									</select>
-								</div>
+							<label for="" class="col-lg-3 control-label">Intitulé du cours</label>
+							<div class="col-lg-9">
+								<input type="text" class="form-control" name="intitule" value="<?php echo $cours['cours_intitule'];?>">
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="panel panel-default">
+							<label for="" class="col-lg-3 control-label">Professeur</label>
+							<div class="col-lg-9">
+								<input type="text" class="form-control" name="enseignant" id="enseignant" value="<?php echo $data_prof['user_prenom']." ".$data_prof['user_nom'];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-lg-3 control-label">Date</label>
+							<div class="col-lg-9">
+								<input type="date" class="form-control" name="date_debut" id="date_debut" value="<?php echo date_create($cours['cours_start'])->format('Y-m-d');?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-lg-3 control-label">Heure de début</label>
+							<div class="col-lg-9">
+								<input type="time" class="form-control" name="heure_debut" id="heure_debut" value="<?php echo date_create($cours['cours_start'])->format('H:i')?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-lg-3 control-label">Heure de fin</label>
+							<div class="col-lg-9">
+								<input type="time" class="form-control" name="heure_fin" id="heure_fin" value="<?php echo date_create($cours['cours_end'])->format('H:i');?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-lg-3 control-label">Type de cours</label>
+							<div class="col-lg-9">
+								<select name="type" class="form-control">
+									<?php while($types = $queryTypes->fetch(PDO::FETCH_ASSOC)){
+	if($cours["cours_type"] == $types["prestations_id"]) { ?>
+									<option selected="selected" value="<?php echo $types['prestations_id'];?>"><?php echo $types['prestations_name'];?></option>;
+									<?php } else { ?>
+									<option value="<?php echo $types['prestations_id'];?>"><?php echo $types['prestations_name'];?></option>;
+									<?php }
+} ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-lg-3 control-label">Salle</label>
+							<div class="col-lg-9">
+								<select name="salle" class="form-control">
+									<?php while($salles = $querySalles->fetch(PDO::FETCH_ASSOC)){
+	if($cours["cours_salle"] == $salles["salle_id"]) {?>
+									<option selected="selected" value="<?php echo $salles["salle_id"];?>"><?php echo $salles["salle_name"];?></option>
+									<?php } else { ?>
+									<option value="<?php echo $salles["salle_id"];?>"><?php echo $salles["salle_name"];?></option>
+									<?php }
+} ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-lg-3 control-label">Commentaires</label>
+							<div class="col-lg-9">
+								<textarea name="edit-comment" id="edit-comment" cols="30" rows="5" class="form-control"></textarea>
+							</div>
+						</div>
+						<div class="panel panel-session" id="session-<?php echo $id;?>">
+							<a class="panel-heading-container" id='ph-session-<?php echo $id;?>' data-session='<?php echo $id;?>'>
 								<div class="panel-heading">
-									<label for="professeur">Professeur : </label>
-									<p>
-										<?php echo $data_prof['user_prenom']." ".$data_prof['user_nom'];?>
-									</p>
-								</div>
-								<div class="panel-body">
-									<label for="liste_participants">Participants enregistrés :</label>
-									<div class="input-group input-group-lg">
-										<input type="text" for="liste_participants" class="form-control" id="liste-participants" placeholder="Ajouter un participant">
-										<span role="buttton" class="input-group-btn" id="add-eleve"><a class="btn btn-info" role="button">Ajouter l'élève</a></span>
+									<div class="container-fluid">
+										<p class="col-md-11">Liste des participants</p>
+										<p class="col-md-1 session-option"><span class="glyphicon glyphicon-ok-sign validate-session" id="validate-session-<?php echo $id;?>" data-session="<?php echo $id;?>" title="Valider tous les passages"></span></p>
 									</div>
 								</div>
-								<ul class="list-group">
-									<?php while($participants = $queryParticipants->fetch(PDO::FETCH_ASSOC)){?>
-									<li class='list-group-item'>
-										<span class="glyphicon glyphicon-<?php echo (isset($participants["produit_adherent_id"]))?"ok":"remove";?>"></span>
-										<?php echo $participants['user_prenom']." ".$participants['user_nom'];?>
-										<span class="list-item-option delete-participant glyphicon glyphicon-trash" title="Supprimer l'élève de ce cours"><input type="hidden" value="<?php echo $participants["user_id"];?>"></span>
-									</li>
-									<?php } ?>
-									<li class="list-group-item" id="prix-calcul">Somme due à l'enseignant :
-										<div class="input-group">
-											<span class='input-group-addon' id='currency-addon'>€</span>
-											<input type="number" step="any" name='prix_cours' id='prix_calcul' class='form-control' value="<?php echo $cours["cours_prix"];?>" aria-describedby='currency-addon'>
-										</div>
-										<input type="checkbox" <?php if($cours['paiement_effectue'] == '0') echo "unchecked"; else echo "checked";?> data-toggle="toggle" data-on="Payée" data-off="Due" data-onstyle="success" data-offstyle="danger" style="float:left;" id="paiement">
-										<input type="hidden" name="paiement" id="paiement-sub" value="<?php echo $cours['paiement_effectue'];?>">
-									</li>
-								</ul>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="edit-comment">Raison de modification :</label>
-							<textarea name="edit-comment" id="edit-comment" cols="30" rows="5" class="form-control"></textarea>
+							</a>
+							<div class="panel-body collapse" id="body-session-<?php echo $id;?>" data-session="<?php echo $id;?>"></div>
 						</div>
 					</div>
 				</form>
 			</div>
 		</div>
-		<?php include "scripts.php";?>
+		<?php include "inserts/sub_modal_product.php";?>
 		<script>
 			$(document).ready(function(){
-				var listeAdherents = JSON.parse('<?php echo json_encode($array_eleves);?>');
-				$("#liste-participants").autocomplete({
-					source: listeAdherents,
-					select: $(this).empty()
-				});
-
-				$("#add-eleve").click(function(){
-					var adherent = $("#liste-participants").val();
-					var cours_id = $("[name='id']").val();
-					$.post("functions/add_participant.php", {cours_id : cours_id, adherent : adherent}).done(function(data){
-						showSuccessNotif(data);
-						var line = "<li class='list-group-item'>";
-						line += adherent;
-						line += "<span class='list-item-option delete-participant glyphicon glyphicon-trash' title='Supprimer l\'élève de ce cours'>";
-						line += "<input type='hidden' value="+data+">";
-						line += "</span>";
-						line += "</li>";
-						$(line).insertBefore($("#prix-calcul"));
-						$("#liste-participants").empty();
-					});
-				})
+				window.openedSessions = [<?php echo $id;?>];
+				refreshTick();
 			});
 
 			$('#paiement').change(function(){
@@ -330,16 +273,6 @@ if(isset($_POST['deleteCoursAll'])){
 				} else {
 					$('#paiement-sub').val(0);
 				}
-			});
-
-			$(".delete-participant").click(function(){
-				var clicked = $(this);
-				var cours_id = $("[name='id']").val();
-				var delete_id = clicked.children("input").val();
-				$.post("functions/delete_participant.php", {cours_id, delete_id}).done(function(data){
-					$.notify("Participation supprimée.", {globalPosition:"right bottom", className:"success"});
-					clicked.parent(".list-group-item").hide('200');
-				})
 			});
 		</script>
 	</body>

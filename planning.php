@@ -193,7 +193,7 @@ if(isset($_POST['deleteCoursAll'])){
 						$('#popover-'+calEvent.type+'-title').append(calEvent.title);
 						$('#popover-'+calEvent.type+'-type').append(calEvent.prestation);
 						$('#popover-'+calEvent.type+'-hours').append("Le "+$.format.date(calEvent.start._i, "dd/MM/yyyy")+" de "+$.format.date(calEvent.start._i, "HH:mm")+" à "+$.format.date(calEvent.end._i, "HH:mm"));
-						$('#'+calEvent.type+'-options>a').attr('href', calEvent.type+'_edit.php?id='+calEvent.id);
+						$('#'+calEvent.type+'-options>a').attr('href', calEvent.type+'/'+calEvent.id);
 						var pHeight = $('#'+calEvent.type+'-options').height();
 						$('#'+calEvent.type+'-options').on('shown.bs.modal', function(e){
 							$('#'+calEvent.type+'-options').offset({top: position.top - pHeight*1.4, left: position.left - 50});

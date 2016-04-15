@@ -124,7 +124,7 @@ $numberTransactions = $searchTransactions->rowCount();
 	$dateCours = date_create($cours["cours_start"])->format('d/m/Y');
 	$heureDebut = date_create($cours["cours_start"])->format('H:i');
 	$heureFin = date_create($cours["cours_end"])->format('H:i');?>
-							<a href="cours_edit.php?id=<?php echo $cours["cours_id"];?>" class="list-group-item">
+							<a href="cours/<?php echo $cours["cours_id"];?>" class="list-group-item">
 								<div class="row">
 									<div class="col-lg-2">
 										<?php echo $cours["cours_intitule"];?>
