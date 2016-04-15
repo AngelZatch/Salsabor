@@ -26,3 +26,4 @@ RewriteRule ^user/([0-9-]+)/historique user_history.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/reservations user_reservations.php?id=$1 [NC,L]
 
 RewriteRule ^forfait/([A-Za-z0-9-]+)$ forfait_details.php?id=$1
+RewriteRule ^cours/([A-Za-z0-9-]+)$ cours_edit.php?id=$1
