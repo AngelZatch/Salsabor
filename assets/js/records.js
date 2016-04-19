@@ -229,9 +229,10 @@ function displayRecords(session_id){
 				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
 				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-qrcode'></span> "+records_list[i].card+"</p>";
 				// Indicating the product will soon expire
-				if(moment(records_list[i].product_expiration).isBefore(moment('now').add(5, 'days'))){
+				if(moment(records_list[i].product_expiration).isBefore(moment('now').add(records_list[i].days_before_exp, 'days'))){
+					console.log("days");
 					contents += "<p class='col-lg-12 session-record-details srd-product product-soon' title='Expiration prochaine : "+moment(records_list[i].product_expiration).format("DD/MM/YYYY")+"'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
-				} else if(records_list[i].product_hours <= 3){
+				} else if(parseFloat(records_list[i].product_hours) <= records_list[i].hours_before_exp){
 					contents += "<p class='col-lg-12 session-record-details srd-product product-soon' title='Expiration prochaine : "+records_list[i].product_hours+" heures restantes'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
 				} else {
 					contents += "<p class='col-lg-12 session-record-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";

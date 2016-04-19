@@ -21,6 +21,8 @@ $load = $db->query("SELECT *, IF(date_prolongee IS NOT NULL, date_prolongee,
 					WHERE lecteur_lieu = '$session[cours_salle]' AND cours_id = '$session_id'
 					ORDER BY u.user_nom ASC");
 
+$notifications_settings = $db->query("SELECT * FROM master_settings WHERE user_id = '0'")->fetch(PDO::FETCH_ASSOC);
+
 $recordsList = array();
 while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$r = array();
@@ -42,6 +44,8 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	} else {
 		$r["product_name"] = "-";
 	}
+	$r["days_before_exp"] = $notifications_settings["days_before_exp"];
+	$r["hours_before_exp"] = $notifications_settings["hours_before_exp"];
 	array_push($recordsList, $r);
 }
 
