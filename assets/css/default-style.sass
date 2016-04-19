@@ -9,10 +9,10 @@ $pending-color: #9491D6
 $near-danger-color: #F0684B
 $empty-container-color: #888888
 $light-red-color: lighten($danger-color, 20%)
-$avatar-size-preview: 120px
 $break-small: 360px
 $break-medium: 768px
 $break-large: 1200px
+$avatar-very-small: 65px
 $avatar-size-preview: 120px
 $avatar-big-preview: 170px
 @import 'status'
@@ -477,6 +477,13 @@ h2.modal-body-title.first
 	img
 		width: inherit
 
+.notif-pp
+	+circle-size($avatar-very-small)
+	float: left
+	margin-right: 20px
+	img
+		width: inherit
+
 .empty-pp
 	+circle-size($avatar-size-preview)
 	border: 2px dashed $empty-container-color
@@ -521,3 +528,25 @@ p.legend
 .records-product-list
 	@extend .purchase-product-list
 	padding: 0
+
+/** NOTIFICATIONS **/
+.notification-line
+	display: inherit
+	border-bottom: 1px solid lighten($system-color, 20%)
+	padding: 8px
+	cursor: pointer
+	&.notif-new
+		background-color: transparentize($salsabor-red, 0.9)
+	&.notif-old
+		background-color: white
+	&:hover
+		background-color: transparentize($salsabor-red, 0.8)
+
+.notification-content
+	margin-bottom: 2px
+	text-decoration: none
+	color: black
+	display: block
+
+.notif-hour
+	color: $system-color !important
