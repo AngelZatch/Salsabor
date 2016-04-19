@@ -15,11 +15,11 @@ $load = $db->query("SELECT *, IF(date_prolongee IS NOT NULL, date_prolongee,
 							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
 							) AS produit_validity FROM passages pg
 					JOIN lecteurs_rfid lr ON pg.passage_salle = lr.lecteur_ip
-					JOIN users u ON pg.passage_eleve = u.user_rfid OR pg.passage_eleve_id = u.user_id
+					LEFT JOIN users u ON pg.passage_eleve_id = u.user_id AND pg.passage_eleve_id
 					LEFT JOIN produits_adherents pa ON pg.produit_adherent_cible = pa.id_produit_adherent
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
 					WHERE lecteur_lieu = '$session[cours_salle]' AND cours_id = '$session_id'
-					ORDER BY user_nom ASC");
+					ORDER BY u.user_nom ASC");
 
 $recordsList = array();
 while($details = $load->fetch(PDO::FETCH_ASSOC)){
