@@ -1,5 +1,6 @@
 <?php
 require_once 'functions/db_connect.php';
+include "functions/mails.php";
 $db = PDOFactory::getConnection();
 ?>
 <html>
@@ -20,6 +21,9 @@ $db = PDOFactory::getConnection();
 					$loading = explode(' ', $loading);
 					$loading = $loading[1] + $loading[0];
 					$start = $loading;
+					/** CODE **/
+					//nearExpiration($db, 6221);
+					/** /CODE **/
 					$loading = microtime();
 					$loading = explode(' ', $loading);
 					$loading = $loading[1] + $loading[0];
