@@ -5,9 +5,9 @@ $db = PDOFactory::getConnection();
 $limit = $_GET["limit"];
 
 if($limit == 0){
-	$load = $db->query("SELECT * FROM team_notifications ORDER BY notification_date DESC");
+	$load = $db->query("SELECT * FROM team_notifications ORDER BY notification_id DESC");
 } else {
-	$load = $db->query("SELECT * FROM team_notifications ORDER BY notification_date DESC LIMIT $limit");
+	$load = $db->query("SELECT * FROM team_notifications ORDER BY notification_id DESC LIMIT $limit");
 }
 
 $notificationsList = array();
