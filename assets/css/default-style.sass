@@ -32,6 +32,9 @@ $avatar-big-preview: 170px
 body
 	margin-top: 50px
 
+a
+	color: $salsabor-red
+
 .popover
 	z-index: 1060
 
@@ -115,6 +118,7 @@ a
 
 .notification-icon
 	color: white !important
+	cursor: pointer
 	&:hover
 		color: $salsabor-yellow !important
 	span.glyphicon
@@ -414,6 +418,29 @@ h2.modal-body-title.first
 	font-size: 18px
 	font-weight: 700
 
+.sub-modal-notification
+	position: fixed
+	@extend .sub-modal
+	z-index:1000000000000
+	overflow-x: hidden
+	border-radius: 0
+
+.smn-body
+	overflow-y: scroll
+	height: 350px
+	-moz-box-shadow: inset 0px -4px 10px 1px $system-color
+	-webkit-box-shadow: inset 0px -4px 10px 1px $system-color
+	-o-box-shadow: inset 0px -4px 10px 1px $system-color
+	box-shadow: inset 0px -4px 10px 1px $system-color
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=$system-color, Direction=90, Strength=10);
+
+.notif-texts
+	width: 90%
+
+.smn-footer
+	text-align: center
+	padding-top: 10px
+
 /** CATALOGUE **/
 .panel-product
 	background-color: darken(white, 10%)
@@ -480,7 +507,6 @@ h2.modal-body-title.first
 .notif-pp
 	+circle-size($avatar-very-small)
 	float: left
-	margin-right: 20px
 	img
 		width: inherit
 

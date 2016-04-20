@@ -24,3 +24,4 @@
 
 <!-- custom -->
 <script src="assets/js/tools.js"></script>
+<script src="assets/js/notifications.js"></script>

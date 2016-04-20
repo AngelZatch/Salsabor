@@ -43,12 +43,12 @@ $queryPassages = $db->query("SELECT * FROM passages JOIN users ON passage_eleve=
 							<span class="badge" id="badge-echeances"></span>
 						</a>
 					</li>
-					<!--<li class="notification-option" title="Notifications">
-						<a href="" class="notification-icon">
+					<li class="notification-option" title="Notifications">
+						<a class="notification-icon trigger-nav">
 							<span class="glyphicon glyphicon-bell"></span>
 							<span class="badge" id="badge-notifications"></span>
 						</a>
-					</li>-->
+					</li>
 					<li class="notification-option" title="Panier en cours">
 						<a href="#" class="notification-icon" data-toggle="popover-x" data-target="#popoverPanier" data-trigger="focus" data-placement="bottom bottom-right">
 							<span class="glyphicon glyphicon-shopping-cart"></span>
@@ -72,3 +72,4 @@ $queryPassages = $db->query("SELECT * FROM passages JOIN users ON passage_eleve=
 		</div>
 	</div>
 </nav>
+<?php include "inserts/sub_modal_notifications.php";?>

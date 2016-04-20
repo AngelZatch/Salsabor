@@ -161,7 +161,7 @@ $(document).ready(function(){
 		})
 	})
 
-	$('.sidebar').on('DOMMouseScroll mousewheel', function(ev) {
+	$('.separate-scroll').on('DOMMouseScroll mousewheel', function(ev) {
 		var $this = $(this),
 			scrollTop = this.scrollTop,
 			scrollHeight = this.scrollHeight,
