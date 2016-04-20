@@ -5,11 +5,9 @@ $(document).on('click', '.trigger-nav', function(e){
 		$(".sub-modal-notification").hide(0);
 	} else {
 		$(".smn-body").empty();
-		$.when(fetchNotifications(10)).done(function(data){
-			displayNotifications(data, 10);
-			$(".sub-modal-notification").css({left: 64+"%", top:55+"px"});
-			$(".sub-modal-notification").show(0);
-		});
+		fetchNotifications(10);
+		$(".sub-modal-notification").css({left: 64+"%", top:55+"px"});
+		$(".sub-modal-notification").show(0);
 	}
 }).on('click', '.smn-close', function(e){
 	e.stopPropagation();
@@ -17,11 +15,16 @@ $(document).on('click', '.trigger-nav', function(e){
 })
 
 function fetchNotifications(limit){
-	return $.get("functions/fetch_notifications.php", {limit : limit});
+	$.get("functions/fetch_notifications.php", {limit : limit}).done(function(data){
+		if(limit == 0 || $(".sub-modal-notification").is(":visible")){
+			displayNotifications(data, limit);
+		}
+	});
 }
 
 function displayNotifications(data, limit){
 	var notifications = JSON.parse(data);
+	console.log("displaying");
 	for(var i = 0; i < notifications.length; i++){
 		// Status handling
 		var notifMessage = "", notifClass = "";
@@ -108,4 +111,5 @@ function displayNotifications(data, limit){
 			$(".smn-body").append(notifMessage);
 		}
 	}
+	setTimeout(fetchNotifications, 10000, limit);
 }

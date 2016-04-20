@@ -25,9 +25,7 @@ $db = PDOFactory::getConnection();
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');
-				$.when(fetchNotifications(0)).done(function(data){
-					displayNotifications(data, 0);
-				})
+				fetchNotifications(0);
 			})
 		</script>
 	</body>
