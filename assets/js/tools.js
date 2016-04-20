@@ -448,3 +448,73 @@ $(".droppable").droppable({
 		ui.draggable.detach().appendTo($(this));
 	}
 });
+
+function toggleBoolean(button, boolean_name, value_id, value_name, old_value){
+	var data = {
+		"boolean_name": boolean_name,
+		"old_value": old_value
+	};
+	data[value_name] = value_id;
+	console.log(data);
+	$.post("functions/set_boolean.php", {data : data}).done(function(data){
+		console.log(data);
+		if(button != null){
+			if(old_value == 0){ // Then the new value is 1.
+				button.removeClass("status-disabled");
+				button.addClass("status-enabled");
+				button.children("span").removeClass("glyphicon-floppy-remove");
+				button.children("span").addClass("glyphicon-lock");
+				document.getElementById(button.attr("id")).dataset.boolean = 1;
+				if(button.attr("id") == "lock_status"){
+					$("#manual-expire").removeClass("disabled");
+					$("#manual-expire").addClass("enabled");
+				}
+				switch(button.attr("id")){
+					case "lock_montant":
+						button.attr("title", "Verrouillé : le montant de l'échéance ne variera pas, peu importe les autres échéances de la transaction.");
+						break;
+
+					case "lock_status":
+						button.attr("title", "Verrouillé : le système n'a désormais pas l'autorisation de changer l'état (en attente, valide, expiré) du produit. Vous pouvez cependant toujours le modifier.");
+						break;
+
+					case "lock_dates":
+						button.attr("title", "Verrouilé : le système n'a désormais pas l'autorisation de changer les dates de validité, d'activation ni d'expiration du produit. Vous pouvez néanmoins fixer toutes ces dates.");
+						break;
+
+					default:
+						break;
+				}
+			} else {
+				button.removeClass("status-enabled");
+				button.addClass("status-disabled");
+				button.children("span").removeClass("glyphicon-lock");
+				button.children("span").addClass("glyphicon-floppy-remove");
+				if(data[value_name] == "product_id"){
+					computeRemainingHours(value_id, true);
+				}
+				document.getElementById(button.attr("id")).dataset.boolean = 0;
+				if(button.attr("id") == "lock_status"){
+					$("#manual-expire").removeClass("enabled");
+					$("#manual-expire").addClass("disabled");
+				}
+				switch(button.attr("id")){
+					case "lock_montant":
+						button.attr("title", "Non verrouillé : le montant de l'échéance sera affecté par des changements dans d'autres échéances");
+						break;
+
+					case "lock_status":
+						button.attr("title", "Libre : le système modifiera l'état du produit de façon appropriée en fonction des dates de validité.");
+						break;
+
+					case "lock_dates":
+						button.attr("title", "Libre : le système modifiera les dates en fonction du premier cours enregistré, de la validité du produit et d'une potentielle extension de validité.");
+						break;
+
+					default:
+						break;
+				}
+			}
+		}
+	})
+}
