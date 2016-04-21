@@ -62,6 +62,18 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			$n["user_id"] = $n["target"];
 			$n["photo"] = $sub_query["photo"];
 			break;
+
+		case "SES": // Notification when a session has been opened by the system
+			$sub_query = $db->query("SELECT * FROM cours c
+									JOIN salle s ON c.cours_salle = s.salle_id
+									JOIN users u ON c.prof_principal = u.user_id
+									WHERE cours_id='$n[target]'")->fetch(PDO::FETCH_ASSOC);
+			$n["cours_name"] = $sub_query["cours_intitule"];
+			$n["salle"] = $sub_query["salle_name"];
+			$n["cours_start"] = $sub_query["cours_start"];
+			$n["user"] = $sub_query["user_prenom"]." ".$sub_query["user_nom"];
+			$n["photo"] = $sub_query["photo"];
+			break;
 	}
 	$n["date"] = $details["notification_date"];
 	$n["status"] = $details["notification_state"];
