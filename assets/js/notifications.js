@@ -115,7 +115,7 @@ function displayNotifications(data, limit){
 				break;
 
 			case "SES":
-				notifMessage += "data-redirect='passages#ph-session-"+notifications[i].id+"'>";
+				notifMessage += "data-redirect='passages#ph-session-"+notifications[i].cours_id+"'>";
 				notifMessage += "<div class='notif-pp col-sm-2'><image src='"+notifications[i].photo+"'></div><div class='col-sm-10'>";
 				notifMessage += "Le cours de <strong>"+notifications[i].cours_name+"</strong> tenu par "+notifications[i].user+" et commençant à "+moment(notifications[i].cours_start).format("HH:mm")+" en "+notifications[i].salle+" est désormais <strong>ouvert aux passages</strong>.";
 				notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon glyphicon-map-marker'></span> ";

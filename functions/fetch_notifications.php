@@ -68,6 +68,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 									JOIN salle s ON c.cours_salle = s.salle_id
 									JOIN users u ON c.prof_principal = u.user_id
 									WHERE cours_id='$n[target]'")->fetch(PDO::FETCH_ASSOC);
+			$n["cours_id"] = $sub_query["cours_id"];
 			$n["cours_name"] = $sub_query["cours_intitule"];
 			$n["salle"] = $sub_query["salle_name"];
 			$n["cours_start"] = $sub_query["cours_start"];
