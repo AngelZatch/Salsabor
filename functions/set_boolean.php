@@ -20,6 +20,10 @@ try{
 		$maturity_id = $_POST["data"]["maturity_id"];
 		$update = $db->query("UPDATE produits_echeances SET $boolean_name = $new_value WHERE produits_echeances_id = '$maturity_id'");
 	}
+	if(isset($_POST["data"]["notification_id"])){
+		$notification_id = $_POST["data"]["notification_id"];
+		$update = $db->query("UPDATE team_notifications SET $boolean_name = $new_value WHERE notification_id = '$notification_id'");
+	}
 } catch(PDOException $e){
 	echo $e->getMessage();
 }

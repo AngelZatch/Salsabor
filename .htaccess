@@ -17,6 +17,8 @@ RewriteRule ^tarifs$ tarifs_liste.php
 RewriteRule ^holidays$ jours_chomes.php
 RewriteRule ^echeances$ echeances.php
 RewriteRule ^transactions$ transactions.php
+RewriteRule ^notifications$ notifications.php
+RewriteRule ^notifications/settings$ notifications_settings.php
 
 #User Details
 RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]
