@@ -9,11 +9,11 @@ $db = PDOFactory::getConnection();
 - Show/Hide promotions
 - Watch for active/inactive users
 It's executed once per day, at night because some operations (like computing all active products) might take some time.
-cron line : cron : * 1 * * * php -f /opt/lampp/htdocs/Salsabor/functions/schedule/handle_sessions.php
+cron line : cron : * 1 * * * php -f /opt/lampp/htdocs/Salsabor/functions/schedule/system_operations.php
 (will be executed daily at 1am)
 **/
 
-$compare_start = date_create('now')->format('Y-m-d');
+$compare_start = date("Y-m-d");
 $activationLimit = date("Y-m-d H:i:s", strtotime($compare_start.'-1YEAR'));
 
 try{
