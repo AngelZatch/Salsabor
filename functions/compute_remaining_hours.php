@@ -29,6 +29,12 @@ function computeProduct($product_id){
 							ON pa.id_transaction_foreign = t.id_transaction
 						WHERE id_produit_adherent = '$product_id'")->fetch(PDO::FETCH_ASSOC);
 
+	$master_settings = $db->query("SELECT * FROM master_settings WHERE user_id = 0")->fetch(PDO::FETCH_ASSOC);
+
+	$today = date("Y-m-d H:i:s");
+	$hour_limit = $master_settings["hours_before_exp"];
+	$expiration_limit = date("Y-m-d", strtotime($today.'+'.$master_settings["days_before_exp"].'DAYS'));
+
 	$remaining_hours = $product_details["volume_horaire"];
 	$v = array();
 	$computeEnd = false;
@@ -177,6 +183,19 @@ function computeProduct($product_id){
 	$v["limit"] = $product_details["est_illimite"];
 	$v["compute"] = $computeEnd;
 	$v["lock_status"] = $lock_status;
+
+	// Once everything is computed, time for notifications
+	if(max($product_details["date_expiration"], $product_details["date_prolongee"]) <= $expiration_limit){ // If the expiration is in less than x days
+		$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
+								VALUES('PRD-NE', '$product_id', '$today', '1')");
+	} else if($remaining_hours > 0 && $remaining_hours <= $hour_limit){ // If the remaining hours are less than 5.
+		$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
+								VALUES('PRD-NH', '$product_id', '$today', '1')");
+	} else if($product_details["produit_adherent_actif"] != '2' && $status == '2'){ // If the product has expired because of this computing.
+		$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
+								VALUES('PRD-E', '$product_id', '$today', '1')");
+	}
+
 	echo json_encode($v);
 }
 ?>

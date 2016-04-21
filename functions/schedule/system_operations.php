@@ -24,7 +24,7 @@ try{
 	$update->bindParam(1, $compare_start);
 	$update->execute();
 
-	// Compute all active products.
+	// Compute all active products. As compute generates notifications, this will also take care of all the notifications for the products.
 	$products = $db->query("SELECT id_produit_adherent FROM produits_adherents WHERE actif = 1");
 	while($product = $products->fetch(PDO::FETCH_COLUMN)){
 		computeProduct($product);

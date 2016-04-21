@@ -27,6 +27,7 @@ $(document).ready(function(){
 	setInterval(notifPassages, 15000);
 	setInterval(notifCoursParticipants, 30000);
 	setInterval(notifEcheancesDues, 30000);
+	badgeNotifications();
 	$('[data-toggle="tooltip"]').tooltip();
 	moment.locale("fra");
 

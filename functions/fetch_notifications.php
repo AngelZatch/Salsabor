@@ -26,8 +26,12 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 									JOIN produits p ON pa.id_produit_foreign = p.produit_id
 									JOIN users u ON pa.id_user_foreign = u.user_id WHERE id_produit_adherent = '$n[target]'")->fetch(PDO::FETCH_ASSOC);
 			$n["product_name"] = $sub_query["produit_nom"];
-			$n["product_validity"] = $sub_query["date_expiration"];
-			$n["product_usage"] = $sub_query["date_fin_utilisation"];
+			$n["product_validity"] = max($sub_query["date_expiration"], $sub_query["date_prolongee"]);
+			if(isset($sub_query["date_fin_utilisation"]) && $sub_query["date_fin_utilisation"] != "0000-00-00 00:00:00"){
+				$n["product_usage"] = $sub_query["date_fin_utilisation"];
+			} else {
+				$n["product_usage"] = $n["product_validity"];
+			}
 			$n["user"] = $sub_query["user_prenom"]." ".$sub_query["user_nom"];
 			$n["remaining_hours"] = $sub_query["volume_cours"];
 			$n["user_id"] = $sub_query["user_id"];
