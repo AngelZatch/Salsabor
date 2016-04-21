@@ -11,6 +11,17 @@ $(document).on('click', '.trigger-nav', function(e){
 }).on('click', '.smn-close', function(e){
 	e.stopPropagation();
 	$(".sub-modal-notification").hide(0);
+}).on('click', '.toggle-read', function(e){
+	e.stopImmediatePropagation();
+	var notification_id = $(this).parents("li").data().notification;
+	var old_value = $(this).parents("li").data().state;
+	changeState(notification_id, old_value);
+}).on('click', '.notification-line', function(){
+	if($(this).data().state == 1){
+		var notification_id = $(this).data().notification;
+		changeState(notification_id, $(this).data().state);
+	}
+	window.location = $(this).data().redirect;
 })
 
 function fetchNotifications(limit){
@@ -42,7 +53,7 @@ function displayNotifications(data, limit){
 		// Token handling
 		switch(notifications[i].type){
 			case "PRD":
-				notifMessage += "onclick=window.location='user/"+notifications[i].user_id+"/abonnements'>";
+				notifMessage += "data-redirect='user/"+notifications[i].user_id+"/abonnements'>";
 				notifMessage += "<div class='notif-pp col-sm-2'><image src='"+notifications[i].photo+"'></div><div class='col-sm-10'>";
 				switch(notifications[i].subtype){
 					case "NE":
@@ -61,7 +72,7 @@ function displayNotifications(data, limit){
 				break;
 
 			case "MAT":
-				notifMessage += "onclick=window.location='user/"+notifications[i].user_id+"/achats#purchase-"+notifications[i].transaction+"'>";
+				notifMessage += "data-redirect='user/"+notifications[i].user_id+"/achats#purchase-"+notifications[i].transaction+"'>";
 				notifMessage += "<div class='notif-pp col-sm-2'><image src='"+notifications[i].photo+"'></div><div class='col-sm-10'>";
 				switch(notifications[i].subtype){
 					case "NE":
@@ -97,7 +108,7 @@ function displayNotifications(data, limit){
 
 
 			case "MAI":
-				notifMessage += "onclick=window.location='user/"+notifications[i].user_id+"'>";
+				notifMessage += "data-redirect='user/"+notifications[i].user_id+"'>";
 				notifMessage += "<div class='notif-pp col-sm-2'><image src='"+notifications[i].photo+"'></div><div class='col-sm-10'>";
 				notifMessage += "<strong>"+notifications[i].user+"</strong> n'a pas d'adresse mail enregistrée.";
 				notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon glyphicon-envelope'></span> ";
@@ -131,11 +142,13 @@ function changeState(notification_id, old_value){
 			$("#notification-"+notification_id).addClass("notif-new");
 			var span = $("#notification-"+notification_id).find("span.glyphicon-button");
 			span.replaceWith("<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button toggle-read' title='Marquer comme lue'></span>");
+			$("#notification-"+notification_id).data().state = 1;
 		} else {
 			$("#notification-"+notification_id).removeClass("notif-new");
 			$("#notification-"+notification_id).addClass("notif-old");
 			var span = $("#notification-"+notification_id).find("span.glyphicon-button");
 			span.replaceWith("<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button toggle-read' title='Marquer comme non lue'></span>");
+			$("#notification-"+notification_id).data().state = 0;
 		}
 	})
 }

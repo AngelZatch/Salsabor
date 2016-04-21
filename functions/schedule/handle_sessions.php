@@ -2,6 +2,11 @@
 require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 
+/* This file has to open sessions
+cron : * / 5 10-23 * * * php -f /opt/lampp/htdocs/Salsabor/functions/schedule/handle_sessions.php
+(will be executed every 5 minutes between 10am and 11pm everyday)
+*/
+
 $compare_start = date_create('now')->format('Y-m-d H:i:s');
 $compare_end = date("Y-m-d H:i:s", strtotime($compare_start.'+90MINUTES'));
 $compare_close = date("Y-m-d H:i:s", strtotime($compare_start.'+30MINUTES'));
