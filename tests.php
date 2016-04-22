@@ -22,12 +22,13 @@ $db = PDOFactory::getConnection();
 					$loading = $loading[1] + $loading[0];
 					$start = $loading;
 					/** CODE **/
-					foreach(glob("assets/pictures/*.jpg") as $filename){
+					/*foreach(glob("assets/pictures/*.jpg") as $filename){
 						preg_match("/[0-9-]+/", $filename, $matches);
 						$user_id = $matches[0];
 
 						$photo = $db->query("UPDATE users SET photo = 'assets/pictures/$user_id.jpg' WHERE user_id = '$user_id'");
 					}
+					Took 21 seconds for 338 items*/
 
 					/** /CODE **/
 					$loading = microtime();
