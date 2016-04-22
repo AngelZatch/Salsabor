@@ -10,7 +10,7 @@ $ip_rfid = $data[1];
 prepareRecord($db, $tag_rfid, $ip_rfid);
 
 function prepareRecord($db, $tag, $ip){
-	$today = date_create('now')->format('Y-m-d H:i:s');
+	$today = date("Y-m-d H:i:s");
 	//$limit = date("Y-m-d H:i:s", strtotime($today.'+20MINUTES'));
 	if($ip == "192.168.0.3"){
 		$status = "1";
@@ -26,7 +26,12 @@ function prepareRecord($db, $tag, $ip){
 								WHERE ouvert = '1' AND lecteur_ip = '$ip'")->fetch(PDO::FETCH_GROUP);
 		$cours_name = $session["cours_intitule"];
 		$session_id = $session["cours_id"];
-		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$tag'")->fetch(PDO::FETCH_COLUMN);
+		$user_details = $db->query("SELECT user_id, mail FROM users WHERE user_rfid = '$tag'")->fetch(PDO::FETCH_ASSOC);
+
+		if(preg_match("/@/", $user_details["mail"], $matches)){
+			$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
+								VALUES('MAI', '$user_details[user_id]', '$today', '1')");
+		}
 
 		// Ok, we got everything, let's look for potential duplicates
 		$duplicates = $db->query("SELECT * FROM passages WHERE passage_eleve = '$tag' AND cours_id='$session_id'")->rowCount();
@@ -34,7 +39,7 @@ function prepareRecord($db, $tag, $ip){
 		if($duplicates > 0){
 			echo $ligne = $today.";".$tag.";".$ip."$-3";
 		} else {
-			addRecord($db, $cours_name, $session_id, $user_id, $ip, $tag);
+			addRecord($db, $cours_name, $session_id, $user_details["user_id"], $ip, $tag);
 		}
 	}
 }

@@ -17,6 +17,7 @@ if(isset($_POST["add"])){
 }
 
 function prepareRecord($db, $tag, $ip){
+	$today = date("Y-m-d H:i:s");
 	if($ip == "192.168.0.3"){
 		$status = "1";
 	} else {
@@ -28,9 +29,14 @@ function prepareRecord($db, $tag, $ip){
 								WHERE ouvert = '1' AND lecteur_ip = '$ip'")->fetch(PDO::FETCH_GROUP);
 		$cours_name = $session["cours_intitule"];
 		$session_id = $session["cours_id"];
-		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$tag'")->fetch(PDO::FETCH_COLUMN);
+		$user_details = $db->query("SELECT user_id, mail FROM users WHERE user_rfid = '$tag'")->fetch(PDO::FETCH_ASSOC);
 
-		addRecord($db, $cours_name, $session_id, $user_id, $ip, $tag);
+		if(!preg_match("/@/", $user_details["mail"], $matches)){
+			$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
+								VALUES('MAI', '$user_details[user_id]', '$today', '1')");
+		}
+
+		addRecord($db, $cours_name, $session_id, $user_details["user_id"], $ip, $tag);
 	}
 	header('Location: passages');
 }
