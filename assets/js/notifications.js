@@ -149,13 +149,13 @@ function changeState(notification_id, old_value){
 			var span = $("#notification-"+notification_id).find("span.glyphicon-button");
 			span.replaceWith("<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button toggle-read' title='Marquer comme lue'></span>");
 			$("#notification-"+notification_id).data().state = 1;
-			$("#badge-notifications").html(parseInt($("#badge-notifications").html())+1);
+			$(".badge-notifications").html(parseInt($("#badge-notifications").html())+1);
 		} else {
 			$("#notification-"+notification_id).removeClass("notif-new");
 			$("#notification-"+notification_id).addClass("notif-old");
 			var span = $("#notification-"+notification_id).find("span.glyphicon-button");
 			span.replaceWith("<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button toggle-read' title='Marquer comme non lue'></span>");
-			$("#badge-notifications").html(parseInt($("#badge-notifications").html())-1);
+			$(".badge-notifications").html(parseInt($("#badge-notifications").html())-1);
 		}
 	})
 }
@@ -163,10 +163,10 @@ function changeState(notification_id, old_value){
 function badgeNotifications(){
 	$.get("functions/badge_notifications.php").done(function(data){
 		if(data == 0){
-			$("#badge-notifications").hide();
+			$(".badge-notifications").hide();
 		} else {
-			$("#badge-notifications").show();
-			$("#badge-notifications").html(data);
+			$(".badge-notifications").show();
+			$(".badge-notifications").html(data);
 		}
 		setTimeout(badgeNotifications, 10000);
 	})

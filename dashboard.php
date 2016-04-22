@@ -25,6 +25,7 @@ if($date > "06:00:00" && $date <= "10:00:00"){
 		<meta charset="UTF-8">
 		<title>Accueil d'administration | Salsabor</title>
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -34,11 +35,10 @@ if($date > "06:00:00" && $date <= "10:00:00"){
 				<div class="col-lg-10 col-lg-offset-2 main-home">
 					<div class="jumbotron jumbotron-home">
 						<h1><?php echo $welcome;?></h1>
-						<p>Bienvenue sur Salsabor Gestion. Que souhaitez-vous faire ?</p>
+						<p>Bienvenue sur Salsabor Gestion ! Que souhaitez-vous faire ?</p>
 						<p id="jumbotron-btns">
 							<a class="btn btn-primary btn-lg" href="inscription"><span class="glyphicon glyphicon-user"></span> Réaliser une inscription</a>
 							<a class="btn btn-primary btn-lg" href="vente"><span class="glyphicon glyphicon-th"></span> Vendre un produit</a>
-							<a href="reservation" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-record"></span> Réserver une salle</a>
 							<a href="invitation" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-heart-empty"></span> Inviter un élève</a>
 							<a href="passages" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-map-marker"></span> Consulter les passages</a>
 							<a href="echeances" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-repeat"></span> Consulter les échéances</a>
@@ -47,6 +47,5 @@ if($date > "06:00:00" && $date <= "10:00:00"){
 				</div>
 			</div>
 		</div>
-		<?php include "scripts.php";?>
 	</body>
 </html>
