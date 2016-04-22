@@ -25,28 +25,28 @@ $queryPassages = $db->query("SELECT * FROM passages JOIN users ON passage_eleve=
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav navbar-right">
 					<!--<li><a href=""><span class="glyphicon glyphicon-user"></span> ver.1.3.2</a></li>-->
-					<li class="notification-option" title="Passages en attente de traitement">
+					<!--<li class="notification-option" title="Passages en attente de traitement">
 						<a href="passages" class="notification-icon">
 							<span class="glyphicon glyphicon-map-marker"></span>
 							<span class="badge" id="badge-passages"></span>
 						</a>
-					</li>
-					<li class="notification-option" title="Participants à un cours sans forfait">
+					</li>-->
+					<!--<li class="notification-option" title="Participants à un cours sans forfait">
 						<a href="regularisation/participations" class="notification-icon">
 							<span class="glyphicon glyphicon-pawn"></span>
 							<span class="badge" id="badge-participants"></span>
 						</a>
-					</li>
-					<li class="notification-option" title="Echéances en retard">
+					</li>-->
+					<!--<li class="notification-option" title="Echéances en retard">
 						<a href="echeances.php" class="notification-icon">
 							<span class="glyphicon glyphicon-repeat"></span>
 							<span class="badge" id="badge-echeances"></span>
 						</a>
-					</li>
+					</li>-->
 					<li class="notification-option" title="Notifications">
 						<a class="notification-icon trigger-nav">
 							<span class="glyphicon glyphicon-bell"></span>
-							<span class="badge" id="badge-notifications"></span>
+							<span class="badge badge-notifications" id="badge-notifications"></span>
 						</a>
 					</li>
 					<li class="notification-option" title="Panier en cours">
