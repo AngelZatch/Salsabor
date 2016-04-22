@@ -1,5 +1,5 @@
 <?php
-require_once "../db_connect.php";
+require_once "functions/db_connect.php";
 $db = PDOFactory::getConnection();
 
 /* This file has to open sessions
