@@ -185,15 +185,15 @@ function computeProduct($product_id){
 	$v["lock_status"] = $lock_status;
 
 	// Once everything is computed, time for notifications
-	if(max($product_details["date_expiration"], $product_details["date_prolongee"]) <= $expiration_limit){ // If the expiration is in less than x days
+	if($product_details["produit_adherent_actif"] != '2' && $status == '2'){ // If the product has expired because of this computing.
+		$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
+								VALUES('PRD-E', '$product_id', '$today', '1')");
+	} else if($v["expiration"] <= $expiration_limit){ // If the expiration is in less than x days
 		$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
 								VALUES('PRD-NE', '$product_id', '$today', '1')");
 	} else if($remaining_hours > 0 && $remaining_hours <= $hour_limit){ // If the remaining hours are less than 5.
 		$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
 								VALUES('PRD-NH', '$product_id', '$today', '1')");
-	} else if($product_details["produit_adherent_actif"] != '2' && $status == '2'){ // If the product has expired because of this computing.
-		$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
-								VALUES('PRD-E', '$product_id', '$today', '1')");
 	}
 
 	if(isset($_POST["product_id"])){
