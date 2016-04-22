@@ -196,6 +196,8 @@ function computeProduct($product_id){
 								VALUES('PRD-E', '$product_id', '$today', '1')");
 	}
 
-	echo json_encode($v);
+	if(isset($_POST["product_id"])){
+		echo json_encode($v);
+	}
 }
 ?>
