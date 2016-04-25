@@ -9,22 +9,12 @@ function getAdherent($prenom, $nom){
 	return $res;
 }
 
-function solveAdherentToId($data){
+function solveAdherentToId($name){
 	$db = PDOFactory::getConnection();
-	$data = explode(' ', $data);
-	$prenom = $data[0];
-	$nom = '';
-	for($i = 1; $i < count($data); $i++){
-		$nom .= $data[$i];
-		if($i != count($data)){
-			$nom .= " ";
-		}
-	}
-	$search = $db->prepare('SELECT * FROM users WHERE user_prenom=? AND user_nom=?');
-	$search->bindParam(1, $prenom);
-	$search->bindParam(2, $nom);
-	$search->execute();
-	$res = $search->fetch(PDO::FETCH_ASSOC);
+	$user = $db->query("SELECT * FROM (
+	SELECT user_id, CONCAT(user_prenom, ' ', user_nom) as fullname FROM users) base
+	WHERE fullname = '$name'");
+	$res = $user->fetch(PDO::FETCH_ASSOC);
 	return $res["user_id"];
 }
 

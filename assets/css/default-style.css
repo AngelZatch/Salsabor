@@ -799,13 +799,19 @@ p.legend {
     background-color: rgba(168, 1, 57, 0.2); }
 
 /* line 583, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.read-all {
+  cursor: pointer;
+  float: right;
+  padding-right: 5px; }
+
+/* line 588, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .notification-content {
   margin-bottom: 2px;
   text-decoration: none;
   color: black;
   display: block; }
 
-/* line 589, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 594, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .notif-hour {
   color: #888888 !important; }
 

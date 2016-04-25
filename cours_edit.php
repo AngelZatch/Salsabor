@@ -65,7 +65,7 @@ if(isset($_POST['editOne'])){
 		$db->rollBack();
 		var_dump($e->getMessage());
 	}
-	header('Location: planning.php');
+	header('Location: ../planning');
 }
 
 if(isset($_POST['editNext'])){
@@ -110,7 +110,7 @@ if(isset($_POST['editNext'])){
 		$db->rollBack();
 		var_dump($e->getMessage());
 	}
-	header('Location: planning.php');
+	header('Location: ../planning');
 }
 
 if(isset($_POST['editAll'])){

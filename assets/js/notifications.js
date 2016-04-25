@@ -22,6 +22,9 @@ $(document).on('click', '.trigger-nav', function(e){
 		changeState(notification_id, $(this).data().state);
 	}
 	window.location = $(this).data().redirect;
+}).on('click', '.read-all', function(e){
+	e.stopPropagation();
+	$.post("functions/read_all.php");
 })
 
 function fetchNotifications(limit){
