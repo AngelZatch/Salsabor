@@ -59,13 +59,13 @@ $queryHistoryRecus->execute();
 	$date = date_create($history["cours_start"])->format("d/m/Y");
 	$hour_start = date_create($history["cours_start"])->format("H:i");
 	$hour_end = date_create($history["cours_end"])->format("H:i");?>
-							<li class="product-participation <?php echo ($history["produit_adherent_id"]==null)?"participation-over":"participation-valid";?> container-fluid" data-argument="<?php echo $history["id"];?>" id="participation-<?php echo $history["id"];?>">
+							<li class="product-participation <?php echo ($history["produit_adherent_id"]==null||$history["produit_adherent_id"]==0)?"participation-over":"participation-valid";?> container-fluid" data-argument="<?php echo $history["id"];?>" id="participation-<?php echo $history["id"];?>">
 								<div class="col-lg-4">
 									<p class="col-lg-12 session-title"><?php echo $history["cours_intitule"];?></p>
 									<p class="col-lg-12 session-hours"><?php echo $date." : ".$hour_start." - ".$hour_end;?></p>
 								</div>
 								<div class="col-lg-8">
-									<?php if($history["produit_adherent_id"] == null){ ?>
+									<?php if($history["produit_adherent_id"] == null || $history["produit_adherent_id"] == 0){ ?>
 									<p class="col-lg-12 session-title">Pas de produit associé</p>
 									<p class="col-lg-12 session-hours">Cliquer pour chercher un produit à associer</p>
 									<?php } else {
