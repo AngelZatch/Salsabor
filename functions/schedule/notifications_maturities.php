@@ -17,7 +17,7 @@ PRD-NE | 1275 | 1 - The product PRODUCT_NAME of USER will expire on PRODCUT_VALI
 PRD-NH | 1275 | 1 - The product PRODUCT_NAME of USER has HOUR remaining.
 MAT-L | 10024 | 1 - "The Maturity of the transaction TRANSACTION_ID of user USER, scheduled for MATURITY_DATE, has not been paid yet.
 **/
-require_once "functions/db_connect.php";
+require_once "/opt/lampp/htdocs/Salsabor/functions/db_connect.php";
 $db = PDOFactory::getConnection();
 
 $master_settings = $db->query("SELECT * FROM master_settings WHERE user_id = 0")->fetch(PDO::FETCH_ASSOC);
