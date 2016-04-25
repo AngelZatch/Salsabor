@@ -133,17 +133,17 @@ function displaySessions(data, fetched){
 	var opened = $(".panel-session").length;
 	switch(opened){
 		case 0:
-			$(".sub-legend").html("<span></span> Aucun cours n'est ouvert");
+			$(".active-sessions-title").html("<span></span> Aucun cours n'est ouvert");
 			break;
 
 		case 1:
-			$(".sub-legend").html("<span></span> cours est actuellement ouvert");
-			$(".sub-legend>span").html(opened);
+			$(".active-sessions-title").html("<span></span> cours est actuellement ouvert");
+			$(".active-sessions-title>span").html(opened);
 			break;
 
 		default:
-			$(".sub-legend").html("<span></span> cours sont actuellements ouverts");
-			$(".sub-legend>span").html(opened);
+			$(".active-sessions-title").html("<span></span> cours sont actuellements ouverts");
+			$(".active-sessions-title>span").html(opened);
 			break;
 	}
 	/*console.log(fetched);*/
@@ -255,6 +255,106 @@ function displayRecords(session_id){
 		$("#user-total-count-"+session_id).text(users);
 		$("#user-ok-count-"+session_id).text(ok);
 		$("#user-warning-count-"+session_id).text(warning);
+	})
+}
+
+function displayIrregularRecords(){
+	$.get("functions/fetch_irregular_records.php").done(function(data){
+		var records_list = JSON.parse(data);
+		$(".irregular-records-list").empty();
+		var users = 0, ok = 0, warning = 0;
+		var contents = "";
+		for(var i = 0; i < records_list.length; i++){
+			console.log(records_list[i]);
+			var record_status;
+			switch(records_list[i].status){
+				case '0':
+					record_status = "status-pre-success";
+					break;
+
+				case '2':
+					if(records_list[i].product_name == "-"){
+						record_status = "status-partial-success";
+					} else {
+						record_status = "status-success";
+					}
+					ok++;
+					break;
+
+				case '3':
+					record_status = "status-over";
+					warning++;
+					break;
+			}
+			users++;
+			contents += "<li class='panel-item panel-record irregular-record "+record_status+" container-fluid col-lg-12' id='session-record-"+records_list[i].id+"' data-record='"+records_list[i].id+"'>";
+			// Profile picture
+			if(records_list[i].photo != null){
+				var photo = records_list[i].photo;
+			} else {
+				var photo = "assets/images/logotype-white.png";
+			}
+			contents += "<div class='notif-pp'><img src='"+photo+"'></div>";
+			// Details
+			contents += "<div class='row irregular-record-actions'>";
+
+			// User
+			if(records_list[i].user != " "){
+				var user_message = records_list[i].user;
+			} else {
+				var user_message = "Pas d'utilisateur associé";
+			}
+			contents += "<p class='panel-item-title col-lg-7 bf'>"+user_message+"</p>";
+
+			// Action buttons
+			// Different button depending on the status of the record
+			if(records_list[i].status == '2'){
+				contents += "<p class='col-lg-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+records_list[i].id+")' title='Annuler la validation'></span></p>";
+			} else {
+				contents += "<p class='col-lg-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+records_list[i].id+")' title='Valider le passage'></span></p>";
+			}
+			contents += "<p class='col-lg-1 panel-item-options'><span class='glyphicon glyphicon-arrow-right glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='report-record' data-argument='"+records_list[i].id+"' title='Changer le produit'></span></p>";
+			contents += "<p class='col-lg-1 panel-item-options'><span class='glyphicon glyphicon-pushpin glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-session-record' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
+			contents += "<p class='col-lg-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+			contents += "</div>";
+
+			contents += "<div class='row irregular-record-details'>";
+
+			//Membership code
+			if(records_list[i].card != null){
+				var card_message = records_list[i].card;
+			} else {
+				var card_message = "Passage ajouté manuellement";
+			}
+			contents += "<p class='col-lg-4 session-record-details'><span class='glyphicon glyphicon-qrcode'></span> "+card_message+"</p>";
+
+			// Record hour
+			contents += "<p class='col-lg-4 session-record-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("DD/MM/YYYY HH:mm:ss")+"</p>";
+
+			// Reader
+			contents += "<p class='col-lg-4 session-record-details'><span class='glyphicon glyphicon-pushpin'></span> "+records_list[i].room+"</p>";
+
+			// Session
+			if(records_list[i].cours_name != null){
+				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].cours_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].cours_end).format("HH:mm")+")</p>";
+			} else {
+				contents += "<p class='col-lg-6 session-record-details'><span class='glyphicon glyphicon-eye-open'></span> Pas de cours</p>";
+			}
+
+			// Indicating the product will soon expire
+			if(moment(records_list[i].product_expiration).isBefore(moment('now').add(records_list[i].days_before_exp, 'days'))){
+				console.log("days");
+				contents += "<p class='col-lg-6 session-record-details srd-product product-soon' title='Expiration prochaine : "+moment(records_list[i].product_expiration).format("DD/MM/YYYY")+"'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+			} else if(parseFloat(records_list[i].product_hours) <= records_list[i].hours_before_exp){
+				contents += "<p class='col-lg-6 session-record-details srd-product product-soon' title='Expiration prochaine : "+records_list[i].product_hours+" heures restantes'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+			} else {
+				contents += "<p class='col-lg-6 session-record-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+			}
+			contents += "</div>";
+			contents += "</li>";
+		}
+		$(".irregular-records-list").append(contents);
+		$(".sub-legend>span").text(records_list.length);
 	})
 }
 

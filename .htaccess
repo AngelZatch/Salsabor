@@ -10,6 +10,7 @@ RewriteRule ^invitation$ eleve_inviter.php
 RewriteRule ^passages$ passages.php
 RewriteRule ^regularisation/participations$ irregulars.php
 RewriteRule ^regularisation/forfaits$ irreg_products.php
+RewriteRule ^regularisation/passages$ irreg_records.php
 RewriteRule ^planning$ planning.php
 RewriteRule ^salles$ salles.php
 RewriteRule ^forfaits$ forfaits.php

@@ -80,19 +80,28 @@
 .panel-record {
   text-align: center;
   padding: 5px;
-  height: 300px;
+  height: 350px;
   cursor: default; }
 
 /* line 21, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+.irregular-record {
+  text-align: inherit;
+  padding: 10px;
+  height: auto; }
+  /* line 26, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  .irregular-record .irregular-record-details {
+    text-align: center; }
+
+/* line 29, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .panel-add-record {
   cursor: pointer;
   border-top: 3px solid #888888;
   border-bottom: 3px solid #888888;
   background-color: rgba(136, 136, 136, 0.3); }
-  /* line 24, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 32, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .panel-add-record:hover {
     background-color: #888888; }
-    /* line 26, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+    /* line 34, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
     .panel-add-record:hover .empty-pp {
       border-color: white; }
 
