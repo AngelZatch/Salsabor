@@ -18,7 +18,21 @@ $notifications_settings = $db->query("SELECT * FROM master_settings WHERE user_i
 
 $recordsList = array();
 while($details = $load->fetch(PDO::FETCH_ASSOC)){
+	// Find possible duplicates
+	$lower_limit = date("Y-m-d H:i:s", strtotime($details["passage_date"].'-20MINUTES'));
+	$upper_limit = date("Y-m-d H:i:s", strtotime($details["passage_date"].'+20MINUTES'));
+	$duplicates = $db->query("SELECT passage_id FROM passages
+							WHERE passage_eleve = '$details[passage_eleve]'
+							AND passage_salle = '$details[passage_salle]'
+							AND CASE WHEN cours_id IS NOT NULL
+								THEN cours_id = '$details[cours_id]'
+							END
+							AND passage_date BETWEEN '$lower_limit' AND '$upper_limit'
+							AND passage_id != '$details[passage_id]'
+							ORDER BY passage_salle DESC")->fetch(PDO::FETCH_COLUMN);
+
 	$r = array();
+	$r["duplicates"] = $duplicates;
 	$r["id"] = $details["passage_id"];
 	$r["card"] = $details["passage_eleve"];
 	$r["user_id"] = $details["passage_eleve_id"];

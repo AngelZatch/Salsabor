@@ -269,7 +269,11 @@ function displayIrregularRecords(){
 			var record_status;
 			switch(records_list[i].status){
 				case '0':
-					record_status = "status-pre-success";
+					if(records_list[i].product_name == "-"){
+						record_status = "status-over";
+					} else {
+						record_status = "status-pre-success";
+					}
 					break;
 
 				case '2':
@@ -302,9 +306,13 @@ function displayIrregularRecords(){
 			if(records_list[i].user != " "){
 				var user_message = records_list[i].user;
 			} else {
-				var user_message = "Pas d'utilisateur associé";
+				if(records_list[i].card != null){
+					var user_message = "Code inconnu - Pas d'utilisateur";
+				} else {
+					var user_message = "Pas d'utilisateur associé";
+				}
 			}
-			contents += "<p class='panel-item-title col-lg-7 bf'>"+user_message+"</p>";
+			contents += "<p class='panel-item-title col-lg-7 bf'>"+user_message+" (passage n°"+records_list[i].id+")</p>";
 
 			// Action buttons
 			// Different button depending on the status of the record
@@ -350,6 +358,13 @@ function displayIrregularRecords(){
 			} else {
 				contents += "<p class='col-lg-6 session-record-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
 			}
+
+			if(records_list[i].duplicates != false){
+				var duplicate_message = "Doublon du passage "+records_list[i].duplicates;
+			} else {
+				var duplicate_message = "Passage unique; n'est pas un doublon";
+			}
+			contents += "<p class='session-record-details'>"+duplicate_message+"</p>";
 			contents += "</div>";
 			contents += "</li>";
 		}
@@ -367,6 +382,13 @@ function validateRecord(record_id){
 		} else {
 			$("#session-record-"+record_id).addClass("status-success");
 			computeRemainingHours(product_id, false);
+		}
+		if(top.location.pathname === '/Salsabor/regularisation/passages'){
+			setTimeout(function(){
+				$("#session-record-"+record_id).hide("slow", function(){
+					$("#session-record-"+record_id).remove();
+				});
+			}, 3000)
 		}
 		$("#session-record-"+record_id+">#option-validate").html("<span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateRecord("+record_id+")' title='Annuler la validation'></span>")
 	})
