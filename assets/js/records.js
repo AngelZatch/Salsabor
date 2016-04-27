@@ -92,6 +92,9 @@ $(document).ready(function(){
 function fetchActiveSessions(fetched){
 	return $.get("functions/fetch_active_sessions.php", {fetched : fetched});
 }
+function fetchEligibleSessions(participation_id){
+	return $.get("functions/fetch_eligible_sessions.php", {participation_id : participation_id});
+}
 
 /** Two functions to display the active sessions : one for the page, one for the modal to report**/
 function displaySessions(data, fetched){
@@ -499,11 +502,13 @@ function changeSessionRecord(participation_id, target_session_id){
 			})
 		}
 		$.post("functions/set_session_participation.php", {participation_id : participation_id, session_id : target_session_id}).done(function(){
-			$("#participation-"+participation_id).remove();
 			if(wasValid){
 				validateParticipation(participation_id);
 			}
-			displayParticipations(target_session_id);
+			if(top.location.pathname !== '/Salsabor/regularisation/participations'){
+				$("#participation-"+participation_id).remove();
+				displayParticipations(target_session_id);
+			}
 		})
 	}
 

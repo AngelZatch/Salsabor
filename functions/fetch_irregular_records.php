@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $load = $db->query("SELECT *, IF(date_prolongee IS NOT NULL, date_prolongee,
 							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
-							) AS produit_validity FROM participations pr
+							) AS produit_validity, pr.user_rfid AS pr_rfid FROM participations pr
 					LEFT JOIN lecteurs_rfid lr ON pr.room_token = lr.lecteur_ip
 					LEFT JOIN salle s ON lr.lecteur_lieu = s.salle_id
 					LEFT JOIN users u ON pr.user_id = u.user_id
@@ -34,7 +34,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$r = array();
 	$r["duplicates"] = $duplicates;
 	$r["id"] = $details["passage_id"];
-	$r["card"] = $details["user_rfid"];
+	$r["card"] = $details["pr_rfid"];
 	$r["user_id"] = $details["user_id"];
 	$r["user"] = $details["user_prenom"]." ".$details["user_nom"];
 	$r["photo"] = $details["photo"];

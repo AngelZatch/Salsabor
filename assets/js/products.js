@@ -175,13 +175,13 @@ $(document).ready(function(){
 			break;
 
 		case 'change-participation':
-			title = "Changer le lieu du passage";
-			$.when(fetchActiveSessions()).done(function(data){
+			title = "Changer le cours associé";
+			var participation_id = target.dataset.argument;
+			$.when(fetchEligibleSessions(participation_id)).done(function(data){
 				console.log(data);
 				var construct = displayTargetSessions(data);
 				$(".sub-modal-body").html(construct);
 			})
-			var participation_id = target.dataset.argument;
 			footer += "<button class='btn btn-success report-participation' id='btn-session-changer-record' data-participation='"+participation_id+"'>Changer</button>";
 			$(".sub-modal").css({top : toffset.top+'px'});
 			if(toffset.left > 1000){

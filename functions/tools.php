@@ -65,7 +65,7 @@ function computeExpirationDate($db, $date_activation, $validity){
 	return $new_exp_date;
 }
 
-function addRecord($db, $cours_name, $session_id, $user_id, $ip, $tag){
+function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 	$today = date_create('now')->format('Y-m-d H:i:s');
 	if($session_id != null){ // If we could find a session, then we're gonna look for a product.
 		if(preg_match("/jazz/i", $cours_name, $matches) || preg_match("/pilates/i", $cours_name, $matches) || preg_match("/particulier/i", $cours_name, $matches)){ // Search for specific Jazz, Pilates or private sessions
