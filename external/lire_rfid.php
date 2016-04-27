@@ -7,9 +7,9 @@ $data = explode('*', $_GET["carte"]);
 $tag_rfid = $data[0];
 $ip_rfid = $data[1];
 
-prepareRecord($db, $tag_rfid, $ip_rfid);
+prepareParticipation($db, $tag_rfid, $ip_rfid);
 
-function prepareRecord($db, $tag, $ip){
+function prepareParticipation($db, $tag, $ip){
 	$today = date("Y-m-d H:i:s");
 	//$limit = date("Y-m-d H:i:s", strtotime($today.'+20MINUTES'));
 	if($ip == "192.168.0.3"){
@@ -39,7 +39,7 @@ function prepareRecord($db, $tag, $ip){
 		if($duplicates > 0){
 			echo $ligne = $today.";".$tag.";".$ip."$-3";
 		} else {
-			addRecord($db, $cours_name, $session_id, $user_details["user_id"], $ip, $tag);
+			addParticipation($db, $cours_name, $session_id, $user_details["user_id"], $ip, $tag);
 		}
 	}
 }

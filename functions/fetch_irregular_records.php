@@ -11,8 +11,8 @@ $load = $db->query("SELECT *, IF(date_prolongee IS NOT NULL, date_prolongee,
 					LEFT JOIN produits_adherents pa ON pr.produit_adherent_id = pa.id_produit_adherent
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
 					LEFT JOIN cours c ON pr.cours_id = c.cours_id
-					WHERE pr.status = 0 OR pr.status = 3
-					ORDER BY pr.passage_date ASC");
+					WHERE pr.status = 0 OR pr.status = 3 OR (pr.status = 2 AND (produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0))
+					ORDER BY pr.user_id, pr.passage_date ASC");
 
 $notifications_settings = $db->query("SELECT * FROM master_settings WHERE user_id = '0'")->fetch(PDO::FETCH_ASSOC);
 

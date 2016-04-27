@@ -66,7 +66,7 @@ $queryHistoryRecus->execute();
 									break;
 
 								case '2':
-									$status = ($history["produit_adherent_id"]==null||$history["produit_adherent_id"]==0)?"status-over":"status-success";
+									$status = ($history["produit_adherent_id"]==null||$history["produit_adherent_id"]==0)?"status-partial-success":"status-success";
 									break;
 
 								case "3":

@@ -5,7 +5,7 @@ $db = PDOFactory::getConnection();
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Passages irréguliers | Salsabor</title>
+		<title>Participations irrégulières | Salsabor</title>
 		<base href="../">
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
@@ -13,7 +13,7 @@ $db = PDOFactory::getConnection();
 		<script src="assets/js/records.js"></script>
 		<script>
 			$(document).ready(function(){
-				displayIrregularRecords();
+				displayIrregularParticipations();
 			})
 		</script>
 	</head>
@@ -23,8 +23,8 @@ $db = PDOFactory::getConnection();
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<div class="col-lg-10 col-lg-offset-2 main">
-					<legend><span class="glyphicon glyphicon-bishop"></span> Passages irréguliers</legend>
-					<p class="sub-legend"><span></span> passages irréguliers.</p>
+					<legend><span class="glyphicon glyphicon-bishop"></span> Participations irrégulières</legend>
+					<p class="sub-legend"><span></span> participations irrégulières.</p>
 					<div class="container-fluid irregular-sessions-container">
 						<ul class="irregular-records-list">
 

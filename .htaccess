@@ -7,10 +7,9 @@ RewriteRule ^inscription$ inscription.php
 RewriteRule ^vente$ catalogue.php
 RewriteRule ^reservation$ resa_add.php
 RewriteRule ^invitation$ eleve_inviter.php
-RewriteRule ^passages$ passages.php
-RewriteRule ^regularisation/participations$ irregulars.php
+RewriteRule ^participations$ participations.php
+RewriteRule ^regularisation/participations$ participations_irregulieres.php
 RewriteRule ^regularisation/forfaits$ irreg_products.php
-RewriteRule ^regularisation/passages$ irreg_records.php
 RewriteRule ^planning$ planning.php
 RewriteRule ^salles$ salles.php
 RewriteRule ^forfaits$ forfaits.php

@@ -7,7 +7,7 @@ $(document).ready(function(){
 	var fetched = [];
 	window.openedSessions = [];
 	moment.locale('fr');
-	if(top.location.pathname === '/Salsabor/passages'){
+	if(top.location.pathname === '/Salsabor/participations'){
 		$.when(fetchActiveSessions(fetched)).done(function(data){
 			$.when(displaySessions(data, fetched)).done(function(){
 				refreshTick();
@@ -16,10 +16,10 @@ $(document).ready(function(){
 	}
 }).on('click', '.panel-heading-container', function(){
 	var id = document.getElementById($(this).attr("id")).dataset.session;
-	fetchRecords(id);
+	fetchParticipations(id);
 }).on('shown.bs.collapse', ".panel-body", function(){
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
-	displayRecords(session_id);
+	displayParticipations(session_id);
 }).on('hidden.bs.collapse', ".panel-body", function(){
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
 }).on('click', '.set-participation-product', function(){
@@ -74,13 +74,13 @@ $(document).ready(function(){
 }).on('click', '.add-record', function(){
 	var name = $(".name-input").val();
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
-	addRecord(session_id, name);
+	addParticipation(session_id, name);
 }).on('click', '.validate-session', function(e){
 	e.stopPropagation();
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
 	var participation_ids = $("#body-session-"+session_id).find("li:not(.panel-add-record)").each(function(){
 		if($(this).hasClass("status-pre-success") || $(this).hasClass("status-over")){
-			validateRecord(document.getElementById($(this).attr("id")).dataset.participation);
+			validateParticipation(document.getElementById($(this).attr("id")).dataset.participation);
 		}
 	});
 }).on('click', '.close-session', function(e){
@@ -177,22 +177,22 @@ function displayTargetSessions(data){
 	return body;
 }
 
-function fetchRecords(session_id){
+function fetchParticipations(session_id){
 	$("#body-session-"+session_id).collapse("toggle");
 }
 
-/** To have up-to-date info on every non collapsed session, this function ensures the info is refreshed every so often. Of course, when something big such as a deletion is done, displayRecords can be called independently as it won't affect the global tick. **/
+/** To have up-to-date info on every non collapsed session, this function ensures the info is refreshed every so often. Of course, when something big such as a deletion is done, displayParticipations can be called independently as it won't affect the global tick. **/
 function refreshTick(){
 	var openedSessions = window.openedSessions;
 	console.log(openedSessions);
 	for(var i = 0; i < openedSessions.length; i++){
-		displayRecords(openedSessions[i]);
+		displayParticipations(openedSessions[i]);
 	}
 	// The tick is set to every 10 seconds.
 	setTimeout(refreshTick, 10000);
 }
 
-function displayRecords(session_id){
+function displayParticipations(session_id){
 	$.get("functions/fetch_records_session.php", {session_id : session_id}).done(function(data){
 		console.log("showing"+session_id);
 		var records_list = JSON.parse(data);
@@ -246,7 +246,7 @@ function displayRecords(session_id){
 				if(records_list[i].status == '2'){
 					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateParticipation("+records_list[i].id+")' title='Annuler la validation'></span></p>";
 				} else {
-					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+records_list[i].id+")' title='Valider le passage'></span></p>";
+					contents += "<p class='col-lg-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateParticipation("+records_list[i].id+")' title='Valider le passage'></span></p>";
 				}
 				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
 				contents += "<p class='col-lg-3 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
@@ -263,7 +263,7 @@ function displayRecords(session_id){
 	})
 }
 
-function displayIrregularRecords(){
+function displayIrregularParticipations(){
 	$.get("functions/fetch_irregular_records.php").done(function(data){
 		var records_list = JSON.parse(data);
 		$(".irregular-records-list").empty();
@@ -324,7 +324,7 @@ function displayIrregularRecords(){
 			if(records_list[i].status == '2'){
 				contents += "<p class='col-lg-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateParticipation("+records_list[i].id+")' title='Annuler la validation'></span></p>";
 			} else {
-				contents += "<p class='col-lg-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+records_list[i].id+")' title='Valider le passage'></span></p>";
+				contents += "<p class='col-lg-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateParticipation("+records_list[i].id+")' title='Valider le passage'></span></p>";
 			}
 			contents += "<p class='col-lg-1 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
 			contents += "<p class='col-lg-1 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
@@ -378,7 +378,7 @@ function displayIrregularRecords(){
 	})
 }
 
-function validateRecord(participation_id){
+function validateParticipation(participation_id){
 	$.post("functions/validate_record.php", {participation_id : participation_id}).done(function(product_id){
 		$("#participation-"+participation_id).removeClass("status-pre-success");
 		$("#participation-"+participation_id).removeClass("status-over");
@@ -388,12 +388,9 @@ function validateRecord(participation_id){
 			$("#participation-"+participation_id).addClass("status-success");
 			computeRemainingHours(product_id, false);
 		}
-		if(top.location.pathname === '/Salsabor/regularisation/passages'){
-			setTimeout(function(){
-				$("#participation-"+participation_id).hide("slow", function(){
-					$("#participation-"+participation_id).remove();
-				});
-			}, 3000)
+		if(top.location.pathname === '/Salsabor/regularisation/participations'){
+			$(".sub-legend>span").text(parseInt($(".sub-legend>span").text())-1);
+			$("#participation-"+participation_id).remove();
 		}
 		$("#participation-"+participation_id+">#option-validate").html("<span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateParticipation("+participation_id+")' title='Annuler la validation'></span>")
 	})
@@ -412,7 +409,7 @@ function unvalidateParticipation(participation_id){
 		} else {
 			$("#participation-"+participation_id).addClass("status-over");
 		}
-		$("#participation-"+participation_id+">#option-validate").html("<span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateRecord("+participation_id+")' title='Valider le passage'></span>");
+		$("#participation-"+participation_id+">#option-validate").html("<span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateParticipation("+participation_id+")' title='Valider le passage'></span>");
 	})
 }
 
@@ -423,14 +420,17 @@ function deleteParticipation(participation_id){
 	$.post("functions/delete_participation.php", {participation_id : participation_id}).done(function(){
 		$(".sub-modal").hide();
 		var re = /historique/i;
-		if(top.location.pathname === '/Salsabor/regularisation/participations' || re.exec(top.location.pathname) != null){
+		if(re.exec(top.location.pathname) != null){
 			$(".irregulars-target-container").empty();
 			$("#participation-"+participation_id).remove();
 			$("#total-count").text($(".product-participation").length);
 			$("#valid-count").text($(".status-success").length);
 			$("#over-count").text($(".status-over").length);
 		} else {
-			$("#participation-"+participation_id).remove();
+			if(top.location.pathname === '/Salsabor/regularisation/participations'){
+				$(".sub-legend>span").text(parseInt($(".sub-legend>span").text())-1);
+				$("#participation-"+participation_id).remove();
+			}
 		}
 	})
 }
@@ -463,7 +463,7 @@ function changeProductRecord(participation_id, target_product_id){
 					});
 				}
 			} else if(top.location.pathname === '/Salsabor/regularisation/participations' && target_product_id != null){
-				validateRecord(participation_id);
+				validateParticipation(participation_id);
 				if($("#participation-"+participation_id).next().is("a") && $("#participation-"+participation_id).prev().is("a")){
 					$("#participation-"+participation_id).prev().remove();
 				}
@@ -473,7 +473,7 @@ function changeProductRecord(participation_id, target_product_id){
 				$("#participation-"+participation_id+">p.srd-product").html("<span class='glyphicon glyphicon-credit-card'></span> "+product_name);
 			}
 			if(wasValid){
-				validateRecord(participation_id);
+				validateParticipation(participation_id);
 			} else {
 				$("#participation-"+participation_id).removeClass("status-pre-success");
 				$("#participation-"+participation_id).removeClass("status-over");
@@ -501,18 +501,18 @@ function changeSessionRecord(participation_id, target_session_id){
 		$.post("functions/set_session_participation.php", {participation_id : participation_id, session_id : target_session_id}).done(function(){
 			$("#participation-"+participation_id).remove();
 			if(wasValid){
-				validateRecord(participation_id);
+				validateParticipation(participation_id);
 			}
-			displayRecords(target_session_id);
+			displayParticipations(target_session_id);
 		})
 	}
 
 }
 
-function addRecord(target_session_id, user_name){
-	$.post("functions/add_record.php", {name : user_name, session_id : target_session_id}).done(function(){
+function addParticipation(target_session_id, user_name){
+	$.post("functions/add_participation.php", {name : user_name, session_id : target_session_id}).done(function(){
 		console.log("Record added");
-		displayRecords(target_session_id);
+		displayParticipations(target_session_id);
 	})
 }
 

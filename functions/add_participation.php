@@ -19,6 +19,6 @@ $session_details = $db->query("SELECT cours_intitule, lecteur_ip
 $cours_name = $session_details["cours_intitule"];
 $ip = $session_details["lecteur_ip"];
 
-addRecord($db, $cours_name, $session_id, $user_id, $ip, $user_rfid);
+addParticipation($db, $cours_name, $session_id, $user_id, $ip, $user_rfid);
 
 ?>
