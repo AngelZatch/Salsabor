@@ -13,12 +13,14 @@ $limit_end = date("Y-m-d H:i:s", strtotime($session["cours_start"].'+30MINUTES')
 
 $load = $db->query("SELECT *, IF(date_prolongee IS NOT NULL, date_prolongee,
 							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
-							) AS produit_validity FROM passages pg
-					JOIN lecteurs_rfid lr ON pg.passage_salle = lr.lecteur_ip
-					LEFT JOIN users u ON pg.passage_eleve_id = u.user_id AND pg.passage_eleve_id
-					LEFT JOIN produits_adherents pa ON pg.produit_adherent_cible = pa.id_produit_adherent
+							) AS produit_validity FROM participations pr
+					LEFT JOIN lecteurs_rfid lr ON pr.room_token = lr.lecteur_ip
+					LEFT JOIN salle s ON lr.lecteur_lieu = s.salle_id
+					LEFT JOIN users u ON pr.user_id = u.user_id
+					LEFT JOIN produits_adherents pa ON pr.produit_adherent_id = pa.id_produit_adherent
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
-					WHERE lecteur_lieu = '$session[cours_salle]' AND cours_id = '$session_id'
+					LEFT JOIN cours c ON pr.cours_id = c.cours_id
+					WHERE lr.lecteur_lieu = '$session[cours_salle]' AND pr.cours_id = '$session_id'
 					ORDER BY u.user_nom ASC");
 
 $notifications_settings = $db->query("SELECT * FROM master_settings WHERE user_id = '0'")->fetch(PDO::FETCH_ASSOC);
@@ -27,8 +29,8 @@ $recordsList = array();
 while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$r = array();
 	$r["id"] = $details["passage_id"];
-	$r["card"] = $details["passage_eleve"];
-	$r["user_id"] = $details["passage_eleve_id"];
+	$r["card"] = $details["user_rfid"];
+	$r["user_id"] = $details["user_id"];
 	$r["user"] = $details["user_prenom"]." ".$details["user_nom"];
 	$r["photo"] = $details["photo"];
 	$r["date"] = $details["passage_date"];

@@ -14,7 +14,7 @@ function prepareRecord($db, $tag, $ip){
 	//$limit = date("Y-m-d H:i:s", strtotime($today.'+20MINUTES'));
 	if($ip == "192.168.0.3"){
 		$status = "1";
-		$new = $db->query("INSERT INTO passages(passage_eleve, passage_salle, passage_date, status)
+		$new = $db->query("INSERT INTO participations(user_rfid, room_token, passage_date, status)
 					VALUES('$tag', '$ip', '$today', '$status')");
 		echo $ligne = $today.";".$tag.";".$ip."$";
 	} else {
@@ -34,7 +34,7 @@ function prepareRecord($db, $tag, $ip){
 		}
 
 		// Ok, we got everything, let's look for potential duplicates
-		$duplicates = $db->query("SELECT * FROM passages WHERE passage_eleve = '$tag' AND cours_id='$session_id'")->rowCount();
+		$duplicates = $db->query("SELECT * FROM participations WHERE user_rfid = '$tag' AND cours_id = '$session_id'")->rowCount();
 
 		if($duplicates > 0){
 			echo $ligne = $today.";".$tag.";".$ip."$-3";

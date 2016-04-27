@@ -25,7 +25,7 @@ try{
 		/* CAS 1 : tarif par personne */
 		if($queryTarif["ratio_multiplicatif"] == 'personne'){
 			// Compte de tous les participants n'ayant pas utilisé d'invitation
-			$queryParticipants = $db->query("SELECT * FROM cours_participants JOIN produits_adherents ON produit_adherent_id=produits_adherents.id_transaction JOIN produits ON id_produit=produits.produit_id WHERE cours_id_foreign='$cours[cours_id]' AND produit_nom != 'Invitation'")->rowCount();
+			/*$queryParticipants = $db->query("SELECT * FROM cours_participants JOIN produits_adherents ON produit_adherent_id=produits_adherents.id_transaction JOIN produits ON id_produit=produits.produit_id WHERE cours_id_foreign='$cours[cours_id]' AND produit_nom != 'Invitation'")->rowCount();*/
 			$value = $queryParticipants * $_POST["tarif"];
 		} else if($queryTarif["ratio_multiplicatif"] == "heure"){
 			// Calcul basé sur le nombre d'heures

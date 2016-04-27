@@ -4,13 +4,9 @@ $db = PDOFactory::getConnection();
 
 $participation_id = $_POST["participation_id"];
 
-$load = $db->query("SELECT * FROM cours_participants WHERE id = '$participation_id'")->fetch(PDO::FETCH_ASSOC);
+$load = $db->query("SELECT produit_adherent_id FROM participations WHERE passage_id = '$participation_id'")->fetch(PDO::FETCH_COLUMN);
 
-$session_id = $load["cours_id_foreign"];
-$user_id = $load["eleve_id_foreign"];
+$assign = $db->query("UPDATE participations SET produit_adherent_id = NULL WHERE passage_id='$participation_id'");
 
-$assign = $db->query("UPDATE cours_participants SET produit_adherent_id = NULL WHERE id='$participation_id'");
-$updateRecord = $db->query("UPDATE passages SET produit_adherent_cible = NULL WHERE passage_eleve_id='$user_id' AND cours_id='$session_id'");
-
-echo $load["produit_adherent_id"];
+echo $load;
 ?>

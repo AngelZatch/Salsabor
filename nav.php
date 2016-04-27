@@ -3,8 +3,6 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
 $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0 AND priorite=1")->rowCount();
-
-$queryPassages = $db->query("SELECT * FROM passages JOIN users ON passage_eleve=users.user_rfid");
 ?>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">

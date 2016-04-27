@@ -69,7 +69,7 @@ if(isset($_POST["edit"])){
 			$edit->bindParam(':id', $data);
 			$edit->execute();
 			if(isset($_POST["rfid"])){
-				$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
+				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid = ? AND status=1');
 				$delete->bindParam(1, $_POST["rfid"]);
 				$delete->execute();
 			}
@@ -107,7 +107,7 @@ if(isset($_POST["edit"])){
 			$edit->bindParam(':id', $data);
 			$edit->execute();
 			if(isset($_POST["rfid"])){
-				$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
+				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid = ? AND status=1');
 				$delete->bindParam(1, $_POST["rfid"]);
 				$delete->execute();
 			}
@@ -141,7 +141,7 @@ if(isset($_POST["edit"])){
 					<ul class="nav nav-tabs">
 						<li role="presentation" class="active"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/abonnements">Abonnements</a></li>
-						<li role="presentation"><a href="user/<?php echo $data;?>/historique">Cours suivis</a></li>
+						<li role="presentation"><a href="user/<?php echo $data;?>/historique">Participations</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/reservations">Réservations</a></li>
 						<?php if($details["est_professeur"] == 1){ ?>

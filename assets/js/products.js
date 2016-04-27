@@ -156,27 +156,16 @@ $(document).ready(function(){
 			$(".sub-modal-body").html(body);
 			break;
 
-		case 'report':
-			title = "Assigner à un autre produit";
-			var participation_id = target.dataset.argument;
-			//displayEligibleProducts(record_id);
-			$.when(fetchEligibleProducts(participation_id, "participation")).done(function(data){
-				var construct = displayEligibleProducts(data);
-				$(".sub-modal-body").html(construct);
-			})
-			footer += "<button class='btn btn-success report-product' id='btn-product-report' data-session='"+participation_id+"'>Reporter</button>";
-			$(".sub-modal").css({top : tpos.top-45+'px'});
-			break;
-
-		case 'report-record':
+		case 'set-participation-product':
 			title = "Changer le produit à utiliser";
-			var record_id = target.dataset.argument;
-			$.when(fetchEligibleProducts(record_id, "record")).done(function(data){
+			var participation_id = target.dataset.participation;
+			console.log(participation_id);
+			$.when(fetchEligibleProducts(participation_id)).done(function(data){
 				var construct = displayEligibleProducts(data);
 				$(".sub-modal-body").html(construct);
 			})
-			footer += "<button class='btn btn-success report-product-record' id='btn-product-report-record' data-record='"+record_id+"'>Reporter</button>";
-			footer += " <button class='btn btn-default btn-modal report-product-record' id='btn-product-null-record' data-record='"+record_id+"'><span class='glyphicon glyphicon-link'></span> Retirer</button>";
+			footer += "<button class='btn btn-success set-participation-product' id='btn-set-participation-product' data-participation='"+participation_id+"'>Reporter</button>";
+			footer += " <button class='btn btn-default btn-modal set-participation-product' id='btn-product-null-record' data-participation='"+participation_id+"'><span class='glyphicon glyphicon-link'></span> Retirer</button>";
 			$(".sub-modal").css({top : toffset.top+'px'});
 			if(toffset.left > 1000){
 				$(".sub-modal").css({left : toffset.left-350+'px'});
@@ -185,15 +174,15 @@ $(document).ready(function(){
 			}
 			break;
 
-		case 'change-session-record':
+		case 'change-participation':
 			title = "Changer le lieu du passage";
 			$.when(fetchActiveSessions()).done(function(data){
 				console.log(data);
 				var construct = displayTargetSessions(data);
 				$(".sub-modal-body").html(construct);
 			})
-			var record_id = target.dataset.argument;
-			footer += "<button class='btn btn-success report-session-record' id='btn-session-changer-record' data-record='"+record_id+"'>Changer</button>";
+			var participation_id = target.dataset.argument;
+			footer += "<button class='btn btn-success report-participation' id='btn-session-changer-record' data-participation='"+participation_id+"'>Changer</button>";
 			$(".sub-modal").css({top : toffset.top+'px'});
 			if(toffset.left > 1000){
 				$(".sub-modal").css({left : toffset.left-350+'px'});
@@ -213,10 +202,10 @@ $(document).ready(function(){
 
 		case 'delete-record':
 			title = "Supprimer un passage";
-			var record_id = target.dataset.argument;
+			var participation_id = target.dataset.argument;
 			body += "Êtes-vous sûr de vouloir supprimer ce passage ?";
 			$(".sub-modal-body").html(body);
-			footer += "<button class='btn btn-danger delete-record col-lg-6' id='btn-record-delete' data-record='"+record_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			footer += "<button class='btn btn-danger delete-record col-lg-6' id='btn-record-delete' data-participation='"+participation_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
 			$(".sub-modal").css({top : toffset.top+'px'});
 			if(toffset.left > 1000){
 				$(".sub-modal").css({left : toffset.left-350+'px'});
@@ -307,12 +296,12 @@ $(document).ready(function(){
 	extendProduct(product_id, null);
 }).on('click', '.product-participation', function(){
 	var session = $(this);
-	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
+	var participation_id = document.getElementById($(this).attr("id")).dataset.argument;
 	if(!$(this).hasClass("options-shown")){
 		session.addClass("options-shown");
-		var content = "<div class='session-options'><button class='btn btn-default btn-modal trigger-sub' data-argument='"+product_id+"' data-subtype='report' id='btn-session-report'><span class='glyphicon glyphicon-arrow-right'></span> Réaffecter</button> ";
-		content += "<button class='btn btn-default btn-modal trigger-sub' data-argument='"+product_id+"' data-subtype='unlink' id='btn-session-unlink'><span class='glyphicon glyphicon-link'></span> Délier</button> ";
-		content += "<button class='btn btn-danger btn-modal trigger-sub' data-argument='"+product_id+"' data-subtype='delete' id='btn-session-delete'><span class='glyphicon glyphicon-trash'></span> Supprimer</button></div>";
+		var content = "<div class='session-options'><button class='btn btn-default btn-modal trigger-sub' data-participation='"+participation_id+"' data-subtype='set-participation-product' id='btn-session-report'><span class='glyphicon glyphicon-credit-card'></span> Réaffecter</button> ";
+		content += "<button class='btn btn-default btn-modal trigger-sub' data-argument='"+participation_id+"' data-subtype='unlink' id='btn-session-unlink'><span class='glyphicon glyphicon-link'></span> Délier</button> ";
+		content += "<button class='btn btn-danger btn-modal trigger-sub' data-argument='"+participation_id+"' data-subtype='delete' id='btn-session-delete'><span class='glyphicon glyphicon-trash'></span> Supprimer</button></div>";
 		session.append(content);
 	} else {
 		$(this).find(".session-options").remove();
@@ -324,10 +313,6 @@ $(document).ready(function(){
 	$(".sub-modal-product").attr("id", "");
 	$(this).append("<span class='glyphicon glyphicon-ok'></span>");
 	$(this).attr("id", "product-selected");
-}).on('click', '.report-product', function(){
-	var session_target = document.getElementById($(this).attr("id")).dataset.session;
-	var product_target = document.getElementById("product-selected").dataset.argument;
-	reportSession(product_target, session_target);
 }).on('click', '.delete-participation', function(){
 	var participation_id = document.getElementById($(this).attr("id")).dataset.session;
 	deleteParticipation(participation_id);
@@ -523,23 +508,6 @@ function deactivateProduct(product_id, value){
 	})
 }
 
-function deleteParticipation(participation_id){
-	$.post("functions/delete_participation.php", {record_id : participation_id}).done(function(old_product){
-		$(".sub-modal").hide();
-		var re = /historique/i;
-		if(top.location.pathname === '/Salsabor/regularisation/participations' || re.exec(top.location.pathname) != null){
-			$(".irregulars-target-container").empty();
-			$("#participation-"+participation_id).remove();
-			computeRemainingHours(old_product, false);
-			$("#total-count").text($(".product-participation").length);
-			$("#valid-count").text($(".participation-valid").length);
-			$("#over-count").text($(".participation-over").length);
-		} else {
-			computeRemainingHours(old_product, true);
-		}
-	})
-}
-
 function deleteProduct(product_id){
 	console.log(product_id);
 	$.post("functions/delete_product.php", {product_id : product_id}).done(function(data){
@@ -564,8 +532,8 @@ function extendProduct(product_id, end_date){
 }
 
 /** Fetch the products that can be target of a record reassignment **/
-function fetchEligibleProducts(argument_id, argument_type){
-	return $.post("functions/fetch_user_products.php", {argument_id : argument_id, type : argument_type});
+function fetchEligibleProducts(participation_id){
+	return $.post("functions/fetch_user_products.php", {participation_id : participation_id});
 }
 function displayEligibleProducts(data){
 	var products_list = JSON.parse(data), product_status, product_flavor_text, product_hours, product_purchase_date;
@@ -749,7 +717,12 @@ function fillSessions(sessions){
 				valid_sessions += "<p id='over-session-alert'>Cours validés :</p>";
 				valid_indicator = 0;
 			}
-			valid_sessions += "<li class='product-participation participation-valid container-fluid' data-argument='"+sessions_list[i].id+"' id='participation-"+sessions_list[i].id+"'>";
+			if(sessions_list[i].status == 2){
+				var participation_status = "status-success";
+			} else {
+				var participation_status = "status-pending";
+			}
+			valid_sessions += "<li class='product-participation "+participation_status+" container-fluid' data-argument='"+sessions_list[i].id+"' id='participation-"+sessions_list[i].id+"'>";
 			valid_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
 			valid_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
 			valid_sessions += "</li>";
@@ -777,8 +750,8 @@ function fetchSingleParticipation(participation_id){
 }
 function displaySingleParticipation(participation_details){
 	var participation_details = JSON.parse(participation_details);
-	$("#participation-"+participation_details.id).removeClass("participation-over");
-	$("#participation-"+participation_details.id).removeClass("participation-valid");
+	$("#participation-"+participation_details.id).removeClass("status-over");
+	$("#participation-"+participation_details.id).removeClass("status-success");
 	var participation = "<div class='col-lg-4'>";
 	participation += "<p class='col-lg-12 session-title'>"+participation_details.cours_name+"</p>";
 	participation += "<p class='col-lg-12 session-hours'>"+moment(participation_details.date).format("DD/MM/YYYY")+" : "+moment(participation_details.hour_start).format("HH:mm")+" -  "+moment(participation_details.hour_end).format("HH:mm")+"</p>";
@@ -787,11 +760,11 @@ function displaySingleParticipation(participation_details){
 	if(participation_details.product == null){
 		participation += "<p class='col-lg-12 session-title'>Pas de produit associé</p>";
 		participation += "<p class='col-lg-12 session-hours'>Cliquez pour chercher un produit à associer</p>";
-		$("#participation-"+participation_details.id).addClass("participation-over");
+		$("#participation-"+participation_details.id).addClass("status-over");
 	} else {
 		participation += "<p class='col-lg-12 session-title'>"+participation_details.product_name+"</p>";
 		participation += "<p class='col-lg-12 session-hours'>Acheté le "+moment(participation_details.achat).format("DD/MM/YYYY")+" / Valide du "+moment(participation_details.product_activation).format("DD/MM/YYYY")+" au "+moment(participation_details.product_validity).format("DD/MM/YYYY")+"</p>";
-		$("#participation-"+participation_details.id).addClass("participation-valid");
+		$("#participation-"+participation_details.id).addClass("status-success");
 	}
 	participation += "</div>";
 	$("#participation-"+participation_details.id).html(participation);
@@ -806,7 +779,7 @@ function link(map, index){
 	} else {
 		var re = /historique/i;
 		if(top.location.pathname == "/Salsabor/regularisation/participations" || re.exec(top.location.pathname) != null){
-			$("#link-all").html("<span class='glyphicon glyphicon-arrow-right'></span> Associer toutes les participations irrégulières");
+			$("#link-all").html("<span class='glyphicon glyphicon-credit-card'></span> Associer toutes les participations irrégulières");
 		} else {
 			$("#link-all").html("<span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.");
 		}
@@ -878,44 +851,6 @@ function bankMaturity(maturity_id, date){
 	})
 }
 
-function reportSession(target_product_id, participation_id){
-	if(target_product_id == null){
-		console.log("No product has been indicated for participation "+participation_id+". Finding product...");
-	}
-	$.post("functions/set_product_session.php", {participation_id : participation_id, product_id : target_product_id}).done(function(data){
-		var products = JSON.parse(data), old_product = products.old_product, new_product = products.new_product;
-		if(new_product != null){
-			console.log("A target product has been found: "+products.new_product);
-			computeRemainingHours(new_product, false);
-		} else {
-			console.log("No product has been found");
-		}
-		$(".sub-modal").hide();
-		var re = /historique/i;
-		if(re.exec(top.location.pathname) != null){
-			if(new_product != null){
-				$.when(fetchSingleParticipation(participation_id)).done(function(participation){
-					displaySingleParticipation(participation);
-					$("#total-count").text($(".product-participation").length);
-					$("#valid-count").text($(".participation-valid").length);
-					$("#over-count").text($(".participation-over").length);
-				});
-			}
-			if(old_product != null) computeRemainingHours(old_product, false);
-		} else {
-			if(old_product != null) computeRemainingHours(old_product, true);
-		}
-		if(top.location.pathname === '/Salsabor/regularisation/participations' && new_product != null){
-			if($("#participation-"+participation_id).next().is("a") && $("#participation-"+participation_id).prev().is("a")){
-				$("#participation-"+participation_id).prev().remove();
-			}
-			$("#participation-"+participation_id).remove();
-			$(".irregulars-target-container").empty();
-			if(old_product != null) computeRemainingHours(old_product, true);
-		}
-	})
-}
-
 function unlinkAll(){
 	// This function will find all invalid participations (identified in display by .participation-over) and log their data-argument
 	var invalidMap = $(".participation-over").map(function(){
@@ -932,8 +867,8 @@ function unlinkParticipation(participation_id){
 			computeRemainingHours(old_product, false);
 			$.when(fetchSingleParticipation(participation_id)).done(function(participation){
 				displaySingleParticipation(participation);
-				$("#valid-count").text($(".participation-valid").length);
-				$("#over-count").text($(".participation-over").length);
+				$("#valid-count").text($(".status-success").length);
+				$("#over-count").text($(".status-over").length);
 			});
 		} else {
 			computeRemainingHours(old_product, true);

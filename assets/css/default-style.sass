@@ -376,6 +376,12 @@ a
 	color: $system-color
 	text-decoration: underline
 
+.participation-pending
+	border-left: 7px solid $pre-success-color
+	&:not(.options-shown)
+		&:hover
+			background-color: $pre-success-color
+
 .participation-valid
 	border-left: 7px solid $success-color
 	&:not(.options-shown)
