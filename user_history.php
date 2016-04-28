@@ -53,12 +53,5 @@ $details = $db->query("SELECT * FROM users WHERE user_id='$data'")->fetch(PDO::F
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
-		<script>
-			$(document).ready(function(){
-				$("#total-count").text($(".product-participation").length);
-				$("#valid-count").text($(".status-success").length);
-				$("#over-count").text($(".status-over").length);
-			})
-		</script>
 	</body>
 </html>

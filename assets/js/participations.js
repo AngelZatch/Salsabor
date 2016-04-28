@@ -382,12 +382,12 @@ function displayUserParticipations(user_id){
 		var users = 0, ok = 0, warning = 0;
 		var contents = "";
 		for(var i = 0; i < records_list.length; i++){
-			console.log(records_list[i]);
 			var record_status;
 			switch(records_list[i].status){
 				case '0':
 					if(records_list[i].product_name == "-"){
 						record_status = "status-over";
+						warning++;
 					} else {
 						record_status = "status-pre-success";
 					}
@@ -396,10 +396,11 @@ function displayUserParticipations(user_id){
 				case '2':
 					if(records_list[i].product_name == "-"){
 						record_status = "status-partial-success";
+						warning++;
 					} else {
 						record_status = "status-success";
+						ok++;
 					}
-					ok++;
 					break;
 
 				case '3':
@@ -455,12 +456,15 @@ function displayUserParticipations(user_id){
 			contents += "</li>";
 		}
 		$(".participations-list").append(contents);
-		$(".sub-legend>span").text(records_list.length);
+		$("#total-count").text(users);
+		$("#valid-count").text(ok);
+		$("#over-count").text(warning);
 	})
 }
 
 function validateParticipation(participation_id){
 	$.post("functions/validate_participation.php", {participation_id : participation_id}).done(function(product_id){
+		var re = /historique/i;
 		$("#participation-"+participation_id).removeClass("status-pre-success");
 		$("#participation-"+participation_id).removeClass("status-over");
 		if(product_id == ""){
@@ -473,6 +477,12 @@ function validateParticipation(participation_id){
 			$(".sub-legend>span").text(parseInt($(".sub-legend>span").text())-1);
 			$("#participation-"+participation_id).remove();
 		}
+		if(re.exec(top.location.pathname) != null){
+			$("#valid-count").text($(".status-success").length);
+			var partial = $(".status-partial-success").length;
+			var over = $(".status-over").length;
+			$("#over-count").text(partial + over);
+		}
 		$("#participation-"+participation_id).find($("p#option-validate")).html("<span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateParticipation("+participation_id+")' title='Annuler la validation'></span>")
 	})
 }
@@ -484,11 +494,18 @@ function unvalidateParticipation(participation_id){
 		var status = data.status, product_id = data.product_id;
 		$("#participation-"+participation_id).removeClass("status-success");
 		$("#participation-"+participation_id).removeClass("status-partial-success");
+		var re = /historique/i;
 		if(status == 0){
 			$("#participation-"+participation_id).addClass("status-pre-success");
 			computeRemainingHours(product_id, false);
 		} else {
 			$("#participation-"+participation_id).addClass("status-over");
+		}
+		if(re.exec(top.location.pathname) != null){
+			$("#valid-count").text($(".status-success").length);
+			var partial = $(".status-partial-success").length;
+			var over = $(".status-over").length;
+			$("#over-count").text(partial + over);
 		}
 		$("#participation-"+participation_id).find($("p#option-validate")).html("<span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateParticipation("+participation_id+")' title='Valider le passage'></span>");
 	})
