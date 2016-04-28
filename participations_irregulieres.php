@@ -10,7 +10,7 @@ $db = PDOFactory::getConnection();
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
-		<script src="assets/js/records.js"></script>
+		<script src="assets/js/participations.js"></script>
 		<script>
 			$(document).ready(function(){
 				displayIrregularParticipations();
