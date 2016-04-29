@@ -266,6 +266,7 @@ function notifCoursParticipants(firstCount){
 			}
 			$("#badge-participations").show();
 			$("#badge-participations").html(data);
+			$(".sub-legend>span").text(data);
 		}
 	})
 }

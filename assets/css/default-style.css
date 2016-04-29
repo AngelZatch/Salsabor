@@ -112,6 +112,34 @@
 .personal-participation-title {
   padding-left: 20px !important; }
 
+/* line 42, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+.panel-search {
+  background-color: #eeeeee; }
+
+/* line 48, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+.user-entry {
+  font-size: 18px;
+  text-align: center;
+  height: 350px;
+  padding: 30px 15px 30px 15px;
+  border-radius: 5px;
+  word-wrap: break-word; }
+  /* line 55, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  .user-entry:hover {
+    background-color: #888888; }
+  /* line 57, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  .user-entry a {
+    text-decoration: none;
+    color: black; }
+  /* line 60, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  .user-entry a:hover {
+    text-decoration: none;
+    color: black; }
+  /* line 63, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  .user-entry .user-pp {
+    float: inherit;
+    margin: 0 auto; }
+
 /** ADJUSTMENT TOOLS **/
 /* line 29, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .align-right {
@@ -147,16 +175,16 @@ a {
   overflow: auto; }
 
 /* line 55, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-legend, .sub-legend, p.legend {
+legend, .sub-legend, .search-title, p.legend {
   color: #A80139;
   font-size: 28px;
   font-family: 'globersemibold_free'; }
   /* line 59, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-  legend a, .sub-legend a, p.legend a, legend input, .sub-legend input, p.legend input, legend button, .sub-legend button, p.legend button {
+  legend a, .sub-legend a, .search-title a, p.legend a, legend input, .sub-legend input, .search-title input, p.legend input, legend button, .sub-legend button, .search-title button, p.legend button {
     float: right; }
 
 /* line 62, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-.sub-legend {
+.sub-legend, .search-title {
   font-size: 19px; }
 
 /* line 66, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */

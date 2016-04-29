@@ -261,10 +261,11 @@ function displayParticipations(session_id){
 	})
 }
 
-function displayIrregularParticipations(){
-	$.get("functions/fetch_irregular_records.php").done(function(data){
+function displayIrregularParticipations(participation_id){
+	console.log("ID de départ : "+participation_id)
+	$.get("functions/fetch_irregular_records.php", {participation_id : participation_id}).done(function(data){
 		var records_list = JSON.parse(data);
-		$(".irregular-records-list").empty();
+		/*$(".irregular-records-list").empty();*/
 		var users = 0, ok = 0, warning = 0;
 		var contents = "";
 		for(var i = 0; i < records_list.length; i++){
@@ -293,7 +294,11 @@ function displayIrregularParticipations(){
 					break;
 			}
 			users++;
-			contents += "<li class='panel-item panel-record irregular-record "+record_status+" container-fluid col-lg-12' id='participation-"+records_list[i].id+"' data-participation='"+records_list[i].id+"'>";
+			if(i == records_list.length-1){
+				contents += "<li class='panel-item panel-record irregular-record "+record_status+" container-fluid col-lg-12 waypoint-mark' id='participation-"+records_list[i].id+"' data-participation='"+records_list[i].id+"'>";
+			} else {
+				contents += "<li class='panel-item panel-record irregular-record "+record_status+" container-fluid col-lg-12' id='participation-"+records_list[i].id+"' data-participation='"+records_list[i].id+"'>";
+			}
 			// Profile picture
 			if(records_list[i].photo != null){
 				var photo = records_list[i].photo;
@@ -371,7 +376,21 @@ function displayIrregularParticipations(){
 			contents += "</li>";
 		}
 		$(".irregular-records-list").append(contents);
-		$(".sub-legend>span").text(records_list.length);
+		$(".waypoint-mark").waypoint({
+			handler: function(direction){
+				if(direction === "down"){
+					console.log("Waypoint reached");
+					var participation_id = document.getElementById(this.element.id).dataset.participation;
+					$("#"+this.element.id).removeClass("waypoint-mark");
+					this.destroy();
+					console.log($(".waypoint-mark").length);
+					displayIrregularParticipations(participation_id);
+				}
+			},
+			context: 'irregular-sessions-container',
+			offset: '95%'
+		})
+		console.log($(".waypoint-mark").length);
 	})
 }
 

@@ -11,9 +11,10 @@ $db = PDOFactory::getConnection();
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
 		<script src="assets/js/participations.js"></script>
+		<script src="assets/js/jquery.waypoints.min.js"></script>
 		<script>
 			$(document).ready(function(){
-				displayIrregularParticipations();
+				displayIrregularParticipations(0);
 			})
 		</script>
 	</head>
