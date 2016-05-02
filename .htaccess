@@ -8,7 +8,7 @@ RewriteRule ^vente$ catalogue.php
 RewriteRule ^reservation$ resa_add.php
 RewriteRule ^invitation$ eleve_inviter.php
 RewriteRule ^participations$ participations.php
-RewriteRule ^regularisation/participations$ participations_irregulieres.php
+RewriteRule ^regularisation/participations/([A-Za-z0-9-]+)$ participations_irregulieres.php?display=$1 [NC]
 RewriteRule ^regularisation/forfaits$ irreg_products.php
 RewriteRule ^planning$ planning.php
 RewriteRule ^salles$ salles.php

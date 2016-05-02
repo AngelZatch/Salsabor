@@ -140,6 +140,10 @@
     float: inherit;
     margin: 0 auto; }
 
+/* line 67, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+.panel-irregular {
+  margin-bottom: 10px; }
+
 /** ADJUSTMENT TOOLS **/
 /* line 29, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .align-right {

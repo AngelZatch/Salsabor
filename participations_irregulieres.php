@@ -1,12 +1,14 @@
 <?php
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
+
+$display = $_GET["display"];
 ?>
 <html>
 	<head>
 		<meta charset="UTF-8">
 		<title>Participations irrégulières | Salsabor</title>
-		<base href="../">
+		<base href="../../">
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
@@ -14,7 +16,14 @@ $db = PDOFactory::getConnection();
 		<script src="assets/js/jquery.waypoints.min.js"></script>
 		<script>
 			$(document).ready(function(){
+				<?php if($display == "all"){ ?>
 				displayIrregularParticipations(0);
+				<?php } else { ?>
+				displayIrregularUsers();
+				<?php } ?>
+			}).on('shown.bs.collapse', '.panel-collapse', function(){
+				var user_id = document.getElementById($(this).attr("id")).dataset.user;
+				displayIrregularUserParticipations(user_id);
 			})
 		</script>
 	</head>
@@ -26,11 +35,19 @@ $db = PDOFactory::getConnection();
 				<div class="col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-bishop"></span> Participations irrégulières</legend>
 					<p class="sub-legend"><span></span> participations irrégulières.</p>
+					<ul class="nav nav-tabs">
+						<li role="presentation" <?php if($display == "all") echo "class='active'";?>>
+							<a href="regularisation/participations/all">Tout afficher</a>
+						</li>
+						<li role="presentation" <?php if($display == "user") echo "class='active'";?>><a href="regularisation/participations/user">Par utilisateur</a></li>
+					</ul>
+					<?php if($display == "all"){ ?>
 					<div class="container-fluid irregular-sessions-container">
-						<ul class="irregular-records-list">
+						<ul class="irregulars-list">
 
 						</ul>
 					</div>
+					<?php } ?>
 				</div>
 			</div>
 		</div>

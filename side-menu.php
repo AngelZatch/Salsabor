@@ -29,7 +29,7 @@
 
 			<li><a class="main-section"><span class="glyphicon glyphicon-equalizer"></span> Régularisation</a></li>
 			<ul class="nav nav-sub-sidebar" id="collapse-irregulars">
-				<li class="main-option-container"><a href="regularisation/participations" class="main-option"><span class="glyphicon glyphicon-bishop"></span> Participations <span class="badge sidebar-badge" id="badge-participations"></span></a></li>
+				<li class="main-option-container"><a href="regularisation/participations/all" class="main-option"><span class="glyphicon glyphicon-bishop"></span> Participations <span class="badge sidebar-badge" id="badge-participations"></span></a></li>
 				<li class="main-option-container"><a href="regularisation/forfaits" class="main-option"><span class="glyphicon glyphicon-queen"></span> Forfaits</a></li>
 			</ul>
 
