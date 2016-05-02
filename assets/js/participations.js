@@ -14,8 +14,13 @@ $(document).ready(function(){
 		})
 	}
 }).on('click', '.panel-heading-container', function(){
-	var id = document.getElementById($(this).attr("id")).dataset.session;
-	fetchParticipations(id);
+	if(top.location.pathname === '/Salsabor/regularisation/participations/user'){
+		var id = document.getElementById($(this).attr("id")).dataset.user;
+		$("#body-"+id).collapse("toggle");
+	} else {
+		var id = document.getElementById($(this).attr("id")).dataset.session;
+		$("#body-session-"+id).collapse("toggle");
+	}
 }).on('shown.bs.collapse', ".panel-body", function(){
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
 	displayParticipations(session_id);
@@ -173,10 +178,6 @@ function displayTargetSessions(data){
 	}
 	body += "</ul>";
 	return body;
-}
-
-function fetchParticipations(session_id){
-	$("#body-session-"+session_id).collapse("toggle");
 }
 
 /** To have up-to-date info on every non collapsed session, this function ensures the info is refreshed every so often. Of course, when something big such as a deletion is done, displayParticipations can be called independently as it won't affect the global tick. **/
@@ -400,12 +401,14 @@ function displayIrregularUsers(){
 		var contents = "";
 		for(var i = 0; i < user_list.length; i++){
 			if(user_list[i].user != ' '){
-				contents += "<div class='panel panel-default panel-item panel-irregular'>";
-				contents += "<div class='panel-heading'>";
-				contents += "<a class='collapsed' data-toggle='collapse' href='#body-"+user_list[i].user_id+"' aria-expanded='false'>"+user_list[i].user+" ("+user_list[i].count+")</a>";
+				contents += "<div class='panel panel-item panel-purchase'>";
+				contents += "<a class='panel-heading-container' id='ph-user-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"'>";
+				contents += "<div class='panel-heading container-fluid'>";
+				contents += "<p class='irregular-user'>"+user_list[i].user+" (<span class='irregular-user-count' id='count-"+user_list[i].user_id+"'>"+user_list[i].count+"</span>) <span class='glyphicon glyphicon-share-alt glyphicon-button glyphicon-button-alt' id='glyph-user-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"' title='Aller aux participations de l&apos;utilisateur'></span></p>";
 				contents += "</div>";
+				contents += "</a>";
 				contents += "<div class='panel-collapse collapse' id='body-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"'>";
-				contents += "<div class='panel-body crow irregular-sessions-container'><ul class='irregulars-list' id='list-"+user_list[i].user_id+"'></ul></div>";
+				contents += "<div class='panel-body row irregular-sessions-container'><ul class='irregulars-list' id='list-"+user_list[i].user_id+"'></ul></div>";
 				contents += "</div>";
 				contents += "</div>";
 			}
@@ -589,10 +592,20 @@ function validateParticipation(participation_id){
 		} else {
 			$("#participation-"+participation_id).addClass("status-success");
 			computeRemainingHours(product_id, false);
-		}
-		if(top.location.pathname === '/Salsabor/regularisation/participations'){
-			$(".sub-legend>span").text(parseInt($(".sub-legend>span").text())-1);
-			$("#participation-"+participation_id).remove();
+			if(top.location.pathname === '/Salsabor/regularisation/participations/user'){
+				var count = parseInt($("#participation-"+participation_id).closest($(".panel")).find("span.irregular-user-count").text());
+				count--;
+				setTimeout(function(){
+					$("#participation-"+participation_id).remove();
+				}, 2000);
+				$("#participation-"+participation_id).closest($(".panel")).find("span.irregular-user-count").text(count);
+				if(count == 0){
+					$("#participation-"+participation_id).closest($(".panel")).remove();
+				}
+			} else if(top.location.pathname === '/Salsabor/regularisation/participations'){
+				$(".sub-legend>span").text(parseInt($(".sub-legend>span").text())-1);
+				$("#participation-"+participation_id).remove();
+			}
 		}
 		if(re.exec(top.location.pathname) != null){
 			$("#valid-count").text($(".status-success").length);
@@ -642,7 +655,17 @@ function deleteParticipation(participation_id){
 			$("#valid-count").text($(".status-success").length);
 			$("#over-count").text($(".status-over").length);
 		} else {
-			if(top.location.pathname === '/Salsabor/regularisation/participations'){
+			if(top.location.pathname === '/Salsabor/regularisation/participations/user'){
+				var count = parseInt($("#participation-"+participation_id).closest($(".panel")).find("span.irregular-user-count").text());
+				count--;
+				setTimeout(function(){
+					$("#participation-"+participation_id).remove();
+				}, 2000);
+				$("#participation-"+participation_id).closest($(".panel")).find("span.irregular-user-count").text(count);
+				if(count == 0){
+					$("#participation-"+participation_id).closest($(".panel")).remove();
+				}
+			} else if(top.location.pathname === '/Salsabor/regularisation/participations/all'){
 				$(".sub-legend>span").text(parseInt($(".sub-legend>span").text())-1);
 				$("#participation-"+participation_id).remove();
 			}

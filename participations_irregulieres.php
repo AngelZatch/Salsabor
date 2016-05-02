@@ -21,9 +21,13 @@ $display = $_GET["display"];
 				<?php } else { ?>
 				displayIrregularUsers();
 				<?php } ?>
-			}).on('shown.bs.collapse', '.panel-collapse', function(){
+			}).on('show.bs.collapse', '.panel-collapse', function(){
 				var user_id = document.getElementById($(this).attr("id")).dataset.user;
 				displayIrregularUserParticipations(user_id);
+			}).on('click', '.glyphicon-button-alt', function(e){
+				e.stopPropagation();
+				var user_id = document.getElementById($(this).attr("id")).dataset.user;
+				window.top.location = "user/"+user_id+"/historique";
 			})
 		</script>
 	</head>
