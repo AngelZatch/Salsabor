@@ -24,7 +24,12 @@ $db = PDOFactory::getConnection();
 					/** CODE **/
 					//Have to copy all the participations to the new table
 					set_time_limit(0);
-					$insertedLines = 0;
+					$duplicates = $db->query("SELECT *, count(*) AS duplicates FROM participations GROUP BY cours_id, user_id HAVING duplicates > 1");
+					while($duplicate = $duplicates->fetch(PDO::FETCH_ASSOC)){
+						echo "Passage ".$duplicate["passage_id"]." | user ".$duplicate["user_id"]." | cours ".$duplicate["cours_id"]." | produit ".$duplicate["produit_adherent_id"]."<br>";
+						$delete = $db->query("DELETE FROM participations WHERE passage_id = '$duplicate[passage_id]'");
+					}
+					/*$insertedLines = 0;
 					$participations = $db->query("SELECT * FROM old_cours_participants cp
 													LEFT JOIN cours c ON cp.cours_id_foreign = c.cours_id
 													LEFT JOIN lecteurs_rfid lr ON c.cours_salle = lr.lecteur_ip");
@@ -49,7 +54,7 @@ $db = PDOFactory::getConnection();
 						}
 						$delete = $db->query("DELETE FROM old_cours_participants WHERE id = '$current_id'");
 					}
-					echo $insertedLines." lignes insérées";
+					echo $insertedLines." lignes insérées";*/
 					/*foreach(glob("assets/pictures/*.jpg") as $filename){
 						preg_match("/[0-9-]+/", $filename, $matches);
 						$user_id = $matches[0];

@@ -720,7 +720,7 @@ function fillSessions(sessions){
 			if(sessions_list[i].status == 2){
 				var participation_status = "status-success";
 			} else {
-				var participation_status = "status-pending";
+				var participation_status = "status-pre-success";
 			}
 			valid_sessions += "<li class='product-participation "+participation_status+" container-fluid' data-argument='"+sessions_list[i].id+"' id='participation-"+sessions_list[i].id+"'>";
 			valid_sessions += "<p class='col-lg-12 session-title'>"+sessions_list[i].title+"</p>";
