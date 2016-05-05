@@ -65,7 +65,7 @@ function computeExpirationDate($db, $date_activation, $validity){
 	return $new_exp_date;
 }
 
-function addRecord($db, $cours_name, $session_id, $user_id, $ip, $tag){
+function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 	$today = date_create('now')->format('Y-m-d H:i:s');
 	if($session_id != null){ // If we could find a session, then we're gonna look for a product.
 		if(preg_match("/jazz/i", $cours_name, $matches) || preg_match("/pilates/i", $cours_name, $matches) || preg_match("/particulier/i", $cours_name, $matches)){ // Search for specific Jazz, Pilates or private sessions
@@ -96,6 +96,9 @@ function addRecord($db, $cours_name, $session_id, $user_id, $ip, $tag){
 									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
 									AND produit_nom != 'Invitation'
+									AND produit_nom NOT LIKE '%jazz%'
+									AND produit_nom NOT LIKE '%pilates%'
+									AND produit_nom NOT LIKE '%particulier%'
 									AND pa.actif = '1'
 									AND est_abonnement = '0'
 									AND est_cours_particulier = '0'
@@ -108,6 +111,9 @@ function addRecord($db, $cours_name, $session_id, $user_id, $ip, $tag){
 									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
 									AND produit_nom != 'Invitation'
+									AND produit_nom NOT LIKE '%jazz%'
+									AND produit_nom NOT LIKE '%pilates%'
+									AND produit_nom NOT LIKE '%particulier%'
 									AND pa.actif = '0'
 									AND est_abonnement = '0'
 									AND est_cours_particulier = '0'
@@ -125,11 +131,11 @@ function addRecord($db, $cours_name, $session_id, $user_id, $ip, $tag){
 			$product = NULL;
 			$status = "3";
 		}
-		$new = $db->query("INSERT INTO passages(passage_eleve, passage_eleve_id, passage_salle, passage_date, cours_id, produit_adherent_cible, status)
+		$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, cours_id, produit_adherent_id, status)
 					VALUES('$tag', '$user_id', '$ip', '$today', '$session_id', '$product_id', '$status')");
 	} else {
 		$status = "2";
-		$new = $db->query("INSERT INTO passages(passage_eleve, passage_eleve_id, passage_salle, passage_date, status)
+		$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, status)
 					VALUES('$tag', '$user_id', '$ip', '$today', '$status')");
 	}
 	echo $ligne = $today.";".$tag.";".$ip."$-".$status;

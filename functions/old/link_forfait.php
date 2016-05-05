@@ -11,19 +11,19 @@ $prof = $db->query("SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=$deta
 
 try{
 	$db->beginTransaction();
-	$update = $db->prepare('UPDATE cours_participants SET produit_adherent_id=? WHERE cours_id_foreign=? AND eleve_id_foreign=?');
+	$update = $db->prepare('UPDATE participations SET produit_adherent_id = ? WHERE cours_id = ? AND user_id = ?');
 	$update->bindParam(1, $forfait);
 	$update->bindParam(2, $cours);
 	$update->bindParam(3, $eleve);
 	$update->execute();
-	
+
 	// Déduction du volume horaire dans le forfait
 	$substract = $db->prepare("UPDATE produits_adherents SET volume_cours=? WHERE id_transaction=?");
 	$remainingHours = $produit["volume_cours"] - $detailCours["cours_unite"];
 	$substract->bindParam(1, $remainingHours);
 	$substract->bindParam(2, $produit["id_transaction"]);
 	$substract->execute();
-	
+
 	// Mise à jour de la rémunération du professeur
 	if($prof["ratio_multiplicatif"] == "personne"){
 		$prix = $detailCours["cours_prix"] + $prof["tarif_prestation"];
@@ -32,7 +32,7 @@ try{
 		$add->bindParam(2, $cours);
 		$add->execute();
 	}
-	
+
 	$db->commit();
 	echo "Forfait lié.";
 } catch(PDOException $e){

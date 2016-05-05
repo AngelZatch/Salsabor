@@ -60,7 +60,7 @@ if(isset($_POST['addAdherent'])){
 			$new->bindParam(':commentaires', $_POST["commentaires"]);
 			$new->execute();
 			if(isset($_POST["rfid"])){
-				$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
+				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid=? AND status=1');
 				$delete->bindParam(1, $_POST["rfid"]);
 				$delete->execute();
 			}
@@ -107,7 +107,7 @@ if(isset($_POST['addAdherent'])){
 			$new->bindParam(':commentaires', $_POST["commentaires"]);
 			$new->execute();
 			if(isset($_POST["rfid"])){
-				$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
+				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid=? AND status=1');
 				$delete->bindParam(1, $_POST["rfid"]);
 				$delete->execute();
 			}
@@ -168,7 +168,7 @@ if(isset($_POST['addSell'])){
 			$new->bindParam(':commentaires', $_POST["commentaires"]);
 			$new->execute();
 			if(isset($_POST["rfid"])){
-				$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
+				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid=? AND status=1');
 				$delete->bindParam(1, $_POST["rfid"]);
 				$delete->execute();
 			}
@@ -215,7 +215,7 @@ if(isset($_POST['addSell'])){
 			$new->bindParam(':commentaires', $_POST["commentaires"]);
 			$new->execute();
 			if(isset($_POST["rfid"])){
-				$delete = $db->prepare('DELETE FROM passages WHERE passage_eleve=? AND status=1');
+				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid=? AND status=1');
 				$delete->bindParam(1, $_POST["rfid"]);
 				$delete->execute();
 			}

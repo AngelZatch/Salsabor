@@ -205,6 +205,10 @@ a
 	&:hover
 		color: white
 
+.glyphicon-button-alt
+	&:hover
+		color: $salsabor-red
+
 /** PURCHASES **/
 .panel-purchase
 	box-shadow: 0px 0px 10px $system-color
@@ -376,6 +380,12 @@ a
 	color: $system-color
 	text-decoration: underline
 
+.participation-pending
+	border-left: 7px solid $pre-success-color
+	&:not(.options-shown)
+		&:hover
+			background-color: $pre-success-color
+
 .participation-valid
 	border-left: 7px solid $success-color
 	&:not(.options-shown)
@@ -411,6 +421,11 @@ h2.modal-body-title.first
 
 .sub-modal-body
 	padding-top: 10px
+	max-height: 350px
+	overflow-y: scroll
+
+.sub-modal-footer
+	padding-top: 5px
 
 .sub-modal-product
 	display: inherit

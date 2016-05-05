@@ -1,6 +1,9 @@
 <?php
 require_once "/opt/lampp/htdocs/Salsabor/functions/db_connect.php";
 include "/opt/lampp/htdocs/Salsabor/functions/compute_remaining_hours.php";
+/*require_once "../db_connect.php";
+require_once "../compute_remaining_hours.php";*/
+
 $db = PDOFactory::getConnection();
 
 /** This file just does the daily system_operations:

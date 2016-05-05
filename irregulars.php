@@ -2,9 +2,9 @@
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
-$queryIrregulars = $db->query("SELECT * FROM cours_participants
-								JOIN users ON eleve_id_foreign=users.user_id
-								JOIN cours ON cours_id_foreign=cours.cours_id
+$queryIrregulars = $db->query("SELECT * FROM participations pr
+								JOIN users u ON pr.user_id = u.user_id
+								JOIN cours c ON pr.cours_id = c.cours_id
 								WHERE produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0
 								ORDER BY user_nom, cours_start ASC");
 ?>
@@ -14,6 +14,9 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 		<title>Template | Salsabor</title>
 		<base href="../">
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/products.js"></script>
+		<script src="assets/js/participations.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -32,7 +35,7 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 									echo "<a href='user/".$irregulars["user_id"]."' class='sub-legend'>".$irregulars["user_prenom"]." ".$irregulars["user_nom"]."</a>";
 								}
 							?>
-							<li class="irregular-participation" id="participation-<?php echo $irregulars["id"];?>" data-argument="<?php echo $irregulars["id"];?>">
+							<li class="irregular-participation" id="participation-<?php echo $irregulars["passage_id"];?>" data-argument="<?php echo $irregulars["passage_id"];?>">
 								<p><?php echo $irregulars["user_prenom"]." ".$irregulars["user_nom"];?> au cours de <?php echo $irregulars["cours_intitule"];?> du <?php echo date_create($irregulars["cours_start"])->format("d/m/Y\ \à\ H:i");?></p>
 							</li>
 							<?php $currentUser = $irregulars["user_nom"];
@@ -45,8 +48,6 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 				</div>
 			</div>
 		</div>
-		<?php include "scripts.php";?>
-		<script src="assets/js/products.js"></script>
 		<script>
 			$(document).on("click", ".irregular-participation", function(){
 				var participation_id = document.getElementById($(this).attr("id")).dataset.argument;
@@ -54,7 +55,7 @@ $queryIrregulars = $db->query("SELECT * FROM cours_participants
 				$(this).addClass("focused");
 				$.when(fetchEligibleProducts(participation_id, "participation")).done(function(data){
 					var construct = displayEligibleProducts(data);
-					construct += "<button class='btn btn-default btn-modal report-product' id='btn-product-report' data-session='"+participation_id+"'><span class='glyphicon glyphicon-arrow-right'></span> Associer</button> ";
+					construct += "<button class='btn btn-default btn-modal set-participation-product' id='btn-product-report' data-session='"+participation_id+"'><span class='glyphicon glyphicon-credit-card'></span> Associer</button> ";
 					construct += "<button class='btn btn-danger pre-delete' data-session='"+participation_id+"' id='btn-record-delete'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";
 					$(".irregulars-target-container").html(construct);
 				})

@@ -20,11 +20,9 @@ $(document).ready(function(){
 
 	var firstCount = 0; // Pour éviter la notification dès le rafraîchissement de la page.
 	window.numberProduits = 1; // Articles dans le panier
-	notifPassages(firstCount);
 	notifCoursParticipants(firstCount);
 	notifEcheancesDues(firstCount);
 	notifPanier();
-	setInterval(notifPassages, 15000);
 	setInterval(notifCoursParticipants, 30000);
 	setInterval(notifEcheancesDues, 30000);
 	badgeNotifications();
@@ -256,32 +254,19 @@ $(".has-name-completion").on('click blur keyup', function(){
 		$(this).removeClass("completed");
 	}
 })
-// FONCTIONS NOTIFICATIONS //
-// Fonction de surveillance des passages enregistrés. Avertit l'utilisateur et met à jour le badge de notification en cas de nouveaux enregistrements.
-function notifPassages(firstCount){
-	$.post("functions/watch_records.php").done(function(data){
-		if(data == 0){
-			$("#badge-passages").hide();
-		} else {
-			if(data > $("#badge-passages").html() && firstCount!=0){$.notify("Nouveaux passages enregistrés", {globalPosition: "bottom right", className:"info"});}
-			$("#badge-passages").show();
-			$("#badge-passages").html(data);
-		}
-		firstCount = 1;
-	})
-}
 
 // Surveille les participations à un cours non associés à un produit (abonnement, vente spontanée, invitation...)
 function notifCoursParticipants(firstCount){
-	$.post("functions/watch_cours_participants.php").done(function(data){
+	$.post("functions/watch_participations.php").done(function(data){
 		if(data == 0){
 			$("#badge-participants").hide();
 		} else {
-			if(data > $("#badge-participants").html() && firstCount != 0){
+			if(data > $("#badge-participations").html() && firstCount != 0){
 				$.notify("Nouvelles participations non associées.", {globalPosition: "bottom right", className:"info"});
 			}
-			$("#badge-participants").show();
-			$("#badge-participants").html(data);
+			$("#badge-participations").show();
+			$("#badge-participations").html(data);
+			$(".sub-legend>span").text(data);
 		}
 	})
 }

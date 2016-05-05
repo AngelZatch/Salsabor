@@ -29,7 +29,7 @@ $queryResa->execute();
 					<ul class="nav nav-tabs">
 						<li role="presentation"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/abonnements">Abonnements</a></li>
-						<li role="presentation"><a href="user/<?php echo $data;?>/historique">Cours suivis</a></li>
+						<li role="presentation"><a href="user/<?php echo $data;?>/historique">Participations</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
 						<li role="presentation" class="active"><a href="user/<?php echo $data;?>/reservations">Réservations</a></li>
 						<?php if($details["est_professeur"] == 1){ ?>

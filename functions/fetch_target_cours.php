@@ -3,7 +3,7 @@ require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $id = $_POST["passage_id"];
-$passage = $db->query("SELECT * FROM passages WHERE passage_id=$id")->fetch(PDO::FETCH_ASSOC);
+$passage = $db->query("SELECT passage_date FROM participations WHERE passage_id=$id")->fetch(PDO::FETCH_ASSOC);
 /* Pour trouver les cours potentiels pouvant correspondre à ce passage, on cherche tous les cours ayant commencé au plus tôt 60 minutes avant le passage et qui commenceront au plus tard 60 minutes après */
 $start = date("Y-m-d H:i:s", strtotime($passage["passage_date"].'-80MINUTES'));
 $end = date("Y-m-d H:i:s", strtotime($passage["passage_date"].'+80MINUTES'));

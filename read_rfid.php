@@ -7,16 +7,16 @@ if(isset($_GET["carte"])){
 	$data = explode('*', $_GET["carte"]);
 	$tag_rfid = $data[0];
 	$ip_rfid = $data[1];
-	prepareRecord($db, $tag_rfid, $ip_rfid);
+	prepareParticipation($db, $tag_rfid, $ip_rfid);
 }
 
 if(isset($_POST["add"])){
 	$tag_rfid = $_POST["tag"];
 	$ip_rfid = $_POST["salle"];
-	prepareRecord($db, $tag_rfid, $ip_rfid);
+	prepareParticipation($db, $tag_rfid, $ip_rfid);
 }
 
-function prepareRecord($db, $tag, $ip){
+function prepareParticipation($db, $tag, $ip){
 	$today = date("Y-m-d H:i:s");
 	if($ip == "192.168.0.3"){
 		$status = "1";
@@ -36,7 +36,7 @@ function prepareRecord($db, $tag, $ip){
 								VALUES('MAI', '$user_details[user_id]', '$today', '1')");
 		}
 
-		addRecord($db, $cours_name, $session_id, $user_details["user_id"], $ip, $tag);
+		addParticipation($db, $cours_name, $session_id, $user_details["user_id"], $ip, $tag);
 	}
 	header('Location: passages');
 }
