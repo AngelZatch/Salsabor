@@ -58,7 +58,7 @@ $(document).ready(function(){
 			match: /(^|\b)(\w{2,})$/,
 			search: function(term, callback){
 				callback($.map(autocompleteList, function(item){
-					return item.indexOf(term) === 0 ? item : null;
+					return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
 				}));
 			},
 			replace: function(item){

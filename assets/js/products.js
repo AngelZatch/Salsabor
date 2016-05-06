@@ -360,7 +360,7 @@ $(document).ready(function(){
 		search: function(term, callback){
 			var methods = ["Carte bancaire","Chèque n°","Espèces","Virement compte à compte","Chèques vacances","En attente"];
 			callback($.map(methods, function(item){
-				return item.indexOf(term) === 0 ? item : null;
+				return item.toLowerCase().indexOf(term.toLowerCase()) === 0 ? item : null;
 			}));
 		},
 		replace: function(item){
