@@ -19,6 +19,7 @@ RewriteRule ^echeances$ echeances.php
 RewriteRule ^transactions$ transactions.php
 RewriteRule ^notifications$ notifications.php
 RewriteRule ^notifications/settings$ notifications_settings.php
+RewriteRule ^taches$ tasks.php
 
 #User Details
 RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]
@@ -26,6 +27,7 @@ RewriteRule ^user/([0-9-]+)/achats user_purchases.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/abonnements user_subscriptions.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/historique user_history.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/reservations user_reservations.php?id=$1 [NC,L]
+RewriteRule ^user/([0-9-]+)/taches user_tasks.php?id=$1 [NC,L]
 
 RewriteRule ^forfait/([A-Za-z0-9-]+)$ forfait_details.php?id=$1
 RewriteRule ^cours/([A-Za-z0-9-]+)$ cours_edit.php?id=$1

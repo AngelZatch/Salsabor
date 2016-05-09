@@ -245,6 +245,12 @@ $(document).ready(function(){
 	$(".submit-relay-target").click();
 }).on('click', '.sub-modal-close', function(){
 	$(".sub-modal").toggle();
+}).on('click', '.panel-heading-task', function(){
+	var id = document.getElementById($(this).attr("id")).dataset.trigger;
+	$("#body-task-"+id).collapse("toggle");
+}).on('show.bs.collapse', '.panel-task-body', function(){
+	var task_id = document.getElementById($(this).attr("id")).dataset.task;
+	fetchComments(task_id);
 })
 
 $(".has-name-completion").on('click blur keyup', function(){
@@ -266,7 +272,7 @@ function notifCoursParticipants(firstCount){
 			}
 			$("#badge-participations").show();
 			$("#badge-participations").html(data);
-			$(".sub-legend>span").text(data);
+			$(".irregular-participations-title>span").text(data);
 		}
 	})
 }
@@ -296,11 +302,6 @@ $("*[date-today='true']").click(function(){
 	var today = new moment().format("YYYY-MM-DD");
 	$(this).parent().prev().val(today);
 	$(this).parent().prev().blur();
-});
-
-// Convertit une date en temps relatif. (ex: "il y a un jour")
-$(".relative-start").each(function(){
-	$(this).html(moment($(this).html(), "YYYY-MM-DD HH:ii:ss", 'fr').fromNow());
 });
 
 // Vérifie si un adhérent a des échéances impayées lors de la vente d'un forfait
@@ -421,19 +422,6 @@ function composeURL(token){
 	$("[name='next']").attr('href', url);
 	$("[name='previous']").attr('href', url);
 }
-
-$(".draggable").draggable({
-	snap: ".list-group",
-	axis: "y"
-});
-$(".droppable").droppable({
-	drag: function(event, ui){
-		//$(this).height($(this).height + ui.draggable.height());
-	},
-	drop: function(event, ui){
-		ui.draggable.detach().appendTo($(this));
-	}
-});
 
 function toggleBoolean(button, boolean_name, value_id, value_name, old_value){
 	var data = {

@@ -14,18 +14,17 @@ $db = PDOFactory::getConnection();
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<div class="col-lg-10 col-lg-offset-2 main">
-					<legend><span class="glyphicon glyphicon-bell"></span> Notifications</legend>
-					<ul class="notifications-container container-fluid">
-
-					</ul>
+					<legend><span class="glyphicon glyphicon-list-alt"></span> Tâches à faire</legend>
+					<div class="tasks-container container-fluid"></div>
 				</div>
 			</div>
 		</div>
 		<?php include "scripts.php";?>
+		<script src="assets/js/tasks.js"></script>
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');
-				fetchNotifications(0);
+				fetchTasks(0);
 			})
 		</script>
 	</body>

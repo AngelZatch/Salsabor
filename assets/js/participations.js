@@ -48,7 +48,7 @@ $(document).ready(function(){
 		$(".sub-modal").hide();
 	}
 }).on('focus', '.name-input', function(){
-	$.post("functions/get_user_list.php").done(function(data){
+	$.get("functions/fetch_user_list.php", {filter : "active"}).done(function(data){
 		var userList = JSON.parse(data);
 		var autocompleteList = [];
 		for(var i = 0; i < userList.length; i++){
@@ -110,7 +110,7 @@ function displaySessions(data, fetched){
 			}*/
 		as_display += "<div class='panel panel-session' id='session-"+active_sessions[i].id+"'>";
 		// Panel heading
-		as_display += "<a class='panel-heading-container' id='ph-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"'>";
+		as_display += "<a class='panel-heading-container' id='ph-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' data-trigger='"+active_sessions[i].id+"'>";
 		as_display += "<div class='panel-heading'>";
 		// Container fluid for session name and hour
 		as_display += "<div class='container-fluid'>";
@@ -402,7 +402,7 @@ function displayIrregularUsers(){
 		for(var i = 0; i < user_list.length; i++){
 			if(user_list[i].user != ' '){
 				contents += "<div class='panel panel-item panel-purchase'>";
-				contents += "<a class='panel-heading-container' id='ph-user-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"'>";
+				contents += "<a class='panel-heading-container' id='ph-user-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"' data-trigger='"+user_list[i].user_id+"'>";
 				contents += "<div class='panel-heading container-fluid'>";
 				contents += "<p class='irregular-user'>"+user_list[i].user+" (<span class='irregular-user-count' id='count-"+user_list[i].user_id+"'>"+user_list[i].count+"</span>) <span class='glyphicon glyphicon-share-alt glyphicon-button glyphicon-button-alt' id='glyph-user-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"' title='Aller aux participations de l&apos;utilisateur'></span></p>";
 				contents += "</div>";

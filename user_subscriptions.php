@@ -4,7 +4,11 @@ $db = PDOFactory::getConnection();
 $data = $_GET['id'];
 
 // User details
-$details = $db->query("SELECT * FROM users WHERE user_id='$data'")->fetch(PDO::FETCH_ASSOC);
+$details = $db->query("SELECT *, COUNT(task_title) AS count FROM users u
+						JOIN tasks t ON u.user_id = t.task_target
+						WHERE user_id='$data'
+						AND task_token LIKE '%USR%'
+						AND task_state = 0")->fetch(PDO::FETCH_ASSOC);
 
 // On obtient l'historique de ses forfaits
 $queryForfaits = $db->prepare('SELECT *, pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif,
@@ -46,6 +50,7 @@ $queryForfaits->execute();
 						<li role="presentation"><a href="user/<?php echo $data;?>/historique">Participations</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/reservations">Réservations</a></li>
+						<li role="presentation"><a href="user/<?php echo $data;?>/taches">Tâches</a></li>
 						<?php if($details["est_professeur"] == 1){ ?>
 						<li role="presentation"><a>Cours donnés</a></li>
 						<li role="presentation"><a>Tarifs</a></li>

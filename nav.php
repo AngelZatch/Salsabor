@@ -22,23 +22,28 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 		<div class="col-lg-3">
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav navbar-right">
-					<!--<li><a href=""><span class="glyphicon glyphicon-user"></span> ver.1.3.2</a></li>-->
 					<!--<li class="notification-option" title="Passages en attente de traitement">
-						<a href="passages" class="notification-icon">
-							<span class="glyphicon glyphicon-map-marker"></span>
-							<span class="badge" id="badge-passages"></span>
-						</a>
-					</li>-->
+<a href="passages" class="notification-icon">
+<span class="glyphicon glyphicon-map-marker"></span>
+<span class="badge" id="badge-passages"></span>
+</a>
+</li>-->
 					<!--<li class="notification-option" title="Participants à un cours sans forfait">
-						<a href="regularisation/participations" class="notification-icon">
-							<span class="glyphicon glyphicon-pawn"></span>
-							<span class="badge" id="badge-participants"></span>
-						</a>
-					</li>-->
+<a href="regularisation/participations" class="notification-icon">
+<span class="glyphicon glyphicon-pawn"></span>
+<span class="badge" id="badge-participants"></span>
+</a>
+</li>-->
 					<!--<li class="notification-option" title="Echéances en retard">
-						<a href="echeances.php" class="notification-icon">
-							<span class="glyphicon glyphicon-repeat"></span>
-							<span class="badge" id="badge-echeances"></span>
+<a href="echeances.php" class="notification-icon">
+<span class="glyphicon glyphicon-repeat"></span>
+<span class="badge" id="badge-echeances"></span>
+</a>
+</li>-->
+					<!--<li class="notification-option" title="Tâches">
+						<a class="notification-icon">
+							<span class="glyphicon glyphicon-list-alt"></span>
+							<span class="badge badge-tasks" id="badge-tasks"></span>
 						</a>
 					</li>-->
 					<li class="notification-option" title="Notifications">

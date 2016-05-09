@@ -245,7 +245,7 @@ if(isset($_POST['deleteCoursAll'])){
 							</div>
 						</div>
 						<div class="panel panel-session" id="session-<?php echo $id;?>">
-							<a class="panel-heading-container" id='ph-session-<?php echo $id;?>' data-session='<?php echo $id;?>'>
+							<a class="panel-heading-container" id='ph-session-<?php echo $id;?>' data-session='<?php echo $id;?>' data-trigger='<?php echo $id;?>'>
 								<div class="panel-heading">
 									<div class="container-fluid">
 										<p class="col-md-3">Liste des participants</p>
