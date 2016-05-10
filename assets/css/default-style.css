@@ -968,4 +968,23 @@ p.legend {
   margin: 0;
   margin-left: 25px; }
 
+/* line 668, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.comment-span {
+  padding-top: 4px; }
+
+/* line 671, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.deadline-span {
+  padding: 4px 0 4px 10px; }
+  /* line 673, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  .deadline-span:hover {
+    text-decoration: underline; }
+  /* line 675, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  .deadline-span.deadline-near {
+    background-color: #F0AD4E; }
+  /* line 677, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  .deadline-span.deadline-expired {
+    background-color: #D9534F;
+    color: white;
+    font-weight: 700; }
+
 /*# sourceMappingURL=default-style.css.map */

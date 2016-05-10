@@ -41,7 +41,23 @@ function fetchComments(task_id){
 
 function refreshTask(task){
 	$("#task-description-"+task.id).html("<span class='glyphicon glyphicon-align-left'></span> "+task.description);
+	var deadline_class = displayDeadline(moment(task.deadline));
+	$("#deadline-"+task.id).removeClass("deadline-near");
+	$("#deadline-"+task.id).removeClass("deadline-expired");
+	$("#deadline-"+task.id).addClass(deadline_class);
+	console.log(deadline_class);
+	$("#deadline-"+task.id).html("<span class='glyphicon glyphicon-time'></span> "+moment(task.deadline).format("D MMM [à] H:mm"));
 	$("#comments-count-"+task.id).html("<span class='glyphicon glyphicon-comment'></span> "+task.message_count);
+}
+
+function displayDeadline(deadline){
+	var deadline_class = "";
+	if(deadline < moment()){
+		deadline_class = "deadline-expired";
+	} else if(deadline < moment().add(3, 'days')){
+		deadline_class = "deadline-near";
+	}
+	return deadline_class;
 }
 
 function displayTasks(data, user_id, limit){
@@ -58,7 +74,7 @@ function displayTasks(data, user_id, limit){
 				}
 			}
 			// Status handling
-			var notifMessage = "", notifClass = "", link = "", linkTitle = "";
+			var notifMessage = "", notifClass = "", link = "", linkTitle = "", deadline = moment(tasks[i].deadline);
 			if(tasks[i].status == '0'){
 				notifClass = "task-new";
 			} else {
@@ -107,13 +123,14 @@ function displayTasks(data, user_id, limit){
 			notifMessage += "<div class='container-fluid'>";
 			notifMessage += "<p class='task-hour col-sm-12'> créée "+moment(tasks[i].date).format("[le] ll [à] HH:mm")+"</p>";
 			notifMessage += "<p id='task-description-"+tasks[i].id+"'><span class='glyphicon glyphicon-align-left'></span> "+tasks[i].description+"</p>";
-			notifMessage += "<div class='col-sm-1' id='comments-count-"+tasks[i].id+"'>";
+			notifMessage += "<div class='col-sm-1 comment-span' id='comments-count-"+tasks[i].id+"'>";
 			notifMessage += "<span class='glyphicon glyphicon-comment'></span> "+tasks[i].message_count;
 			notifMessage += "</div>";
 
-			notifMessage += "<div class='col-sm-3'>";
+			var deadline_class = displayDeadline(deadline);
+			notifMessage += "<div class='col-sm-2 deadline-span "+deadline_class+"' id='deadline-"+tasks[i].id+"'>";
 			if(tasks[i].deadline != null){
-				notifMessage += "<span class='glyphicon glyphicon-time'></span> "+tasks[i].deadline;
+				notifMessage += "<span class='glyphicon glyphicon-time'></span> "+deadline.format("D MMM [à] HH:mm");
 			} else {
 				notifMessage += "<span class='glyphicon glyphicon-time'></span> Ajouter une date limite";
 			}

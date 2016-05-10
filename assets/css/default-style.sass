@@ -664,3 +664,17 @@ p.legend
 	@extend .task-hour
 	margin: 0
 	margin-left: 25px
+
+.comment-span
+	padding-top: 4px
+
+.deadline-span
+	padding: 4px 0 4px 10px
+	&:hover
+		text-decoration: underline
+	&.deadline-near
+		background-color: $warning-color
+	&.deadline-expired
+		background-color: $danger-color
+		color: white
+		font-weight: 700
