@@ -28,14 +28,10 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$t["subtype"] = substr($t["token"], 4);
 	switch($t["type"]){
 		case "USR": // Here, we only need the user name for the mail address.
-			switch($t["subtype"]){
-				case "MAI":
-					$sub_query = $db->query("SELECT user_prenom, user_nom, photo FROM users u WHERE user_id = '$t[target]'")->fetch(PDO::FETCH_ASSOC);
-					$t["user"] = $sub_query["user_prenom"]." ".$sub_query["user_nom"];
-					$t["user_id"] = $t["target"];
-					$t["photo"] = $sub_query["photo"];
-					break;
-			}
+			$sub_query = $db->query("SELECT CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id = '$t[target]'")->fetch(PDO::FETCH_ASSOC);
+			$t["user"] = $sub_query["user"];
+			$t["user_id"] = $t["target"];
+			$t["photo"] = $sub_query["photo"];
 			break;
 	}
 	$t["date"] = $details["task_creation_date"];
@@ -44,6 +40,22 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$t["description"] = $details["task_description"];
 	$t["message_count"] = $db->query("SELECT * FROM task_comments WHERE task_id_foreign = '$t[id]'")->rowCount();
 	$t["status"] = $details["task_state"];
+
+	// Handling the title's tokens.
+	$pattern = "/(![a-z0-9]+!)/i";
+	preg_match_all($pattern, $t["title"], $matches, PREG_SET_ORDER);
+	foreach($matches as $val){
+		switch($val[0]){
+			case "!MAIL!":
+				$t["title"] = preg_replace("/!MAIL!/", $t["mail"], $t["title"]);
+				break;
+
+			case "!USER!":
+				$user = "Andréas Pinbouen";
+				$t["title"] = preg_replace("/!USER!/", "<strong>".$t["user"]."</strong>", $t["title"]);
+				break;
+		}
+	}
 	array_push($task_list, $t);
 }
 echo json_encode($task_list);

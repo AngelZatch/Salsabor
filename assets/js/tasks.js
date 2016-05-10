@@ -40,24 +40,27 @@ function fetchComments(task_id){
 }
 
 function refreshTask(task){
-	$("#task-description-"+task.id).html("<span class='glyphicon glyphicon-align-left'></span> "+task.description);
-	var deadline_class = displayDeadline(moment(task.deadline));
-	$("#deadline-"+task.id).removeClass("deadline-near");
-	$("#deadline-"+task.id).removeClass("deadline-expired");
-	$("#deadline-"+task.id).addClass(deadline_class);
-	console.log(deadline_class);
-	$("#deadline-"+task.id).html("<span class='glyphicon glyphicon-time'></span> "+moment(task.deadline).format("D MMM [à] H:mm"));
-	$("#comments-count-"+task.id).html("<span class='glyphicon glyphicon-comment'></span> "+task.message_count);
-}
+	// Title
+	$("#task-title-"+task.id).html(task.title);
 
-function displayDeadline(deadline){
-	var deadline_class = "";
-	if(deadline < moment()){
-		deadline_class = "deadline-expired";
-	} else if(deadline < moment().add(3, 'days')){
-		deadline_class = "deadline-near";
+	// Description
+	$("#task-description-"+task.id).html("<span class='glyphicon glyphicon-align-left'></span> "+task.description);
+
+	// Deadline
+	if(tasks[i].deadline != null){
+		var deadline_class = displayDeadline(moment(task.deadline));
+		$("#deadline-"+task.id).removeClass("deadline-near");
+		$("#deadline-"+task.id).removeClass("deadline-expired");
+		$("#deadline-"+task.id).addClass(deadline_class);
+		console.log(deadline_class);
+		$("#deadline-"+task.id).html("<span class='glyphicon glyphicon-time'></span> "+moment(task.deadline).format("D MMM [à] H:mm"));
+	} else {
+		$("#deadline-"+task.id).html("<span class='glyphicon glyphicon-time'></span> Ajouter une date limite");
 	}
-	return deadline_class;
+
+
+	// Comments count
+	$("#comments-count-"+task.id).html("<span class='glyphicon glyphicon-comment'></span> "+task.message_count);
 }
 
 function displayTasks(data, user_id, limit){
@@ -97,13 +100,9 @@ function displayTasks(data, user_id, limit){
 			// Token handling
 			switch(tasks[i].type){
 				case "USR":
-					switch(tasks[i].subtype){
-						case "MAI":
-							notifMessage += "<span class='glyphicon glyphicon-envelope'></span> <a href='user/"+tasks[i].user_id+"' target='_blank'><strong>"+tasks[i].user+"</strong></a> n'a pas d'adresse mail enregistrée.";
-							link += "user/"+tasks[i].user_id;
-							linkTitle += "Aller à l&apos;utilisateur";
-							break;
-					}
+					notifMessage += tasks[i].title;
+					link += "user/"+tasks[i].user_id;
+					linkTitle += "Aller à l&apos;utilisateur";
 					break;
 
 				default:
@@ -128,7 +127,7 @@ function displayTasks(data, user_id, limit){
 			notifMessage += "</div>";
 
 			var deadline_class = displayDeadline(deadline);
-			notifMessage += "<div class='col-sm-2 deadline-span "+deadline_class+"' id='deadline-"+tasks[i].id+"'>";
+			notifMessage += "<div class='col-sm-3 deadline-span "+deadline_class+"' id='deadline-"+tasks[i].id+"'>";
 			if(tasks[i].deadline != null){
 				notifMessage += "<span class='glyphicon glyphicon-time'></span> "+deadline.format("D MMM [à] HH:mm");
 			} else {
@@ -161,6 +160,16 @@ function displayTasks(data, user_id, limit){
 		}
 	}
 	setTimeout(fetchTasks, 10000, user_id, limit);
+}
+
+function displayDeadline(deadline){
+	var deadline_class = "";
+	if(deadline < moment()){
+		deadline_class = "deadline-expired";
+	} else if(deadline < moment().add(3, 'days')){
+		deadline_class = "deadline-near";
+	}
+	return deadline_class;
 }
 
 function displayComments(task_id, data){

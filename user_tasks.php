@@ -42,6 +42,12 @@ $details = $db->query("SELECT *, COUNT(task_title) AS count FROM users u
 						<?php } ?>
 					</ul>
 					<div class="tasks-container container-fluid"></div>
+					<div class="sub-container container-fluid">
+						<div class="panel-heading panel-add-record container-fluid">
+							<div class="col-sm-1"><div class="notif-pp empty-pp"></div></div>
+							<div class="col-sm-11 new-task-text">Ajouter une nouvelle tâche...</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -49,6 +55,28 @@ $details = $db->query("SELECT *, COUNT(task_title) AS count FROM users u
 			$(document).ready(function(){
 				moment.locale('fr');
 				fetchTasks(<?php echo $data;?>, 0);
+			}).on('click', '.panel-add-record', function(){
+				var emptyTask = "<div class='panel task-line task-new'>";
+				emptyTask += "<div class='panel-heading panel-heading-task panel-new-task container-fluid'>";
+				emptyTask += "<div class='col-lg-1'>";
+				emptyTask += "<div class='notif-pp'>";
+				emptyTask += "<image src='<?php echo $details["photo"];?>' alt=''>";
+				emptyTask += "</div>";
+				emptyTask += "</div>";
+				emptyTask += "<div class='col-sm-11'>";
+				emptyTask += "<div class='row'>";
+				emptyTask += "<p class='task-title col-sm-10'>";
+				emptyTask += "<input class='form-control' type='text' placeholder='Titre de la tâche'>";
+				emptyTask += "</p>"
+				emptyTask += "<div class='container-fluid'>";
+				emptyTask += "<textarea class='form-control'></textarea>";
+				emptyTask += "<button class='btn btn-primary'>Valider</button>";
+				emptyTask += "</div>";
+				emptyTask += "</div>";
+				emptyTask += "</div>";
+				emptyTask += "</div>";
+				$(".tasks-container").append(emptyTask);
+				// When validating a new task, we delete the new template one and reload the correct one. Easy!
 			})
 		</script>
 	</body>
