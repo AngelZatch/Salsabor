@@ -3,12 +3,18 @@ include "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $limit = $_GET["limit"];
+$user_id = $_GET["user_id"];
 
-if($limit == 0){
-	$load = $db->query("SELECT * FROM tasks ORDER BY task_id DESC");
-} else {
-	$load = $db->query("SELECT * FROM tasks ORDER BY task_id DESC LIMIT $limit");
+// We dynamically construct the query depending on the flags
+$query = "SELECT * FROM tasks ";
+if($user_id != 0){
+	$query .= "WHERE task_token LIKE '%USR%' AND task_target = '$user_id' ";
 }
+$query .= "ORDER BY task_id DESC";
+if($limit != 0){
+	$query .= " LIMIT $limit";
+}
+$load = $db->query($query);
 
 $task_list = array();
 

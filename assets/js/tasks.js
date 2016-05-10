@@ -25,10 +25,10 @@ $(document).on('focus', '.name-input', function(){
 	postComment(comment, comment_author, task_id);
 })
 
-function fetchTasks(limit){
-	$.get("functions/fetch_tasks.php", {limit : limit}).done(function(data){
+function fetchTasks(user_id, limit){
+	$.get("functions/fetch_tasks.php", {user_id : user_id, limit : limit}).done(function(data){
 		if(limit == 0 || $(".sub-modal-notification").is(":visible")){
-			displayTasks(data, limit);
+			displayTasks(data, user_id, limit);
 		}
 	});
 }
@@ -44,7 +44,7 @@ function refreshTask(task){
 	$("#comments-count-"+task.id).html("<span class='glyphicon glyphicon-comment'></span> "+task.message_count);
 }
 
-function displayTasks(data, limit){
+function displayTasks(data, user_id, limit){
 	var tasks = JSON.parse(data);
 	for(var i = 0; i < tasks.length; i++){
 		if($("#task-"+tasks[i].id).length > 0){
@@ -143,7 +143,7 @@ function displayTasks(data, limit){
 			}
 		}
 	}
-	setTimeout(fetchTasks, 10000, limit);
+	setTimeout(fetchTasks, 10000, user_id, limit);
 }
 
 function displayComments(task_id, data){

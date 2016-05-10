@@ -24,7 +24,7 @@ $db = PDOFactory::getConnection();
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');
-				fetchTasks(0);
+				fetchTasks(0, 0);
 			})
 		</script>
 	</body>

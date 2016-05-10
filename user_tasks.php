@@ -48,7 +48,7 @@ $details = $db->query("SELECT *, COUNT(task_title) AS count FROM users u
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');
-				fetchTasks(0);
+				fetchTasks(<?php echo $data;?>, 0);
 			})
 		</script>
 	</body>
