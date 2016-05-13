@@ -56,8 +56,8 @@ $details = $db->query("SELECT *, COUNT(task_title) AS count FROM users u
 				moment.locale('fr');
 				fetchTasks(<?php echo $data;?>, 0);
 			}).on('click', '.panel-add-record', function(){
-				var emptyTask = "<div class='panel task-line task-new'>";
-				emptyTask += "<div class='panel-heading panel-heading-task panel-new-task container-fluid'>";
+				var emptyTask = "<div class='panel task-line task-new panel-new-task'>";
+				emptyTask += "<div class='panel-heading container-fluid'>";
 				emptyTask += "<div class='col-lg-1'>";
 				emptyTask += "<div class='notif-pp'>";
 				emptyTask += "<image src='<?php echo $details["photo"];?>' alt=''>";
@@ -66,11 +66,12 @@ $details = $db->query("SELECT *, COUNT(task_title) AS count FROM users u
 				emptyTask += "<div class='col-sm-11'>";
 				emptyTask += "<div class='row'>";
 				emptyTask += "<p class='task-title col-sm-10'>";
-				emptyTask += "<input class='form-control' type='text' placeholder='Titre de la tâche'>";
+				emptyTask += "<input class='form-control task-title-input' type='text' placeholder='Titre de la tâche'>";
 				emptyTask += "</p>"
 				emptyTask += "<div class='container-fluid'>";
-				emptyTask += "<textarea class='form-control'></textarea>";
-				emptyTask += "<button class='btn btn-primary'>Valider</button>";
+				emptyTask += "<input class='form-control' id='task-target-input' type='text' placeholder='Cible de la tâche (Tapez un nom de produit, une transaction... Laissez vide pour une tâche générale)' data-user='<?php echo $data;?>'>";
+				emptyTask += "<textarea class='form-control task-description-input'></textarea>";
+				emptyTask += "<button class='btn btn-primary post-task' id='post-task-button'>Valider</button>";
 				emptyTask += "</div>";
 				emptyTask += "</div>";
 				emptyTask += "</div>";

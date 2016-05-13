@@ -23,6 +23,65 @@ $(document).on('focus', '.name-input', function(){
 	var comment = $("#comment-form-"+task_id+">textarea").val();
 	var comment_author = $("#name-input-"+task_id).val();
 	postComment(comment, comment_author, task_id);
+}).on('focus', '#task-target-input', function(e){
+	e.stopPropagation();
+	var id = $(this).data().user;
+	$.get("functions/fetch_targets.php", {user_id : id}).done(function(data){
+		console.log(data);
+		var targetList = JSON.parse(data);
+		var autocompleteList = [];
+		for(var i = 0; i < targetList.length; i++){
+			autocompleteList.push(targetList[i].name);
+		}
+		$("#task-target-input").textcomplete([{
+			match: /(^|\b)(\w{2,})$/,
+			search: function(term, callback){
+				callback($.map(autocompleteList, function(item){
+					return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
+				}));
+			},
+			replace: function(item){
+				return item;
+			}
+		}]);
+	})
+}).on('click', '.post-task', function(){
+	var task_title = $(".task-title-input").val();
+	var task_description = $(".task-description-input").val();
+	var task_token = $("#task-target-input").val();
+	if(task_token == ""){
+		task_token = "[USR-"+$("#task-target-input").data().user+"]";
+	}
+	postTask(task_title, task_description, task_token);
+}).on('click', '.toggle-task', function(e){
+	e.stopPropagation();
+	var table_name = "tasks";
+	var flag = "task_state";
+	var target_id = document.getElementById($(this).attr("id")).dataset.target;
+
+	if($("#task-"+target_id).hasClass("task-new")){
+		var value = "1";
+	} else {
+		var value = "0";
+	}
+
+	$.when(updateFlag(table_name, flag, value, target_id)).done(function(){
+		$("#task-"+target_id).removeClass("task-new");
+		$("#task-"+target_id).removeClass("task-old");
+		$("#toggle-task-"+target_id).removeClass("glyphicon-ok-circle");
+		$("#toggle-task-"+target_id).removeClass("glyphicon-ok-sign");
+		if(value == 1){
+			$("#task-"+target_id).addClass("task-old");
+			$("#toggle-task-"+target_id).addClass("glyphicon-ok-circle");
+			$("#toggle-task-"+target_id).attr("title", "Marquer comme non traitée");
+		} else {
+			$("#task-"+target_id).addClass("task-new");
+			$("#toggle-task-"+target_id).addClass("glyphicon-ok-sign");
+			$("#toggle-task-"+target_id).attr("title", "Marquer comme traitée");
+		}
+	})
+}).on('click', '.link-glyphicon', function(e){
+	e.stopPropagation();
 })
 
 function fetchTasks(user_id, limit){
@@ -47,7 +106,7 @@ function refreshTask(task){
 	$("#task-description-"+task.id).html("<span class='glyphicon glyphicon-align-left'></span> "+task.description);
 
 	// Deadline
-	if(tasks[i].deadline != null){
+	if(task.deadline != null){
 		var deadline_class = displayDeadline(moment(task.deadline));
 		$("#deadline-"+task.id).removeClass("deadline-near");
 		$("#deadline-"+task.id).removeClass("deadline-expired");
@@ -97,12 +156,16 @@ function displayTasks(data, user_id, limit){
 
 			notifMessage += "<p class='task-title col-sm-10' id='task-title-"+tasks[i].id+"'>";
 
+			notifMessage += tasks[i].title;
+
 			// Token handling
 			switch(tasks[i].type){
 				case "USR":
-					notifMessage += tasks[i].title;
-					link += "user/"+tasks[i].user_id;
 					linkTitle += "Aller à l&apos;utilisateur";
+					break;
+
+				case "PRD":
+					linkTitle += "Aller au produit";
 					break;
 
 				default:
@@ -111,11 +174,11 @@ function displayTasks(data, user_id, limit){
 
 			notifMessage += "</p>";
 
-			notifMessage += "<a href='"+link+"' class='link-glyphicon' target='_blank'><span class='glyphicon glyphicon-share-alt col-sm-1 glyphicon-button-alt glyphicon-button-big' title='"+linkTitle+"'></span></a>";
+			notifMessage += "<a href='"+tasks[i].link+"' class='link-glyphicon' target='_blank'><span class='glyphicon glyphicon-share-alt col-sm-1 glyphicon-button-alt glyphicon-button-big' title='"+linkTitle+"'></span></a>";
 			if(tasks[i].status == 1){
-				notifMessage += "<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-read' title='Marquer comme non traitée'></span>";
+				notifMessage += "<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+tasks[i].id+"' data-target='"+tasks[i].id+"' title='Marquer comme non traitée'></span>";
 			} else {
-				notifMessage += "<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-read' title='Marquer comme traitée'></span>";
+				notifMessage += "<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+tasks[i].id+"' data-target='"+tasks[i].id+"' title='Marquer comme traitée'></span>";
 			}
 			notifMessage += "</div>";
 
@@ -194,4 +257,15 @@ function postComment(comment, author, task_id){
 		$("#name-input-"+task_id).val('');
 		fetchComments(task_id);
 	})
+}
+
+function postTask(title, description, token){
+	$.post("functions/post_task.php", {task_title : title, task_description : description, task_token : token}).done(function(message){
+		console.log(message);
+		$(".panel-new-task").remove();
+	})
+}
+
+function updateFlag(table, flag, value, target){
+	return $.post("functions/update_flag.php", {table : table, flag : flag, value : value, target_id : target});
 }

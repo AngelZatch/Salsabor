@@ -22,30 +22,18 @@ $db = PDOFactory::getConnection();
 					$loading = $loading[1] + $loading[0];
 					$start = $loading;
 					/** CODE **/
-					$title = "l'adresse mail (!MAIL!) de !USER! est incorrecte";
-					$pattern = "/(![a-z0-9]+!)/i";
-					preg_match_all($pattern, $title, $matches, PREG_SET_ORDER);
+					$title = "Transaction KLS57VKGIM [TRA-KLS57VKGIM]";
+					$pattern = "/\\[([a-z0-9\\-]+)\\]/i";
+					preg_match($pattern, $title, $matches);
 					?>
 					<pre>
 						<?php print_r($matches);?>
 					</pre>
 
 					<?php
-					//echo $title;
-					foreach($matches as $val){
-						switch($val[0]){
-							case "!MAIL!":
-								$mail = "angelzatch@gmail.com";
-								$title = preg_replace("/!MAIL!/", $mail, $title);
-								break;
-
-							case "!USER!":
-								$user = "Andréas Pinbouen";
-								$title = preg_replace("/!USER!/", $user, $title);
-								break;
-						}
-					}
 					echo $title;
+					echo $token = substr($matches[1], 0, 3);
+					echo $target = substr($matches[1], 4);
 					/** /CODE **/
 					$loading = microtime();
 					$loading = explode(' ', $loading);

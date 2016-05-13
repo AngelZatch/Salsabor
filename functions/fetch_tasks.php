@@ -6,11 +6,13 @@ $limit = $_GET["limit"];
 $user_id = $_GET["user_id"];
 
 // We dynamically construct the query depending on the flags
-$query = "SELECT * FROM tasks ";
+$query = "SELECT * FROM tasks";
 if($user_id != 0){
-	$query .= "WHERE task_token LIKE '%USR%' AND task_target = '$user_id' ";
+	$query .= " WHERE (task_token LIKE '%USR%' AND task_target = '$user_id')
+					OR (task_token LIKE '%PRD%' AND task_target = (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$user_id'))
+					OR (task_token LIKE '%TRA%' AND task_target = (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$user_id'))";
 }
-$query .= "ORDER BY task_id DESC";
+$query .= " ORDER BY task_id DESC";
 if($limit != 0){
 	$query .= " LIMIT $limit";
 }
@@ -25,15 +27,30 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$t["target"] = $details["task_target"];
 	// Additional details depending of the token
 	$t["type"] = substr($t["token"], 0, 3);
-	$t["subtype"] = substr($t["token"], 4);
 	switch($t["type"]){
 		case "USR": // Here, we only need the user name for the mail address.
 			$sub_query = $db->query("SELECT CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id = '$t[target]'")->fetch(PDO::FETCH_ASSOC);
-			$t["user"] = $sub_query["user"];
 			$t["user_id"] = $t["target"];
-			$t["photo"] = $sub_query["photo"];
+			$t["link"] = "user/".$t["user_id"];
+			break;
+
+		case "PRD":
+			$sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id = (SELECT id_user_foreign FROM produits_adherents WHERE id_produit_adherent ='$t[target]')")->fetch(PDO::FETCH_ASSOC);
+			$t["user_id"] = $sub_query["user_id"];
+			$t["link"] = "user/".$t["user_id"]."/abonnements";
+			break;
+
+		case "TRA":
+			$sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id = (SELECT payeur_transaction FROM transactions WHERE id_transaction = '$t[target]')")->fetch(PDO::FETCH_ASSOC);
+			$t["user_id"] = $sub_query["user_id"];
+			$t["link"] = "user/".$t["user_id"]."/achats#purchase-".$t["target"];
+			break;
+
+		default:
 			break;
 	}
+	$t["user"] = $sub_query["user"];
+	$t["photo"] = $sub_query["photo"];
 	$t["date"] = $details["task_creation_date"];
 	$t["deadline"] = $details["task_deadline"];
 	$t["title"] = $details["task_title"];
@@ -51,8 +68,18 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 				break;
 
 			case "!USER!":
-				$user = "Andréas Pinbouen";
 				$t["title"] = preg_replace("/!USER!/", "<strong>".$t["user"]."</strong>", $t["title"]);
+				break;
+
+			case "!PRD!":
+				$t["title"] = preg_replace("/!PRD!/", "<strong>".$t["target"]."</strong>", $t["title"]);
+				break;
+
+			case "!TRA!":
+				$t["title"] = preg_replace("/!TRA!/", "<strong>".$t["target"]."</strong>", $t["title"]);
+				break;
+
+			default:
 				break;
 		}
 	}
