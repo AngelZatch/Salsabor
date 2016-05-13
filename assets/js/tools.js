@@ -26,6 +26,7 @@ $(document).ready(function(){
 	setInterval(notifCoursParticipants, 30000);
 	setInterval(notifEcheancesDues, 30000);
 	badgeNotifications();
+	badgeTasks();
 	$('[data-toggle="tooltip"]').tooltip();
 	moment.locale("fra");
 
@@ -245,12 +246,6 @@ $(document).ready(function(){
 	$(".submit-relay-target").click();
 }).on('click', '.sub-modal-close', function(){
 	$(".sub-modal").toggle();
-}).on('click', '.panel-heading-task', function(){
-	var id = document.getElementById($(this).attr("id")).dataset.trigger;
-	$("#body-task-"+id).collapse("toggle");
-}).on('show.bs.collapse', '.panel-task-body', function(){
-	var task_id = document.getElementById($(this).attr("id")).dataset.task;
-	fetchComments(task_id);
 })
 
 $(".has-name-completion").on('click blur keyup', function(){
@@ -289,6 +284,18 @@ function notifEcheancesDues(firstCount){
 			$("#badge-echeances").show();
 			$("#badge-echeances").html(data);
 		}
+	})
+}
+
+function badgeTasks(){
+	$.post("functions/watch_tasks.php").done(function(data){
+		if(data == 0){
+			$("#badge-tasks").hide();
+		} else {
+			$("#badge-tasks").show();
+			$("#badge-tasks").html(data);
+		}
+		setTimeout(badgeTasks, 10000);
 	})
 }
 
@@ -370,7 +377,6 @@ function tickClock(){
 	})
 }
 
-
 // Affiche en direct le nombre d'éléments dans le panier
 function notifPanier(){
 	if(sessionStorage.getItem("panier") != null){
@@ -421,6 +427,10 @@ function composeURL(token){
 	url += "&order=0";
 	$("[name='next']").attr('href', url);
 	$("[name='previous']").attr('href', url);
+}
+
+function updateFlag(table, flag, value, target){
+	return $.post("functions/update_flag.php", {table : table, flag : flag, value : value, target_id : target});
 }
 
 function toggleBoolean(button, boolean_name, value_id, value_name, old_value){

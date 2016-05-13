@@ -18,6 +18,12 @@ $(document).on('focus', '.name-input', function(){
 			}
 		}]);
 	});
+}).on('click', '.panel-heading-task', function(){
+	var id = document.getElementById($(this).attr("id")).dataset.trigger;
+	$("#body-task-"+id).collapse("toggle");
+}).on('show.bs.collapse', '.panel-task-body', function(){
+	var task_id = document.getElementById($(this).attr("id")).dataset.task;
+	fetchComments(task_id);
 }).on('click', '.btn-comment', function(){
 	var task_id = document.getElementById($(this).attr("id")).dataset.task;
 	var comment = $("#comment-form-"+task_id+">textarea").val();
@@ -53,8 +59,7 @@ $(document).on('focus', '.name-input', function(){
 		task_token = "[USR-"+$("#task-target-input").data().user+"]";
 	}
 	postTask(task_title, task_description, task_token);
-}).on('click', '.toggle-task', function(e){
-	e.stopPropagation();
+}).on('click', '.toggle-task', function(){
 	var table_name = "tasks";
 	var flag = "task_state";
 	var target_id = document.getElementById($(this).attr("id")).dataset.target;
@@ -80,7 +85,7 @@ $(document).on('focus', '.name-input', function(){
 			$("#toggle-task-"+target_id).attr("title", "Marquer comme traitée");
 		}
 	})
-}).on('click', '.link-glyphicon', function(e){
+}).on('click', '.glyphicon-button-alt', function(e){
 	e.stopPropagation();
 })
 
@@ -264,8 +269,4 @@ function postTask(title, description, token){
 		console.log(message);
 		$(".panel-new-task").remove();
 	})
-}
-
-function updateFlag(table, flag, value, target){
-	return $.post("functions/update_flag.php", {table : table, flag : flag, value : value, target_id : target});
 }

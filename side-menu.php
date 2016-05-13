@@ -5,7 +5,7 @@
 			<li><a class="main-section"><span class="glyphicon glyphicon-star"></span> Temps réel</a></li>
 			<ul class="nav nav-sub-sidebar" id="collapse-actions">
 				<li class="main-option-container"><a href="notifications" class="main-option"><span class="glyphicon glyphicon-bell"></span> Notifications <span class="badge sidebar-badge badge-notifications" id="badge-notifications"></span></a></li>
-				<li class="main-option-container"><a href="taches" class="main-option"><span class="glyphicon glyphicon-list-alt"></span> Tâches à faire</a></li>
+				<li class="main-option-container"><a href="taches" class="main-option"><span class="glyphicon glyphicon-list-alt"></span> Tâches à faire <span class="badge sidebar-badge badge-tasks" id="badge-tasks"></span></a></li>
 				<li class="main-option-container"><a href="participations" class="main-option"><span class="glyphicon glyphicon-map-marker"></span> Participations</a></li>
 			</ul>
 
