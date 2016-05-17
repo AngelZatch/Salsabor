@@ -677,40 +677,42 @@ h2.modal-body-title.first {
 
 /* line 439, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .sub-modal-body {
+  position: relative;
   padding-top: 10px;
   max-height: 350px;
-  overflow-y: scroll; }
+  overflow-y: scroll;
+  overflow: hide; }
 
-/* line 444, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 446, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .sub-modal-footer {
   padding-top: 5px; }
 
-/* line 447, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 449, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .sub-modal-product {
   display: inherit;
   cursor: pointer;
   padding: 10px;
   margin: 5px 0; }
-  /* line 452, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 454, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .sub-modal-product span.glyphicon-ok {
     float: right; }
-  /* line 454, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 456, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .sub-modal-product p {
     margin-bottom: 0; }
 
-/* line 457, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 459, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .smp-title {
   font-size: 18px;
   font-weight: 700; }
 
-/* line 461, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 463, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .sub-modal-notification {
   position: fixed;
   z-index: 1000000000000;
   overflow-x: hidden;
   border-radius: 0; }
 
-/* line 468, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 470, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .smn-body {
   overflow-y: scroll;
   height: 350px;
@@ -719,33 +721,33 @@ h2.modal-body-title.first {
   -o-box-shadow: inset 0px -4px 10px 1px #888888;
   box-shadow: inset 0px -4px 10px 1px #888888;
   filter: progid:DXImageTransform.Microsoft.Shadow(color=$system-color, Direction=90, Strength=10); }
-  /* line 476, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 478, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .smn-body .glyphicon-button {
     color: rgba(168, 1, 57, 0.4); }
-    /* line 478, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+    /* line 480, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
     .smn-body .glyphicon-button:hover {
       color: white; }
 
-/* line 481, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 483, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .notif-texts {
   width: 90%; }
 
-/* line 484, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 486, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .smn-footer {
   text-align: center;
   padding-top: 10px; }
 
 /** CATALOGUE **/
-/* line 489, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 491, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .panel-product {
   background-color: #e6e6e6; }
 
-/* line 492, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 494, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .product-description {
   min-height: 80px; }
 
 /** IRREGULARS **/
-/* line 496, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 498, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .irregulars-target-container {
   border-left: 1px;
   border-left-style: dashed;
@@ -756,43 +758,43 @@ h2.modal-body-title.first {
   left: 71.5%;
   overflow-y: scroll; }
 
-/* line 506, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 508, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .irregulars-list {
   padding: 0; }
 
-/* line 509, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 511, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .irregular-participation {
   cursor: pointer;
   display: inherit;
   padding: 10px;
   margin-top: 5px;
   margin-bottom: 5px; }
-  /* line 515, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 517, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .irregular-participation:hover {
     background-color: #e6e6e6; }
-  /* line 517, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 519, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .irregular-participation:active {
     background-color: #cccccc; }
-  /* line 519, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 521, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .irregular-participation.focused {
     font-weight: 700;
     background-color: #f2f2f2; }
-    /* line 522, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+    /* line 524, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
     .irregular-participation.focused:hover {
       background-color: #e6e6e6; }
-  /* line 524, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 526, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .irregular-participation p {
     margin-bottom: 0; }
 
 /** ACTIVE SESSIONS **/
 /** PARTICIPATIONS **/
 /** USER PAGE **/
-/* line 536, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 538, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .user-banner {
   height: 170px;
   margin-bottom: 15px; }
 
-/* line 540, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 542, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .user-pp {
   height: 170px !important;
   width: 170px !important;
@@ -802,7 +804,7 @@ h2.modal-body-title.first {
   float: left;
   margin-right: 15px; }
 
-/* line 545, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 547, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .small-user-pp {
   height: 120px !important;
   width: 120px !important;
@@ -810,11 +812,11 @@ h2.modal-body-title.first {
   overflow: hidden !important;
   padding: 0 !important;
   margin: 0 auto; }
-  /* line 548, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 550, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .small-user-pp img {
     width: inherit; }
 
-/* line 551, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 553, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .notif-pp {
   height: 65px !important;
   width: 65px !important;
@@ -822,19 +824,19 @@ h2.modal-body-title.first {
   overflow: hidden !important;
   padding: 0 !important;
   float: left; }
-  /* line 554, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 556, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .notif-pp img {
     width: inherit; }
 
-/* line 557, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 559, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .empty-pp {
   border: 2px dashed #888888; }
 
-/* line 560, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 562, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .user-summary {
   padding-left: 190px; }
 
-/* line 563, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 565, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 #profile-picture-sample {
   height: 120px !important;
   width: 120px !important;
@@ -844,7 +846,7 @@ h2.modal-body-title.first {
   border: 2px solid #444 !important;
   text-align: inherit; }
 
-/* line 570, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 572, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 #avatar-container .file-input .file-preview {
   height: 120px !important;
   width: 120px !important;
@@ -852,7 +854,7 @@ h2.modal-body-title.first {
   overflow: hidden !important;
   padding: 0 !important; }
 
-/* line 573, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 575, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .file-preview-frame {
   display: block !important;
   width: 120px !important;
@@ -860,132 +862,132 @@ h2.modal-body-title.first {
   margin: 0 !important;
   padding: 0 !important; }
 
-/* line 580, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 582, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .file-preview-image {
   width: inherit !important;
   height: auto !important; }
 
-/* line 584, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 586, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .file-default-preview > img {
   min-height: 120px;
   width: inherit; }
 
-/* line 588, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 590, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .profile-picture {
   min-height: 170px;
   width: inherit; }
 
-/* line 592, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 594, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 p.legend {
   font-size: 38px; }
 
 /** RECORDS **/
-/* line 597, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 599, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .records-product-list {
   padding: 0; }
 
 /** NOTIFICATIONS **/
-/* line 602, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 604, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .notification-line, .task-line {
   display: inherit;
   border-bottom: 1px solid #bbbbbb;
   padding: 8px;
   cursor: pointer; }
-  /* line 607, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 609, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .notification-line.notif-new, .notif-new.task-line {
     background-color: rgba(168, 1, 57, 0.1); }
-  /* line 609, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 611, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .notification-line.notif-old, .notif-old.task-line {
     background-color: white; }
-  /* line 611, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 613, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .notification-line:hover, .task-line:hover {
     background-color: rgba(168, 1, 57, 0.2); }
 
-/* line 614, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 616, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .read-all {
   cursor: pointer;
   float: right;
   padding-right: 5px; }
 
-/* line 619, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 621, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .notification-content {
   margin-bottom: 2px;
   text-decoration: none;
   color: black;
   display: block; }
 
-/* line 625, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 627, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .notif-hour, .task-hour, .message-details {
   color: #888888 !important; }
 
 /** TASKS **/
-/* line 629, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 631, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .task-line {
   margin-bottom: 10px;
   border-radius: 0;
   padding: 0; }
-  /* line 631, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 633, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .task-line:hover {
     background-color: inherit; }
-  /* line 636, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 638, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .task-line .panel-heading {
     padding: 8px; }
-  /* line 638, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 640, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .task-line .panel-body {
     cursor: default;
     background-color: #e6e6e6; }
 
-/* line 642, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 644, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .task-title {
   font-size: 16px; }
 
-/* line 645, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 647, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .task-hour, .message-details {
   margin-top: -12px;
   font-style: italic; }
 
-/* line 650, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 652, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .new-task-text {
   padding: 17px;
   font-size: 1.4em; }
-  /* line 653, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 655, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .new-task-text:hover {
     color: white; }
 
-/* line 656, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 658, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .comment-unit {
   margin-bottom: 10px; }
 
-/* line 659, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 661, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .message-author {
   font-weight: 700; }
 
-/* line 662, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 664, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .message-container {
   background-color: white;
   border-radius: 4px;
   padding: 10px;
   margin-left: 25px; }
 
-/* line 668, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 670, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .message-details {
   margin: 0;
   margin-left: 25px; }
 
-/* line 673, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 675, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .comment-span {
   padding-top: 4px; }
 
-/* line 676, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 678, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .deadline-span {
   padding: 4px 0 4px 10px; }
-  /* line 678, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 680, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .deadline-span:hover {
     text-decoration: underline; }
-  /* line 680, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 682, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .deadline-span.deadline-near {
     background-color: #F0AD4E; }
-  /* line 682, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 684, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .deadline-span.deadline-expired {
     background-color: #D9534F;
     color: white;

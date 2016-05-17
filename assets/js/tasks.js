@@ -204,7 +204,7 @@ function displayTasks(data, user_id, limit){
 			notifMessage += "</div>";
 
 			var deadline_class = displayDeadline(deadline);
-			notifMessage += "<div class='col-sm-3 deadline-span "+deadline_class+"' id='deadline-"+tasks[i].id+"'>";
+			notifMessage += "<div class='col-sm-3 deadline-span "+deadline_class+" trigger-sub' id='deadline-"+tasks[i].id+"' data-subtype='deadline' data-task='"+tasks[i].id+"'>";
 			if(tasks[i].deadline != null){
 				notifMessage += "<span class='glyphicon glyphicon-time'></span> "+deadline.format("D MMM [à] HH:mm");
 			} else {

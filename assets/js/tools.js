@@ -285,6 +285,15 @@ $(document).ready(function(){
 			$(".sub-modal-body").html(body);
 			break;
 
+		case 'deadline':
+			var task_id = target.dataset.task;
+			title = "Date limite";
+			body += "<input type='text' class='form-control datepicker'/>";
+			footer += "<button class='btn btn-success task-deadline' data-task='"+task_id+"' id='btn-set-deadline'>Définir</button>";
+			$(".sub-modal").css({top : toffset.top+25+'px', left : toffset.left+15+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
 		case 'set-participation-product':
 			title = "Changer le produit à utiliser";
 			var participation_id = target.dataset.participation;
