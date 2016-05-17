@@ -354,10 +354,10 @@ $(document).ready(function(){
 
 		case 'delete-task':
 			title = "Supprimer une tâche";
-			var task_id = target.dataset.task;
+			var task_id = target.dataset.target;
 			body += "ATTENTION : Cette opération est irréversible. Êtes-vous sûr(e) de vouloir continuer ?";
-			footer += "<button class='btn btn-danger delete-task col-lg-6' id='btn-task-delete' data-task='"+task_id+"' data-dismiss='modal'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";
-			$(".sub-modal").css({top : tpos.top+51+'px'});
+			footer += "<button class='btn btn-danger delete-task col-lg-6' id='btn-task-delete' data-task='"+task_id+"' data-dismiss='modal'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : toffset.top+20+'px', left : toffset.left-321+'px'});
 			$(".sub-modal-body").html(body);
 			break;
 
@@ -689,4 +689,9 @@ function refreshUserBanner(user_id){
 		$("#refresh-address").html("<span class='glyphicon glyphicon-home'></span> "+user_details.address);
 	})
 	setTimeout(refreshUserBanner, 10000, user_id);
+}
+
+// Deletes an entry in a table of the database
+function deleteEntry(table, entry_id){
+	return $.post("functions/delete_entry.php", {table : table, entry_id : entry_id});
 }

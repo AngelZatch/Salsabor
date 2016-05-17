@@ -59,6 +59,14 @@ $(document).on('focus', '.name-input', function(){
 		task_token = "[USR-"+$("#task-target-input").data().user+"]";
 	}
 	postTask(task_title, task_description, task_token);
+}).on('click', '.delete-task', function(){
+	var task_id = document.getElementById($(this).attr("id")).dataset.task;
+	var table = "tasks";
+	$(".sub-modal").hide(0);
+	console.log(task_id, table);
+	$.when(deleteEntry(table, task_id)).done(function(){
+		$("#task-"+task_id).remove();
+	})
 }).on('click', '.toggle-task', function(){
 	var table_name = "tasks";
 	var flag = "task_state";
@@ -185,7 +193,7 @@ function displayTasks(data, user_id, limit){
 			} else {
 				notifMessage += "<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+tasks[i].id+"' data-target='"+tasks[i].id+"' title='Marquer comme traitée'></span>";
 			}
-			notifMessage += "<span class='glyphicon glyphicon-trash col-sm-1 glyphicon-button-alt glyphicon-button-big trigger-sub' id='delete-task-"+tasks[i].id+"' data-subtype='delete-task' data-target='"+tasks[i].id+"' title='Supprimer la tache'></span>";
+			notifMessage += "<p class='col-sm-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button-alt glyphicon-button-big trigger-sub' id='delete-task-"+tasks[i].id+"' data-subtype='delete-task' data-target='"+tasks[i].id+"' title='Supprimer la tache'></span></p>";
 			notifMessage += "</div>";
 
 			notifMessage += "<div class='container-fluid'>";

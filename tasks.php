@@ -7,6 +7,8 @@ $db = PDOFactory::getConnection();
 		<meta charset="UTF-8">
 		<title>Notifications | Salsabor</title>
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/tasks.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -19,8 +21,7 @@ $db = PDOFactory::getConnection();
 				</div>
 			</div>
 		</div>
-		<?php include "scripts.php";?>
-		<script src="assets/js/tasks.js"></script>
+		<?php include "inserts/sub_modal_product.php";?>
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');
