@@ -30,6 +30,14 @@ $(document).ready(function(){
 	$('[data-toggle="tooltip"]').tooltip();
 	moment.locale("fra");
 
+	// If we're on one of the user pages, then we have to fetch and refresh details of the user banner.
+	var re = /user/i;
+	if(re.exec(top.location.pathname) != null){
+		re = /([0-9]+)/;
+		var user_id = re.exec(top.location.pathname);
+		refreshUserBanner(user_id[0]);
+	}
+
 	// Démarre l'horloge
 	tickClock();
 	setInterval(tickClock, 1000);
@@ -246,6 +254,173 @@ $(document).ready(function(){
 	$(".submit-relay-target").click();
 }).on('click', '.sub-modal-close', function(){
 	$(".sub-modal").toggle();
+}).on('click', '.trigger-sub', function(e){
+	e.stopPropagation();
+	$(".sub-modal").hide(0);
+	$(".sub-modal-body").empty();
+	var target = document.getElementById($(this).attr("id"));
+	var tpos = $(this).position(), type = target.dataset.subtype, toffset = $(this).offset();
+	/*console.log(product_id, type);*/
+
+	var title, body = "", footer = "";
+	switch(type){
+		case 'AREP':
+			var product_id = target.dataset.argument;
+			title = "Prolonger";
+			body += "<input type='text' class='form-control datepicker'/>";
+			footer += "<button class='btn btn-success extend-product' data-argument='"+product_id+"' id='btn-sm-extend'>Prolonger</button>";
+			if(moment(target.dataset.arep).isValid()){
+				footer += "<button class='btn btn-danger remove-extension' data-argument='"+product_id+"' id='btn-sm-unextend'>Annuler AREP</button>";
+			}
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
+		case 'activate':
+			var product_id = target.dataset.argument;
+			title = "Activer";
+			body += "<input type='text' class='form-control datepicker'/>";
+			footer += "<button class='btn btn-success activate-product' data-argument='"+product_id+"' id='btn-sm-activate'>Activer</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
+		case 'set-participation-product':
+			title = "Changer le produit à utiliser";
+			var participation_id = target.dataset.participation;
+			console.log(participation_id);
+			$.when(fetchEligibleProducts(participation_id)).done(function(data){
+				var construct = displayEligibleProducts(data);
+				$(".sub-modal-body").html(construct);
+			})
+			footer += "<button class='btn btn-success set-participation-product' id='btn-set-participation-product' data-participation='"+participation_id+"'>Reporter</button>";
+			footer += " <button class='btn btn-default btn-modal set-participation-product' id='btn-product-null-record' data-participation='"+participation_id+"'><span class='glyphicon glyphicon-link'></span> Retirer</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			break;
+
+		case 'change-participation':
+			title = "Changer le cours associé";
+			var participation_id = target.dataset.argument;
+			$.when(fetchEligibleSessions(participation_id)).done(function(data){
+				console.log(data);
+				var construct = displayTargetSessions(data);
+				$(".sub-modal-body").html(construct);
+			})
+			footer += "<button class='btn btn-success report-participation' id='btn-session-changer-record' data-participation='"+participation_id+"'>Changer</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			break;
+
+		case 'delete':
+			title = "Supprimer une participation";
+			var participation_id = target.dataset.argument;
+			body += "Êtes-vous sûr de vouloir supprimer cette participation ?";
+			$(".sub-modal-body").html(body);
+			footer += "<button class='btn btn-danger delete-participation col-lg-6' id='btn-product-delete' data-session='"+participation_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : tpos.top-45+'px'});
+			break;
+
+		case 'delete-record':
+			title = "Supprimer un passage";
+			var participation_id = target.dataset.argument;
+			body += "Êtes-vous sûr de vouloir supprimer ce passage ?";
+			$(".sub-modal-body").html(body);
+			footer += "<button class='btn btn-danger delete-record col-lg-6' id='btn-record-delete' data-participation='"+participation_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			break;
+
+		case 'delete-product':
+			title = "Supprimer un produit";
+			var product_id = target.dataset.product;
+			body += "ATTENTION : Si ce produit est seul dans une transaction, la transaction sera supprimée avec ce produit. Une fois validée, cette opération destructrice est irréversible. Êtes-vous sûr de vouloir supprimer ce produit ?";
+			footer += "<button class='btn btn-danger delete-product col-lg-6' id='btn-product-delete' data-product='"+product_id+"' data-dismiss='modal'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
+		case 'delete-task':
+			title = "Supprimer une tâche";
+			var task_id = target.dataset.task;
+			body += "ATTENTION : Cette opération est irréversible. Êtes-vous sûr(e) de vouloir continuer ?";
+			footer += "<button class='btn btn-danger delete-task col-lg-6' id='btn-task-delete' data-task='"+task_id+"' data-dismiss='modal'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
+		case 'add-record':
+			title = "Ajouter un passage manuellement";
+			var session_id = target.dataset.session;
+			body += "<input type='text' class='form-control name-input'>";
+			$(".sub-modal-body").html(body);
+			footer += "<button class='btn btn-success add-record col-lg-6' id='btn-add-record' data-session='"+session_id+"'><span class='glyphicon glyphicon-plus'></span> Ajouter </button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			break;
+
+		case 'unlink':
+			title = "Délier une participation";
+			var participation_id = target.dataset.argument;
+			body += "Êtes vous sûr de vouloir délier cette participation ? Vous la retrouverez dans les passages non régularisés";
+			$(".sub-modal-body").html(body);
+			footer += "<button class='btn btn-default unlink-session col-lg-6' id='btn-product-unlink' data-session='"+participation_id+"'><span class='glyphicon glyphicon-link'></span> Délier</button> <button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : tpos.top-45+'px'});
+			break;
+
+		case 'reception-maturity':
+			var maturity_id = target.dataset.maturity;
+			title = "Réception de l'échéance";
+			body += "<input type='text' class='form-control datepicker'/>";
+			body += "<label class='control-label'>Méthode de paiement</label>";
+			body += "<input type='text' class='form-control reception-method'></input>";
+			footer += "<button class='btn btn-success receive-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
+		case 'bank-maturity':
+			var maturity_id = target.dataset.maturity;
+			title = "Encaissement de l'échéance";
+			body += "<input type='text' class='form-control datepicker'/>";
+			footer += "<button class='btn btn-success bank-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
+		default:
+			title = "Sub modal";
+			break;
+	}
+	$(".sub-modal-title").text(title);
+	$(".sub-modal-footer").html(footer);
+	$(".datepicker").datetimepicker({
+		format: "DD/MM/YYYY",
+		inline: true,
+		locale: "fr"
+	})
+	var re = /historique/i;
+	if(re.exec(top.location.pathname) != null){
+		console.log("Historique");
+		$(".sub-modal").css({left: 74+'%'});
+	}
+	$(".sub-modal").show(0);
 })
 
 $(".has-name-completion").on('click blur keyup', function(){
@@ -501,4 +676,17 @@ function toggleBoolean(button, boolean_name, value_id, value_name, old_value){
 			}
 		}
 	})
+}
+
+function refreshUserBanner(user_id){
+	$.get("functions/fetch_user_banner_details.php", {user_id : user_id}).done(function(data){
+		var user_details = JSON.parse(data);
+		console.log(user_details);
+		$("#refresh-mail").html("<span class='glyphicon glyphicon-envelope'></span> "+user_details.mail);
+		$("#refresh-rfid").html("<span class='glyphicon glyphicon-barcode'></span> "+user_details.user_rfid);
+		//$("#refresh-tasks").append(user_details.tasks);
+		$("#refresh-phone").html("<span class='glyphicon glyphicon-earphone'></span> "+user_details.telephone);
+		$("#refresh-address").html("<span class='glyphicon glyphicon-home'></span> "+user_details.address);
+	})
+	setTimeout(refreshUserBanner, 10000, user_id);
 }

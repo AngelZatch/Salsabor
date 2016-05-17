@@ -159,7 +159,7 @@ function displayTasks(data, user_id, limit){
 			notifMessage += "<div class='col-sm-11'>";
 			notifMessage += "<div class='row'>";
 
-			notifMessage += "<p class='task-title col-sm-10' id='task-title-"+tasks[i].id+"'>";
+			notifMessage += "<p class='task-title col-sm-9' id='task-title-"+tasks[i].id+"'>";
 
 			notifMessage += tasks[i].title;
 
@@ -185,6 +185,7 @@ function displayTasks(data, user_id, limit){
 			} else {
 				notifMessage += "<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+tasks[i].id+"' data-target='"+tasks[i].id+"' title='Marquer comme traitée'></span>";
 			}
+			notifMessage += "<span class='glyphicon glyphicon-trash col-sm-1 glyphicon-button-alt glyphicon-button-big trigger-sub' id='delete-task-"+tasks[i].id+"' data-subtype='delete-task' data-target='"+tasks[i].id+"' title='Supprimer la tache'></span>";
 			notifMessage += "</div>";
 
 			notifMessage += "<div class='container-fluid'>";

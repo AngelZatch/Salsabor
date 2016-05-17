@@ -4,11 +4,14 @@ $db = PDOFactory::getConnection();
 $data = $_GET['id'];
 
 // User details
-$details = $db->query("SELECT *, COUNT(task_title) AS count FROM users u
-						JOIN tasks t ON u.user_id = t.task_target
-						WHERE user_id='$data'
-						AND task_token LIKE '%USR%'
-						AND task_state = 0")->fetch(PDO::FETCH_ASSOC);
+$details = $db->query("SELECT * FROM users u
+						WHERE user_id='$data'")->fetch(PDO::FETCH_ASSOC);
+
+$details["count"] = $db->query("SELECT * FROM tasks
+					WHERE (task_token LIKE '%USR%' AND task_target = '$data')
+					OR (task_token LIKE '%PRD%' AND task_target = (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$data'))
+					OR (task_token LIKE '%TRA%' AND task_target = (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$data'))
+						AND task_state = 0")->rowCount();
 
 // Si l'élève est un professeur
 if($details["est_professeur"] == 1){
@@ -40,11 +43,11 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 
 // Edit des informations
 if(isset($_POST["edit"])){
-	if($_FILES["profile-picture"]["name"]){
+	if($_FILES["photo"]["name"]){
 		$target_dir = "assets/pictures/";
-		$target_file = $target_dir.basename($_FILES["profile-picture"]["name"]);
-		$picture = $target_dir.$data.".".pathinfo($_FILES["profile-picture"]["name"], PATHINFO_EXTENSION);
-		move_uploaded_file($_FILES["profile-picture"]["tmp_name"], $picture);
+		$target_file = $target_dir.basename($_FILES["photo"]["name"]);
+		$picture = $target_dir.$data.".".pathinfo($_FILES["photo"]["name"], PATHINFO_EXTENSION);
+		move_uploaded_file($_FILES["photo"]["tmp_name"], $picture);
 		try{
 			$db->beginTransaction();
 			$edit = $db->prepare('UPDATE users
@@ -53,8 +56,8 @@ if(isset($_POST["edit"])){
 									mail = :mail, telephone = :telephone, tel_secondaire = :tel_secondaire, photo = :photo,
 									est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre, commentaires = :commentaires
 													WHERE user_id = :id');
-			$edit->bindParam(':prenom', $_POST["identite_prenom"]);
-			$edit->bindParam(':nom', $_POST["identite_nom"]);
+			$edit->bindParam(':prenom', $_POST["user_prenom"]);
+			$edit->bindParam(':nom', $_POST["user_nom"]);
 			$edit->bindParam(':rfid', $_POST["rfid"]);
 			$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
 			$edit->bindParam(':rue', $_POST["rue"]);
@@ -92,8 +95,8 @@ if(isset($_POST["edit"])){
 									mail = :mail, telephone = :telephone, tel_secondaire = :tel_secondaire,
 									est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre, commentaires = :commentaires
 													WHERE user_id = :id');
-			$edit->bindParam(':prenom', $_POST["identite_prenom"]);
-			$edit->bindParam(':nom', $_POST["identite_nom"]);
+			$edit->bindParam(':prenom', $_POST["user_prenom"]);
+			$edit->bindParam(':nom', $_POST["user_nom"]);
 			$edit->bindParam(':rfid', $_POST["rfid"]);
 			$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
 			$edit->bindParam(':rue', $_POST["rue"]);
@@ -157,15 +160,15 @@ if(isset($_POST["edit"])){
 					</ul>
 					<form method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
 						<div class="form-group">
-							<label for="identite_prenom" class="col-lg-3 control-label">Prénom</label>
+							<label for="user_prenom" class="col-lg-3 control-label">Prénom</label>
 							<div class="col-sm-9">
-								<input type="text" name="identite_prenom" id="identite_prenom" class="form-control" placeholder="Prénom" value="<?php echo $details["user_prenom"];?>">
+								<input type="text" name="user_prenom" id="user_prenom" class="form-control" placeholder="Prénom" value="<?php echo $details["user_prenom"];?>">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="identite_nom" class="col-lg-3 control-label">Nom</label>
+							<label for="user_nom" class="col-lg-3 control-label">Nom</label>
 							<div class="col-sm-9">
-								<input type="text" name="identite_nom" id="identite_nom" class="form-control" placeholder="Nom de famille" value="<?php echo $details["user_nom"];?>">
+								<input type="text" name="user_nom" id="user_nom" class="form-control" placeholder="Nom de famille" value="<?php echo $details["user_nom"];?>">
 							</div>
 						</div>
 						<div class="form-group">
@@ -194,15 +197,15 @@ if(isset($_POST["edit"])){
 							<div class="col-lg-9">
 								<div id="kv-avatar-errors" class="center-block" style="width:800px;display:none;"></div>
 								<div id="avatar-container">
-									<input type="file" id="avatar" name="profile-picture" class="file-loading">
+									<input type="file" id="avatar" name="photo" class="file-loading">
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="rfid" class="col-lg-3 control-label">Code carte</label>
+							<label for="user_rfid" class="col-lg-3 control-label">Code carte</label>
 							<div class="col-lg-9">
 								<div class="input-group">
-									<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
+									<input type="text" name="user_rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
 									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
 								</div>
 							</div>

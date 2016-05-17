@@ -16,13 +16,13 @@
 } ?>
 		</div>
 		<div class="col-lg-6">
-			<p><span class="glyphicon glyphicon-envelope"></span> <?php echo $details["mail"];?></p>
-			<p><span class="glyphicon glyphicon-barcode"></span> <?php echo $details["user_rfid"];?></p>
-			<p><span class="glyphicon glyphicon-list-alt"></span> <?php if($details["count"] > 0){echo $details["count"]." tâche non résolue";} else { echo "Aucune tâche en attente";}?></p>
+			<p id="refresh-mail"></p>
+			<p id="refresh-rfid"></p>
+			<p id="refresh-tasks"><span class="glyphicon glyphicon-list-alt"></span> <?php if($details["count"] > 0){echo $details["count"]." tâche(s) non résolue(s)";} else { echo "Aucune tâche en attente";}?></p>
 		</div>
 		<div class="col-lg-6">
-			<p><span class="glyphicon glyphicon-earphone"></span> <?php echo $details["telephone"];?></p>
-			<p><span class="glyphicon glyphicon-home"></span> <?php echo $details["rue"];?> - <?php echo $details["code_postal"]." ".$details["ville"];?></p>
+			<p id="refresh-phone"></p>
+			<p id="refresh-address"></p>
 		</div>
 	</div>
 </div>

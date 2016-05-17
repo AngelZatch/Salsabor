@@ -4,11 +4,14 @@ $db = PDOFactory::getConnection();
 $data = $_GET['id'];
 
 // User details
-$details = $db->query("SELECT *, COUNT(task_title) AS count FROM users u
-						JOIN tasks t ON u.user_id = t.task_target
-						WHERE user_id='$data'
-						AND task_token LIKE '%USR%'
-						AND task_state = 0")->fetch(PDO::FETCH_ASSOC);
+$details = $db->query("SELECT * FROM users u
+						WHERE user_id='$data'")->fetch(PDO::FETCH_ASSOC);
+
+$details["count"] = $db->query("SELECT * FROM tasks
+					WHERE (task_token LIKE '%USR%' AND task_target = '$data')
+					OR (task_token LIKE '%PRD%' AND task_target = (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$data'))
+					OR (task_token LIKE '%TRA%' AND task_target = (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$data'))
+						AND task_state = 0")->rowCount();
 
 // On obtient l'historique de ses réservations
 $queryResa = $db->prepare('SELECT * FROM reservations JOIN users ON reservation_personne=users.user_id JOIN prestations ON type_prestation=prestations_id JOIN salle ON reservation_salle=salle.salle_id WHERE reservation_personne=?');
