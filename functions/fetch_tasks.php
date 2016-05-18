@@ -9,8 +9,8 @@ $user_id = $_GET["user_id"];
 $query = "SELECT * FROM tasks";
 if($user_id != 0){
 	$query .= " WHERE (task_token LIKE '%USR%' AND task_target = '$user_id')
-					OR (task_token LIKE '%PRD%' AND task_target = (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$user_id'))
-					OR (task_token LIKE '%TRA%' AND task_target = (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$user_id'))";
+					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$user_id'))
+					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$user_id'))";
 }
 $query .= " ORDER BY task_id DESC";
 if($limit != 0){
@@ -35,13 +35,13 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			break;
 
 		case "PRD":
-			$sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id = (SELECT id_user_foreign FROM produits_adherents WHERE id_produit_adherent ='$t[target]')")->fetch(PDO::FETCH_ASSOC);
+			$sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id IN (SELECT id_user_foreign FROM produits_adherents WHERE id_produit_adherent ='$t[target]')")->fetch(PDO::FETCH_ASSOC);
 			$t["user_id"] = $sub_query["user_id"];
 			$t["link"] = "user/".$t["user_id"]."/abonnements";
 			break;
 
 		case "TRA":
-			$sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id = (SELECT payeur_transaction FROM transactions WHERE id_transaction = '$t[target]')")->fetch(PDO::FETCH_ASSOC);
+			$sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id IN (SELECT payeur_transaction FROM transactions WHERE id_transaction = '$t[target]')")->fetch(PDO::FETCH_ASSOC);
 			$t["user_id"] = $sub_query["user_id"];
 			$t["link"] = "user/".$t["user_id"]."/achats#purchase-".$t["target"];
 			break;

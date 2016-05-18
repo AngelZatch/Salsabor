@@ -5,7 +5,7 @@ $db = PDOFactory::getConnection();
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Notifications | Salsabor</title>
+		<title>Tâches | Salsabor</title>
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
 		<script src="assets/js/tasks.js"></script>

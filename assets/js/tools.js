@@ -31,7 +31,7 @@ $(document).ready(function(){
 	moment.locale("fra");
 
 	// If we're on one of the user pages, then we have to fetch and refresh details of the user banner.
-	var re = /user/i;
+	var re = /user\//i;
 	if(re.exec(top.location.pathname) != null){
 		re = /([0-9]+)/;
 		var user_id = re.exec(top.location.pathname);
@@ -197,14 +197,6 @@ $(document).ready(function(){
 		}
 	});
 }).on('click', '.editable', function(){
-	var methods = [
-		"Carte bancaire",
-		"Chèque n°",
-		"Espèces",
-		"Virement compte à compte",
-		"Chèques vacances",
-		"En attente"
-	];
 	// Dès le clic, on récupère la valeur initiale du champ (peu importe le type de champ)
 	var initialValue = $(this).val();
 	if(initialValue == ""){initialValue = $(this).html();}

@@ -22,12 +22,15 @@ $db = PDOFactory::getConnection();
 					$loading = $loading[1] + $loading[0];
 					$start = $loading;
 					/** CODE **/
-					$title = "Transaction KLS57VKGIM [TRA-KLS57VKGIM]";
-					$pattern = "/\\[([a-z0-9\\-]+)\\]/i";
-					preg_match($pattern, $title, $matches);
+					$data = 10598;
+					$count = $db->query("SELECT COUNT(*) FROM tasks
+					WHERE ((task_token LIKE '%USR%' AND task_target = '$data')
+					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$data'))
+					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$data')))
+						AND task_state = 0")->fetch(PDO::FETCH_COLUMN);
 					?>
 					<pre>
-						<?php print_r($matches);?>
+						<?php echo $count;?>
 					</pre>
 
 					<?php

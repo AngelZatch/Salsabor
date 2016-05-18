@@ -9,8 +9,8 @@ $details = $db->query("SELECT * FROM users u
 
 $details["count"] = $db->query("SELECT * FROM tasks
 					WHERE ((task_token LIKE '%USR%' AND task_target = '$data')
-					OR (task_token LIKE '%PRD%' AND task_target = (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$data'))
-					OR (task_token LIKE '%TRA%' AND task_target = (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$data')))
+					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$data'))
+					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$data')))
 						AND task_state = 0")->rowCount();
 ?>
 <html>
