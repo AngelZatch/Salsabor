@@ -123,6 +123,22 @@ function displayNotifications(data, limit){
 				notifMessage += "Le cours de <strong>"+notifications[i].cours_name+"</strong> tenu par "+notifications[i].user+" et commençant à "+moment(notifications[i].cours_start).format("HH:mm")+" en "+notifications[i].salle+" est désormais <strong>ouvert aux participations</strong>.";
 				notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon glyphicon-map-marker'></span> ";
 
+			case "TAS":
+				notifMessage += "data-redirect='"+notifications[i].link+"'>";
+				notifMessage += "<div class='notif-pp col-sm-2'><image src='"+notifications[i].photo+"'></div>";
+				notifMessage += "<div class='col-sm-10'>";
+				switch(notifications[i].subtype){
+					case "NE":
+						notifMessage += "La tâche <strong>"+notifications[i].title+"</strong> arrive bientôt à sa date limite, fixée au <strong>"+moment(notifications[i].deadline).format("ll [à] HH:mm")+"</strong>";
+						break;
+
+					case "L":
+						notifMessage += "La tâche <strong>"+notifications[i].title+"</strong> a dépassé sa date limite du <strong>"+moment(notifications[i].deadline).format("ll [à] HH:mm")+"</strong>";
+						break;
+				}
+				notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon glyphicon-list-alt'></span> ";
+				break;
+
 			default:
 				break;
 		}
