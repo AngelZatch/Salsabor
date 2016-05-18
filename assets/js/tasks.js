@@ -78,7 +78,7 @@ $(document).on('focus', '.name-input', function(){
 		var value = "0";
 	}
 
-	$.when(updateFlag(table_name, flag, value, target_id)).done(function(){
+	$.when(updateColumn(table_name, flag, value, target_id)).done(function(){
 		$("#task-"+target_id).removeClass("task-new");
 		$("#task-"+target_id).removeClass("task-old");
 		$("#toggle-task-"+target_id).removeClass("glyphicon-ok-circle");
@@ -95,6 +95,23 @@ $(document).on('focus', '.name-input', function(){
 	})
 }).on('click', '.glyphicon-button-alt', function(e){
 	e.stopPropagation();
+}).on('click', '.task-deadline', function(){
+	var deadline = moment($(".datepicker").val(), "DD/MM/YYYY HH:mm").format("YYYY-MM-DD HH:mm");
+	var task_id = document.getElementById($(this).attr("id")).dataset.task;
+	$(".sub-modal").hide(0);
+	$.when(updateColumn("tasks", "task_deadline", deadline, task_id)).done(function(){
+		// Deadline
+		if(deadline != null){
+			var deadline_class = displayDeadline(moment(deadline));
+			$("#deadline-"+task_id).removeClass("deadline-near");
+			$("#deadline-"+task_id).removeClass("deadline-expired");
+			$("#deadline-"+task_id).addClass(deadline_class);
+			console.log(deadline_class);
+			$("#deadline-"+task_id).html("<span class='glyphicon glyphicon-time'></span> "+moment(deadline).format("D MMM [à] H:mm"));
+		} else {
+			$("#deadline-"+task_id).html("<span class='glyphicon glyphicon-time'></span> Ajouter une date limite");
+		}
+	})
 })
 
 function fetchTasks(user_id, limit){

@@ -271,6 +271,18 @@ $(document).ready(function(){
 			footer += "<button class='btn btn-success extend-product' data-argument='"+product_id+"' id='btn-sm-extend'>Prolonger</button>";
 			if(moment(target.dataset.arep).isValid()){
 				footer += "<button class='btn btn-danger remove-extension' data-argument='"+product_id+"' id='btn-sm-unextend'>Annuler AREP</button>";
+				var options = {
+					format: "DD/MM/YYYY",
+					inline: true,
+					locale: "fr",
+					defaultDate: moment(target.dataset.arep)
+				};
+			} else {
+				var options = {
+					format: "DD/MM/YYYY",
+					inline: true,
+					locale: "fr"
+				};
 			}
 			$(".sub-modal").css({top : tpos.top+51+'px'});
 			$(".sub-modal-body").html(body);
@@ -283,6 +295,11 @@ $(document).ready(function(){
 			footer += "<button class='btn btn-success activate-product' data-argument='"+product_id+"' id='btn-sm-activate'>Activer</button>";
 			$(".sub-modal").css({top : tpos.top+51+'px'});
 			$(".sub-modal-body").html(body);
+			var options = {
+				format: "DD/MM/YYYY",
+				inline: true,
+				locale: "fr"
+			};
 			break;
 
 		case 'deadline':
@@ -292,6 +309,12 @@ $(document).ready(function(){
 			footer += "<button class='btn btn-success task-deadline' data-task='"+task_id+"' id='btn-set-deadline'>Définir</button>";
 			$(".sub-modal").css({top : toffset.top+25+'px', left : toffset.left+15+'px'});
 			$(".sub-modal-body").html(body);
+			var options = {
+				format: "DD/MM/YYYY HH:mm",
+				inline: true,
+				locale: "fr",
+				stepping: 15
+			};
 			break;
 
 		case 'set-participation-product':
@@ -411,6 +434,11 @@ $(document).ready(function(){
 			footer += "<button class='btn btn-success bank-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
 			$(".sub-modal").css({top : tpos.top+51+'px'});
 			$(".sub-modal-body").html(body);
+			var options = {
+				format: "DD/MM/YYYY",
+				inline: true,
+				locale: "fr"
+			};
 			break;
 
 		default:
@@ -419,11 +447,7 @@ $(document).ready(function(){
 	}
 	$(".sub-modal-title").text(title);
 	$(".sub-modal-footer").html(footer);
-	$(".datepicker").datetimepicker({
-		format: "DD/MM/YYYY",
-		inline: true,
-		locale: "fr"
-	})
+	$(".datepicker").datetimepicker(options);
 	var re = /historique/i;
 	if(re.exec(top.location.pathname) != null){
 		console.log("Historique");
@@ -613,8 +637,8 @@ function composeURL(token){
 	$("[name='previous']").attr('href', url);
 }
 
-function updateFlag(table, flag, value, target){
-	return $.post("functions/update_flag.php", {table : table, flag : flag, value : value, target_id : target});
+function updateColumn(table, column, value, target){
+	return $.post("functions/update_column.php", {table : table, column : column, value : value, target_id : target});
 }
 
 function toggleBoolean(button, boolean_name, value_id, value_name, old_value){
