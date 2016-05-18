@@ -84,9 +84,31 @@ $(document).ready(function(){
 		}
 	});
 }).on('click', '.close-session', function(e){
+	/** Close a session will make it disappear from the records page by changing its state to 0.
+(0 : closed, 1 : opened and available for automatic records, 2 : opened but closed to automatic records)**/
 	e.stopPropagation();
+	var table = "cours";
+	var column = "ouvert";
+	var value = 0;
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
-	closeSession(session_id);
+	$.when(updateColumn(table, column, value, session_id)).done(function(){
+		$("#session-"+session_id).remove();
+		// We remove the recently closed session from the list to be refreshed.
+		switch(window.openedSessions.length){
+			case 0:
+				break;
+
+			case 1: // jQuery.grep() cannot empty an array
+				window.openedSessions.length = 0;
+				break;
+
+			default:
+				window.openedSessions = jQuery.grep(window.openedSessions, function(arr){
+					return arr !== parseInt(session_id);
+				})
+		}
+	})
+	//closeSession(session_id);
 })
 
 function fetchActiveSessions(fetched){
@@ -724,27 +746,5 @@ function addParticipation(target_session_id, user_name){
 	$.post("functions/add_participation.php", {name : user_name, session_id : target_session_id}).done(function(){
 		console.log("Record added");
 		displayParticipations(target_session_id);
-	})
-}
-
-/** Close a session will make it disappear from the records page by changing its state to 0.
-(0 : closed, 1 : opened and available for automatic records, 2 : opened but closed to automatic records)**/
-function closeSession(session_id){
-	$.post("functions/close_session.php", {session_id : session_id}).done(function(){
-		$("#session-"+session_id).remove();
-		// We remove the recently closed session from the list to be refreshed.
-		switch(window.openedSessions.length){
-			case 0:
-				break;
-
-			case 1: // jQuery.grep() cannot empty an array
-				window.openedSessions.length = 0;
-				break;
-
-			default:
-				window.openedSessions = jQuery.grep(window.openedSessions, function(arr){
-					return arr !== parseInt(session_id);
-				})
-		}
 	})
 }

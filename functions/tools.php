@@ -145,4 +145,23 @@ function postNotification($db, $token, $target, $date){
 	$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
 								VALUES('$token', '$target', '$date', '1')");
 }
+
+function updateColumn($db, $table, $column, $value, $target_id){
+	$now = date("Y-m-d H:i:s");
+	try{
+		$primary_key = $db->query("SHOW INDEX FROM $table WHERE Key_name = 'PRIMARY'")->fetch(PDO::FETCH_ASSOC);
+
+		$query = "UPDATE $table SET $column = '$value'";
+
+		if($table == "tasks"){
+			$query .= ", task_last_update = '$now'";
+		}
+
+		$query .= " WHERE $primary_key[Column_name] = '$target_id'";
+
+		$update = $db->query($query);
+	} catch(PDOException $e){
+		echo $e->getMessage();
+	}
+}
 ?>

@@ -62,14 +62,14 @@ $(document).ready(function(){
 			buttons += "<h2 class='modal-body-title'>Verrous</h2>";
 			// Button to toggle automatic computing of this product.
 			if(product_details.lock_status == 1){
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_status' data-product='"+product_details.id+"' data-boolean='"+product_details.lock_status+"' title='Verrouillé : le système n&apos;a désormais pas l&apos;autorisation de changer l&apos;état (en attente, valide, expiré) du produit. Vous pouvez cependant toujours le modifier.'><span class='glyphicon glyphicon-lock'></span> Etat</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_status' data-product='"+product_details.id+"' title='Verrouillé : le système n&apos;a désormais pas l&apos;autorisation de changer l&apos;état (en attente, valide, expiré) du produit. Vous pouvez cependant toujours le modifier.'><span class='glyphicon glyphicon-lock'></span> Etat</button>";
 			} else {
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_status' data-product='"+product_details.id+"' data-boolean='"+product_details.lock_status+"' title='Libre : le système modifiera l&apos;état du produit de façon appropriée en fonction des dates de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Etat</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_status' data-product='"+product_details.id+"' title='Libre : le système modifiera l&apos;état du produit de façon appropriée en fonction des dates de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Etat</button>";
 			}
 			if(product_details.lock_dates == 1){
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_dates' data-product='"+product_details.id+"' data-boolean='"+product_details.lock_dates+"' title='Verrouilé : le système n&apos;a désormais pas l&apos;autorisation de changer les dates de validité, d&apos;activation ni d&apos;expiration du produit. Vous pouvez néanmoins fixer toutes ces dates.'><span class='glyphicon glyphicon-lock'></span> Dates</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_dates' data-product='"+product_details.id+"' title='Verrouilé : le système n&apos;a désormais pas l&apos;autorisation de changer les dates de validité, d&apos;activation ni d&apos;expiration du produit. Vous pouvez néanmoins fixer toutes ces dates.'><span class='glyphicon glyphicon-lock'></span> Dates</button>";
 			} else {
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_dates' data-product='"+product_details.id+"' data-boolean='"+product_details.lock_dates+"' title='Libre : le système modifiera les dates en fonction du premier cours enregistré, de la validité du produit et d&apos;une potentielle extension de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Dates</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_dates' data-product='"+product_details.id+"' title='Libre : le système modifiera les dates en fonction du premier cours enregistré, de la validité du produit et d&apos;une potentielle extension de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Dates</button>";
 			}
 			modal.find(".product-validity").empty();
 			modal.find(".product-validity").html(product_validity);
@@ -116,9 +116,9 @@ $(document).ready(function(){
 			buttons += "<button class='btn btn-danger btn-block btn-modal triger-sub' id='btn-delete-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='delete-maturity'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";*/
 			buttons += "<h2 class='modal-body-title'>Verrous</h2>";
 			if(maturity_details.lock_montant == 1){
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_montant' data-maturity='"+maturity_details.id+"' data-boolean='"+maturity_details.lock_montant+"' title='Verrouillé : le montant de l&apos;échéance ne variera pas, peu importe les autres échéances de la transaction.'><span class='glyphicon glyphicon-lock'></span> Montant</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_montant' data-maturity='"+maturity_details.id+"' title='Verrouillé : le montant de l&apos;échéance ne variera pas, peu importe les autres échéances de la transaction.'><span class='glyphicon glyphicon-lock'></span> Montant</button>";
 			} else {
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_montant' data-maturity='"+maturity_details.id+"' data-boolean='"+maturity_details.lock_montant+"' title='Non verrouillé : le montant de l&apos;échéance sera affecté par des changements dans d&apos;autres échéances'><span class='glyphicon glyphicon-floppy-remove'></span> Montant</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_montant' data-maturity='"+maturity_details.id+"' title='Non verrouillé : le montant de l&apos;échéance sera affecté par des changements dans d&apos;autres échéances'><span class='glyphicon glyphicon-floppy-remove'></span> Montant</button>";
 			}
 			modal.find(".modal-actions").html(buttons);
 		})
@@ -130,12 +130,21 @@ $(document).ready(function(){
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
 	activateProductWithDate(product_id, date);
 }).on('click', '.extend-product', function(){
+	$(".sub-modal").hide();
 	var date = moment($(".datepicker").val(),"DD/MM/YYYY").format("YYYY-MM-DD 23:59:59");
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
-	extendProduct(product_id, date);
+	$.when(updateColumn("produits_adherents", "date_prolongee", date, product_id)).done(function(){
+		$("#btn-arep").attr("data-arep", date);
+		computeRemainingHours(product_id, true);
+	})
 }).on('click', '.remove-extension', function(){
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
-	extendProduct(product_id, null);
+	var table = "produits_adherents";
+	var column = "date_prolongee";
+	$.when(updateColumn(table, column, null, product_id)).done(function(){
+		$("#btn-arep").attr("data-arep", "null");
+		computeRemainingHours(product_id, true);
+	})
 }).on('click', '.product-participation', function(){
 	var session = $(this);
 	var participation_id = document.getElementById($(this).attr("id")).dataset.argument;
@@ -169,12 +178,70 @@ $(document).ready(function(){
 	var boolean_name = $(this).attr("id");
 	var product_id = document.getElementById($(this).attr("id")).dataset.product;
 	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
-	var old_value = document.getElementById($(this).attr("id")).dataset.boolean;
-	if(product_id != null){
-		toggleBoolean(button, boolean_name, product_id, "product_id", old_value);
+
+	if($(this).hasClass("status-disabled")){
+		var value = 1;
+		switch(button.attr("id")){
+			case "lock_montant":
+				var title = "Verrouillé : le montant de l'échéance ne variera pas, peu importe les autres échéances de la transaction.";
+				break;
+
+			case "lock_status":
+				var title = "Verrouillé : le système n'a désormais pas l'autorisation de changer l'état (en attente, valide, expiré) du produit. Vous pouvez cependant toujours le modifier.";
+				break;
+
+			case "lock_dates":
+				var title = "Verrouilé : le système n'a désormais pas l'autorisation de changer les dates de validité, d'activation ni d'expiration du produit. Vous pouvez néanmoins fixer toutes ces dates.";
+				break;
+
+			default:
+				break;
+		}
 	} else {
-		toggleBoolean(button, boolean_name, maturity_id, "maturity_id", old_value);
+		var value = 0;
+		switch(button.attr("id")){
+			case "lock_montant":
+				var title = "Non verrouillé : le montant de l'échéance sera affecté par des changements dans d'autres échéances";
+				break;
+
+			case "lock_status":
+				var title = "Libre : le système modifiera l'état du produit de façon appropriée en fonction des dates de validité.";
+				break;
+
+			case "lock_dates":
+				var title = "Libre : le système modifiera les dates en fonction du premier cours enregistré, de la validité du produit et d'une potentielle extension de validité.";
+				break;
+
+			default:
+				break;
+		}
 	}
+	if(product_id != null){
+		updateColumn("produits_adherents", boolean_name, value, product_id);
+		computeRemainingHours(product_id, true);
+	} else {
+		updateColumn("produits_echeances", boolean_name, value, product_id);
+	}
+	button.removeClass("status-disabled");
+	button.removeClass("status-enabled");
+	if(value == 1){
+		button.addClass("status-enabled");
+		button.children("span").removeClass("glyphicon-floppy-remove");
+		button.children("span").addClass("glyphicon-lock");
+		if(button.attr("id") == "lock_status"){
+					$("#manual-expire").removeClass("disabled");
+					$("#manual-expire").addClass("enabled");
+				}
+	} else {
+		button.addClass("status-disabled");
+		button.children("span").removeClass("glyphicon-lock");
+		button.children("span").addClass("glyphicon-floppy-remove");
+		if(button.attr("id") == "lock_status"){
+			$("#manual-expire").removeClass("enabled");
+			$("#manual-expire").addClass("disabled");
+		}
+	}
+	button.attr("title", title);
 }).on('click', '.delete-product', function(){
 	var product_id = document.getElementById($(this).attr("id")).dataset.product;
 	deleteProduct(product_id);
@@ -357,18 +424,6 @@ function deleteProduct(product_id){
 		if(data != null){
 			$("#purchase-"+data).remove();
 		}
-		$(".sub-modal").hide();
-	})
-}
-
-function extendProduct(product_id, end_date){
-	$.post("functions/extend_product.php", {product_id : product_id, end_date : end_date}).done(function(){
-		if(end_date == null){
-			$("#btn-arep").attr("data-arep", "null");
-		} else {
-			$("#btn-arep").attr("data-arep", end_date);
-		}
-		computeRemainingHours(product_id, true);
 		$(".sub-modal").hide();
 	})
 }

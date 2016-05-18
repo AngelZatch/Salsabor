@@ -19,10 +19,7 @@ if(isset($_POST["product_id"])){
 
 function computeProduct($product_id){
 	$db = PDOFactory::getConnection();
-	$product_details = $db->query("SELECT volume_horaire, est_illimite, est_abonnement, pa.date_activation AS produit_adherent_activation, validite_initiale, pa.actif AS produit_adherent_actif, date_achat, date_expiration, date_prolongee, date_fin_utilisation, lock_status, lock_dates,
-						IF(date_prolongee IS NOT NULL, date_prolongee,
-							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
-							) AS produit_validity FROM produits_adherents pa
+	$product_details = $db->query("SELECT volume_horaire, est_illimite, est_abonnement, pa.date_activation AS produit_adherent_activation, validite_initiale, pa.actif AS produit_adherent_actif, date_achat, date_expiration, date_prolongee, date_fin_utilisation, lock_status, lock_dates FROM produits_adherents pa
 						JOIN produits p
 							ON pa.id_produit_foreign = p.produit_id
 						LEFT JOIN transactions t
@@ -40,7 +37,9 @@ function computeProduct($product_id){
 	$computeEnd = false;
 	$status = $product_details["produit_adherent_actif"];
 	$date_activation = $product_details["produit_adherent_activation"];
-	$date_expiration = $product_details["produit_validity"];
+	$date_expiration = max($product_details["date_prolongee"], $product_details["date_expiration"]);
+	$produit_validity = $date_expiration;
+	$date_fin_utilisation = $product_details["date_fin_utilisation"];
 	$lock_dates = ($product_details["lock_dates"]==1)?true:false;
 	$lock_status = ($product_details["lock_status"]==1)?true:false;
 
@@ -111,7 +110,7 @@ function computeProduct($product_id){
 				if(!$lock_status){
 					$status = '2';
 				}
-				if($date_fin_utilisation < $product_details["produit_validity"]){
+				if($date_fin_utilisation < $produit_validity){
 					$deactivate = $db->query("UPDATE produits_adherents
 							SET date_activation = '$date_activation', actif='$status', date_fin_utilisation='$date_fin_utilisation', date_expiration = '$date_expiration', volume_cours = '$remaining_hours'
 							WHERE id_produit_adherent = '$product_id'");
