@@ -40,7 +40,7 @@ if($date > "06:00:00" && $date <= "10:00:00"){
 							<a class="btn btn-primary btn-lg" href="inscription"><span class="glyphicon glyphicon-user"></span> Réaliser une inscription</a>
 							<a class="btn btn-primary btn-lg" href="vente"><span class="glyphicon glyphicon-th"></span> Vendre un produit</a>
 							<a href="invitation" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-heart-empty"></span> Inviter un élève</a>
-							<a href="passages" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-map-marker"></span> Consulter les passages</a>
+							<a href="participations" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-map-marker"></span> Consulter les passages</a>
 							<a href="echeances" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-repeat"></span> Consulter les échéances</a>
 						</p>
 					</div>
