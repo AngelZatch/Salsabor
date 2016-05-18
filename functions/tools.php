@@ -140,4 +140,9 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 	}
 	echo $ligne = $today.";".$tag.";".$ip."$-".$status;
 }
+
+function postNotification($db, $token, $target, $date){
+	$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
+								VALUES('$token', '$target', '$date', '1')");
+}
 ?>

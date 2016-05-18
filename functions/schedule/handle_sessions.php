@@ -22,8 +22,8 @@ try{
 	while($session = $sessions->fetch(PDO::FETCH_ASSOC)){
 		$session_id = $session["cours_id"];
 		$open = $db->query("UPDATE cours SET ouvert = 1 WHERE cours_id='$session_id'");
-		$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
-								VALUES('SES', '$session_id', '$compare_start', '1')");
+		$token = "SES";
+		postNotification($db, $token, $session_id, $compare_start);
 	}
 
 
