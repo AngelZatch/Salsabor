@@ -133,6 +133,14 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 				}
 			}
 			break;
+
+		case "PRO": // Promotions
+			$sub_query = $db->query("SELECT * FROM produits p
+									WHERE produit_id = '$n[target]'")->fetch(PDO::FETCH_ASSOC);
+			$n["product_id"] = $sub_query["produit_id"];
+			$n["product_name"] = $sub_query["produit_nom"];
+			$n["date_activation"] = $sub_query["date_activation"];
+			$n["date_desactivation"] = $sub_query["date_desactivation"];
 	}
 	$n["date"] = $details["notification_date"];
 	$n["status"] = $details["notification_state"];

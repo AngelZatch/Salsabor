@@ -160,6 +160,22 @@ function displayNotifications(data, limit){
 				notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon glyphicon-list-alt'></span> ";
 				break;
 
+			case "PRO":
+				notifMessage += "data-redirect='forfaits/"+notifications[i].product_id+"'>";
+				notifMessage += "<div class='notif-pp col-sm-2'><image src=''></div>";
+				notifMessage += "<div class='col-sm-10'>";
+				switch(notifications[i].subtype){
+					case "S":
+						notifMessage += "La promotion du produit <strong>"+notifications[i].product_name+"</strong> commence aujourd'hui et durera jusqu'au "+moment(notifications[i].date_desactivation).format("ll");
+						break;
+
+					case "E":
+						notifMessage += "La promotion du produit <strong>"+notifications[i].product_name+"</strong> s'est achevée aujourd'hui."
+						break;
+				}
+				notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon glyphicon-euro'></span> ";
+				break;
+
 			default:
 				break;
 		}
