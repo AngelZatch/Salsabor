@@ -51,20 +51,13 @@ if(isset($_POST["edit"])){
 		try{
 			$db->beginTransaction();
 			$edit = $db->prepare('UPDATE users
-								SET user_prenom = :prenom, user_nom = :nom, user_rfid = :rfid,
-									date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville,
-									mail = :mail, telephone = :telephone, tel_secondaire = :tel_secondaire, photo = :photo,
-									est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre, commentaires = :commentaires
-													WHERE user_id = :id');
-			$edit->bindParam(':prenom', $_POST["user_prenom"]);
-			$edit->bindParam(':nom', $_POST["user_nom"]);
+								SET user_rfid = :rfid, date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville, tel_secondaire = :tel_secondaire, photo = :photo, est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre, commentaires = :commentaires
+								WHERE user_id = :id');
 			$edit->bindParam(':rfid', $_POST["rfid"]);
 			$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
 			$edit->bindParam(':rue', $_POST["rue"]);
 			$edit->bindParam(':code_postal', $_POST["code_postal"]);
 			$edit->bindParam(':ville', $_POST["ville"]);
-			$edit->bindParam(':mail', $_POST["mail"]);
-			$edit->bindParam(':telephone', $_POST["telephone"]);
 			$edit->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
 			$edit->bindParam(':photo', $picture);
 			$edit->bindParam(':est_membre', $_POST["est_membre"]);
@@ -90,20 +83,13 @@ if(isset($_POST["edit"])){
 		try{
 			$db->beginTransaction();
 			$edit = $db->prepare('UPDATE users
-								SET user_prenom = :prenom, user_nom = :nom, user_rfid = :rfid,
-									date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville,
-									mail = :mail, telephone = :telephone, tel_secondaire = :tel_secondaire,
-									est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre, commentaires = :commentaires
-													WHERE user_id = :id');
-			$edit->bindParam(':prenom', $_POST["user_prenom"]);
-			$edit->bindParam(':nom', $_POST["user_nom"]);
+								SET user_rfid = :rfid, date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville, tel_secondaire = :tel_secondaire, est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre, commentaires = :commentaires
+								WHERE user_id = :id');
 			$edit->bindParam(':rfid', $_POST["rfid"]);
 			$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
 			$edit->bindParam(':rue', $_POST["rue"]);
 			$edit->bindParam(':code_postal', $_POST["code_postal"]);
 			$edit->bindParam(':ville', $_POST["ville"]);
-			$edit->bindParam(':mail', $_POST["mail"]);
-			$edit->bindParam(':telephone', $_POST["telephone"]);
 			$edit->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
 			$edit->bindParam(':est_membre', $_POST["est_membre"]);
 			$edit->bindParam(':est_professeur', $_POST["est_professeur"]);
@@ -160,24 +146,6 @@ if(isset($_POST["edit"])){
 					</ul>
 					<form method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
 						<div class="form-group">
-							<label for="user_prenom" class="col-lg-3 control-label">Prénom</label>
-							<div class="col-sm-9">
-								<input type="text" name="user_prenom" id="user_prenom" class="form-control" placeholder="Prénom" value="<?php echo $details["user_prenom"];?>">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="user_nom" class="col-lg-3 control-label">Nom</label>
-							<div class="col-sm-9">
-								<input type="text" name="user_nom" id="user_nom" class="form-control" placeholder="Nom de famille" value="<?php echo $details["user_nom"];?>">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="mail" class="col-lg-3 control-label">Adresse mail</label>
-							<div class="col-lg-9">
-								<input type="email" name="mail" id="mail" placeholder="Adresse mail" class="form-control" value="<?php echo $details["mail"];?>">
-							</div>
-						</div>
-						<div class="form-group">
 							<label for="statuts" class="col-lg-3 control-label">Statut(s) du contact</label>
 							<div class="col-lg-9">
 								<label for="est_membre" class="control-label">Membre</label>
@@ -226,12 +194,6 @@ if(isset($_POST["edit"])){
 							<label for="ville" class="col-lg-3 control-label">Ville</label>
 							<div class="col-lg-9">
 								<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control" value="<?php echo $details["ville"];?>">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="telephone" class="col-lg-3 control-label">Téléphone principal</label>
-							<div class="col-lg-9">
-								<input type="tel" name="telephone" id="telephone" placeholder="Numéro de téléphone" class="form-control" value="<?php echo $details["telephone"];?>">
 							</div>
 						</div>
 						<div class="form-group">

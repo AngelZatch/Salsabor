@@ -22,11 +22,13 @@ $db = PDOFactory::getConnection();
 					$loading = $loading[1] + $loading[0];
 					$start = $loading;
 					/** CODE **/
-					$quote = "Obtenir son mail pour l&#039;inclure dans les NL";
-					echo htmlspecialchars_decode($quote, ENT_QUOTES | ENT_HTML5);
+					$details = $db->query("SELECT CONCAT(user_prenom, ' ', user_nom) AS user_identity, mail, user_rfid, telephone, CONCAT(rue, ' - ', code_postal, '', ville) AS address FROM users u WHERE user_id = 10599")->fetch(PDO::FETCH_ASSOC);
+					if(isset($details["telephone"]) == " "){
+						$details["telephone"] = "Ajouter un numéro...";
+					}
 					?>
 					<pre>
-						Coucou
+						<?php print_r($details); ?>
 					</pre>
 
 					<?php

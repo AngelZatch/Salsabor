@@ -2,7 +2,10 @@
 	<div class="user-pp">
 		<img src="<?php echo $details["photo"];?>" alt="<?php echo $details["user_prenom"];?>" class="profile-picture">
 	</div>
-	<p class="legend"><?php echo $details["user_prenom"]." ".$details["user_nom"];?></p>
+	<div class="col-sm-9 inline-editable legend">
+		<p class="editable inline-first" id="user_prenom" data-input="text" data-table="users" data-column="user_prenom" data-target="<?php echo $data;?>"><?php echo $details["user_prenom"];?></p>
+		<p class="editable" id="user_nom" data-input="text" data-table="users" data-column="user_nom" data-target="<?php echo $data;?>"><?php echo $details["user_nom"];?></p>
+	</div>
 	<div class="user-summary">
 		<div class="col-lg-12 user-labels">
 			<?php if($details["actif"] == 1){ ?>
@@ -16,12 +19,18 @@
 } ?>
 		</div>
 		<div class="col-lg-6">
-			<p id="refresh-mail"></p>
+			<div>
+				<span class="glyphicon glyphicon-envelope glyphicon-description"></span>
+				<p class="editable" id="refresh-mail" data-input="mail" data-table="users" data-column="mail" data-target="<?php echo $data;?>"><?php echo $details["mail"];?></p>
+			</div>
 			<p id="refresh-rfid"></p>
 			<p id="refresh-tasks"><span class="glyphicon glyphicon-list-alt"></span> <?php if($details["count"] > 0){echo $details["count"]." tâche(s) non résolue(s)";} else { echo "Aucune tâche en attente";}?></p>
 		</div>
 		<div class="col-lg-6">
-			<p id="refresh-phone"></p>
+			<div>
+				<span class="glyphicon glyphicon-earphone glyphicon-description"></span>
+				<p class="editable" id="refresh-phone" data-input="tel" data-table="users" data-column="telephone" data-target="<?php echo $data;?>"><?php echo $details["telephone"];?></p>
+			</div>
 			<p id="refresh-address"></p>
 		</div>
 	</div>

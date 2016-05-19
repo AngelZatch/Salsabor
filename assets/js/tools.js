@@ -223,6 +223,11 @@ $(document).ready(function(){
 			case "textarea":
 				$(this).replaceWith("<textarea class='form-control editing' id='"+token+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"'>"+initialValue+"</textarea>");
 				break;
+
+			default:
+				initialValue = initialValue.replace(/(['"])/g, "\\$1");
+				$(this).replaceWith("<input type='"+input_type+"' class='form-control editing' id='"+token+"' value='"+initialValue+"'>");
+				break;
 		}
 	}
 	$(".editing").focus();
@@ -643,11 +648,13 @@ function refreshUserBanner(user_id){
 	$.get("functions/fetch_user_banner_details.php", {user_id : user_id}).done(function(data){
 		var user_details = JSON.parse(data);
 		console.log(user_details);
-		$("#refresh-mail").html("<span class='glyphicon glyphicon-envelope'></span> "+user_details.mail);
-		$("#refresh-rfid").html("<span class='glyphicon glyphicon-barcode'></span> "+user_details.user_rfid);
+		$("#user_prenom:not(.editing)").text(user_details.user_prenom);
+		$("#user_nom:not(.editing)").text(user_details.user_nom);
+		$("#refresh-mail:not(.editing)").text(user_details.mail);
+		$("#refresh-rfid:not(.editing)").html("<span class='glyphicon glyphicon-barcode'></span> "+user_details.user_rfid);
 		//$("#refresh-tasks").append(user_details.tasks);
-		$("#refresh-phone").html("<span class='glyphicon glyphicon-earphone'></span> "+user_details.telephone);
-		$("#refresh-address").html("<span class='glyphicon glyphicon-home'></span> "+user_details.address);
+		$("#refresh-phone:not(.editing)").html(user_details.telephone);
+		$("#refresh-address:not(.editing)").html("<span class='glyphicon glyphicon-home'></span> "+user_details.address);
 	})
 	setTimeout(refreshUserBanner, 10000, user_id);
 }

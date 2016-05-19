@@ -83,8 +83,15 @@ a
 	z-index: 1062 !important
 
 .editable
+	cursor: pointer
 	&:hover
 		text-decoration: underline
+
+.inline-editable
+	&:nth-child(1n+0)
+		display: inline-flex
+	p:first-child
+		margin-right: .15em;
 
 /** SIDE MENU **/
 .sidebar-container
@@ -598,6 +605,9 @@ h2.modal-body-title.first
 p.legend
 	@extend legend
 	font-size: 38px
+
+div.legend:nth-child(1n+0)
+	@extend p.legend
 
 /** RECORDS **/
 .records-product-list
