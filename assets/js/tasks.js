@@ -133,7 +133,7 @@ function refreshTask(task){
 	$("#task-title-"+task.id).html(task.title);
 
 	// Description
-	$("#task-description-"+task.id).html("<span class='glyphicon glyphicon-align-left'></span> "+task.description);
+	$("#task-description-"+task.id+":not(.editing)").html(task.description);
 
 	// Deadline
 	if(task.deadline != null){
@@ -166,27 +166,27 @@ function displayTasks(data, user_id, limit){
 				}
 			}
 			// Status handling
-			var notifMessage = "", notifClass = "", link = "", linkTitle = "", deadline = moment(tasks[i].deadline);
+			var contents = "", notifClass = "", link = "", linkTitle = "", deadline = moment(tasks[i].deadline);
 			if(tasks[i].status == '0'){
 				notifClass = "task-new";
 			} else {
 				notifClass = "task-old";
 			}
-			notifMessage += "<div id='task-"+tasks[i].id+"' data-task='"+tasks[i].id+"' data-state='"+tasks[i].status+"' class='panel task-line "+notifClass+"'>";
-			notifMessage += "<div class='panel-heading panel-heading-task container-fluid' id='ph-task-"+tasks[i].id+"' data-trigger='"+tasks[i].id+"'>";
+			contents += "<div id='task-"+tasks[i].id+"' data-task='"+tasks[i].id+"' data-state='"+tasks[i].status+"' class='panel task-line "+notifClass+"'>";
+			contents += "<div class='panel-heading panel-heading-task container-fluid' id='ph-task-"+tasks[i].id+"' data-trigger='"+tasks[i].id+"'>";
 
-			notifMessage += "<div class='col-lg-1'>";
-			notifMessage += "<div class='notif-pp'>";
-			notifMessage += "<image src='"+tasks[i].photo+"'>";
-			notifMessage += "</div>";
-			notifMessage += "</div>";
+			contents += "<div class='col-lg-1'>";
+			contents += "<div class='notif-pp'>";
+			contents += "<image src='"+tasks[i].photo+"'>";
+			contents += "</div>";
+			contents += "</div>";
 
-			notifMessage += "<div class='col-sm-11'>";
-			notifMessage += "<div class='row'>";
+			contents += "<div class='col-sm-11'>";
+			contents += "<div class='row'>";
 
-			notifMessage += "<p class='task-title col-sm-9' id='task-title-"+tasks[i].id+"'>";
+			contents += "<p class='task-title col-sm-9' id='task-title-"+tasks[i].id+"'>";
 
-			notifMessage += tasks[i].title;
+			contents += tasks[i].title;
 
 			// Token handling
 			switch(tasks[i].type){
@@ -202,54 +202,54 @@ function displayTasks(data, user_id, limit){
 					break;
 			}
 
-			notifMessage += "</p>";
+			contents += "</p>";
 
-			notifMessage += "<a href='"+tasks[i].link+"' class='link-glyphicon' target='_blank'><span class='glyphicon glyphicon-share-alt col-sm-1 glyphicon-button-alt glyphicon-button-big' title='"+linkTitle+"'></span></a>";
+			contents += "<a href='"+tasks[i].link+"' class='link-glyphicon' target='_blank'><span class='glyphicon glyphicon-share-alt col-sm-1 glyphicon-button-alt glyphicon-button-big' title='"+linkTitle+"'></span></a>";
 			if(tasks[i].status == 1){
-				notifMessage += "<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+tasks[i].id+"' data-target='"+tasks[i].id+"' title='Marquer comme non traitée'></span>";
+				contents += "<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+tasks[i].id+"' data-target='"+tasks[i].id+"' title='Marquer comme non traitée'></span>";
 			} else {
-				notifMessage += "<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+tasks[i].id+"' data-target='"+tasks[i].id+"' title='Marquer comme traitée'></span>";
+				contents += "<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+tasks[i].id+"' data-target='"+tasks[i].id+"' title='Marquer comme traitée'></span>";
 			}
-			notifMessage += "<p class='col-sm-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button-alt glyphicon-button-big trigger-sub' id='delete-task-"+tasks[i].id+"' data-subtype='delete-task' data-target='"+tasks[i].id+"' title='Supprimer la tache'></span></p>";
-			notifMessage += "</div>";
+			contents += "<p class='col-sm-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button-alt glyphicon-button-big trigger-sub' id='delete-task-"+tasks[i].id+"' data-subtype='delete-task' data-target='"+tasks[i].id+"' title='Supprimer la tache'></span></p>";
+			contents += "</div>";
 
-			notifMessage += "<div class='container-fluid'>";
-			notifMessage += "<p class='task-hour col-sm-12'> créée "+moment(tasks[i].date).format("[le] ll [à] HH:mm")+"</p>";
-			notifMessage += "<p id='task-description-"+tasks[i].id+"'><span class='glyphicon glyphicon-align-left'></span> "+tasks[i].description+"</p>";
-			notifMessage += "<div class='col-sm-1 comment-span' id='comments-count-"+tasks[i].id+"'>";
-			notifMessage += "<span class='glyphicon glyphicon-comment'></span> "+tasks[i].message_count;
-			notifMessage += "</div>";
+			contents += "<div class='container-fluid'>";
+			contents += "<p class='task-hour col-sm-12'> créée "+moment(tasks[i].date).format("[le] ll [à] HH:mm")+"</p>";
+			contents += "<div><span class='glyphicon glyphicon-align-left glyphicon-description'></span><p class='editable' id='task-description-"+tasks[i].id+"' data-input='textarea' data-table='tasks' data-column='task_description' data-target='"+tasks[i].id+"'>"+tasks[i].description+"</p></div>";
+			contents += "<div class='col-sm-1 comment-span' id='comments-count-"+tasks[i].id+"'>";
+			contents += "<span class='glyphicon glyphicon-comment'></span> "+tasks[i].message_count;
+			contents += "</div>";
 
 			var deadline_class = displayDeadline(deadline);
-			notifMessage += "<div class='col-sm-3 deadline-span "+deadline_class+" trigger-sub' id='deadline-"+tasks[i].id+"' data-subtype='deadline' data-task='"+tasks[i].id+"'>";
+			contents += "<div class='col-sm-3 deadline-span "+deadline_class+" trigger-sub' id='deadline-"+tasks[i].id+"' data-subtype='deadline' data-task='"+tasks[i].id+"'>";
 			if(tasks[i].deadline != null){
-				notifMessage += "<span class='glyphicon glyphicon-time'></span> "+deadline.format("D MMM [à] HH:mm");
+				contents += "<span class='glyphicon glyphicon-time'></span> "+deadline.format("D MMM [à] HH:mm");
 			} else {
-				notifMessage += "<span class='glyphicon glyphicon-time'></span> Ajouter une date limite";
+				contents += "<span class='glyphicon glyphicon-time'></span> Ajouter une date limite";
 			}
-			notifMessage += "</div>";
+			contents += "</div>";
 
-			notifMessage += "</div>";
-			notifMessage += "</div>";
-			notifMessage += "</div>";
+			contents += "</div>";
+			contents += "</div>";
+			contents += "</div>";
 
 			// Commentaires de la notification
-			notifMessage += "<div class='panel-body panel-task-body collapse' id='body-task-"+tasks[i].id+"' data-task='"+tasks[i].id+"'>";
-			notifMessage += "<p><span class='glyphicon glyphicon-comment'></span> Commentaires</p>";
-			notifMessage += "<div class='comment-unit comment-form' id='comment-form-"+tasks[i].id+"'>";
-			notifMessage += "<textarea rows='2' class='form-control' placeholder='&Eacute;crire un commentaire...'></textarea>";
-			notifMessage += "<div class='input-group'>";
-			notifMessage += "<input class='form-control name-input' id='name-input-"+tasks[i].id+"' type='text' placeholder='Auteur du commentaire'>";
-			notifMessage += "<span class='input-group-btn'><button class='btn btn-primary btn-comment' id='comment-task-"+tasks[i].id+"' data-task='"+tasks[i].id+"'>Envoyer</button></span>";
-			notifMessage += "</div>";
-			notifMessage += "</div>";
-			notifMessage += "<div class='task-comments' id='task-comments-"+tasks[i].id+"'></div>";
-			notifMessage += "</div>";
+			contents += "<div class='panel-body panel-task-body collapse' id='body-task-"+tasks[i].id+"' data-task='"+tasks[i].id+"'>";
+			contents += "<p><span class='glyphicon glyphicon-comment'></span> Commentaires</p>";
+			contents += "<div class='comment-unit comment-form' id='comment-form-"+tasks[i].id+"'>";
+			contents += "<textarea rows='2' class='form-control' placeholder='&Eacute;crire un commentaire...'></textarea>";
+			contents += "<div class='input-group'>";
+			contents += "<input class='form-control name-input' id='name-input-"+tasks[i].id+"' type='text' placeholder='Auteur du commentaire'>";
+			contents += "<span class='input-group-btn'><button class='btn btn-primary btn-comment' id='comment-task-"+tasks[i].id+"' data-task='"+tasks[i].id+"'>Envoyer</button></span>";
+			contents += "</div>";
+			contents += "</div>";
+			contents += "<div class='task-comments' id='task-comments-"+tasks[i].id+"'></div>";
+			contents += "</div>";
 
 			if(limit == 0){
-				$(".tasks-container").append(notifMessage);
+				$(".tasks-container").append(contents);
 			} else {
-				$(".smn-body").append(notifMessage);
+				$(".smn-body").append(contents);
 			}
 		}
 	}

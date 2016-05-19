@@ -22,21 +22,14 @@ $db = PDOFactory::getConnection();
 					$loading = $loading[1] + $loading[0];
 					$start = $loading;
 					/** CODE **/
-					$data = 10598;
-					$count = $db->query("SELECT COUNT(*) FROM tasks
-					WHERE ((task_token LIKE '%USR%' AND task_target = '$data')
-					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$data'))
-					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$data')))
-						AND task_state = 0")->fetch(PDO::FETCH_COLUMN);
+					$quote = "Obtenir son mail pour l&#039;inclure dans les NL";
+					echo htmlspecialchars_decode($quote, ENT_QUOTES | ENT_HTML5);
 					?>
 					<pre>
-						<?php echo $count;?>
+						Coucou
 					</pre>
 
 					<?php
-					echo $title;
-					echo $token = substr($matches[1], 0, 3);
-					echo $target = substr($matches[1], 4);
 					/** /CODE **/
 					$loading = microtime();
 					$loading = explode(' ', $loading);

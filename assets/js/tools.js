@@ -86,12 +86,6 @@ $(document).ready(function(){
 		}
 	});
 
-	// Editables
-	$(".editable").each(function(){
-		var editIcon = "<span class='glyphicon glyphicon-edit' style='display:none; float:right;'></span>";
-		$(this).after(editIcon);
-	});
-
 	// Filtre dynamique
 	var $rows = $('#filter-enabled tr');
 	$('#search').keyup(function(){
@@ -196,16 +190,21 @@ $(document).ready(function(){
 			return prevent();
 		}
 	});
-}).on('click', '.editable', function(){
-	// Dès le clic, on récupère la valeur initiale du champ (peu importe le type de champ)
+}).on('click', '.editable', function(e){
+	e.stopPropagation();
+	// we get the initial value
 	var initialValue = $(this).val();
 	if(initialValue == ""){initialValue = $(this).html();}
-	console.log(initialValue);
 
-	// On récupère ensuite l'id du champ modifié
+	// We get the data details for the upload
+	var table = document.getElementById($(this).attr("id")).dataset.table;
+	var column = document.getElementById($(this).attr("id")).dataset.column;
+	var target = document.getElementById($(this).attr("id")).dataset.target;
+
+	// And the ID.
 	var token = $(this).attr('id');
 
-	// Si la valeur correspond à une date, alors l'action de modification sera différente
+	// If the value's a date, we have to take it a different way
 	if(initialValue.indexOf('/') != -1){
 		var initialDay = initialValue.substr(0,2);
 		var initialMonth = initialValue.substr(3,2);
@@ -213,30 +212,37 @@ $(document).ready(function(){
 		var initialDate = moment(new Date(initialYear+'-'+initialMonth+'-'+initialDay)).format("YYYY-MM-DD");
 		$(this).replaceWith("<input type='date' class='form-control editing' id='"+token+"' value="+initialDate+">");
 	} else {
-		$(this).replaceWith("<input type='text' class='form-control editing' id='"+token+"' value="+initialValue+">");
+		// Switch depending on the input type
+		var input_type = document.getElementById($(this).attr("id")).dataset.input;
+		switch(input_type){
+			case "text":
+				initialValue = initialValue.replace(/(['"])/g, "\\$1");
+				$(this).replaceWith("<input type='text' class='form-control editing' id='"+token+"' value='"+initialValue+"'>");
+				break;
+
+			case "textarea":
+				$(this).replaceWith("<textarea class='form-control editing' id='"+token+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"'>"+initialValue+"</textarea>");
+				break;
+		}
 	}
 	$(".editing").focus();
-	$(":regex(id,^methode_paiement)").autocomplete({
-		source: methods
-	})
-	$(".editing").blur(function(){
+	$(".editing").blur(function(e){
+		e.stopPropagation();
 		var editedValue = $(this).val();
-		if(editedValue != "" && editedValue != initialValue){
+		$.when(updateColumn(table, column, editedValue, target)).done(function(data){
+			$("#"+token).replaceWith("<p class='editable' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"'>"+editedValue+"</p>");
+		})
+		/*if(editedValue != "" && editedValue != initialValue){
 			if(editedValue.indexOf('-') != -1){
 				var editedDate = moment(new Date(editedValue)).format("DD/MM/YYYY");
 				$(this).replaceWith("<span class='editable' id='"+token+"'>"+editedDate+"</span>");
 			} else {
 				$(this).replaceWith("<span class='editable' id='"+token+"'>"+editedValue+"</span>");
 			}
-			uploadChanges(token, editedValue);
 		} else {
 			$(this).replaceWith("<span class='editable' id='"+token+"'>"+initialValue+"</span>");
-		}
+		}*/
 	});
-}).on('mouseenter', '.editable', function(){
-	$(this).next().show();
-}).on('mouseleave blur', '.editable', function(){
-	$(this).next().hide();
 }).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
 	event.preventDefault();
 	return $(this).ekkoLightbox({

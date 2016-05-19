@@ -54,7 +54,12 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$t["date"] = $details["task_creation_date"];
 	$t["deadline"] = $details["task_deadline"];
 	$t["title"] = $details["task_title"];
-	$t["description"] = $details["task_description"];
+	if($details["task_description"] != ""){
+		$t["description"] = htmlspecialchars_decode($details["task_description"]);
+
+	} else {
+		$t["description"] = "Ajouter une description";
+	}
 	$t["message_count"] = $db->query("SELECT * FROM task_comments WHERE task_id_foreign = '$t[id]'")->rowCount();
 	$t["status"] = $details["task_state"];
 

@@ -87,11 +87,8 @@ $(document).ready(function(){
 	/** Close a session will make it disappear from the records page by changing its state to 0.
 (0 : closed, 1 : opened and available for automatic records, 2 : opened but closed to automatic records)**/
 	e.stopPropagation();
-	var table = "cours";
-	var column = "ouvert";
-	var value = 0;
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
-	$.when(updateColumn(table, column, value, session_id)).done(function(){
+	$.when(updateColumn("cours", "ouvert", 0, session_id)).done(function(){
 		$("#session-"+session_id).remove();
 		// We remove the recently closed session from the list to be refreshed.
 		switch(window.openedSessions.length){

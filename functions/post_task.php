@@ -3,7 +3,7 @@ include "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $task_title = addslashes($_POST["task_title"]);
-$task_description = addslashes($_POST["task_description"]);
+$task_description = htmlspecialchars($_POST["task_description"], ENT_QUOTES | ENT_HTML5);
 $task_token = preg_match('/\\[([a-z0-9\\-]+)\\]/i', $_POST["task_token"], $matches);
 
 // Before posting the task, we must figure out the token.
