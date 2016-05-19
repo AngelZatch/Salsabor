@@ -162,7 +162,7 @@ function displayNotifications(data, limit){
 
 			case "PRO":
 				notifMessage += "data-redirect='forfaits/"+notifications[i].product_id+"'>";
-				notifMessage += "<div class='notif-pp col-sm-2'><image src=''></div>";
+				notifMessage += "<div class='notif-pp col-sm-2'><image src='assets/images/sticker_promo.png'></div>";
 				notifMessage += "<div class='col-sm-10'>";
 				switch(notifications[i].subtype){
 					case "S":
