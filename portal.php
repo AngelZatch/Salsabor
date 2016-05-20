@@ -33,19 +33,21 @@ if(isset($_SESSION["username"])){
 	</head>
 	<body>
 		<?php include "nav.php";?>
-		<div class="main">
-			<div class="col-lg-4 col-lg-offset-4">
-				<legend><span class="glyphicon glyphicon-log-in"></span> Connexion</legend>
-				<form action="" method="post">
-					<div class="form-group form-group-lg">
-						<input type="text" placeholder="Login" class="form-control" name="user_login">
-					</div>
-					<div class="form-group form-group-lg">
-						<input type="password" placeholder="Mot de passe" class="form-control" name="user_pwd">
-					</div>
-					<input type="submit" class="btn btn-primary btn-block" name="login" value="Connexion">
-				</form>
-				<!--<p style="text-align: center">Pas de compte ? C'est par <a href="signup">ici</a></p>-->
+		<div class="portal-main">
+			<div class="main layer">
+				<div class="col-lg-4 col-lg-offset-4">
+					<legend><span class="glyphicon glyphicon-log-in"></span> Connexion</legend>
+					<form action="" method="post">
+						<div class="form-group form-group-lg">
+							<input type="text" placeholder="Login" class="form-control form-control-portal" name="user_login">
+						</div>
+						<div class="form-group form-group-lg">
+							<input type="password" placeholder="Mot de passe" class="form-control form-control-portal" name="user_pwd">
+						</div>
+						<input type="submit" class="btn btn-primary btn-block" name="login" value="Connexion">
+					</form>
+					<!--<p style="text-align: center">Pas de compte ? C'est par <a href="signup">ici</a></p>-->
+				</div>
 			</div>
 		</div>
 		<?php include "scripts.php";?>

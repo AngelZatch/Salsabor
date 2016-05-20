@@ -58,6 +58,25 @@ a
 	position: relative
 	overflow: auto
 
+.portal-main
+	background-image: url("../images/portal.jpg")
+	background-size: 100%
+	height: 100%
+	.layer
+		background: transparentize(white, 0.2)
+		height: 100%
+
+.form-control-portal
+	background-color: transparent !important
+	color: $salsabor-red
+	border-radius: 0 !important
+	border: 1px solid $salsabor-red
+	border-top: 0
+	&:focus
+		box-shadow: none
+		outline: inherit
+		border-color: $salsabor-red
+
 legend
 	color: $salsabor-red
 	font-size: 28px
