@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once "functions/db_connect.php";
 $db = PDOFactory::getConnection();
 include "functions/tarifs.php";

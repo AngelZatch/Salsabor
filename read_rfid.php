@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'functions/db_connect.php';
 include "functions/tools.php";
 $db = PDOFactory::getConnection();
