@@ -4,7 +4,7 @@ include "tools.php";
 $db = PDOFactory::getConnection();
 
 $comment = addslashes($_POST["comment"]);
-$user_id = solveAdherentToId($_POST["user_id"]);
+$user_id = $_POST["user_id"];
 $task_id = $_POST["task_id"];
 
 try{

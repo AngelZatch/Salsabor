@@ -46,7 +46,7 @@
 				<!--<li><a href="about.php" class="main-option"><span class="glyphicon glyphicon-question-sign"></span> A propos</a></li>-->
 				<li class="main-option-container"><a href="notifications/settings" class="main-option"><span class="glyphicon glyphicon-cog"></span> Réglages notifs.</a></li>
 				<li class="main-option-container"><a href="../phpmyadmin" target="_blank" class="main-option"><span class="glyphicon glyphicon-th-list"></span> Base de données</a></li>
-				<!--<li><a href="" class="main-option"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>-->
+				<li><a href="logout.php" class="main-option"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
 			</ul>
 		</ul>
 	</div>

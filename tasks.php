@@ -9,7 +9,7 @@ $db = PDOFactory::getConnection();
 		<title>Tâches | Salsabor</title>
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
-		<script src="assets/js/tasks.js"></script>
+		<script src="assets/js/tasks.php"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
