@@ -51,9 +51,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 						<img src="<?php echo $_SESSION["photo"];?>" alt="" style="width:inherit;">
 					</div>
 				</a>
-				<?php } else { ?>
-				<a href="portal" class="notification-icon"><span class="glyphicon glyphicon-log-in"></span> Connexion</a>
-				<?php } ?>
+				<?php }?>
 			</li>
 			<!--<li><a href=""><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>-->
 		</ul>

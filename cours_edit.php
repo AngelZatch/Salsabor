@@ -1,5 +1,8 @@
 <?php
 session_start();
+if(!isset($_SESSION["username"])){
+	header('location: portal');
+}
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 require_once 'functions/cours.php';

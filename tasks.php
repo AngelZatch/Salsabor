@@ -1,5 +1,8 @@
 <?php
 session_start();
+if(!isset($_SESSION["username"])){
+	header('location: portal');
+}
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 ?>
@@ -9,7 +12,7 @@ $db = PDOFactory::getConnection();
 		<title>Tâches | Salsabor</title>
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
-		<script src="assets/js/tasks.php"></script>
+		<script src="assets/js/tasks-js.php"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>

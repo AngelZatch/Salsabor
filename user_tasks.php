@@ -1,5 +1,8 @@
 <?php
 session_start();
+if(!isset($_SESSION["username"])){
+	header('location: portal');
+}
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 $data = $_GET['id'];
@@ -22,7 +25,7 @@ $details["count"] = $db->query("SELECT * FROM tasks
 		<?php include "styles.php";?>
 		<link rel="stylesheet" href="assets/css/bootstrap-slider.min.css">
 		<?php include "scripts.php";?>
-		<script src="assets/js/tasks.js"></script>
+		<script src="assets/js/tasks-js.php"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>

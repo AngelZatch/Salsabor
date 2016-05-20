@@ -1,14 +1,20 @@
 <?php
+session_start();
 include "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $limit = $_GET["limit"];
 
-if($limit == 0){
-	$load = $db->query("SELECT * FROM team_notifications ORDER BY notification_id DESC");
-} else {
-	$load = $db->query("SELECT * FROM team_notifications ORDER BY notification_id DESC LIMIT $limit");
+// We construct the query
+$query = "SELECT * FROM team_notifications WHERE notification_recipient IS NULL";
+if(isset($_SESSION["user_id"])){
+	$query .= " OR notification_recipient = $_SESSION[user_id]";
 }
+$query .= " ORDER BY notification_id DESC";
+if($limit != 0){
+	$query .= " LIMIT $limit";
+}
+$load = $db->query($query);
 
 $notificationsList = array();
 

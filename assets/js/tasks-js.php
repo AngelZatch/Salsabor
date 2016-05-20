@@ -233,6 +233,10 @@ function displayTasks(data, user_id, limit){
 			}
 			contents += "</div>";
 
+			contents += "<div class='col-sm-3 comment-span'>";
+			contents += "<span class='glyphicon glyphicon-user'></span> "+tasks[i].recipient;
+			contents += "</div>";
+
 			contents += "</div>";
 			contents += "</div>";
 			contents += "</div>";

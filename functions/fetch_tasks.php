@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "db_connect.php";
 $db = PDOFactory::getConnection();
 
@@ -6,13 +7,21 @@ $limit = $_GET["limit"];
 $user_id = $_GET["user_id"];
 
 // We dynamically construct the query depending on the flags
-$query = "SELECT * FROM tasks";
+$query = "SELECT * FROM tasks t
+			LEFT JOIN users u ON t.task_recipient = u.user_id";
 if($user_id != 0){
 	$query .= " WHERE (task_token LIKE '%USR%' AND task_target = '$user_id')
 					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$user_id'))
-					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$user_id'))";
+					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$user_id'))
+				AND";
+} else {
+	$query .= " WHERE";
 }
-$query .= " ORDER BY task_id DESC";
+$query .= " (task_recipient IS NULL";
+if(isset($_SESSION["user_id"])){
+	$query .= " OR task_recipient = $_SESSION[user_id]";
+}
+$query .= ") ORDER BY task_id DESC";
 if($limit != 0){
 	$query .= " LIMIT $limit";
 }
@@ -25,6 +34,12 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$t["id"] = $details["task_id"];
 	$t["token"] = $details["task_token"];
 	$t["target"] = $details["task_target"];
+	if($details["task_recipient"] != null){
+		$t["recipient"] = $details["user_prenom"]." ".$details["user_nom"];
+		$t["recipient_id"] = $details["task_recipient"];
+	} else {
+		$t["recipient"] = "Affecter un membre";
+	}
 	// Additional details depending of the token
 	$t["type"] = substr($t["token"], 0, 3);
 	switch($t["type"]){
@@ -56,7 +71,6 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$t["title"] = $details["task_title"];
 	if($details["task_description"] != ""){
 		$t["description"] = htmlspecialchars_decode($details["task_description"]);
-
 	} else {
 		$t["description"] = "Ajouter une description";
 	}
