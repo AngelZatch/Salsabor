@@ -44,7 +44,7 @@ if(isset($_POST['add'])){
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<form method="post" role="form">
-					<div class="col-lg-10 col-lg-offset-2 main">
+					<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 						<legend><span class="glyphicon glyphicon-plus"></span> Ajouter un cours
 							<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
 						</legend>

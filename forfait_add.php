@@ -64,7 +64,7 @@ if(isset($_POST["add"])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<form action="forfait_add.php" class="form-horizontal" method="post">
 						<legend><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait
 							<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER">

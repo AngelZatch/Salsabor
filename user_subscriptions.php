@@ -48,7 +48,7 @@ $queryForfaits->execute();
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<?php include "inserts/user_banner.php";?>
 					<legend><span class="glyphicon glyphicon-user"></span> Abonnements</legend>
 					<ul class="nav nav-tabs">

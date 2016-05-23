@@ -27,7 +27,7 @@ $queryIrregulars = $db->query("SELECT * FROM participations pr
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-pawn"></span> Participations non associées à un forfait</legend>
 					<div class="col-lg-8 irregulars-container">
 						<button class='btn btn-default btn-modal btn-link-all' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Associer toutes les participations irrégulières</button>

@@ -19,7 +19,7 @@ $querySalles = $db->query('SELECT * FROM salle WHERE est_salle_cours=1 ORDER BY 
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-pushpin"></span> Salles
 						<a href="" role="button" class="btn btn-primary" disabled><span class="glyphicon glyphicon-plus"></span> Ajouter une salle</a>
 					</legend>

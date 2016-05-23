@@ -30,7 +30,7 @@ $numberTransactions = $searchTransactions->rowCount();
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend>Résultats de recherche</legend>
 					<p class="search-title">
 						<span class="glyphicon glyphicon-user"></span> <?php echo $numberUsers;?> utilisateur(s) correspond(ent) à votre recherche

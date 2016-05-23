@@ -20,7 +20,7 @@ $notifications = $db->query("SELECT * FROM master_settings WHERE user_id = '0'")
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-cog"></span> Réglage des notifications<button class="btn btn-primary save-settings">Enregistrer</button></legend>
 					<p>Attention ! Cette page manipule des valeurs qui assurent le bon fonctionnement de l'application. Ne modifiez pas ces valeurs n'importe comment!</p>
 					<p class="sub-legend">Notifications qui affectent l'utilisateur</p>

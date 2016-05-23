@@ -36,7 +36,7 @@ if($date > "06:00:00" && $date <= "10:00:00"){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main-home">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main-home">
 					<div class="jumbotron jumbotron-home">
 						<h1><?php echo $welcome;?></h1>
 						<p>Bienvenue sur Salsabor Gestion ! Que souhaitez-vous faire ?</p>

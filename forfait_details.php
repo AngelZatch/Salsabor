@@ -87,7 +87,7 @@ if(isset($_POST["edit"])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<form action="" class="form-horizontal" method="post">
 						<legend><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $produit["produit_nom"];?>
 							<input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER LES MODIFICATIONS">

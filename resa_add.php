@@ -33,7 +33,7 @@ if(isset($_POST['addResa'])){
 			<div class="container-fluid">
 				<div class="row">
 					<?php include "side-menu.php";?>
-					<div class="col-lg-10 col-lg-offset-2 main">
+					<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 						<legend><span class="glyphicon glyphicon-record"></span> Effectuer une réservation
 							<input type="submit" name="addResa" role="button" class="btn btn-primary confirm-add" value="ENREGISTRER" id="submit-button" disabled>
 						</legend>

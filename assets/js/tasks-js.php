@@ -179,13 +179,13 @@ function displayTasks(data, user_id, limit){
 			contents += "<div id='task-"+tasks[i].id+"' data-task='"+tasks[i].id+"' data-state='"+tasks[i].status+"' class='panel task-line "+notifClass+"'>";
 			contents += "<div class='panel-heading panel-heading-task container-fluid' id='ph-task-"+tasks[i].id+"' data-trigger='"+tasks[i].id+"'>";
 
-			contents += "<div class='col-lg-1'>";
+			contents += "<div class='col-sm-2 col-lg-1'>";
 			contents += "<div class='notif-pp'>";
 			contents += "<image src='"+tasks[i].photo+"'>";
 			contents += "</div>";
 			contents += "</div>";
 
-			contents += "<div class='col-sm-11'>";
+			contents += "<div class='col-sm-10 col-lg-11'>";
 			contents += "<div class='row'>";
 
 			contents += "<p class='task-title col-sm-9' id='task-title-"+tasks[i].id+"'>";
@@ -220,12 +220,12 @@ function displayTasks(data, user_id, limit){
 			contents += "<div class='container-fluid'>";
 			contents += "<p class='task-hour col-sm-12'> créée "+moment(tasks[i].date).format("[le] ll [à] HH:mm")+"</p>";
 			contents += "<div><span class='glyphicon glyphicon-align-left glyphicon-description'></span><p class='editable' id='task-description-"+tasks[i].id+"' data-input='textarea' data-table='tasks' data-column='task_description' data-target='"+tasks[i].id+"'>"+tasks[i].description+"</p></div>";
-			contents += "<div class='col-sm-1 comment-span' id='comments-count-"+tasks[i].id+"'>";
+			contents += "<div class='col-md-2 col-lg-1 comment-span' id='comments-count-"+tasks[i].id+"'>";
 			contents += "<span class='glyphicon glyphicon-comment'></span> "+tasks[i].message_count;
 			contents += "</div>";
 
 			var deadline_class = displayDeadline(deadline);
-			contents += "<div class='col-sm-3 deadline-span "+deadline_class+" trigger-sub' id='deadline-"+tasks[i].id+"' data-subtype='deadline' data-task='"+tasks[i].id+"'>";
+			contents += "<div class='col-md-5 col-lg-3 deadline-span "+deadline_class+" trigger-sub' id='deadline-"+tasks[i].id+"' data-subtype='deadline' data-task='"+tasks[i].id+"'>";
 			if(tasks[i].deadline != null){
 				contents += "<span class='glyphicon glyphicon-time'></span> "+deadline.format("D MMM [à] HH:mm");
 			} else {
@@ -233,7 +233,7 @@ function displayTasks(data, user_id, limit){
 			}
 			contents += "</div>";
 
-			contents += "<div class='col-sm-3 comment-span'>";
+			contents += "<div class='col-md-5 col-lg-3 comment-span'>";
 			contents += "<span class='glyphicon glyphicon-user glyphicon-description'></span> ";
 			contents += "<p class='editable' id='task-recipient-"+tasks[i].id+"' data-input='text' data-table='tasks' data-column='task_recipient' data-target='"+tasks[i].id+"'>"+tasks[i].recipient+"</p>";
 			contents += "</div>";

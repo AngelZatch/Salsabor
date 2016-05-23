@@ -1,5 +1,5 @@
 <div class="sidebar-container">
-	<div class="col-sm-2 col-md-2 col-lg-2 sidebar separate-scroll" id="large-menu" style="display:block;">
+	<div class="hidden-xs col-md-3 col-lg-2 sidebar separate-scroll" id="large-menu" style="display:block;">
 		<ul class="nav nav-sidebar">
 
 			<li><a class="main-section"><span class="glyphicon glyphicon-star"></span> Temps réel</a></li>

@@ -25,7 +25,7 @@ $salle = $querySalle->fetch(PDO::FETCH_ASSOC);
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-pushpin"></span> Salle <?php echo $salle["salle_name"];?></legend>
 				</div>
 			</div>

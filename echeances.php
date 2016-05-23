@@ -42,7 +42,7 @@ $queryEcheances = $db->prepare("SELECT * FROM produits_echeances
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-repeat"></span> Echéances</legend>
 					<p class="sub-legend" style="font-size:15px; padding-top:8px; font-style:italic;">Encaissement prévu le <?php echo $time->format('d/m/Y');?></p>
 					<div class="input-group input-group-lg search-form">

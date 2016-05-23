@@ -53,7 +53,7 @@ function prepareParticipation($db, $tag, $ip){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-qrcode"></span> Simuler un passage RFID</legend>
 					<p class="page-title"></p>
 					<form action="" method="post">

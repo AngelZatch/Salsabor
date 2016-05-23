@@ -11,7 +11,7 @@ $empty-container-color: #888888
 $light-red-color: lighten($danger-color, 20%)
 $break-small: 360px
 $break-medium: 768px
-$break-large: 1200px
+$break-large: 1024px
 $avatar-very-small: 65px
 $avatar-size-preview: 120px
 $avatar-big-preview: 170px
@@ -80,6 +80,8 @@ a
 legend
 	color: $salsabor-red
 	font-size: 28px
+	@media screen and (max-width: $break-small)
+		font-size: 22px
 	font-family: 'globersemibold_free'
 	a, input, button
 		float: right
@@ -157,6 +159,15 @@ a
 .navbar-right
 	margin-right: 0
 
+.navbar-collapse
+	border: 0
+	padding: 0 !important
+	.navbar
+		margin-bottom: 0
+
+.small-nav
+	color: white
+
 .notification-icon
 	color: white !important
 	cursor: pointer
@@ -178,7 +189,6 @@ a
 	border-radius: 5px
 
 .navbar-form
-	width: 65%
 	margin-left: 22px
 	.input-group
 		span
@@ -421,6 +431,10 @@ a
 	p.session-hours
 		margin-top: -10px
 		padding-top: 0
+
+.panel-item-options
+	@media screen and (max-width: $break-large)
+		text-align: center
 
 #over-session-alert
 	font-weight: 600

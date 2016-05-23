@@ -17,7 +17,7 @@ $db = PDOFactory::getConnection();
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend>Template</legend>
 				</div>
 			</div>
