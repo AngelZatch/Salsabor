@@ -17,7 +17,7 @@ if($user_id != 0){
 } else {
 	$query .= " WHERE";
 }
-$query .= " (task_recipient IS NULL";
+$query .= " (task_recipient IS NULL OR task_recipient = 0";
 if(isset($_SESSION["user_id"])){
 	$query .= " OR task_recipient = $_SESSION[user_id]";
 }
@@ -34,7 +34,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$t["id"] = $details["task_id"];
 	$t["token"] = $details["task_token"];
 	$t["target"] = $details["task_target"];
-	if($details["task_recipient"] != null){
+	if($details["task_recipient"] != null && $details["task_recipient"] != 0){
 		$t["recipient"] = $details["user_prenom"]." ".$details["user_nom"];
 		$t["recipient_id"] = $details["task_recipient"];
 	} else {

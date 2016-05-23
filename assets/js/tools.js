@@ -237,6 +237,17 @@ $(document).ready(function(){
 	$(".editing").blur(function(e){
 		e.stopPropagation();
 		var editedValue = $(this).val();
+		if(editedValue == ""){
+			switch(column){
+				case "task_recipient":
+					editedValue = "Affecter un membre";
+					break;
+
+				case "task_description":
+					editedValue = "Ajouter une description";
+					break;
+			}
+		}
 		$.when(updateColumn(table, column, editedValue, target)).done(function(data){
 			$("#"+token).replaceWith("<p class='editable' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"'>"+editedValue+"</p>");
 		})
