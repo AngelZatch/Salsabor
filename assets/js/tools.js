@@ -214,19 +214,22 @@ $(document).ready(function(){
 	} else {
 		// Switch depending on the input type
 		var input_type = document.getElementById($(this).attr("id")).dataset.input;
+		if(column == "task_recipient"){
+			var additional_classes = "name-input";
+		}
 		switch(input_type){
 			case "text":
 				initialValue = initialValue.replace(/(['"])/g, "\\$1");
-				$(this).replaceWith("<input type='text' class='form-control editing' id='"+token+"' value='"+initialValue+"'>");
+				$(this).replaceWith("<input type='text' class='form-control editing "+additional_classes+"' id='"+token+"' value='"+initialValue+"'>");
 				break;
 
 			case "textarea":
-				$(this).replaceWith("<textarea class='form-control editing' id='"+token+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"'>"+initialValue+"</textarea>");
+				$(this).replaceWith("<textarea class='form-control editing "+additional_classes+"' id='"+token+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"'>"+initialValue+"</textarea>");
 				break;
 
 			default:
 				initialValue = initialValue.replace(/(['"])/g, "\\$1");
-				$(this).replaceWith("<input type='"+input_type+"' class='form-control editing' id='"+token+"' value='"+initialValue+"'>");
+				$(this).replaceWith("<input type='"+input_type+"' class='form-control editing "+additional_classes+"' id='"+token+"' value='"+initialValue+"'>");
 				break;
 		}
 	}

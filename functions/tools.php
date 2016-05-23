@@ -149,6 +149,9 @@ function postNotification($db, $token, $target, $date){
 function updateColumn($db, $table, $column, $value, $target_id){
 	$now = date("Y-m-d H:i:s");
 	$value = htmlspecialchars($value, ENT_QUOTES | ENT_HTML5);
+	if($column == "task_recipient"){
+		$value = solveAdherentToId($value);
+	}
 	try{
 		$primary_key = $db->query("SHOW INDEX FROM $table WHERE Key_name = 'PRIMARY'")->fetch(PDO::FETCH_ASSOC);
 

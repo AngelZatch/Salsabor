@@ -234,7 +234,8 @@ function displayTasks(data, user_id, limit){
 			contents += "</div>";
 
 			contents += "<div class='col-sm-3 comment-span'>";
-			contents += "<span class='glyphicon glyphicon-user'></span> "+tasks[i].recipient;
+			contents += "<span class='glyphicon glyphicon-user glyphicon-description'></span> ";
+			contents += "<p class='editable' id='task-recipient-"+tasks[i].id+"' data-input='text' data-table='tasks' data-column='task_recipient' data-target='"+tasks[i].id+"'>"+tasks[i].recipient+"</p>";
 			contents += "</div>";
 
 			contents += "</div>";
@@ -292,7 +293,6 @@ function postComment(comment, author, task_id){
 	$.post("functions/post_comment.php", {comment : comment, user_id : author, task_id : task_id}).done(function(e){
 		console.log(e);
 		$("#comment-form-"+task_id+">textarea").val('');
-		$("#name-input-"+task_id).val('');
 		fetchComments(task_id);
 	})
 }
