@@ -51,5 +51,13 @@ if(isset($_SESSION["username"])){
 			</div>
 		</div>
 		<?php include "scripts.php";?>
+		<script>
+			$(function(){
+				// Get a random picture from the library
+				var rand = Math.floor(Math.random() * 6);
+				console.log(rand);
+				$(".portal-main").css("background-image", "url(assets/images/Portal_"+rand+".jpg)");
+			})
+		</script>
 	</body>
 </html>

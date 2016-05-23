@@ -36,6 +36,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 			<div class="navbar-header">
 				<a href="dashboard" class="navbar-brand"><img src="assets/images/logotest.png" alt="Salsabor Gestion" style="height:100%;"></a>
 			</div>
+			<?php if(isset($_SESSION["username"])){ ?>
 			<div class="col-sm-6 col-lg-7">
 				<form action="search.php" class="navbar-form navbar-left" role="search">
 					<div class="input-group">
@@ -70,17 +71,14 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 					</div>
 				</li>
 				<li class="notification-option">
-					<?php if(isset($_SESSION["username"])){ ?>
-					<!--<a href="logout.php" class="notification-icon"><span class="glyphicon glyphicon-log-out"></span> Déconnexion</a>-->
 					<a href="" class="notification-icon nav-img-container">
 						<div class="nav-pp">
 							<img src="<?php echo $_SESSION["photo"];?>" alt="" style="width:inherit;">
 						</div>
 					</a>
-					<?php }?>
 				</li>
-				<!--<li><a href=""><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>-->
 			</ul>
+			<?php }?>
 		</div>
 	</div>
 </nav>
