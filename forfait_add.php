@@ -135,7 +135,7 @@ if(isset($_POST["add"])){
 								<input type="number" class="form-control" name="echeances">
 							</div>
 						</div>
-						<p class="form-section">Période de vente</p>
+						<p class="sub-legend">Période de vente</p>
 						<span class="label-tip">Dans le cas d'une offre promotionnelle limitée dans le temps</span>
 						<div class="form-group">
 							<label for="date_activation" class="col-lg-3 control-label">Ouverture à l'achat</label>
