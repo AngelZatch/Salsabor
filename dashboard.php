@@ -33,7 +33,7 @@ if($date > "06:00:00" && $date <= "10:00:00"){
 	);
 } else if($date > "13:30:00" && $date <= "18:00:00") {
 	$time_message = array(
-		"Du travail vous attend ! Bon courage !",
+		"Du travail vous attend ? Bon courage !",
 		"Longue après-midi en perspective ? Bonjour !",
 		"Bonjour !",
 		"Vous êtes plutôt thé ou café ?"
