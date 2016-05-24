@@ -185,13 +185,13 @@ function computeProduct($product_id){
 	// Once everything is computed, time for notifications
 	if($product_details["produit_adherent_actif"] != '2' && $status == '2'){ // If the product has expired because of this computing.
 		$token = "PRD-E";
-		postNotification($db, $token, $product_id, $today);
+		postNotification($db, $token, $product_id, null, $today);
 	} else if($v["expiration"] <= $expiration_limit){ // If the expiration is in less than x days
 		$token = "PRD-NE";
-		postNotification($db, $token, $product_id, $today);
+		postNotification($db, $token, $product_id, null, $today);
 	} else if($remaining_hours > 0 && $remaining_hours <= $hour_limit){ // If the remaining hours are less than 5.
 		$token = "PRD-NH";
-		postNotification($db, $token, $product_id, $today);
+		postNotification($db, $token, $product_id, null, $today);
 	}
 
 	if(isset($_POST["product_id"])){

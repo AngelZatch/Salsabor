@@ -6,7 +6,7 @@ $db = PDOFactory::getConnection();
 $limit = $_GET["limit"];
 
 // We construct the query
-$query = "SELECT * FROM team_notifications WHERE notification_recipient IS NULL";
+$query = "SELECT * FROM team_notifications WHERE notification_recipient IS NULL OR notification_recipient = 0";
 if(isset($_SESSION["user_id"])){
 	$query .= " OR notification_recipient = $_SESSION[user_id]";
 }
@@ -88,10 +88,11 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			$n["sub_target"] = $sub_query["task_target"];
 			switch($n["task_type"]){
 				case "USR": // Here, we only need the user name for the mail address.
-					$sub_sub_query = $db->query("SELECT CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id = '$n[sub_target]'")->fetch(PDO::FETCH_ASSOC);
+					$sub_sub_query = $db->query("SELECT CONCAT(user_prenom, ' ', user_nom) AS user, user_id, photo FROM users u WHERE user_id = '$n[sub_target]'")->fetch(PDO::FETCH_ASSOC);
 					$n["user_id"] = $n["target"];
-					$n["link"] = "user/".$n["user_id"];
+					$n["link"] = "user/".$sub_sub_query["user_id"];
 					$n["photo"] = $sub_sub_query["photo"];
+					$n["user"] = $sub_sub_query["user"];
 					break;
 
 				case "PRD":

@@ -247,6 +247,11 @@ $(document).ready(function(){
 					editedValue = "Ajouter une description";
 					break;
 			}
+		} else {
+			if(column == "task_recipient"){
+				// Create notification for the recipient
+				postNotification("TAS-A", target, editedValue);
+			}
 		}
 		$.when(updateColumn(table, column, editedValue, target)).done(function(data){
 			$("#"+token).replaceWith("<p class='editable' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"'>"+editedValue+"</p>");
@@ -676,4 +681,8 @@ function refreshUserBanner(user_id){
 // Deletes an entry in a table of the database
 function deleteEntry(table, entry_id){
 	return $.post("functions/delete_entry.php", {table : table, entry_id : entry_id});
+}
+
+function postNotification(token, target, recipient){
+	return $.post("functions/post_notifications.php", {token : token, target : target, recipient : recipient});
 }

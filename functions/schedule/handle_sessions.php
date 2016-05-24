@@ -23,7 +23,7 @@ try{
 		$session_id = $session["cours_id"];
 		$open = $db->query("UPDATE cours SET ouvert = 1 WHERE cours_id='$session_id'");
 		$token = "SES";
-		postNotification($db, $token, $session_id, $compare_start);
+		postNotification($db, $token, $session_id, null, $compare_start);
 	}
 
 

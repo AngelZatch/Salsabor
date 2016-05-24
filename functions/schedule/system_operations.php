@@ -38,14 +38,14 @@ try{
 	$toActivate = $db->query("SELECT produit_id FROM produits WHERE date_activation <= '$compare_start'");
 	while($match = $toActivate->fetch(PDO::FETCH_ASSOC)){
 		updateColumn($db, "produits", "actif", 1, $match["produit_id"]);
-		postNotification($db, "PRO-S", $match["produit_id"], $compare_start);
+		postNotification($db, "PRO-S", $match["produit_id"], null, $compare_start);
 	}
 
 	// Or deactivate expired ones
 	$toDeactive = $db->query("SELECT produit_id FROM produits WHERE date_desactivation <= '$compare_start'");
 	while($match = $toDeactive->fetch(PDO::FETCH_ASSOC)){
 		updateColumn($db, "produits", "actif", 0, $match["produit_id"]);
-		postNotification($db, "PRO-E", $match["produit_id"], $compare_start);
+		postNotification($db, "PRO-E", $match["produit_id"], null, $compare_start);
 	}
 
 	$findActive = $db->query("SELECT date_achat, payeur_transaction FROM transactions GROUP BY payeur_transaction");

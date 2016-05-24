@@ -136,6 +136,10 @@ function displayNotifications(data, limit){
 				notif_link = notifications[i].link;
 				notif_image = notifications[i].photo;
 				switch(notifications[i].subtype){
+					case "A":
+						notif_message = "La tâche <strong>"+notifications[i].title+"</strong> vous a été assignée.";
+						break;
+
 					case "NE":
 						notif_message = "La tâche <strong>"+notifications[i].title+"</strong> arrive bientôt à sa date limite, fixée au <strong>"+moment(notifications[i].deadline).format("ll [à] HH:mm")+"</strong>";
 						break;

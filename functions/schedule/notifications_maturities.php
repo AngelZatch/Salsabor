@@ -47,7 +47,7 @@ while($maturity = $maturities->fetch(PDO::FETCH_ASSOC)){
 	$target = $maturity["produits_echeances_id"];
 	$date = date("Y-m-d H:i:s");
 
-	postNotification($db, $token, $target, $date);
+	postNotification($db, $token, $target, null, $date);
 }
 
 
