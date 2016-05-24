@@ -28,6 +28,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 				<ul class="nav navbar">
 					<li><a class="small-nav" href="notifications"><span class="glyphicon glyphicon-list-alt"></span> Notifications</a></li>
 					<li><a class="small-nav" href="taches"><span class="glyphicon glyphicon-bell"></span> Tâches</a></li>
+					<li><a href="user/<?php echo $_SESSION["user_id"];?>" class="small-nav"><span class="glyphicon glyphicon-user"></span> Profil</a></li>
 					<li><a class="small-nav" href="logout.php"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
 				</ul>
 			</div>
@@ -70,12 +71,16 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 						</div>
 					</div>
 				</li>
-				<li class="notification-option">
-					<a href="" class="notification-icon nav-img-container">
+				<li class="dropdown notification-option">
+					<a href="#" class="dropdown-toggle notification-icon nav-img-container" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
 						<div class="nav-pp">
 							<img src="<?php echo $_SESSION["photo"];?>" alt="" style="width:inherit;">
 						</div>
 					</a>
+					<ul class="dropdown-menu">
+						<li><a href="user/<?php echo $_SESSION["user_id"];?>"><span class="glyphicon glyphicon-user"></span> Profil</a></li>
+						<li><a href="logout.php"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
+					</ul>
 				</li>
 			</ul>
 			<?php }?>
