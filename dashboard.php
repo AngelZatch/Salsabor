@@ -61,7 +61,7 @@ if($date > "06:00:00" && $date <= "10:00:00"){
 		"Bonsoir ou Bonjour ? Je vous laisse décider, vu l'heure."
 	);
 }
-$rand = rand(0, sizeof($time_message)) - 1;
+$rand = rand(0, sizeof($time_message) - 1);
 $welcome = $time_message[$rand];
 ?>
 <html>
@@ -70,6 +70,7 @@ $welcome = $time_message[$rand];
 		<title>Accueil d'administration | Salsabor</title>
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
+		<script src="assets/js/tasks-js.php"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -87,8 +88,24 @@ $welcome = $time_message[$rand];
 							<a href="echeances" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-repeat"></span> &Eacute;chéances</a>
 						</p>
 					</div>
+					<div class="col-lg-6 dashboard-zones clearfix container-fluid">
+						<p class="sub-legend">Récemment...</p>
+						<ul class="notifications-container container-fluid"></ul>
+					</div>
+					<div class="col-lg-6 dashboard-zones clearfix container-fluid">
+						<p class="sub-legend">Il vous reste à faire...</p>
+						<div class="tasks-container container-fluid"></div>
+					</div>
 				</div>
 			</div>
 		</div>
+		<?php include "inserts/sub_modal_product.php";?>
+		<script>
+			$(document).ready(function(){
+				moment.locale('fr');
+				fetchNotifications(0);
+				fetchTasks(0, 0);
+			})
+		</script>
 	</body>
 </html>

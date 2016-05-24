@@ -19,9 +19,7 @@ $db = PDOFactory::getConnection();
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-bell"></span> Notifications</legend>
-					<ul class="notifications-container container-fluid">
-
-					</ul>
+					<ul class="notifications-container container-fluid"></ul>
 				</div>
 			</div>
 		</div>
