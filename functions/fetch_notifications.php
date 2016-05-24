@@ -59,9 +59,6 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			$n["photo"] = $sub_query["photo"];
 			break;
 
-		case "TRA":
-			break;
-
 		case "MAI": // Here, we only need the user name for the mail address.
 			$sub_query = $db->query("SELECT user_prenom, user_nom, photo FROM users u WHERE user_id = '$n[target]'")->fetch(PDO::FETCH_ASSOC);
 			$n["user"] = $sub_query["user_prenom"]." ".$sub_query["user_nom"];
@@ -80,6 +77,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			$n["cours_start"] = $sub_query["cours_start"];
 			$n["user"] = $sub_query["user_prenom"]." ".$sub_query["user_nom"];
 			$n["photo"] = $sub_query["photo"];
+			$n["cours_status"] = $sub_query["ouvert"];
 			break;
 
 		case "TAS": // Notifications for tasks
