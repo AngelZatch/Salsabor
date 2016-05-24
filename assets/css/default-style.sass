@@ -90,6 +90,18 @@ legend
 	margin-top: -10px
 	font-size: 1.3em
 
+.label-salsabor
+	background-color: $salsabor-red
+	&:hover
+		background-color: lighten($salsabor-red, 10%)
+
+.label-clickable
+	cursor: pointer
+
+.label-add
+	&:hover
+		background-color: darken($system-color, 20%)
+
 .sub-legend
 	@extend legend
 	font-size: 19px

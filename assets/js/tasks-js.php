@@ -1,135 +1,140 @@
 <?php header("Content-type: application/javascript");?>
-<?php session_start();?>
-// Oh yeah we cheating boys. Basically we need to get $_SESSION variables for comments, so this is an acceptable method.
+	<?php session_start();?>
+		// Oh yeah we cheating boys. Basically we need to get $_SESSION variables for comments, so this is an acceptable method.
 
-$(document).on('focus', '.name-input', function(){
-	var id = $(this).attr("id");
-	$.get("functions/fetch_user_list.php", {filter : "staff"}).done(function(data){
-		var userList = JSON.parse(data);
-		var autocompleteList = [];
-		for(var i = 0; i < userList.length; i++){
-			autocompleteList.push(userList[i].user);
-		}
-		$("#"+id).textcomplete([{
-			match: /(^|\b)(\w{2,})$/,
-			search: function(term, callback){
-				callback($.map(autocompleteList, function(item){
-					return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
-				}));
-			},
-			replace: function(item){
-				return item;
+		$(document).on('focus', '.name-input', function(){
+		var id = $(this).attr("id");
+		$.get("functions/fetch_user_list.php", {filter : "staff"}).done(function(data){
+			var userList = JSON.parse(data);
+			var autocompleteList = [];
+			for(var i = 0; i < userList.length; i++){
+				autocompleteList.push(userList[i].user);
 			}
-		}]);
-	});
-}).on('click', '.panel-heading-task', function(){
-	var id = document.getElementById($(this).attr("id")).dataset.trigger;
-	$("#body-task-"+id).collapse("toggle");
-}).on('show.bs.collapse', '.panel-task-body', function(){
-	var task_id = document.getElementById($(this).attr("id")).dataset.task;
-	fetchComments(task_id);
-}).on('click', '.btn-comment', function(){
-	var task_id = document.getElementById($(this).attr("id")).dataset.task;
-	var comment = $("#comment-form-"+task_id+">textarea").val();
-	var comment_author = <?php echo json_encode($_SESSION["user_id"]);?>;
-	postComment(comment, comment_author, task_id);
-}).on('focus', '#task-target-input', function(e){
-	e.stopPropagation();
-	var id = $(this).data().user;
-	$.get("functions/fetch_targets.php", {user_id : id}).done(function(data){
-		console.log(data);
-		var targetList = JSON.parse(data);
-		var autocompleteList = [];
-		for(var i = 0; i < targetList.length; i++){
-			autocompleteList.push(targetList[i].name);
-		}
-		$("#task-target-input").textcomplete([{
-			match: /(^|\b)(\w{2,})$/,
-			search: function(term, callback){
-				callback($.map(autocompleteList, function(item){
-					return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
-				}));
-			},
-			replace: function(item){
-				return item;
+			$("#"+id).textcomplete([{
+				match: /(^|\b)(\w{2,})$/,
+				search: function(term, callback){
+					callback($.map(autocompleteList, function(item){
+						return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
+					}));
+				},
+				replace: function(item){
+					return item;
+				}
+			}]);
+		});
+	}).on('click', '.panel-heading-task', function(){
+		var id = document.getElementById($(this).attr("id")).dataset.trigger;
+		$("#body-task-"+id).collapse("toggle");
+	}).on('show.bs.collapse', '.panel-task-body', function(){
+		var task_id = document.getElementById($(this).attr("id")).dataset.task;
+		fetchComments(task_id);
+	}).on('click', '.btn-comment', function(){
+		var task_id = document.getElementById($(this).attr("id")).dataset.task;
+		var comment = $("#comment-form-"+task_id+">textarea").val();
+		var comment_author = <?php echo json_encode($_SESSION["user_id"]);?>;
+		postComment(comment, comment_author, task_id);
+	}).on('focus', '#task-target-input', function(e){
+		e.stopPropagation();
+		var id = $(this).data().user;
+		$.get("functions/fetch_targets.php", {user_id : id}).done(function(data){
+			console.log(data);
+			var targetList = JSON.parse(data);
+			var autocompleteList = [];
+			for(var i = 0; i < targetList.length; i++){
+				autocompleteList.push(targetList[i].name);
 			}
-		}]);
-	})
-}).on('click', '.post-task', function(){
-	var task_title = $(".task-title-input").val();
-	var task_description = $(".task-description-input").val();
-	var task_token = $("#task-target-input").val();
-	if(task_token == ""){
-		task_token = "[USR-"+$("#task-target-input").data().user+"]";
-	}
-	postTask(task_title, task_description, task_token);
-}).on('click', '.delete-task', function(){
-	var task_id = document.getElementById($(this).attr("id")).dataset.task;
-	var table = "tasks";
-	$(".sub-modal").hide(0);
-	console.log(task_id, table);
-	$.when(deleteEntry(table, task_id)).done(function(){
-		$("#task-"+task_id).remove();
-	})
-}).on('click', '.toggle-task', function(){
-	var table_name = "tasks";
-	var flag = "task_state";
-	var target_id = document.getElementById($(this).attr("id")).dataset.target;
-
-	if($("#task-"+target_id).hasClass("task-new")){
-		var value = "1";
-	} else {
-		var value = "0";
-	}
-
-	$.when(updateColumn(table_name, flag, value, target_id)).done(function(){
-		$("#task-"+target_id).removeClass("task-new");
-		$("#task-"+target_id).removeClass("task-old");
-		$("#toggle-task-"+target_id).removeClass("glyphicon-ok-circle");
-		$("#toggle-task-"+target_id).removeClass("glyphicon-ok-sign");
-		if(value == 1){
-			$("#task-"+target_id).addClass("task-old");
-			$("#toggle-task-"+target_id).addClass("glyphicon-ok-circle");
-			$("#toggle-task-"+target_id).attr("title", "Marquer comme non traitée");
-		} else {
-			$("#task-"+target_id).addClass("task-new");
-			$("#toggle-task-"+target_id).addClass("glyphicon-ok-sign");
-			$("#toggle-task-"+target_id).attr("title", "Marquer comme traitée");
+			$("#task-target-input").textcomplete([{
+				match: /(^|\b)(\w{2,})$/,
+				search: function(term, callback){
+					callback($.map(autocompleteList, function(item){
+						return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
+					}));
+				},
+				replace: function(item){
+					return item;
+				}
+			}]);
+		})
+	}).on('click', '.post-task', function(){
+		var task_title = $(".task-title-input").val();
+		var task_description = $(".task-description-input").val();
+		var task_token = $("#task-target-input").val();
+		if(task_token == ""){
+			task_token = "[USR-"+$("#task-target-input").data().user+"]";
 		}
-	})
-}).on('click', '.glyphicon-button-alt', function(e){
-	e.stopPropagation();
-}).on('click', '.task-deadline', function(){
-	var deadline = moment($(".datepicker").val(), "DD/MM/YYYY HH:mm").format("YYYY-MM-DD HH:mm");
-	var task_id = document.getElementById($(this).attr("id")).dataset.task;
-	$(".sub-modal").hide(0);
-	$.when(updateColumn("tasks", "task_deadline", deadline, task_id)).done(function(){
-		// Deadline
-		if(deadline != null){
-			var deadline_class = displayDeadline(moment(deadline));
-			$("#deadline-"+task_id).removeClass("deadline-near");
-			$("#deadline-"+task_id).removeClass("deadline-expired");
-			$("#deadline-"+task_id).addClass(deadline_class);
-			console.log(deadline_class);
-			$("#deadline-"+task_id).html("<span class='glyphicon glyphicon-time'></span> "+moment(deadline).format("D MMM [à] H:mm"));
-		} else {
-			$("#deadline-"+task_id).html("<span class='glyphicon glyphicon-time'></span> Ajouter une date limite");
-		}
-	})
-})
+		postTask(task_title, task_description, task_token);
+	}).on('click', '.delete-task', function(){
+		var task_id = document.getElementById($(this).attr("id")).dataset.task;
+		var table = "tasks";
+		$(".sub-modal").hide(0);
+		console.log(task_id, table);
+		$.when(deleteEntry(table, task_id)).done(function(){
+			$("#task-"+task_id).remove();
+		})
+	}).on('click', '.toggle-task', function(){
+		var table_name = "tasks";
+		var flag = "task_state";
+		var target_id = document.getElementById($(this).attr("id")).dataset.target;
 
-function fetchTasks(user_id, filter, limit){
-	$.get("functions/fetch_tasks.php", {user_id : user_id, limit : limit, filter : filter}).done(function(data){
-		if(limit == 0 || $(".sub-modal-notification").is(":visible")){
-			if(top.location.pathname === "/Salsabor/dashboard"){
-				var half = true;
+		if($("#task-"+target_id).hasClass("task-new")){
+			var value = "1";
+		} else {
+			var value = "0";
+		}
+
+		$.when(updateColumn(table_name, flag, value, target_id)).done(function(){
+			$("#task-"+target_id).removeClass("task-new");
+			$("#task-"+target_id).removeClass("task-old");
+			$("#toggle-task-"+target_id).removeClass("glyphicon-ok-circle");
+			$("#toggle-task-"+target_id).removeClass("glyphicon-ok-sign");
+			if(value == 1){
+				$("#task-"+target_id).addClass("task-old");
+				$("#toggle-task-"+target_id).addClass("glyphicon-ok-circle");
+				$("#toggle-task-"+target_id).attr("title", "Marquer comme non traitée");
 			} else {
-				var half = false;
+				$("#task-"+target_id).addClass("task-new");
+				$("#toggle-task-"+target_id).addClass("glyphicon-ok-sign");
+				$("#toggle-task-"+target_id).attr("title", "Marquer comme traitée");
 			}
-			displayTasks(data, user_id, limit, filter, half);
-		}
-	});
-}
+			if(top.location.pathname === "/Salsabor/dashboard"){
+				$("#task-"+target_id).fadeOut('normal', function(){
+					$(this).remove();
+				});
+			}
+		})
+	}).on('click', '.glyphicon-button-alt', function(e){
+		e.stopPropagation();
+	}).on('click', '.task-deadline', function(){
+		var deadline = moment($(".datepicker").val(), "DD/MM/YYYY HH:mm").format("YYYY-MM-DD HH:mm");
+		var task_id = document.getElementById($(this).attr("id")).dataset.task;
+		$(".sub-modal").hide(0);
+		$.when(updateColumn("tasks", "task_deadline", deadline, task_id)).done(function(){
+			// Deadline
+			if(deadline != null){
+				var deadline_class = displayDeadline(moment(deadline));
+				$("#deadline-"+task_id).removeClass("deadline-near");
+				$("#deadline-"+task_id).removeClass("deadline-expired");
+				$("#deadline-"+task_id).addClass(deadline_class);
+				console.log(deadline_class);
+				$("#deadline-"+task_id).html("<span class='glyphicon glyphicon-time'></span> "+moment(deadline).format("D MMM [à] H:mm"));
+			} else {
+				$("#deadline-"+task_id).html("<span class='glyphicon glyphicon-time'></span> Ajouter une date limite");
+			}
+		})
+	})
+
+	function fetchTasks(user_id, filter, limit){
+		$.get("functions/fetch_tasks.php", {user_id : user_id, limit : limit, filter : filter}).done(function(data){
+			if(limit == 0 || $(".sub-modal-notification").is(":visible")){
+				if(top.location.pathname === "/Salsabor/dashboard"){
+					var half = true;
+				} else {
+					var half = false;
+				}
+				displayTasks(data, user_id, limit, filter, half);
+			}
+		});
+	}
 
 function fetchComments(task_id){
 	$.get("functions/fetch_comments.php", {task_id : task_id}).done(function(data){
@@ -163,6 +168,9 @@ function refreshTask(task){
 
 function displayTasks(data, user_id, limit, filter, half){
 	var tasks = JSON.parse(data);
+	if(tasks.length == 0){
+		$(".tasks-container").css("background-image", "url(assets/images/logotype_white.png)");
+	}
 	for(var i = 0; i < tasks.length; i++){
 		if($("#task-"+tasks[i].id).length > 0){
 			refreshTask(tasks[i]);
@@ -190,13 +198,13 @@ function displayTasks(data, user_id, limit, filter, half){
 				var comments_count_width = "col-lg-3";
 				var deadline_width = "col-lg-5";
 				var recipient_width = "col-lg-4"
-			} else {
-				var image_width = "col-lg-1";
-				var contents_width = "col-lg-11";
-				var comments_count_width = "col-lg-2";
-				var deadline_width = "col-lg-3";
-				var recipient_width = "col-lg-3";
-			}
+				} else {
+					var image_width = "col-lg-1";
+					var contents_width = "col-lg-11";
+					var comments_count_width = "col-lg-2";
+					var deadline_width = "col-lg-3";
+					var recipient_width = "col-lg-3";
+				}
 			contents += "<div class='col-sm-2 "+image_width+"'>";
 			contents += "<div class='notif-pp'>";
 			contents += "<image src='"+tasks[i].photo+"'>";

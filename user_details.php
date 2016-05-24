@@ -11,6 +11,10 @@ $data = $_GET['id'];
 $details = $db->query("SELECT * FROM users u
 						WHERE user_id='$data'")->fetch(PDO::FETCH_ASSOC);
 
+$labels = $db->query("SELECT * FROM user_ranks ur
+						JOIN rank r ON ur.rank_id_foreign = r.rank_id
+						WHERE user_id_foreign = '$data'");
+
 $details["count"] = $db->query("SELECT * FROM tasks
 					WHERE ((task_token LIKE '%USR%' AND task_target = '$data')
 					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$data'))
@@ -150,18 +154,23 @@ if(isset($_POST["edit"])){
 					</ul>
 					<form method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
 						<div class="form-group">
-							<label for="statuts" class="col-lg-3 control-label">Statut(s) du contact</label>
-							<div class="col-lg-9">
-								<label for="est_membre" class="control-label">Membre</label>
-								<input name="est_membre" id="est_membre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_membre"];?>">
-								<label for="est_professeur" class="control-label">Professeur</label>
-								<input name="est_professeur" id="est_professeur" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_professeur"];?>">
-								<label for="est_staff" class="control-label">Staff</label>
-								<input name="est_staff" id="est_staff" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_staff"];?>">
-								<label for="est_prestataire" class="control-label">Prestataire</label>
-								<input name="est_prestataire" id="est_prestataire" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_prestataire"];?>">
-								<label for="est_autre" class="contorl-label">Autre <span class="label-tip">Spécifiez en commentaire</span></label>
-								<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_autre"];?>">
+							<label for="statuts" class="col-lg-3 control-label">&Eacute;tiquettes</label>
+							<div class="col-lg-9"><h4>
+								<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
+								<span class="label label-salsabor label-clickable" title="Supprimer l'étiquette" id="label-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>"><?php echo $label["rank_name"];?></span>
+								<?php } ?>
+								<span class="label label-default label-clickable label-add" title="Ajouter une étiquette">+</span>
+								</h4>
+								<!--<label for="est_membre" class="control-label">Membre</label>
+<input name="est_membre" id="est_membre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_membre"];?>">
+<label for="est_professeur" class="control-label">Professeur</label>
+<input name="est_professeur" id="est_professeur" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_professeur"];?>">
+<label for="est_staff" class="control-label">Staff</label>
+<input name="est_staff" id="est_staff" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_staff"];?>">
+<label for="est_prestataire" class="control-label">Prestataire</label>
+<input name="est_prestataire" id="est_prestataire" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_prestataire"];?>">
+<label for="est_autre" class="contorl-label">Autre <span class="label-tip">Spécifiez en commentaire</span></label>
+<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_autre"];?>">-->
 							</div>
 						</div>
 						<div class="form-group">
@@ -226,73 +235,72 @@ if(isset($_POST["edit"])){
 		<?php include "scripts.php";?>
 		<script src="assets/js/fileinput.min.js"></script>
 		<script>
-			$("#avatar").fileinput({
-				overwriteInitial: true,
-				maxFileSize: 3000,
-				showClose: false,
-				showCaption: false,
-				browseLabel: '',
-				removeLabel: '',
-				browseIcon: '<i class="glyphicon glyphicon-folder-open"></i>',
-				removeTitle: 'Cancel or reset changes',
-				elErrorContainers: '#kv-avatar-errors',
-				elPreviewContainer: '#avatar-container',
-				msgErrorClass: 'alert alert-block alert-danger',
-				defaultPreviewContent: '<img src="<?php echo $details["photo"];?>" style="width:118px;">',
-				layoutTemplates: {main2: '{preview} {browse}' },
-			});
-			var listening = false;
-			var wait;
-			$("[name='fetch-rfid']").click(function(){
-				if(!listening){
-					wait = setInterval(function(){fetchRFID()}, 2000);
-					$("[name='fetch-rfid']").html("Détection en cours...");
-					listening = true;
-				} else {
-					clearInterval(wait);
-					$("[name='fetch-rfid']").html("Lancer la détection");
-					listening = false;
-				}
-			});
-			function fetchRFID(){
-				$.post('functions/fetch_rfid.php').done(function(data){
-					if(data != ""){
-						$("[name='rfid']").val(data);
+			$(document).ready(function(){
+				$("#avatar").fileinput({
+					overwriteInitial: true,
+					maxFileSize: 3000,
+					showClose: false,
+					showCaption: false,
+					browseLabel: '',
+					removeLabel: '',
+					browseIcon: '<i class="glyphicon glyphicon-folder-open"></i>',
+					removeTitle: 'Cancel or reset changes',
+					elErrorContainers: '#kv-avatar-errors',
+					elPreviewContainer: '#avatar-container',
+					msgErrorClass: 'alert alert-block alert-danger',
+					defaultPreviewContent: '<img src="<?php echo $details["photo"];?>" style="width:118px;">',
+					layoutTemplates: {main2: '{preview} {browse}' },
+				});
+				var listening = false;
+				var wait;
+				$("[name='fetch-rfid']").click(function(){
+					if(!listening){
+						wait = setInterval(function(){fetchRFID()}, 2000);
+						$("[name='fetch-rfid']").html("Détection en cours...");
+						listening = true;
+					} else {
 						clearInterval(wait);
 						$("[name='fetch-rfid']").html("Lancer la détection");
 						listening = false;
-					} else {
-						console.log("Aucun RFID détecté");
 					}
 				});
-			}
+				function fetchRFID(){
+					$.post('functions/fetch_rfid.php').done(function(data){
+						if(data != ""){
+							$("[name='rfid']").val(data);
+							clearInterval(wait);
+							$("[name='fetch-rfid']").html("Lancer la détection");
+							listening = false;
+						} else {
+							console.log("Aucun RFID détecté");
+						}
+					});
+				}
 
-			$("[name='link-forfait']").click(function(){
-				$("[name='forfaits-actifs']").show();
-				$("[name='link-forfait']").hide();
-			});
-
-			$("[name='forfaits-actifs']").blur(function(){
-				var clicked = $(this);
-				var eleve_id = <?php echo $data;?>;
-				var produit_id = clicked.val();
-				var cours_id = clicked.prev().val();
-				$.post("functions/link_forfait.php", {eleve_id : eleve_id, cours_id : cours_id, produit_id : produit_id}).done(function(data){
-					showSuccessNotif(data);
-					clicked.parents("tr.warning").removeClass('warning');
-					clicked.hide();
-					clicked.parent().html(produit_id);
+				$("[name='link-forfait']").click(function(){
+					$("[name='forfaits-actifs']").show();
+					$("[name='link-forfait']").hide();
 				});
-			});
 
-			$("[name='photo_identite']").fileinput({
-				previewFileType: "image",
-				showCaption: false,
-				showRemove: false,
-				showUpload: false,
-				browseClass: "btn btn-info",
-				browseLabel: "Photo",
-				browseIcon: '<i class="glyphicon glyphicon-picture"></i>'
+				$("[name='forfaits-actifs']").blur(function(){
+					var clicked = $(this);
+					var eleve_id = <?php echo $data;?>;
+					var produit_id = clicked.val();
+					var cours_id = clicked.prev().val();
+					$.post("functions/link_forfait.php", {eleve_id : eleve_id, cours_id : cours_id, produit_id : produit_id}).done(function(data){
+						showSuccessNotif(data);
+						clicked.parents("tr.warning").removeClass('warning');
+						clicked.hide();
+						clicked.parent().html(produit_id);
+					});
+				});
+
+			}).on('click', '.label-salsabor', function(){
+				var id = $(this).attr("id");
+				var target = document.getElementById(id).dataset.target;
+				$.when(deleteEntry("user_ranks", target)).done(function(data){
+					$("#"+id).remove();
+				});
 			});
 			<?php if($details["est_professeur"] == 1){?>
 
@@ -341,7 +349,7 @@ if(isset($_POST["edit"])){
 					});
 				})
 
-			});
+			})
 
 			function addTarif(){
 				var prof_id = $("#prof_id").val();
