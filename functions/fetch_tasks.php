@@ -5,6 +5,7 @@ $db = PDOFactory::getConnection();
 
 $limit = $_GET["limit"];
 $user_id = $_GET["user_id"];
+$filter = $_GET["filter"];
 
 // We dynamically construct the query depending on the flags
 $query = "SELECT * FROM tasks t
@@ -21,7 +22,13 @@ $query .= " (task_recipient IS NULL OR task_recipient = 0";
 if(isset($_SESSION["user_id"])){
 	$query .= " OR task_recipient = $_SESSION[user_id]";
 }
-$query .= ") ORDER BY task_id DESC";
+$query .= ")";
+if($filter == "pending"){
+	$query .= " AND task_state = 0";
+} else if($filter == "done"){
+	$query .= " AND task_state = 1";
+}
+$query .= " ORDER BY task_id DESC";
 if($limit != 0){
 	$query .= " LIMIT $limit";
 }

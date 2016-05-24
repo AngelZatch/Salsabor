@@ -118,15 +118,15 @@ $(document).on('focus', '.name-input', function(){
 	})
 })
 
-function fetchTasks(user_id, limit){
-	$.get("functions/fetch_tasks.php", {user_id : user_id, limit : limit}).done(function(data){
+function fetchTasks(user_id, filter, limit){
+	$.get("functions/fetch_tasks.php", {user_id : user_id, limit : limit, filter : filter}).done(function(data){
 		if(limit == 0 || $(".sub-modal-notification").is(":visible")){
 			if(top.location.pathname === "/Salsabor/dashboard"){
 				var half = true;
 			} else {
 				var half = false;
 			}
-			displayTasks(data, user_id, limit, half);
+			displayTasks(data, user_id, limit, filter, half);
 		}
 	});
 }
@@ -161,7 +161,7 @@ function refreshTask(task){
 	$("#comments-count-"+task.id).html("<span class='glyphicon glyphicon-comment'></span> "+task.message_count);
 }
 
-function displayTasks(data, user_id, limit, half){
+function displayTasks(data, user_id, limit, filter, half){
 	var tasks = JSON.parse(data);
 	for(var i = 0; i < tasks.length; i++){
 		if($("#task-"+tasks[i].id).length > 0){
@@ -279,7 +279,7 @@ function displayTasks(data, user_id, limit, half){
 			}
 		}
 	}
-	setTimeout(fetchTasks, 10000, user_id, limit);
+	setTimeout(fetchTasks, 10000, user_id, filter, limit);
 }
 
 function displayDeadline(deadline){

@@ -62,7 +62,7 @@ $details["count"] = $db->query("SELECT * FROM tasks
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');
-				fetchTasks(<?php echo $data;?>, 0);
+				fetchTasks(<?php echo $data;?>, null, 0);
 			}).on('click', '.panel-add-record', function(){
 				var emptyTask = "<div class='panel task-line task-new panel-new-task'>";
 				emptyTask += "<div class='panel-heading container-fluid'>";
