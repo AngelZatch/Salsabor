@@ -463,6 +463,33 @@ $(document).ready(function(){
 			};
 			break;
 
+		case 'user-tags':
+			title = "Ajouter une étiquette";
+			$(".sub-modal").removeClass("col-lg-7");
+			$(".sub-modal").addClass("col-lg-3");
+			$(".sub-modal").css({top : toffset.top+25+'px', left: toffset.left+25+'px'});
+			$.get("functions/fetch_user_tags.php").done(function(data){
+				var tags = JSON.parse(data), addable = "", added = "";
+				for(var i = 0; i < tags.length; i++){
+					$(".label-deletable").each(function(){
+						console.log($(this).text(), tags[i].rank_name, tags[i].rank_name == $(this).text());
+						if(tags[i].rank_name == $(this).text()){
+							addable = " toggled";
+							added = " <span class='glyphicon glyphicon-ok remove-extension'></span>";
+							return false;
+						} else {
+							addable = "";
+							added = "";
+						}
+					})
+					body += "<h4><span class='label col-xs-12 label-salsabor label-clickable label-addable"+addable+"' id='tag-"+tags[i].rank_id+"' data-tag='"+tags[i].rank_id+"'>"+tags[i].rank_name+added+"</span></h4>";
+				}
+				body += "<h4><span class='label col-xs-12 label-default label-clickable'>Créer une étiquette</span></h4>";
+				footer += "Ajouter";
+				$(".sub-modal-body").html(body);
+			})
+			break;
+
 		default:
 			title = "Sub modal";
 			break;
@@ -666,7 +693,6 @@ function updateColumn(table, column, value, target){
 function refreshUserBanner(user_id){
 	$.get("functions/fetch_user_banner_details.php", {user_id : user_id}).done(function(data){
 		var user_details = JSON.parse(data);
-		console.log(user_details);
 		$("#user_prenom:not(.editing)").text(user_details.user_prenom);
 		$("#user_nom:not(.editing)").text(user_details.user_nom);
 		$("#refresh-mail:not(.editing)").text(user_details.mail);

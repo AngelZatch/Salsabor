@@ -12,7 +12,7 @@ $details = $db->query("SELECT * FROM users u
 						WHERE user_id='$data'")->fetch(PDO::FETCH_ASSOC);
 
 $labels = $db->query("SELECT * FROM user_ranks ur
-						JOIN rank r ON ur.rank_id_foreign = r.rank_id
+						JOIN tags_user tu ON ur.rank_id_foreign = tu.rank_id
 						WHERE user_id_foreign = '$data'");
 
 $details["count"] = $db->query("SELECT * FROM tasks
@@ -127,6 +127,8 @@ if(isset($_POST["edit"])){
 		<title>Editer - <?php echo $details["user_prenom"]." ".$details["user_nom"];?> | Salsabor</title>
 		<base href="../">
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/fileinput.min.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -155,11 +157,12 @@ if(isset($_POST["edit"])){
 					<form method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
 						<div class="form-group">
 							<label for="statuts" class="col-lg-3 control-label">&Eacute;tiquettes</label>
-							<div class="col-lg-9"><h4>
-								<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
-								<span class="label label-salsabor label-clickable" title="Supprimer l'étiquette" id="label-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>"><?php echo $label["rank_name"];?></span>
-								<?php } ?>
-								<span class="label label-default label-clickable label-add" title="Ajouter une étiquette">+</span>
+							<div class="col-lg-9 user_tags">
+								<h4>
+									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
+									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="user-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>"><?php echo $label["rank_name"];?></span>
+									<?php } ?>
+									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='user-tags' title="Ajouter une étiquette">+</span>
 								</h4>
 								<!--<label for="est_membre" class="control-label">Membre</label>
 <input name="est_membre" id="est_membre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_membre"];?>">
@@ -232,8 +235,7 @@ if(isset($_POST["edit"])){
 				</div>
 			</div>
 		</div>
-		<?php include "scripts.php";?>
-		<script src="assets/js/fileinput.min.js"></script>
+		<?php include "inserts/sub_modal_product.php";?>
 		<script>
 			$(document).ready(function(){
 				$("#avatar").fileinput({
@@ -294,15 +296,32 @@ if(isset($_POST["edit"])){
 						clicked.parent().html(produit_id);
 					});
 				});
-
-			}).on('click', '.label-salsabor', function(){
+			}).on('click', '.label-deletable', function(){
 				var id = $(this).attr("id");
 				var target = document.getElementById(id).dataset.target;
 				$.when(deleteEntry("user_ranks", target)).done(function(data){
 					$("#"+id).remove();
 				});
-			});
-			<?php if($details["est_professeur"] == 1){?>
+			}).on('click', '.label-addable', function(e){
+				e.stopPropagation();
+				var tag = document.getElementById($(this).attr("id")).dataset.tag;
+				var user = /([0-9]+)/.exec(document.location.href);
+				var tag_text = $(this).text();
+				if($(this).hasClass("toggled")){
+					$.post("functions/detach_tag.php", {tag : tag, user : user[0]}).done(function(data){
+						$("#tag-"+tag).removeClass("toggled");
+						$("#tag-"+tag).find("span").remove();
+						$("#label-"+data).remove();
+					})
+				} else {
+					$.post("functions/attach_tag.php", {tag : tag, user : user[0]}).done(function(data){
+						$("#tag-"+tag).addClass("toggled");
+						$("#tag-"+tag).append("<span class='glyphicon glyphicon-ok remove-extension'></span>");
+						$(".label-add").before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='label-"+data+"' data-target='"+data+"'>"+tag_text+"</span>");
+					})
+				}
+			})
+				<?php if($details["est_professeur"] == 1){?>
 
 			$("#add-tarif").click(function(){
 				$("#new-tarif").show();

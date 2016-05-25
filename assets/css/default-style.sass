@@ -85,6 +85,10 @@ legend
 	a, input, button
 		float: right
 
+.input-group > .form-control
+	z-index: 0 !important
+
+/** LABELS **/
 .user-labels
 	padding-bottom: 10px
 	margin-top: -10px
@@ -95,8 +99,17 @@ legend
 	&:hover
 		background-color: lighten($salsabor-red, 10%)
 
+.label-add
+	margin-left: 5px
+
 .label-clickable
 	cursor: pointer
+
+.label-addable
+	margin-bottom: 5px
+	text-align: left
+	padding-top: .5em
+	padding-bottom: .5em
 
 .label-add
 	&:hover
@@ -533,7 +546,6 @@ h2.modal-body-title.first
 	padding-top: 10px
 	max-height: 350px
 	overflow-y: scroll
-	overflow: hide
 
 .sub-modal-footer
 	padding-top: 5px
