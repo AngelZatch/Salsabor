@@ -18,7 +18,6 @@ if(isset($_SESSION["username"])){
 			session_start();
 			$_SESSION["user_id"] = $credentials["user_id"];
 			$_SESSION["username"] = $credentials["user_prenom"];
-			$_SESSION["power"] = $credentials["est_staff"];
 			$_SESSION["photo"] = $credentials["photo"];
 			header("Location: dashboard");
 		}

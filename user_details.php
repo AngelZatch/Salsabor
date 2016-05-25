@@ -21,8 +21,12 @@ $details["count"] = $db->query("SELECT * FROM tasks
 					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$data')))
 						AND task_state = 0")->rowCount();
 
-// Si l'élève est un professeur
-if($details["est_professeur"] == 1){
+$is_teacher = $db->query("SELECT * FROM user_ranks ur
+								JOIN tags_user tu ON tu.rank_id = ur.rank_id_foreign
+								WHERE rank_name = 'Professeur' AND user_id_foreign = '$data'")->rowCount();
+
+// If the user is a teacher
+/*if($is_teacher == 1){
 	// On obtient l'historique de ses cours
 	$queryHistoryDonnes = $db->prepare('SELECT * FROM cours JOIN niveau ON cours_niveau=niveau.niveau_id JOIN salle ON cours_salle=salle.salle_id WHERE prof_principal=? OR prof_remplacant=? ORDER BY cours_start ASC');
 	$queryHistoryDonnes->bindValue(1, $data);
@@ -44,7 +48,7 @@ if($details["est_professeur"] == 1){
 	$totalPrice = 0;
 	$totalPaid = 0;
 	$totalDue = 0;
-}
+}*/
 
 // Et on cherche à savoir si des échéances sont en retard
 $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$data")->rowCount();
@@ -59,7 +63,7 @@ if(isset($_POST["edit"])){
 		try{
 			$db->beginTransaction();
 			$edit = $db->prepare('UPDATE users
-								SET user_rfid = :rfid, date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville, tel_secondaire = :tel_secondaire, photo = :photo, est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre, commentaires = :commentaires
+								SET user_rfid = :rfid, date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville, tel_secondaire = :tel_secondaire, photo = :photo, commentaires = :commentaires
 								WHERE user_id = :id');
 			$edit->bindParam(':rfid', $_POST["rfid"]);
 			$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
@@ -68,11 +72,6 @@ if(isset($_POST["edit"])){
 			$edit->bindParam(':ville', $_POST["ville"]);
 			$edit->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
 			$edit->bindParam(':photo', $picture);
-			$edit->bindParam(':est_membre', $_POST["est_membre"]);
-			$edit->bindParam(':est_professeur', $_POST["est_professeur"]);
-			$edit->bindParam(':est_staff', $_POST["est_staff"]);
-			$edit->bindParam(':est_prestataire', $_POST["est_prestataire"]);
-			$edit->bindParam(':est_autre', $_POST["est_autre"]);
 			$edit->bindParam(':commentaires', $_POST["commentaires"]);
 			$edit->bindParam(':id', $data);
 			$edit->execute();
@@ -91,7 +90,7 @@ if(isset($_POST["edit"])){
 		try{
 			$db->beginTransaction();
 			$edit = $db->prepare('UPDATE users
-								SET user_rfid = :rfid, date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville, tel_secondaire = :tel_secondaire, est_membre = :est_membre, est_professeur = :est_professeur, est_staff = :est_staff, est_prestataire = :est_prestataire, est_autre = :est_autre, commentaires = :commentaires
+								SET user_rfid = :rfid, date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville, tel_secondaire = :tel_secondaire, commentaires = :commentaires
 								WHERE user_id = :id');
 			$edit->bindParam(':rfid', $_POST["rfid"]);
 			$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
@@ -99,11 +98,6 @@ if(isset($_POST["edit"])){
 			$edit->bindParam(':code_postal', $_POST["code_postal"]);
 			$edit->bindParam(':ville', $_POST["ville"]);
 			$edit->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
-			$edit->bindParam(':est_membre', $_POST["est_membre"]);
-			$edit->bindParam(':est_professeur', $_POST["est_professeur"]);
-			$edit->bindParam(':est_staff', $_POST["est_staff"]);
-			$edit->bindParam(':est_prestataire', $_POST["est_prestataire"]);
-			$edit->bindParam(':est_autre', $_POST["est_autre"]);
 			$edit->bindParam(':commentaires', $_POST["commentaires"]);
 			$edit->bindParam(':id', $data);
 			$edit->execute();
@@ -129,6 +123,7 @@ if(isset($_POST["edit"])){
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
 		<script src="assets/js/fileinput.min.js"></script>
+		<script src="assets/js/tags.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -148,7 +143,7 @@ if(isset($_POST["edit"])){
 						<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/reservations">Réservations</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/taches">Tâches</a></li>
-						<?php if($details["est_professeur"] == 1){ ?>
+						<?php if($is_teacher != 0){ ?>
 						<li role="presentation"><a>Cours donnés</a></li>
 						<li role="presentation"><a>Tarifs</a></li>
 						<li role="presentation"><a>Statistiques</a></li>
@@ -164,16 +159,6 @@ if(isset($_POST["edit"])){
 									<?php } ?>
 									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='user-tags' title="Ajouter une étiquette">+</span>
 								</h4>
-								<!--<label for="est_membre" class="control-label">Membre</label>
-<input name="est_membre" id="est_membre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_membre"];?>">
-<label for="est_professeur" class="control-label">Professeur</label>
-<input name="est_professeur" id="est_professeur" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_professeur"];?>">
-<label for="est_staff" class="control-label">Staff</label>
-<input name="est_staff" id="est_staff" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_staff"];?>">
-<label for="est_prestataire" class="control-label">Prestataire</label>
-<input name="est_prestataire" id="est_prestataire" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_prestataire"];?>">
-<label for="est_autre" class="contorl-label">Autre <span class="label-tip">Spécifiez en commentaire</span></label>
-<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $details["est_autre"];?>">-->
 							</div>
 						</div>
 						<div class="form-group">
@@ -296,44 +281,8 @@ if(isset($_POST["edit"])){
 						clicked.parent().html(produit_id);
 					});
 				});
-			}).on('click', '.label-deletable', function(){
-				var id = $(this).attr("id");
-				var target = document.getElementById(id).dataset.target;
-				$.when(deleteEntry("user_ranks", target)).done(function(data){
-					$("#"+id).remove();
-				});
-			}).on('click', '.label-addable', function(e){
-				e.stopPropagation();
-				var tag = document.getElementById($(this).attr("id")).dataset.tag;
-				var user = /([0-9]+)/.exec(document.location.href);
-				var tag_text = $(this).text();
-				if($(this).hasClass("toggled")){
-					$.post("functions/detach_tag.php", {tag : tag, user : user[0]}).done(function(data){
-						$("#tag-"+tag).removeClass("toggled");
-						$("#tag-"+tag).find("span").remove();
-						$("#user-tag-"+data).remove();
-					})
-				} else {
-					$.post("functions/attach_tag.php", {tag : tag, user : user[0]}).done(function(data){
-						$("#tag-"+tag).addClass("toggled");
-						$("#tag-"+tag).append("<span class='glyphicon glyphicon-ok remove-extension'></span>");
-						$(".label-add").before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='user-tag-"+data+"' data-target='"+data+"'>"+tag_text+"</span>");
-					})
-				}
-			}).on('click', '.label-new-tag', function(){
-				$(this).before("<input class='tag-input form-control' placeholder='Titre de l&apos;étiquette'>");
-				$(".tag-input").focus();
-			}).on('focus', '.tag-input', function(){
-				$(this).keyup(function(event){
-					if(event.which == 13){
-						var tag_name = $(this).val();
-						createUserTag(tag_name);
-					} else if(event.which == 27){
-						$(".tag-input").remove();
-					}
-				})
 			})
-				<?php if($details["est_professeur"] == 1){?>
+				<?php if($is_teacher == 1){?>
 
 			$("#add-tarif").click(function(){
 				$("#new-tarif").show();

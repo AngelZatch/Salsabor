@@ -8,26 +8,14 @@ $db = PDOFactory::getConnection();
 require_once 'functions/cours.php';
 /** Récupération des valeurs dans la base de données des champs **/
 $id = $_GET['id'];
-$queryCours = $db->prepare('SELECT * FROM cours WHERE cours_id=?');
-$queryCours->bindParam(1, $id);
-$queryCours->execute();
-$cours = $queryCours->fetch(PDO::FETCH_ASSOC);
+$cours = $db->query("SELECT * FROM cours c
+							JOIN users u ON c.prof_principal = u.user_id
+							WHERE cours_id='$id'")->fetch(PDO::FETCH_ASSOC);
 
 $queryParent = $db->prepare('SELECT recurrence, frequence_repetition, parent_end_date FROM cours_parent WHERE parent_id=?');
 $queryParent->bindParam(1, $cours['cours_parent_id']);
 $queryParent->execute();
 $res_recurrence = $queryParent->fetch(PDO::FETCH_ASSOC);
-
-$queryProf = $db->prepare('SELECT * FROM users WHERE user_id=? AND est_professeur=1');
-$queryProf->bindParam(1, $cours['prof_principal']);
-$queryProf->execute();
-$data_prof = $queryProf->fetch(PDO::FETCH_ASSOC);
-
-/*$queryTarif = $db->prepare('SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=? AND type_prestation=?');
-$queryTarif->bindParam(1, $cours['prof_principal']);
-$queryTarif->bindParam(2, $cours['cours_type']);
-$queryTarif->execute();
-$tarif = $queryTarif->fetch(PDO::FETCH_ASSOC);*/
 
 $queryTypes = $db->query('SELECT * FROM prestations WHERE est_cours=1');
 
@@ -193,7 +181,7 @@ if(isset($_POST['deleteCoursAll'])){
 						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">Professeur</label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="enseignant" id="enseignant" value="<?php echo $data_prof['user_prenom']." ".$data_prof['user_nom'];?>">
+								<input type="text" class="form-control" name="enseignant" id="enseignant" value="<?php echo $cours['user_prenom']." ".$cours['user_nom'];?>">
 							</div>
 						</div>
 						<div class="form-group">

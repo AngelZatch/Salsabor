@@ -5,7 +5,7 @@
 	<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
 	<li role="presentation"><a href="user/<?php echo $data;?>/reservations">Réservations</a></li>
 	<li role="presentation"><a href="user/<?php echo $data;?>/taches">Tâches</a></li>
-	<?php if($details["est_professeur"] == 1){ ?>
+	<?php if($is_teacher == 1){ ?>
 	<li role="presentation"><a>Cours donnés</a></li>
 	<li role="presentation"><a>Tarifs</a></li>
 	<li role="presentation"><a>Statistiques</a></li>

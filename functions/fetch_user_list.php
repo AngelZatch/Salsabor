@@ -6,8 +6,8 @@ $filter = $_GET["filter"];
 
 if($filter == "active"){
 	$queryList = $db->query("SELECT * FROM users u
-						WHERE est_professeur != 1
-						AND est_staff != 1
+						WHERE user_id NOT IN (SELECT user_id_foreign FROM user_ranks ur JOIN tags_user tu ON ur.rank_id_foreign = tu.rank_id WHERE rank_name = 'Professeur')
+						AND user_id NOT IN (SELECT user_id_foreign FROM user_ranks ur JOIN tags_user tu ON ur.rank_id_foreign = tu.rank_id WHERE rank_name = 'Staff')
 						AND actif = 1
 						ORDER BY user_nom DESC");
 	$userList = array();
@@ -19,7 +19,7 @@ if($filter == "active"){
 	}
 } else if($filter == "staff"){
 	$queryList = $db->query("SELECT * FROM users u
-						WHERE est_staff = 1
+						WHERE user_id IN (SELECT user_id_foreign FROM user_ranks ur JOIN tags_user tu ON ur.rank_id_foreign = tu.rank_id WHERE rank_name = 'Staff')
 						ORDER BY user_nom DESC");
 	$userList = array();
 	while($user = $queryList->fetch(PDO::FETCH_ASSOC)){

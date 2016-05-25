@@ -32,13 +32,11 @@ if(isset($_POST['addAdherent'])){
 			$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
 												date_inscription, rue, code_postal, ville, mail,
 												telephone, tel_secondaire, photo, source_connaissance,
-												acces_web, est_membre, est_professeur, est_staff, est_prestataire,
-												est_autre, autre_statut, user_rib, actif, commentaires)
+												acces_web, user_rib, actif, commentaires)
 										VALUES(:prenom, :nom, :rfid, :date_naissance,
 												:date_inscription, :rue, :code_postal, :ville, :mail,
 												:telephone, :tel_secondaire, :photo, :sources_connaissance,
-												:acces_web, :est_membre, :est_professeur, :est_staff, :est_prestataire,
-												:est_autre, :autre_statut, :user_rib, :actif, :commentaires)');
+												:acces_web, :user_rib, :actif, :commentaires)');
 			$new->bindParam(':prenom', $_POST['identite_prenom']);
 			$new->bindParam(':nom', $_POST['identite_nom']);
 			$new->bindParam(':rfid', $_POST["rfid"]);
@@ -53,12 +51,6 @@ if(isset($_POST['addAdherent'])){
 			$new->bindParam(':photo', $picture);
 			$new->bindParam(':sources_connaissance', $_POST["sources_connaissance"]);
 			$new->bindParam(':acces_web', $acces_web);
-			$new->bindParam(':est_membre', $_POST["est_membre"]);
-			$new->bindParam(':est_professeur', $_POST["est_professeur"]);
-			$new->bindParam(':est_staff', $_POST["est_staff"]);
-			$new->bindParam(':est_prestataire', $_POST["est_prestataire"]);
-			$new->bindParam(':est_autre', $_POST["est_autre"]);
-			$new->bindParam(':autre_statut', $_POST["est_statut"]);
 			$new->bindParam(':user_rib', $_POST["user_rib"]);
 			$new->bindParam(':actif', $actif);
 			$new->bindParam(':commentaires', $_POST["commentaires"]);
@@ -80,13 +72,11 @@ if(isset($_POST['addAdherent'])){
 			$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
 												date_inscription, rue, code_postal, ville, mail,
 												telephone, tel_secondaire, source_connaissance,
-												acces_web, est_membre, est_professeur, est_staff, est_prestataire,
-												est_autre, autre_statut, user_rib, actif, commentaires)
+												acces_web, user_rib, actif, commentaires)
 										VALUES(:prenom, :nom, :rfid, :date_naissance,
 												:date_inscription, :rue, :code_postal, :ville, :mail,
 												:telephone, :tel_secondaire, :sources_connaissance,
-												:acces_web, :est_membre, :est_professeur, :est_staff, :est_prestataire,
-												:est_autre, :autre_statut, :user_rib, :actif, :commentaires)');
+												:acces_web, :user_rib, :actif, :commentaires)');
 			$new->bindParam(':prenom', $_POST['identite_prenom']);
 			$new->bindParam(':nom', $_POST['identite_nom']);
 			$new->bindParam(':rfid', $_POST["rfid"]);
@@ -100,13 +90,6 @@ if(isset($_POST['addAdherent'])){
 			$new->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
 			$new->bindParam(':sources_connaissance', $_POST["sources_connaissance"]);
 			$new->bindParam(':acces_web', $acces_web);
-			$new->bindParam(':est_membre', $_POST["est_membre"]);
-			$new->bindParam(':est_professeur', $_POST["est_professeur"]);
-			$new->bindParam(':est_staff', $_POST["est_staff"]);
-			$new->bindParam(':est_prestataire', $_POST["est_prestataire"]);
-			$new->bindParam(':est_autre', $_POST["est_autre"]);
-			$new->bindParam(':autre_statut', $_POST["est_statut"]);
-			$new->bindParam(':user_rib', $_POST["user_rib"]);
 			$new->bindParam(':actif', $actif);
 			$new->bindParam(':commentaires', $_POST["commentaires"]);
 			$new->execute();
@@ -140,13 +123,11 @@ if(isset($_POST['addSell'])){
 			$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
 												date_inscription, rue, code_postal, ville, mail,
 												telephone, tel_secondaire, photo, source_connaissance,
-												acces_web, est_membre, est_professeur, est_staff, est_prestataire,
-												est_autre, autre_statut, user_rib, actif, commentaires)
+												acces_web, actif, commentaires)
 										VALUES(:prenom, :nom, :rfid, :date_naissance,
 												:date_inscription, :rue, :code_postal, :ville, :mail,
 												:telephone, :tel_secondaire, :photo, :sources_connaissance,
-												:acces_web, :est_membre, :est_professeur, :est_staff, :est_prestataire,
-												:est_autre, :autre_statut, :user_rib, :actif, :commentaires)');
+												:acces_web, :user_rib, :actif, :commentaires)');
 			$new->bindParam(':prenom', $_POST['identite_prenom']);
 			$new->bindParam(':nom', $_POST['identite_nom']);
 			$new->bindParam(':rfid', $_POST["rfid"]);
@@ -161,12 +142,6 @@ if(isset($_POST['addSell'])){
 			$new->bindParam(':photo', $picture);
 			$new->bindParam(':sources_connaissance', $_POST["sources_connaissance"]);
 			$new->bindParam(':acces_web', $acces_web);
-			$new->bindParam(':est_membre', $_POST["est_membre"]);
-			$new->bindParam(':est_professeur', $_POST["est_professeur"]);
-			$new->bindParam(':est_staff', $_POST["est_staff"]);
-			$new->bindParam(':est_prestataire', $_POST["est_prestataire"]);
-			$new->bindParam(':est_autre', $_POST["est_autre"]);
-			$new->bindParam(':autre_statut', $_POST["est_statut"]);
 			$new->bindParam(':user_rib', $_POST["user_rib"]);
 			$new->bindParam(':actif', $actif);
 			$new->bindParam(':commentaires', $_POST["commentaires"]);
@@ -188,13 +163,11 @@ if(isset($_POST['addSell'])){
 			$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
 												date_inscription, rue, code_postal, ville, mail,
 												telephone, tel_secondaire, source_connaissance,
-												acces_web, est_membre, est_professeur, est_staff, est_prestataire,
-												est_autre, autre_statut, user_rib, actif, commentaires)
+												acces_web, user_rib, actif, commentaires)
 										VALUES(:prenom, :nom, :rfid, :date_naissance,
 												:date_inscription, :rue, :code_postal, :ville, :mail,
 												:telephone, :tel_secondaire, :sources_connaissance,
-												:acces_web, :est_membre, :est_professeur, :est_staff, :est_prestataire,
-												:est_autre, :autre_statut, :user_rib, :actif, :commentaires)');
+												:acces_web, :user_rib, :actif, :commentaires)');
 			$new->bindParam(':prenom', $_POST['identite_prenom']);
 			$new->bindParam(':nom', $_POST['identite_nom']);
 			$new->bindParam(':rfid', $_POST["rfid"]);
@@ -208,12 +181,6 @@ if(isset($_POST['addSell'])){
 			$new->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
 			$new->bindParam(':sources_connaissance', $_POST["sources_connaissance"]);
 			$new->bindParam(':acces_web', $acces_web);
-			$new->bindParam(':est_membre', $_POST["est_membre"]);
-			$new->bindParam(':est_professeur', $_POST["est_professeur"]);
-			$new->bindParam(':est_staff', $_POST["est_staff"]);
-			$new->bindParam(':est_prestataire', $_POST["est_prestataire"]);
-			$new->bindParam(':est_autre', $_POST["est_autre"]);
-			$new->bindParam(':autre_statut', $_POST["est_statut"]);
 			$new->bindParam(':user_rib', $_POST["user_rib"]);
 			$new->bindParam(':actif', $actif);
 			$new->bindParam(':commentaires', $_POST["commentaires"]);
@@ -237,6 +204,9 @@ if(isset($_POST['addSell'])){
 		<meta charset="UTF-8">
 		<title>Inscription d'un adhérent | Salsabor</title>
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/fileinput.min.js"></script>
+		<?php include "inserts/sub_modal_product.php";?>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -341,28 +311,6 @@ if(isset($_POST['addSell'])){
 								</div>
 							</div>
 						</div>
-						<div class="form-group">
-							<label for="statuts" class="col-sm-3 control-label">Statut(s) du contact</label>
-							<div class="col-sm-9">
-								<label for="est_membre" class="control-label">Membre</label>
-								<input name="est_membre" id="est_membre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueEleve;?>">
-								<label for="est_professeur" class="control-label">Professeur</label>
-								<input name="est_professeur" id="est_professeur" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueTeacher;?>">
-								<label for="est_staff" class="control-label">Staff</label>
-								<input name="est_staff" id="est_staff" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $valueStaff;?>">
-								<label for="est_prestataire" class="control-label">Prestataire</label>
-								<input name="est_prestataire" id="est_prestataire" class="rib-toggle" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
-								<label for="est_autre" class="contorl-label">Autre <span class="label-tip">Spécifiez ci-dessous</span></label>
-								<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0"><br>
-								<span class="label-tip">Cochez autant que nécessaire</span>
-							</div>
-						</div>
-						<div class="form-group" id="autre" style="display:none;">
-							<label for="autre_statut" class="col-sm-3 control-label">Autre statut</label>
-							<div class="col-sm-9">
-								<input type="text" name="autre_statut" class="form-control">
-							</div>
-						</div>
 						<div class="form-group" id="rib-data" style="display:none;">
 							<label for="rib" class="col-sm-3 control-label">Informations bancaires</label>
 							<div class="col-sm-9">
@@ -391,8 +339,6 @@ if(isset($_POST['addSell'])){
 				</div>
 			</div>
 		</div>
-		<?php include "scripts.php";?>
-		<script src="assets/js/fileinput.min.js"></script>
 		<script>
 			$("#avatar").fileinput({
 				overwriteInitial: true,
@@ -408,24 +354,6 @@ if(isset($_POST['addSell'])){
 				msgErrorClass: 'alert alert-block alert-danger',
 				defaultPreviewContent: '<img src="assets/images/logotype-white.png" style="width:118px;">',
 				layoutTemplates: {main2: '{preview} {browse}' },
-			});
-			$(document).ready(function(){
-				$("#est_autre").change(function(){
-					if($(this).val() == '1'){
-						$("#autre").show('600');
-					} else {
-						$("#autre").hide('600');
-					}
-				});
-
-				$(".rib-toggle").change(function(){
-					if($("#est_staff").val() == '0' && $("#est_professeur").val() == '0' && $("#est_prestataire").val() == '0'){
-						$("#rib-data").hide('600');
-					} else {
-						$("#rib-data").show('600');
-					}
-				})
-
 			});
 			var listening = false;
 			var wait;

@@ -21,6 +21,10 @@ $details["count"] = $db->query("SELECT * FROM tasks
 $queryResa = $db->prepare('SELECT * FROM reservations JOIN users ON reservation_personne=users.user_id JOIN prestations ON type_prestation=prestations_id JOIN salle ON reservation_salle=salle.salle_id WHERE reservation_personne=?');
 $queryResa->bindValue(1, $data);
 $queryResa->execute();
+
+$is_teacher = $db->query("SELECT * FROM user_ranks ur
+								JOIN tags_user tu ON tu.rank_id = ur.rank_id_foreign
+								WHERE rank_name = 'Professeur' AND user_id_foreign = '$data'")->rowCount();
 ?>
 <html>
 	<head>
@@ -44,7 +48,7 @@ $queryResa->execute();
 						<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
 						<li role="presentation" class="active"><a href="user/<?php echo $data;?>/reservations">Réservations</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/taches">Tâches</a></li>
-						<?php if($details["est_professeur"] == 1){ ?>
+						<?php if($is_teacher == 1){ ?>
 						<li role="presentation"><a>Cours donnés</a></li>
 						<li role="presentation"><a>Tarifs</a></li>
 						<li role="presentation"><a>Statistiques</a></li>

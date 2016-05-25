@@ -16,6 +16,10 @@ $details["count"] = $db->query("SELECT * FROM tasks
 					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$data'))
 					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$data')))
 						AND task_state = 0")->rowCount();
+
+$is_teacher = $db->query("SELECT * FROM user_ranks ur
+								JOIN tags_user tu ON tu.rank_id = ur.rank_id_foreign
+								WHERE rank_name = 'Professeur' AND user_id_foreign = '$data'")->rowCount();
 ?>
 <html>
 	<head>
@@ -42,7 +46,7 @@ $details["count"] = $db->query("SELECT * FROM tasks
 						<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/reservations">Réservations</a></li>
 						<li role="presentation" class="active"><a href="user/<?php echo $data;?>/taches">Tâches</a></li>
-						<?php if($details["est_professeur"] == 1){ ?>
+						<?php if($is_teacher == 1){ ?>
 						<li role="presentation"><a>Cours donnés</a></li>
 						<li role="presentation"><a>Tarifs</a></li>
 						<li role="presentation"><a>Statistiques</a></li>
