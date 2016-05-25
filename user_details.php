@@ -311,15 +311,27 @@ if(isset($_POST["edit"])){
 					$.post("functions/detach_tag.php", {tag : tag, user : user[0]}).done(function(data){
 						$("#tag-"+tag).removeClass("toggled");
 						$("#tag-"+tag).find("span").remove();
-						$("#label-"+data).remove();
+						$("#user-tag-"+data).remove();
 					})
 				} else {
 					$.post("functions/attach_tag.php", {tag : tag, user : user[0]}).done(function(data){
 						$("#tag-"+tag).addClass("toggled");
 						$("#tag-"+tag).append("<span class='glyphicon glyphicon-ok remove-extension'></span>");
-						$(".label-add").before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='label-"+data+"' data-target='"+data+"'>"+tag_text+"</span>");
+						$(".label-add").before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='user-tag-"+data+"' data-target='"+data+"'>"+tag_text+"</span>");
 					})
 				}
+			}).on('click', '.label-new-tag', function(){
+				$(this).before("<input class='tag-input form-control' placeholder='Titre de l&apos;étiquette'>");
+				$(".tag-input").focus();
+			}).on('focus', '.tag-input', function(){
+				$(this).keyup(function(event){
+					if(event.which == 13){
+						var tag_name = $(this).val();
+						createUserTag(tag_name);
+					} else if(event.which == 27){
+						$(".tag-input").remove();
+					}
+				})
 			})
 				<?php if($details["est_professeur"] == 1){?>
 

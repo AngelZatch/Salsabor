@@ -484,7 +484,7 @@ $(document).ready(function(){
 					})
 					body += "<h4><span class='label col-xs-12 label-salsabor label-clickable label-addable"+addable+"' id='tag-"+tags[i].rank_id+"' data-tag='"+tags[i].rank_id+"'>"+tags[i].rank_name+added+"</span></h4>";
 				}
-				body += "<h4><span class='label col-xs-12 label-default label-clickable'>Créer une étiquette</span></h4>";
+				body += "<h4><span class='label col-xs-12 label-default label-clickable label-new-tag'>Créer une étiquette</span></h4>";
 				footer += "Ajouter";
 				$(".sub-modal-body").html(body);
 			})
@@ -711,4 +711,10 @@ function deleteEntry(table, entry_id){
 
 function postNotification(token, target, recipient){
 	return $.post("functions/post_notifications.php", {token : token, target : target, recipient : recipient});
+}
+
+function createUserTag(tag_name){
+	$.post("functions/create_user_tag.php", {name : tag_name}).done(function(data){
+		$(".tag-input").replaceWith("<h4><span class='label col-xs-12 label-salsabor label-clickable label-addable' id='tag-"+data+"' data-tag='"+data+"'>"+tag_name+"</span></h4>");
+	})
 }
