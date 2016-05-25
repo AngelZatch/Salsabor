@@ -45,7 +45,7 @@ if(isset($_SESSION["username"])){
 						</div>
 						<input type="submit" class="btn btn-primary btn-block" name="login" value="Connexion">
 					</form>
-					<!--<p style="text-align: center">Pas de compte ? C'est par <a href="signup">ici</a></p>-->
+					<p class="no-account">Vous êtes staff sans compte ? Par <a href="link">ici</a></p>
 				</div>
 			</div>
 		</div>

@@ -21,6 +21,7 @@ RewriteRule ^notifications$ notifications.php
 RewriteRule ^notifications/settings$ notifications_settings.php
 RewriteRule ^taches$ tasks.php
 RewriteRule ^portal$ portal.php
+RewriteRule ^link$ link.php
 
 #User Details
 RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]
