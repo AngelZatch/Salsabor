@@ -45,6 +45,19 @@ $(document).on('click', '.label-deletable', function(){
 		$(".color-cube").empty();
 		cube.append("<span class='glyphicon glyphicon-ok color-selected'></span>");
 	})
+}).on('click', '.btn-tag-name', function(){
+	var target = $("#edit-tag-name").data().target;
+	var value = $("#edit-tag-name").val();
+	$.when(updateColumn("tags_user", "rank_name", value, target)).done(function(data){
+		$("#tag-"+target).text(value);
+	})
+}).on('click', '.delete-tag', function(){
+	$(".sub-modal").hide(0);
+	var target = $("#delete-tag").data().target;
+	$.when(deleteEntry("tags_user", target)).done(function(){
+		$("#edit-"+target).remove();
+		$("#tag-"+target).remove();
+	})
 })
 
 function fetchUserTags(){
@@ -73,6 +86,10 @@ function displayTargetTags(data){
 
 function createUserTag(tag_name){
 	$.post("functions/create_user_tag.php", {name : tag_name}).done(function(data){
-		$(".tag-input").replaceWith("<h4><span class='label col-xs-12 label-salsabor label-clickable label-addable' id='tag-"+data+"' data-tag='"+data+"'>"+tag_name+"</span></h4>");
+		if(top.location.pathname === "/Salsabor/tags"){
+			$(".tag-input").replaceWith("<span class='label col-xs-7 label-salsabor label-clickable label-addable' id='tag-"+data+"' data-tag='"+data+"'>"+tag_name+"</span><span class='glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt col-xs-1 trigger-sub' id='edit-"+data+"' data-subtype='edit-tag' data-target='"+data+"' title='Editer l&apos;étiquette'></span>");
+		} else {
+			$(".tag-input").replaceWith("<h4><span class='label col-xs-12 label-salsabor label-clickable label-addable' id='tag-"+data+"' data-tag='"+data+"'>"+tag_name+"</span></h4>");
+		}
 	})
 }

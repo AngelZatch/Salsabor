@@ -43,6 +43,7 @@ try{
 	user_id_foreign INT(11),
 	rank_id_foreign INT(11)
 	)");
+	// When migrating, we have to foreign key rank_id_foreign to tags_user.rank_id ON DELETE CASCADE
 	// Delete all the now useless fields from the user table
 	$users = $db->query("ALTER TABLE users
 						DROP est_membre,

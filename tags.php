@@ -38,6 +38,7 @@ $db = PDOFactory::getConnection();
 					body += "<span class='label col-xs-7 label-clickable label-restyle' id='tag-"+tags[i].rank_id+"' data-tag='"+tags[i].rank_id+"' style='background-color:"+tags[i].color+"'>"+tags[i].rank_name+"</span>";
 					body += "<span class='glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt col-xs-1 trigger-sub' id='edit-"+tags[i].rank_id+"' data-subtype='edit-tag' data-target='"+tags[i].rank_id+"' title='Editer l&apos;étiquette'></span>";
 				}
+				body += "<span class='label col-xs-7 label-default label-clickable label-new-tag'>Créer une étiquette</span>";
 				body += "</h4>";
 				$(".tags-container").append(body);
 			})

@@ -493,11 +493,15 @@ $(document).ready(function(){
 
 		case 'edit-tag':
 			var target = document.getElementById($(this).attr("id")).dataset.target;
+			var initialValue = $("#tag-"+target).text();
 			title = "Modifier une étiquette";
 			$(".sub-modal").removeClass("col-lg-7");
 			$(".sub-modal").addClass("col-lg-3");
 			$(".sub-modal").css({top : toffset.top+'px', left: toffset.left+45+'px'});
-			body += "<input type='text' class='form-control' placeholder='Nom de l&apos;étiquette'>";
+			body += "<div class='input-group'>";
+			body += "<input type='text' class='form-control' id='edit-tag-name' data-target='"+target+"' placeholder='Nom de l&apos;étiquette' value='"+initialValue+"'>";
+			body += "<span class='input-group-btn'><button class='btn btn-success btn-tag-name' type='button'>Valider</button></span>";
+			body += "</div>";
 			$.when(fetchColors()).done(function(data){
 				body += "<div class='row' id='colors'>";
 				var colors = JSON.parse(data);
@@ -511,7 +515,7 @@ $(document).ready(function(){
 				body += "</div>";
 				$(".sub-modal-body").html(body);
 			});
-			footer += "<button class='btn btn-danger'>Supprimer</button>";
+			footer += "<button class='btn btn-danger btn-block delete-tag' id='delete-tag' data-target='"+target+"'><span class='glyphicon glyphicon-trash'></span> Supprimer l'étiquette</button>";
 			break;
 
 		default:
