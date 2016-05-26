@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "db_connect.php";
 $db = PDOFactory::getConnection();
 
@@ -15,6 +16,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$t["date"] = $details["task_comment_date"];
 	$t["author_id"] = $details["task_comment_author"];
 	$t["author"] = $db->query("SELECT CONCAT(user_prenom, ' ', user_nom) AS author FROM users u WHERE u.user_id = '$details[task_comment_author]'")->fetch(PDO::FETCH_COLUMN);
+	$t["own"] = ($t["author_id"] == $_SESSION["user_id"])?true:false;
 	array_push($comment_list, $t);
 }
 echo json_encode($comment_list);
