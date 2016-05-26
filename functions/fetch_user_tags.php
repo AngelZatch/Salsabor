@@ -9,6 +9,7 @@ while($tag = $user_tags->fetch(PDO::FETCH_ASSOC)){
 	$t = array();
 	$t["rank_id"] = $tag["rank_id"];
 	$t["rank_name"] = $tag["rank_name"];
+	$t["color"] = $tag["tag_color"];
 	array_push($tags, $t);
 }
 

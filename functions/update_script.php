@@ -26,6 +26,17 @@ try{
 	)");
 	// Rename the rank table to tags_user
 	$tags_user = $db->query("RENAME TABLE rank TO tags_user");
+	// Add the color field
+	$tags_user = $db->query("ALTER TABLE tags_user
+	ADD tag_color VARCHAR(6) DEFAULT 'a80139'");
+	// Create the colors table
+	$colors = $db->query("CREATE TABLE colors(
+	color_id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	color_value VARCHAR(6)
+	)");
+	// Insert into the newfound table the values
+	$colors = $db->query("INSERT INTO colors(color_value)
+						VALUES('e416a1'), ('e416a1'), ('04c9b8'), ('31a03f'), ('fb4836'), ('a16ce8'), ('c9c00c'), ('0954ee'), ('ca2004'), ('a80139'), ('ff8f00')");
 	// Create the user_ranks table
 	$user_ranks = $db->query("CREATE TABLE user_ranks(
 	entry_id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,

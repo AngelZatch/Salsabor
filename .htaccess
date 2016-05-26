@@ -20,6 +20,7 @@ RewriteRule ^transactions$ transactions.php
 RewriteRule ^notifications$ notifications.php
 RewriteRule ^notifications/settings$ notifications_settings.php
 RewriteRule ^taches$ tasks.php
+RewriteRule ^tags$ tags.php
 RewriteRule ^portal$ portal.php
 RewriteRule ^link$ link.php
 

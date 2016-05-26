@@ -17,6 +17,23 @@ $(document).ready(function(){
 			regex = new RegExp(matchParams.join('').replace(/^s+|s+$/g,''), regexFlags);
 		return regex.test(jQuery(elem)[attr.method](attr.property));
 	}
+	$.cssHooks.backgroundColor = {
+		get: function(elem) {
+			if (elem.currentStyle)
+				var bg = elem.currentStyle["backgroundColor"];
+			else if (window.getComputedStyle)
+				var bg = document.defaultView.getComputedStyle(elem, null).getPropertyValue("background-color");
+			if (bg.search("rgb") == -1)
+				return bg;
+			else {
+				bg = bg.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+				function hex(x) {
+					return ("0" + parseInt(x).toString(16)).slice(-2);
+				}
+				return "#" + hex(bg[1]) + hex(bg[2]) + hex(bg[3]);
+			}
+		}
+	}
 
 	var firstCount = 0; // Pour éviter la notification dès le rafraîchissement de la page.
 	window.numberProduits = 1; // Articles dans le panier
@@ -468,26 +485,33 @@ $(document).ready(function(){
 			$(".sub-modal").removeClass("col-lg-7");
 			$(".sub-modal").addClass("col-lg-3");
 			$(".sub-modal").css({top : toffset.top+25+'px', left: toffset.left+25+'px'});
-			$.get("functions/fetch_user_tags.php").done(function(data){
-				var tags = JSON.parse(data), addable = "", added = "";
-				for(var i = 0; i < tags.length; i++){
-					$(".label-deletable").each(function(){
-						console.log($(this).text(), tags[i].rank_name, tags[i].rank_name == $(this).text());
-						if(tags[i].rank_name == $(this).text()){
-							addable = " toggled";
-							added = " <span class='glyphicon glyphicon-ok remove-extension'></span>";
-							return false;
-						} else {
-							addable = "";
-							added = "";
-						}
-					})
-					body += "<h4><span class='label col-xs-12 label-salsabor label-clickable label-addable"+addable+"' id='tag-"+tags[i].rank_id+"' data-tag='"+tags[i].rank_id+"'>"+tags[i].rank_name+added+"</span></h4>";
-				}
-				body += "<h4><span class='label col-xs-12 label-default label-clickable label-new-tag'>Créer une étiquette</span></h4>";
-				footer += "Ajouter";
-				$(".sub-modal-body").html(body);
+			$.when(fetchUserTags()).done(function(data){
+				var construct = displayTargetTags(data);
+				$(".sub-modal-body").html(construct);
 			})
+			break;
+
+		case 'edit-tag':
+			var target = document.getElementById($(this).attr("id")).dataset.target;
+			title = "Modifier une étiquette";
+			$(".sub-modal").removeClass("col-lg-7");
+			$(".sub-modal").addClass("col-lg-3");
+			$(".sub-modal").css({top : toffset.top+'px', left: toffset.left+45+'px'});
+			body += "<input type='text' class='form-control' placeholder='Nom de l&apos;étiquette'>";
+			$.when(fetchColors()).done(function(data){
+				body += "<div class='row' id='colors'>";
+				var colors = JSON.parse(data);
+				for(var i = 0; i < colors.length; i++){
+					body += "<div class='color-cube col-xs-4 col-md-3 col-lg-2' id='color-"+colors[i].color_id+"' style='background-color:"+colors[i].color_value+"' data-target='"+target+"'>";
+					if("#"+colors[i].color_value == $("#tag-"+target).css("backgroundColor")){
+						body += "<span class='glyphicon glyphicon-ok color-selected'></span>";
+					}
+					body += "</div>";
+				}
+				body += "</div>";
+				$(".sub-modal-body").html(body);
+			});
+			footer += "<button class='btn btn-danger'>Supprimer</button>";
 			break;
 
 		default:
@@ -713,8 +737,6 @@ function postNotification(token, target, recipient){
 	return $.post("functions/post_notifications.php", {token : token, target : target, recipient : recipient});
 }
 
-function createUserTag(tag_name){
-	$.post("functions/create_user_tag.php", {name : tag_name}).done(function(data){
-		$(".tag-input").replaceWith("<h4><span class='label col-xs-12 label-salsabor label-clickable label-addable' id='tag-"+data+"' data-tag='"+data+"'>"+tag_name+"</span></h4>");
-	})
+function fetchColors(){
+	return $.get("functions/fetch_colors.php");
 }

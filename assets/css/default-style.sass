@@ -109,7 +109,7 @@ legend
 .label-clickable
 	cursor: pointer
 
-.label-addable
+.label-addable, .label-restyle
 	margin-bottom: 5px
 	text-align: left
 	padding-top: .5em
@@ -118,6 +118,19 @@ legend
 .label-add
 	&:hover
 		background-color: darken($system-color, 20%)
+
+#colors
+	margin-top: 5px
+
+.color-cube
+	height: 30px
+	border-radius: 4px
+	margin: 5px
+	cursor: pointer
+
+.color-selected
+	color: white
+	padding: .4em .3em .3em .3em
 
 .sub-legend
 	@extend legend
