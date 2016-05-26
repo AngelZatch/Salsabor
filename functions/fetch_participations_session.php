@@ -48,6 +48,11 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	}
 	$r["days_before_exp"] = $notifications_settings["days_before_exp"];
 	$r["hours_before_exp"] = $notifications_settings["hours_before_exp"];
+	$r["count"] = $db->query("SELECT * FROM tasks
+					WHERE ((task_token LIKE '%USR%' AND task_target = '$r[user_id]')
+					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$r[user_id]'))
+					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$r[user_id]')))
+						AND task_state = 0")->rowCount();
 	array_push($recordsList, $r);
 }
 

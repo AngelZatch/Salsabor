@@ -16,10 +16,11 @@ $(document).on('click', '.label-deletable', function(){
 			$("#user-tag-"+data).remove();
 		})
 	} else {
+		var value = /([a-z0-9]+)/i.exec($(this).css("backgroundColor"));
 		$.post("functions/attach_tag.php", {tag : tag, user : user[0]}).done(function(data){
 			$("#tag-"+tag).addClass("toggled");
 			$("#tag-"+tag).append("<span class='glyphicon glyphicon-ok remove-extension'></span>");
-			$(".label-add").before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='user-tag-"+data+"' data-target='"+data+"'>"+tag_text+"</span>");
+			$(".label-add").before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='user-tag-"+data+"' data-target='"+data+"' style='background-color:"+value[0]+"'>"+tag_text+"</span>");
 		})
 	}
 }).on('click', '.label-new-tag', function(){

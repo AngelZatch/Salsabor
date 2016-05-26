@@ -247,6 +247,9 @@ function displayParticipations(session_id){
 				}
 				users++;
 				contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-sm-6 col-md-4 col-lg-3' id='participation-"+records_list[i].id+"' data-participation='"+records_list[i].id+"'>";
+				if(records_list[i].count > 0){
+					contents += "<a href='user/"+records_list[i].user_id+"/taches' target='_blank'><span class='glyphicon glyphicon-list-alt remove-extension' title='"+records_list[i].count+" tâche(s) restantes à faire'></span></a>";
+				}
 				contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"'></div>";
 				contents += "<p class='col-lg-12 panel-item-title bf'><a href='user/"+records_list[i].user_id+"'>"+records_list[i].user+"</a></p>";
 				contents += "<p class='col-lg-6 participation-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
