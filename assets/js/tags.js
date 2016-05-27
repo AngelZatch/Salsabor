@@ -1,7 +1,7 @@
 $(document).on('click', '.label-deletable', function(){
 	var id = $(this).attr("id");
 	var target = document.getElementById(id).dataset.target;
-	$.when(deleteEntry("user_ranks", target)).done(function(data){
+	$.when(deleteEntry("assoc_user_tags", target)).done(function(data){
 		$("#"+id).remove();
 	});
 }).on('click', '.label-addable', function(e){
@@ -10,14 +10,14 @@ $(document).on('click', '.label-deletable', function(){
 	var user = /([0-9]+)/.exec(document.location.href);
 	var tag_text = $(this).text();
 	if($(this).hasClass("toggled")){
-		$.post("functions/detach_tag.php", {tag : tag, user : user[0]}).done(function(data){
+		$.when(detachTag(tag, user[0], "user")).done(function(data){
 			$("#tag-"+tag).removeClass("toggled");
 			$("#tag-"+tag).find("span").remove();
 			$("#user-tag-"+data).remove();
 		})
 	} else {
 		var value = /([a-z0-9]+)/i.exec($(this).css("backgroundColor"));
-		$.post("functions/attach_tag.php", {tag : tag, user : user[0]}).done(function(data){
+		$.when(attachTag(tag, user[0], "user")).done(function(data){
 			$("#tag-"+tag).addClass("toggled");
 			$("#tag-"+tag).append("<span class='glyphicon glyphicon-ok remove-extension'></span>");
 			$(".label-add").before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='user-tag-"+data+"' data-target='"+data+"' style='background-color:"+value[0]+"'>"+tag_text+"</span>");
@@ -93,4 +93,12 @@ function createUserTag(tag_name){
 			$(".tag-input").replaceWith("<h4><span class='label col-xs-12 label-salsabor label-clickable label-addable' id='tag-"+data+"' data-tag='"+data+"'>"+tag_name+"</span></h4>");
 		}
 	})
+}
+
+function attachTag(tag, target, target_type){
+	return $.post("functions/attach_tag.php", {tag : tag, target : target, type : target_type});
+}
+
+function detachTag(tag, target, target_type){
+	return $.post("functions/detach_tag.php", {tag : tag, target : target, type : target_type});
 }

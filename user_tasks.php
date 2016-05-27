@@ -17,8 +17,8 @@ $details["count"] = $db->query("SELECT * FROM tasks
 					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$data')))
 						AND task_state = 0")->rowCount();
 
-$is_teacher = $db->query("SELECT * FROM user_ranks ur
-								JOIN tags_user tu ON tu.rank_id = ur.rank_id_foreign
+$is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
+								JOIN tags_user tu ON tu.rank_id = ur.tag_id_foreign
 								WHERE rank_name = 'Professeur' AND user_id_foreign = '$data'")->rowCount();
 ?>
 <html>

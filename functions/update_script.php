@@ -37,13 +37,20 @@ try{
 	// Insert into the newfound table the values
 	$colors = $db->query("INSERT INTO colors(color_value)
 						VALUES('e416a1'), ('e416a1'), ('04c9b8'), ('31a03f'), ('fb4836'), ('a16ce8'), ('c9c00c'), ('0954ee'), ('ca2004'), ('a80139'), ('ff8f00')");
-	// Create the user_ranks table
-	$user_ranks = $db->query("CREATE TABLE user_ranks(
+	// Create the assoc_user_tags table
+	$assoc_user_tags = $db->query("CREATE TABLE assoc_user_tags(
 	entry_id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	user_id_foreign INT(11),
-	rank_id_foreign INT(11)
+	tag_id_foreign INT(11)
 	)");
-	// When migrating, we have to foreign key rank_id_foreign to tags_user.rank_id ON DELETE CASCADE
+	// When migrating, we have to foreign key tag_id_foreign to tags_user.rank_id ON DELETE CASCADE
+	// Create the assoc_task_tags table
+	$assoc_task_tags = $db->query("CREATE TABLE assoc_task_tags(
+	entry_id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	task_id_foreign INT(11),
+	tag_id_foreign INT(11)
+	)");
+	// Same as for the previous table, foreign key tag_id_foreign to tags_user.rank_id ON DELETE CASCADE
 	// Delete all the now useless fields from the user table
 	$users = $db->query("ALTER TABLE users
 						DROP est_membre,

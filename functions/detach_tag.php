@@ -3,11 +3,14 @@ require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $tag = $_POST["tag"];
-$user_id = $_POST["user"];
+$target = $_POST["target"];
+$type = $_POST["type"];
 
-$entry_id = $db->query("SELECT entry_id FROM user_ranks WHERE user_id_foreign = $user_id AND rank_id_foreign = $tag")->fetch(PDO::FETCH_COLUMN);
+$query = "SELECT entry_id FROM assoc_".$type."_tags WHERE ".$type."_id_foreign = $target AND tag_id_foreign = $tag";
 
-$attach = $db->query("DELETE FROM user_ranks WHERE user_id_foreign = $user_id AND rank_id_foreign = $tag");
+$entry_id = $db->query($query)->fetch(PDO::FETCH_COLUMN);
+
+$detach = $db->query("DELETE FROM assoc_user_tags WHERE entry_id = $entry_id");
 
 echo $entry_id;
 ?>

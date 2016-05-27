@@ -17,7 +17,7 @@ $suffixes = $db->query("SHOW COLUMNS FROM cours_parent LIKE 'parent_suffixe'");
 
 $types = $db->query('SELECT * FROM prestations WHERE est_cours=1');
 
-$queryProfs = $db->query("SELECT * FROM users WHERE user_id IN (SELECT user_id_foreign FROM user_ranks ur JOIN tags_user tu ON ur.rank_id_foreign = tu.rank_id WHERE rank_name = 'Professeur')");
+$queryProfs = $db->query("SELECT * FROM users WHERE user_id IN (SELECT user_id_foreign FROM assoc_user_tags ur JOIN tags_user tu ON ur.tag_id_foreign = tu.rank_id WHERE rank_name = 'Professeur')");
 $array_profs = array();
 while($profs = $queryProfs->fetch(PDO::FETCH_ASSOC)){
 	array_push($array_profs, $profs["user_prenom"]." ".$profs["user_nom"]);

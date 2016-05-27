@@ -3,9 +3,12 @@ require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $tag = $_POST["tag"];
-$user_id = $_POST["user"];
+$target = $_POST["target"];
+$type = $_POST["type"];
 
-$attach = $db->query("INSERT IGNORE INTO user_ranks(user_id_foreign, rank_id_foreign) VALUES($user_id, $tag)");
+$query = "INSERT IGNORE INTO assoc_".$type."_tags(".$type."_id_foreign, tag_id_foreign) VALUES($target, $tag)";
+
+$attach = $db->query($query);
 
 echo $db->lastInsertId();
 ?>
