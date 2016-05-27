@@ -252,6 +252,16 @@ function displayTasks(data, user_id, limit, filter, half){
 
 			contents += "<div class='container-fluid'>";
 			contents += "<p class='task-hour col-sm-12'> créée "+moment(tasks[i].date).format("[le] ll [à] HH:mm")+"</p>";
+			contents += "<h4>";
+			for(var j = 0; j < tasks[i].labels.length; j++){
+				contents += "<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='task-tag-"+tasks[i].labels[j].entry_id+"' data-target='"+tasks[i].labels[j].entry_id+"' data-targettype='task' style='background-color:"+tasks[i].labels[j].tag_color+"'>"+tasks[i].labels[j].rank_name+"</span>";
+			}
+			contents += "<span class='label label-default label-clickable label-add trigger-sub' id='label-add-"+tasks[i].id+"' data-subtype='user-tags' data-targettype='task' title='Ajouter une étiquette'>+";
+			if(tasks[i].labels.length == 0){
+				contents += " Ajouter une étiqutte";
+			}
+			contents += "</span>";
+			contents += "</h4>";
 			contents += "<div><span class='glyphicon glyphicon-align-left glyphicon-description'></span><p class='editable' id='task-description-"+tasks[i].id+"' data-input='textarea' data-table='tasks' data-column='task_description' data-target='"+tasks[i].id+"'>"+tasks[i].description+"</p></div>";
 			contents += "<div class='col-md-2 "+comments_count_width+" comment-span' id='comments-count-"+tasks[i].id+"'>";
 			contents += "<span class='glyphicon glyphicon-comment'></span> "+tasks[i].message_count;

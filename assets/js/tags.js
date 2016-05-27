@@ -1,26 +1,38 @@
-$(document).on('click', '.label-deletable', function(){
+$(document).on('click', '.label-deletable', function(e){
+	e.stopPropagation();
 	var id = $(this).attr("id");
 	var target = document.getElementById(id).dataset.target;
-	$.when(deleteEntry("assoc_user_tags", target)).done(function(data){
+	var table = "assoc_"+document.getElementById(id).dataset.targettype+"_tags";
+	$.when(deleteEntry(table, target)).done(function(data){
 		$("#"+id).remove();
 	});
 }).on('click', '.label-addable', function(e){
 	e.stopPropagation();
 	var tag = document.getElementById($(this).attr("id")).dataset.tag;
-	var user = /([0-9]+)/.exec(document.location.href);
+	var target_type = document.getElementById($(this).attr("id")).dataset.targettype;
+	if(target_type == "user"){
+		var target = /([0-9]+)/.exec(document.location.href)[0];
+	} else {
+		var target = /([0-9]+)/.exec(window.target)[0];
+	}
 	var tag_text = $(this).text();
 	if($(this).hasClass("toggled")){
-		$.when(detachTag(tag, user[0], "user")).done(function(data){
+		$.when(detachTag(tag, target, target_type)).done(function(data){
 			$("#tag-"+tag).removeClass("toggled");
 			$("#tag-"+tag).find("span").remove();
-			$("#user-tag-"+data).remove();
+			$("#"+target_type+"-tag-"+data).remove();
 		})
 	} else {
 		var value = /([a-z0-9]+)/i.exec($(this).css("backgroundColor"));
-		$.when(attachTag(tag, user[0], "user")).done(function(data){
+		$.when(attachTag(tag, target, target_type)).done(function(data){
 			$("#tag-"+tag).addClass("toggled");
 			$("#tag-"+tag).append("<span class='glyphicon glyphicon-ok remove-extension'></span>");
-			$(".label-add").before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='user-tag-"+data+"' data-target='"+data+"' style='background-color:"+value[0]+"'>"+tag_text+"</span>");
+			if(target_type == "user"){
+				var insert = ".label-add";
+			} else {
+				var insert = "#label-add-"+target;
+			}
+			$(insert).before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='user-tag-"+data+"' data-target='"+data+"' data-targettype='"+target_type+"' style='background-color:"+value[0]+"'>"+tag_text+"</span>");
 		})
 	}
 }).on('click', '.label-new-tag', function(){
@@ -65,11 +77,15 @@ function fetchUserTags(){
 	return $.get("functions/fetch_user_tags.php");
 }
 
-function displayTargetTags(data){
+function displayTargetTags(data, target_type){
 	var tags = JSON.parse(data), addable = "", added = "", body = "";
 	for(var i = 0; i < tags.length; i++){
-		$(".label-deletable").each(function(){
-			console.log($(this).text(), tags[i].rank_name, tags[i].rank_name == $(this).text());
+		if(target_type == "user"){
+			var compare = $(".label-deletable");
+		} else {
+			var compare = $("#task-"+/([0-9]+)/.exec(window.target)[0]).find(".label-deletable");
+		}
+		compare.each(function(){
 			if(tags[i].rank_name == $(this).text()){
 				addable = " toggled";
 				added = " <span class='glyphicon glyphicon-ok remove-extension'></span>";
@@ -79,9 +95,9 @@ function displayTargetTags(data){
 				added = "";
 			}
 		})
-		body += "<h4><span class='label col-xs-12 label-clickable label-addable"+addable+"' id='tag-"+tags[i].rank_id+"' data-tag='"+tags[i].rank_id+"' style='background-color:"+tags[i].color+"'>"+tags[i].rank_name+added+"</span></h4>";
+		body += "<h4><span class='label col-xs-12 label-clickable label-addable"+addable+"' id='tag-"+tags[i].rank_id+"' data-tag='"+tags[i].rank_id+"' data-targettype='"+target_type+"' style='background-color:"+tags[i].color+"'>"+tags[i].rank_name+added+"</span></h4>";
 	}
-	body += "<h4><span class='label col-xs-12 label-default label-clickable label-new-tag'>Créer une étiquette</span></h4>";
+	body += "<h4><span class='label col-xs-12 label-default label-clickable label-new-tag' id='label-new' data-targettype='"+target_type+"'>Créer une étiquette</span></h4>";
 	return body;
 }
 

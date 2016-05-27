@@ -13,6 +13,7 @@ $db = PDOFactory::getConnection();
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
 		<script src="assets/js/tasks-js.php"></script>
+		<script src="assets/js/tags.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>

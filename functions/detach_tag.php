@@ -10,7 +10,8 @@ $query = "SELECT entry_id FROM assoc_".$type."_tags WHERE ".$type."_id_foreign =
 
 $entry_id = $db->query($query)->fetch(PDO::FETCH_COLUMN);
 
-$detach = $db->query("DELETE FROM assoc_user_tags WHERE entry_id = $entry_id");
+$query = "DELETE FROM assoc_".$type."_tags WHERE entry_id = $entry_id";
+$detach = $db->query($query);
 
 echo $entry_id;
 ?>

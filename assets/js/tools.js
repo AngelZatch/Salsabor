@@ -481,12 +481,18 @@ $(document).ready(function(){
 			break;
 
 		case 'user-tags':
+			var target_type = document.getElementById($(this).attr("id")).dataset.targettype;
+			window.target = $(this).attr("id");
 			title = "Ajouter une étiquette";
 			$(".sub-modal").removeClass("col-lg-7");
 			$(".sub-modal").addClass("col-lg-3");
-			$(".sub-modal").css({top : toffset.top+25+'px', left: toffset.left+25+'px'});
+			if(top.location.pathname === "/Salsabor/dashboard"){
+				$(".sub-modal").css({top : toffset.top+25+'px', left: toffset.left-25+'px'});
+			} else {
+				$(".sub-modal").css({top : toffset.top+25+'px', left: toffset.left+25+'px'});
+			}
 			$.when(fetchUserTags()).done(function(data){
-				var construct = displayTargetTags(data);
+				var construct = displayTargetTags(data, target_type);
 				$(".sub-modal-body").html(construct);
 			})
 			break;

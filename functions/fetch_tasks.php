@@ -84,6 +84,19 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$t["message_count"] = $db->query("SELECT * FROM task_comments WHERE task_id_foreign = '$t[id]'")->rowCount();
 	$t["status"] = $details["task_state"];
 
+	// Tags
+	$labels = $db->query("SELECT * FROM assoc_task_tags ur
+						JOIN tags_user tu ON ur.tag_id_foreign = tu.rank_id
+						WHERE task_id_foreign = '$t[id]'");
+	$t["labels"] = array();
+	while($label = $labels->fetch(PDO::FETCH_ASSOC)){
+		$l = array();
+		$l["entry_id"] = $label["entry_id"];
+		$l["tag_color"] = $label["tag_color"];
+		$l["rank_name"] = $label["rank_name"];
+		array_push($t["labels"], $l);
+	}
+
 	// Handling the title's tokens.
 	$pattern = "/(![a-z0-9]+!)/i";
 	preg_match_all($pattern, $t["title"], $matches, PREG_SET_ORDER);
