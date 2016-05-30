@@ -105,7 +105,7 @@ $welcome = $time_message[$rand];
 			$(document).ready(function(){
 				moment.locale('fr');
 				fetchNotifications(0);
-				fetchTasks(0, "pending", 0);
+				fetchTasks(0, <?php echo $_SESSION["user_id"];?>, "pending", 0);
 			})
 		</script>
 	</body>

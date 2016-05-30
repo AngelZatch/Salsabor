@@ -130,15 +130,15 @@ session_start();
 	})
 })
 
-function fetchTasks(user_id, filter, limit){
-	$.get("functions/fetch_tasks.php", {user_id : user_id, limit : limit, filter : filter}).done(function(data){
+function fetchTasks(user_id, attached_id, filter, limit){
+	$.get("functions/fetch_tasks.php", {user_id : user_id, attached_id : attached_id, limit : limit, filter : filter}).done(function(data){
 		if(limit == 0 || $(".sub-modal-notification").is(":visible")){
 			if(top.location.pathname === "/Salsabor/dashboard"){
 				var half = true;
 			} else {
 				var half = false;
 			}
-			displayTasks(data, user_id, limit, filter, half);
+			displayTasks(data, user_id, attached_id, limit, filter, half);
 		}
 	});
 }
@@ -173,7 +173,7 @@ function refreshTask(task){
 	$("#comments-count-"+task.id).html("<span class='glyphicon glyphicon-comment'></span> "+task.message_count);
 }
 
-function displayTasks(data, user_id, limit, filter, half){
+function displayTasks(data, user_id, attached_id, limit, filter, half){
 	var tasks = JSON.parse(data);
 	if(tasks.length == 0){
 		$(".tasks-container").css("background-image", "url(assets/images/logotype_white.png)");
@@ -304,7 +304,7 @@ function displayTasks(data, user_id, limit, filter, half){
 			}
 		}
 	}
-	setTimeout(fetchTasks, 10000, user_id, filter, limit);
+	setTimeout(fetchTasks, 10000, user_id, attached_id, filter, limit);
 }
 
 function displayDeadline(deadline){
@@ -326,10 +326,10 @@ function displayComments(task_id, data){
 		messages += "<div class='comment-unit' id='unit-"+message_list[i].id+"'>";
 		messages += "<a href='user/"+message_list[i].author_id+"' class='link-alt message-author'>"+message_list[i].author+"</a>";
 		messages += "<div class='message-container' id='message-"+message_list[i].id+"'>"+message_list[i].comment+"</div>";
-		messages += "<p class='message-details row'><span class='col-xs-3'>"+moment(message_list[i].date).format("[le] ll [à] HH:mm")+"</span>";
+		messages += "<p class='message-details row'><span class='col-xs-5'>"+moment(message_list[i].date).format("[le] ll [à] HH:mm")+"</span>";
 		if(message_list[i].own){
-			messages += "<span class='comment-options col-xs-1 edit-comment' id='edit-"+message_list[i].id+"' data-target='"+message_list[i].id+"'>Editer</span>";
-			messages += "<span class='comment-options col-xs-1 delete-comment' id='delete-"+message_list[i].id+"' data-target='"+message_list[i].id+"'>Supprimer</span>";
+			messages += "<span class='comment-options col-xs-2 edit-comment' id='edit-"+message_list[i].id+"' data-target='"+message_list[i].id+"'>Editer</span>";
+			messages += "<span class='comment-options col-xs-2 delete-comment' id='delete-"+message_list[i].id+"' data-target='"+message_list[i].id+"'>Supprimer</span>";
 		}
 		messages += "</p>";
 		messages += "</div>";
