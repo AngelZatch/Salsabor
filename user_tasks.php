@@ -66,7 +66,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');
-				fetchTasks(<?php echo $data;?>, null, 0);
+				fetchTasks(<?php echo $data;?>, <?php echo $_SESSION["user_id"];?>, null, 0);
 			}).on('click', '.panel-add-record', function(){
 				var emptyTask = "<div class='panel task-line task-new panel-new-task'>";
 				emptyTask += "<div class='panel-heading container-fluid'>";

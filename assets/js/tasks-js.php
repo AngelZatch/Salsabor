@@ -168,7 +168,6 @@ function refreshTask(task){
 		$("#deadline-"+task.id).html("<span class='glyphicon glyphicon-time'></span> Ajouter une date limite");
 	}
 
-
 	// Comments count
 	$("#comments-count-"+task.id).html("<span class='glyphicon glyphicon-comment'></span> "+task.message_count);
 }

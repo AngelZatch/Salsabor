@@ -23,13 +23,11 @@ $db = PDOFactory::getConnection();
 					$loading = $loading[1] + $loading[0];
 					$start = $loading;
 					/** CODE **/
-					$details = $db->query("SELECT CONCAT(user_prenom, ' ', user_nom) AS user_identity, mail, user_rfid, telephone, CONCAT(rue, ' - ', code_postal, '', ville) AS address FROM users u WHERE user_id = 10599")->fetch(PDO::FETCH_ASSOC);
-					if(isset($details["telephone"]) == " "){
-						$details["telephone"] = "Ajouter un numéro...";
-					}
+					$task_token = "[USR-10577]";
+					preg_match('/\\[([a-z0-9\\-]+)\\]/i', $task_token, $matches);
 					?>
 					<pre>
-						<?php print_r($details); ?>
+						<?php print_r($matches); ?>
 					</pre>
 
 					<?php

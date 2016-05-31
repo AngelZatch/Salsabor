@@ -12,27 +12,35 @@ $filter = $_GET["filter"];
 $query = "SELECT * FROM tasks t
 			LEFT JOIN users u ON t.task_recipient = u.user_id
 			LEFT JOIN assoc_task_tags at ON t.task_id = at.task_id_foreign";
+if($user_id != 0 || $attached_id != 0 || $filter != ""){
+	$query .= " WHERE";
+}
 if($user_id != 0){
-	$query .= " WHERE (task_token LIKE '%USR%' AND task_target = '$user_id')
+	$query .= " (task_token LIKE '%USR%' AND task_target = '$user_id')
 					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$user_id'))
-					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$user_id'))
-				AND";
+					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$user_id'))";
 }
 //$query .= " (task_recipient IS NULL OR task_recipient = 0 OR";
+if($user_id != 0 && $attached_id != 0){
+	$query .= " AND";
+}
 if($attached_id != 0){
-	$query .= " WHERE (task_recipient = $attached_id OR tag_id_foreign IN (SELECT tag_id_foreign FROM assoc_user_tags WHERE user_id_foreign = $attached_id))";
+	$query .= " (task_recipient = $attached_id OR tag_id_foreign IN (SELECT tag_id_foreign FROM assoc_user_tags WHERE user_id_foreign = $attached_id))";
+}
+if($attached_id != 0 && $filter != ""){
+	$query .= " AND";
 }
 if($filter == "pending"){
-	$query .= " AND task_state = 0";
+	$query .= " task_state = 0";
 } else if($filter == "done"){
-	$query .= " AND task_state = 1";
+	$query .= " task_state = 1";
 }
 $query .= " ORDER BY task_id DESC";
 if($limit != 0){
 	$query .= " LIMIT $limit";
 }
+/*echo $query;*/
 $load = $db->query($query);
-//echo $query;
 $task_list = array();
 
 while($details = $load->fetch(PDO::FETCH_ASSOC)){

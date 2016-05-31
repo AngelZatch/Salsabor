@@ -8,7 +8,7 @@ try{
 	task_id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	task_token VARCHAR(7),
 	task_target VARCHAR(15),
-	task_recipient VARCHAR(11) DEFAULT NULL COMMENT 'Destinataire de la tâche',
+	task_recipient INT(11) DEFAULT NULL COMMENT 'Destinataire de la tâche',
 	task_title VARCHAR(80),
 	task_description TEXT,
 	task_creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,

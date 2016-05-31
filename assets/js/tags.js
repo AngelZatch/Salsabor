@@ -71,6 +71,25 @@ $(document).on('click', '.label-deletable', function(e){
 		$("#edit-"+target).remove();
 		$("#tag-"+target).remove();
 	})
+}).on('click', '.mid-button', function(){
+	var clicked = $(this);
+	var target = document.getElementById($(this).attr("id")).dataset.target;
+	if($(this).hasClass("glyphicon-button-disabled")){
+		var value = 1;
+		$.when(updateColumn("tags_user", "missing_info_default", value, target)).done(function(data){
+			$(".glyphicon-button-enabled").each(function(){
+				var deactivate = $(this);
+				var target = document.getElementById($(this).attr("id")).dataset.target;
+				var value = 0;
+				$.when(updateColumn("tags_user", "missing_info_default", value, target)).done(function(data){
+					deactivate.removeClass("glyphicon-button-enabled");
+					deactivate.addClass("glyphicon-button-disabled");
+				})
+			})
+			clicked.removeClass("glyphicon-button-disabled");
+			clicked.addClass("glyphicon-button-enabled");
+		})
+	}
 })
 
 function fetchUserTags(){

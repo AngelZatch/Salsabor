@@ -212,7 +212,6 @@ function refreshTick(){
 
 function displayParticipations(session_id){
 	$.get("functions/fetch_participations_session.php", {session_id : session_id}).done(function(data){
-		console.log("showing"+session_id);
 		var records_list = JSON.parse(data);
 		$("#body-session-"+session_id).empty();
 		var contents = "<div class='row session-list-container' id='session-"+session_id+"'>";
@@ -644,7 +643,6 @@ function validateParticipation(participation_id){
 function unvalidateParticipation(participation_id){
 	$.post("functions/unvalidate_participation.php", {participation_id : participation_id}).done(function(result){
 		var data = JSON.parse(result);
-		console.log(data);
 		var status = data.status, product_id = data.product_id;
 		$("#participation-"+participation_id).removeClass("status-success");
 		$("#participation-"+participation_id).removeClass("status-partial-success");
@@ -705,7 +703,6 @@ function changeProductRecord(participation_id, target_product_id){
 		var wasValid = false;
 		if($("#participation-"+participation_id).hasClass("status-success") || $("#participation-"+participation_id).hasClass("status-partial-success")){
 			$.when(unvalidateParticipation(participation_id)).done(function(){
-				console.log("Unvalidate record "+participation_id);
 				wasValid = true;
 			});
 		}
@@ -745,8 +742,8 @@ function changeSessionRecord(participation_id, target_session_id){
 }
 
 function addParticipation(target_session_id, user_name){
-	$.post("functions/add_participation.php", {name : user_name, session_id : target_session_id}).done(function(){
-		console.log("Record added");
+	$.post("functions/add_participation.php", {name : user_name, session_id : target_session_id}).done(function(data){
+		console.log(data);
 		displayParticipations(target_session_id);
 	})
 }
