@@ -46,6 +46,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
+		<script src="assets/js/participations.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>

@@ -714,7 +714,8 @@ function changeProductRecord(participation_id, target_product_id){
 			$("#participation-"+participation_id).find($(".srd-product")).html("<span class='glyphicon glyphicon-credit-card'></span> "+product_name);
 			$("#participation-"+participation_id).removeClass("status-over");
 			$("#participation-"+participation_id).addClass("status-pre-success");
-			if(wasValid){
+			if(wasValid || $("#participation-"+participation_id).hasClass("product-participation")){
+				$("#participation-"+participation_id).remove();
 				validateParticipation(participation_id);
 			}
 		})

@@ -23,6 +23,7 @@ $queryIrregulars = $db->query("SELECT * FROM produits_adherents pa
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
+		<script src="assets/js/participations.js"></script>
 		<script>
 			$(document).ready(function(){
 				$("#product-modal").on("hidden.bs.modal", function(){
