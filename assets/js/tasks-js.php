@@ -327,7 +327,7 @@ function displayComments(task_id, data){
 		messages += "<div class='message-container' id='message-"+message_list[i].id+"'>"+message_list[i].comment+"</div>";
 		messages += "<p class='message-details row'><span class='col-xs-5'>"+moment(message_list[i].date).format("[le] ll [à] HH:mm")+"</span>";
 		if(message_list[i].own){
-			messages += "<span class='comment-options col-xs-2 edit-comment' id='edit-"+message_list[i].id+"' data-target='"+message_list[i].id+"'>Editer</span>";
+			/*messages += "<span class='comment-options col-xs-2 edit-comment' id='edit-"+message_list[i].id+"' data-target='"+message_list[i].id+"'>Editer</span>";*/
 			messages += "<span class='comment-options col-xs-2 delete-comment' id='delete-"+message_list[i].id+"' data-target='"+message_list[i].id+"'>Supprimer</span>";
 		}
 		messages += "</p>";
