@@ -17,6 +17,23 @@ $(document).ready(function(){
 			regex = new RegExp(matchParams.join('').replace(/^s+|s+$/g,''), regexFlags);
 		return regex.test(jQuery(elem)[attr.method](attr.property));
 	}
+	$.cssHooks.backgroundColor = {
+		get: function(elem) {
+			if (elem.currentStyle)
+				var bg = elem.currentStyle["backgroundColor"];
+			else if (window.getComputedStyle)
+				var bg = document.defaultView.getComputedStyle(elem, null).getPropertyValue("background-color");
+			if (bg.search("rgb") == -1)
+				return bg;
+			else {
+				bg = bg.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+				function hex(x) {
+					return ("0" + parseInt(x).toString(16)).slice(-2);
+				}
+				return "#" + hex(bg[1]) + hex(bg[2]) + hex(bg[3]);
+			}
+		}
+	}
 
 	var firstCount = 0; // Pour éviter la notification dès le rafraîchissement de la page.
 	window.numberProduits = 1; // Articles dans le panier
@@ -26,8 +43,17 @@ $(document).ready(function(){
 	setInterval(notifCoursParticipants, 30000);
 	setInterval(notifEcheancesDues, 30000);
 	badgeNotifications();
+	badgeTasks();
 	$('[data-toggle="tooltip"]').tooltip();
 	moment.locale("fra");
+
+	// If we're on one of the user pages, then we have to fetch and refresh details of the user banner.
+	var re = /user\//i;
+	if(re.exec(top.location.pathname) != null){
+		re = /([0-9]+)/;
+		var user_id = re.exec(top.location.pathname);
+		refreshUserBanner(user_id[0]);
+	}
 
 	// Démarre l'horloge
 	tickClock();
@@ -75,12 +101,6 @@ $(document).ready(function(){
 			$("#submit-button").prop('disabled', true);
 			$(".submit-button").prop('disabled', false);
 		}
-	});
-
-	// Editables
-	$(".editable").each(function(){
-		var editIcon = "<span class='glyphicon glyphicon-edit' style='display:none; float:right;'></span>";
-		$(this).after(editIcon);
 	});
 
 	// Filtre dynamique
@@ -187,24 +207,21 @@ $(document).ready(function(){
 			return prevent();
 		}
 	});
-}).on('click', '.editable', function(){
-	var methods = [
-		"Carte bancaire",
-		"Chèque n°",
-		"Espèces",
-		"Virement compte à compte",
-		"Chèques vacances",
-		"En attente"
-	];
-	// Dès le clic, on récupère la valeur initiale du champ (peu importe le type de champ)
+}).on('click', '.editable', function(e){
+	e.stopPropagation();
+	// we get the initial value
 	var initialValue = $(this).val();
 	if(initialValue == ""){initialValue = $(this).html();}
-	console.log(initialValue);
 
-	// On récupère ensuite l'id du champ modifié
+	// We get the data details for the upload
+	var table = document.getElementById($(this).attr("id")).dataset.table;
+	var column = document.getElementById($(this).attr("id")).dataset.column;
+	var target = document.getElementById($(this).attr("id")).dataset.target;
+
+	// And the ID.
 	var token = $(this).attr('id');
 
-	// Si la valeur correspond à une date, alors l'action de modification sera différente
+	// If the value's a date, we have to take it a different way
 	if(initialValue.indexOf('/') != -1){
 		var initialDay = initialValue.substr(0,2);
 		var initialMonth = initialValue.substr(3,2);
@@ -212,30 +229,61 @@ $(document).ready(function(){
 		var initialDate = moment(new Date(initialYear+'-'+initialMonth+'-'+initialDay)).format("YYYY-MM-DD");
 		$(this).replaceWith("<input type='date' class='form-control editing' id='"+token+"' value="+initialDate+">");
 	} else {
-		$(this).replaceWith("<input type='text' class='form-control editing' id='"+token+"' value="+initialValue+">");
+		// Switch depending on the input type
+		var input_type = document.getElementById($(this).attr("id")).dataset.input;
+		if(column == "task_recipient"){
+			var additional_classes = "name-input";
+		}
+		switch(input_type){
+			case "text":
+				initialValue = initialValue.replace(/(['"])/g, "\\$1");
+				$(this).replaceWith("<input type='text' class='form-control editing "+additional_classes+"' id='"+token+"' value='"+initialValue+"'>");
+				break;
+
+			case "textarea":
+				$(this).replaceWith("<textarea class='form-control editing "+additional_classes+"' id='"+token+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"'>"+initialValue+"</textarea>");
+				break;
+
+			default:
+				initialValue = initialValue.replace(/(['"])/g, "\\$1");
+				$(this).replaceWith("<input type='"+input_type+"' class='form-control editing "+additional_classes+"' id='"+token+"' value='"+initialValue+"'>");
+				break;
+		}
 	}
 	$(".editing").focus();
-	$(":regex(id,^methode_paiement)").autocomplete({
-		source: methods
-	})
-	$(".editing").blur(function(){
+	$(".editing").blur(function(e){
+		e.stopPropagation();
 		var editedValue = $(this).val();
-		if(editedValue != "" && editedValue != initialValue){
+		if(editedValue == ""){
+			switch(column){
+				case "task_recipient":
+					editedValue = "Affecter un membre";
+					break;
+
+				case "task_description":
+					editedValue = "Ajouter une description";
+					break;
+			}
+		} else {
+			if(column == "task_recipient"){
+				// Create notification for the recipient
+				postNotification("TAS-A", target, editedValue);
+			}
+		}
+		$.when(updateColumn(table, column, editedValue, target)).done(function(data){
+			$("#"+token).replaceWith("<p class='editable' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"'>"+editedValue+"</p>");
+		})
+		/*if(editedValue != "" && editedValue != initialValue){
 			if(editedValue.indexOf('-') != -1){
 				var editedDate = moment(new Date(editedValue)).format("DD/MM/YYYY");
 				$(this).replaceWith("<span class='editable' id='"+token+"'>"+editedDate+"</span>");
 			} else {
 				$(this).replaceWith("<span class='editable' id='"+token+"'>"+editedValue+"</span>");
 			}
-			uploadChanges(token, editedValue);
 		} else {
 			$(this).replaceWith("<span class='editable' id='"+token+"'>"+initialValue+"</span>");
-		}
+		}*/
 	});
-}).on('mouseenter', '.editable', function(){
-	$(this).next().show();
-}).on('mouseleave blur', '.editable', function(){
-	$(this).next().hide();
 }).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
 	event.preventDefault();
 	return $(this).ekkoLightbox({
@@ -245,6 +293,250 @@ $(document).ready(function(){
 	$(".submit-relay-target").click();
 }).on('click', '.sub-modal-close', function(){
 	$(".sub-modal").toggle();
+}).on('click', '.trigger-sub', function(e){
+	e.stopPropagation();
+	$(".sub-modal").hide(0);
+	$(".sub-modal-body").empty();
+	var target = document.getElementById($(this).attr("id"));
+	var tpos = $(this).position(), type = target.dataset.subtype, toffset = $(this).offset();
+	/*console.log(product_id, type);*/
+
+	var title, body = "", footer = "";
+	switch(type){
+		case 'AREP':
+			var product_id = target.dataset.argument;
+			title = "Prolonger";
+			body += "<input type='text' class='form-control datepicker'/>";
+			footer += "<button class='btn btn-success extend-product' data-argument='"+product_id+"' id='btn-sm-extend'>Prolonger</button>";
+			if(moment(target.dataset.arep).isValid()){
+				footer += "<button class='btn btn-danger remove-extension' data-argument='"+product_id+"' id='btn-sm-unextend'>Annuler AREP</button>";
+				var options = {
+					format: "DD/MM/YYYY",
+					inline: true,
+					locale: "fr",
+					defaultDate: moment(target.dataset.arep)
+				};
+			} else {
+				var options = {
+					format: "DD/MM/YYYY",
+					inline: true,
+					locale: "fr"
+				};
+			}
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
+		case 'activate':
+			var product_id = target.dataset.argument;
+			title = "Activer";
+			body += "<input type='text' class='form-control datepicker'/>";
+			footer += "<button class='btn btn-success activate-product' data-argument='"+product_id+"' id='btn-sm-activate'>Activer</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			var options = {
+				format: "DD/MM/YYYY",
+				inline: true,
+				locale: "fr"
+			};
+			break;
+
+		case 'deadline':
+			var task_id = target.dataset.task;
+			title = "Date limite";
+			body += "<input type='text' class='form-control datepicker'/>";
+			footer += "<button class='btn btn-success task-deadline' data-task='"+task_id+"' id='btn-set-deadline'>Définir</button>";
+			$(".sub-modal").css({top : toffset.top+25+'px', left : toffset.left+15+'px'});
+			$(".sub-modal-body").html(body);
+			var options = {
+				format: "DD/MM/YYYY HH:mm",
+				inline: true,
+				locale: "fr",
+				stepping: 15
+			};
+			break;
+
+		case 'set-participation-product':
+			title = "Changer le produit à utiliser";
+			var participation_id = target.dataset.participation;
+			console.log(participation_id);
+			$.when(fetchEligibleProducts(participation_id)).done(function(data){
+				var construct = displayEligibleProducts(data);
+				$(".sub-modal-body").html(construct);
+			})
+			footer += "<button class='btn btn-success set-participation-product' id='btn-set-participation-product' data-participation='"+participation_id+"'>Reporter</button>";
+			footer += " <button class='btn btn-default btn-modal set-participation-product' id='btn-product-null-record' data-participation='"+participation_id+"'><span class='glyphicon glyphicon-link'></span> Retirer</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			break;
+
+		case 'change-participation':
+			title = "Changer le cours associé";
+			var participation_id = target.dataset.argument;
+			$.when(fetchEligibleSessions(participation_id)).done(function(data){
+				console.log(data);
+				var construct = displayTargetSessions(data);
+				$(".sub-modal-body").html(construct);
+			})
+			footer += "<button class='btn btn-success report-participation' id='btn-session-changer-record' data-participation='"+participation_id+"'>Changer</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			break;
+
+		case 'delete':
+			title = "Supprimer une participation";
+			var participation_id = target.dataset.argument;
+			body += "Êtes-vous sûr de vouloir supprimer cette participation ?";
+			$(".sub-modal-body").html(body);
+			footer += "<button class='btn btn-danger delete-participation col-lg-6' id='btn-product-delete' data-session='"+participation_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : tpos.top-45+'px'});
+			break;
+
+		case 'delete-record':
+			title = "Supprimer un passage";
+			var participation_id = target.dataset.argument;
+			body += "Êtes-vous sûr de vouloir supprimer ce passage ?";
+			$(".sub-modal-body").html(body);
+			footer += "<button class='btn btn-danger delete-record col-lg-6' id='btn-record-delete' data-participation='"+participation_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			break;
+
+		case 'delete-product':
+			title = "Supprimer un produit";
+			var product_id = target.dataset.product;
+			body += "ATTENTION : Si ce produit est seul dans une transaction, la transaction sera supprimée avec ce produit. Une fois validée, cette opération destructrice est irréversible. Êtes-vous sûr de vouloir supprimer ce produit ?";
+			footer += "<button class='btn btn-danger delete-product col-lg-6' id='btn-product-delete' data-product='"+product_id+"' data-dismiss='modal'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
+		case 'delete-task':
+			title = "Supprimer une tâche";
+			var task_id = target.dataset.target;
+			body += "ATTENTION : Cette opération est irréversible. Êtes-vous sûr(e) de vouloir continuer ?";
+			footer += "<button class='btn btn-danger delete-task col-lg-6' id='btn-task-delete' data-task='"+task_id+"' data-dismiss='modal'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : toffset.top+20+'px', left : toffset.left-321+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
+		case 'add-record':
+			title = "Ajouter un passage manuellement";
+			var session_id = target.dataset.session;
+			body += "<input type='text' class='form-control name-input'>";
+			$(".sub-modal-body").html(body);
+			footer += "<button class='btn btn-success add-record col-lg-6' id='btn-add-record' data-session='"+session_id+"'><span class='glyphicon glyphicon-plus'></span> Ajouter </button><button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : toffset.top+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
+			break;
+
+		case 'unlink':
+			title = "Délier une participation";
+			var participation_id = target.dataset.argument;
+			body += "Êtes vous sûr de vouloir délier cette participation ? Vous la retrouverez dans les passages non régularisés";
+			$(".sub-modal-body").html(body);
+			footer += "<button class='btn btn-default unlink-session col-lg-6' id='btn-product-unlink' data-session='"+participation_id+"'><span class='glyphicon glyphicon-link'></span> Délier</button> <button class='btn btn-default col-lg-6'>Annuler</button>";
+			$(".sub-modal").css({top : tpos.top-45+'px'});
+			break;
+
+		case 'reception-maturity':
+			var maturity_id = target.dataset.maturity;
+			title = "Réception de l'échéance";
+			body += "<input type='text' class='form-control datepicker'/>";
+			body += "<label class='control-label'>Méthode de paiement</label>";
+			body += "<input type='text' class='form-control reception-method'></input>";
+			footer += "<button class='btn btn-success receive-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			break;
+
+		case 'bank-maturity':
+			var maturity_id = target.dataset.maturity;
+			title = "Encaissement de l'échéance";
+			body += "<input type='text' class='form-control datepicker'/>";
+			footer += "<button class='btn btn-success bank-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			var options = {
+				format: "DD/MM/YYYY",
+				inline: true,
+				locale: "fr"
+			};
+			break;
+
+		case 'user-tags':
+			var target_type = document.getElementById($(this).attr("id")).dataset.targettype;
+			window.target = $(this).attr("id");
+			title = "Ajouter une étiquette";
+			$(".sub-modal").removeClass("col-lg-7");
+			$(".sub-modal").addClass("col-lg-3");
+			if(top.location.pathname === "/Salsabor/dashboard"){
+				$(".sub-modal").css({top : toffset.top+25+'px', left: toffset.left-25+'px'});
+			} else {
+				$(".sub-modal").css({top : toffset.top+25+'px', left: toffset.left+25+'px'});
+			}
+			$.when(fetchUserTags()).done(function(data){
+				var construct = displayTargetTags(data, target_type);
+				$(".sub-modal-body").html(construct);
+			})
+			break;
+
+		case 'edit-tag':
+			var target = document.getElementById($(this).attr("id")).dataset.target;
+			var initialValue = $("#tag-"+target).text();
+			title = "Modifier une étiquette";
+			$(".sub-modal").removeClass("col-lg-7");
+			$(".sub-modal").addClass("col-lg-3");
+			$(".sub-modal").css({top : toffset.top+'px', left: toffset.left+45+'px'});
+			body += "<div class='input-group'>";
+			body += "<input type='text' class='form-control' id='edit-tag-name' data-target='"+target+"' placeholder='Nom de l&apos;étiquette' value='"+initialValue+"'>";
+			body += "<span class='input-group-btn'><button class='btn btn-success btn-tag-name' type='button'>Valider</button></span>";
+			body += "</div>";
+			$.when(fetchColors()).done(function(data){
+				body += "<div class='row' id='colors'>";
+				var colors = JSON.parse(data);
+				for(var i = 0; i < colors.length; i++){
+					body += "<div class='color-cube col-xs-4 col-md-3 col-lg-2' id='color-"+colors[i].color_id+"' style='background-color:"+colors[i].color_value+"' data-target='"+target+"'>";
+					if("#"+colors[i].color_value == $("#tag-"+target).css("backgroundColor")){
+						body += "<span class='glyphicon glyphicon-ok color-selected'></span>";
+					}
+					body += "</div>";
+				}
+				body += "</div>";
+				$(".sub-modal-body").html(body);
+			});
+			footer += "<button class='btn btn-danger btn-block delete-tag' id='delete-tag' data-target='"+target+"'><span class='glyphicon glyphicon-trash'></span> Supprimer l'étiquette</button>";
+			break;
+
+		default:
+			title = "Sub modal";
+			break;
+	}
+	$(".sub-modal-title").text(title);
+	$(".sub-modal-footer").html(footer);
+	$(".datepicker").datetimepicker(options);
+	var re = /historique/i;
+	if(re.exec(top.location.pathname) != null){
+		console.log("Historique");
+		$(".sub-modal").css({left: 74+'%'});
+	}
+	$(".sub-modal").show(0);
 })
 
 $(".has-name-completion").on('click blur keyup', function(){
@@ -266,7 +558,7 @@ function notifCoursParticipants(firstCount){
 			}
 			$("#badge-participations").show();
 			$("#badge-participations").html(data);
-			$(".sub-legend>span").text(data);
+			$(".irregular-participations-title>span").text(data);
 		}
 	})
 }
@@ -286,6 +578,18 @@ function notifEcheancesDues(firstCount){
 	})
 }
 
+function badgeTasks(){
+	$.post("functions/watch_tasks.php").done(function(data){
+		if(data == 0){
+			$("#badge-tasks").hide();
+		} else {
+			$("#badge-tasks").show();
+			$("#badge-tasks").html(data);
+		}
+		setTimeout(badgeTasks, 10000);
+	})
+}
+
 function showSuccessNotif(data){
 	$.notify(data, {globalPosition:"right bottom", className:"success"});
 }
@@ -296,11 +600,6 @@ $("*[date-today='true']").click(function(){
 	var today = new moment().format("YYYY-MM-DD");
 	$(this).parent().prev().val(today);
 	$(this).parent().prev().blur();
-});
-
-// Convertit une date en temps relatif. (ex: "il y a un jour")
-$(".relative-start").each(function(){
-	$(this).html(moment($(this).html(), "YYYY-MM-DD HH:ii:ss", 'fr').fromNow());
 });
 
 // Vérifie si un adhérent a des échéances impayées lors de la vente d'un forfait
@@ -369,7 +668,6 @@ function tickClock(){
 	})
 }
 
-
 // Affiche en direct le nombre d'éléments dans le panier
 function notifPanier(){
 	if(sessionStorage.getItem("panier") != null){
@@ -422,85 +720,33 @@ function composeURL(token){
 	$("[name='previous']").attr('href', url);
 }
 
-$(".draggable").draggable({
-	snap: ".list-group",
-	axis: "y"
-});
-$(".droppable").droppable({
-	drag: function(event, ui){
-		//$(this).height($(this).height + ui.draggable.height());
-	},
-	drop: function(event, ui){
-		ui.draggable.detach().appendTo($(this));
-	}
-});
+function updateColumn(table, column, value, target){
+	return $.post("functions/update_column.php", {table : table, column : column, value : value, target_id : target});
+}
 
-function toggleBoolean(button, boolean_name, value_id, value_name, old_value){
-	var data = {
-		"boolean_name": boolean_name,
-		"old_value": old_value
-	};
-	data[value_name] = value_id;
-	console.log(data);
-	$.post("functions/set_boolean.php", {data : data}).done(function(data){
-		console.log(data);
-		if(button != null){
-			if(old_value == 0){ // Then the new value is 1.
-				button.removeClass("status-disabled");
-				button.addClass("status-enabled");
-				button.children("span").removeClass("glyphicon-floppy-remove");
-				button.children("span").addClass("glyphicon-lock");
-				document.getElementById(button.attr("id")).dataset.boolean = 1;
-				if(button.attr("id") == "lock_status"){
-					$("#manual-expire").removeClass("disabled");
-					$("#manual-expire").addClass("enabled");
-				}
-				switch(button.attr("id")){
-					case "lock_montant":
-						button.attr("title", "Verrouillé : le montant de l'échéance ne variera pas, peu importe les autres échéances de la transaction.");
-						break;
-
-					case "lock_status":
-						button.attr("title", "Verrouillé : le système n'a désormais pas l'autorisation de changer l'état (en attente, valide, expiré) du produit. Vous pouvez cependant toujours le modifier.");
-						break;
-
-					case "lock_dates":
-						button.attr("title", "Verrouilé : le système n'a désormais pas l'autorisation de changer les dates de validité, d'activation ni d'expiration du produit. Vous pouvez néanmoins fixer toutes ces dates.");
-						break;
-
-					default:
-						break;
-				}
-			} else {
-				button.removeClass("status-enabled");
-				button.addClass("status-disabled");
-				button.children("span").removeClass("glyphicon-lock");
-				button.children("span").addClass("glyphicon-floppy-remove");
-				if(data[value_name] == "product_id"){
-					computeRemainingHours(value_id, true);
-				}
-				document.getElementById(button.attr("id")).dataset.boolean = 0;
-				if(button.attr("id") == "lock_status"){
-					$("#manual-expire").removeClass("enabled");
-					$("#manual-expire").addClass("disabled");
-				}
-				switch(button.attr("id")){
-					case "lock_montant":
-						button.attr("title", "Non verrouillé : le montant de l'échéance sera affecté par des changements dans d'autres échéances");
-						break;
-
-					case "lock_status":
-						button.attr("title", "Libre : le système modifiera l'état du produit de façon appropriée en fonction des dates de validité.");
-						break;
-
-					case "lock_dates":
-						button.attr("title", "Libre : le système modifiera les dates en fonction du premier cours enregistré, de la validité du produit et d'une potentielle extension de validité.");
-						break;
-
-					default:
-						break;
-				}
-			}
-		}
+function refreshUserBanner(user_id){
+	$.get("functions/fetch_user_banner_details.php", {user_id : user_id}).done(function(data){
+		var user_details = JSON.parse(data);
+		$("#user_prenom:not(.editing)").text(user_details.user_prenom);
+		$("#user_nom:not(.editing)").text(user_details.user_nom);
+		$("#refresh-mail:not(.editing)").text(user_details.mail);
+		$("#refresh-rfid:not(.editing)").html("<span class='glyphicon glyphicon-barcode'></span> "+user_details.user_rfid);
+		//$("#refresh-tasks").append(user_details.tasks);
+		$("#refresh-phone:not(.editing)").html(user_details.telephone);
+		$("#refresh-address:not(.editing)").html("<span class='glyphicon glyphicon-home'></span> "+user_details.address);
 	})
+	setTimeout(refreshUserBanner, 10000, user_id);
+}
+
+// Deletes an entry in a table of the database
+function deleteEntry(table, entry_id){
+	return $.post("functions/delete_entry.php", {table : table, entry_id : entry_id});
+}
+
+function postNotification(token, target, recipient){
+	return $.post("functions/post_notifications.php", {token : token, target : target, recipient : recipient});
+}
+
+function fetchColors(){
+	return $.get("functions/fetch_colors.php");
 }

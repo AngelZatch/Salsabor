@@ -1,4 +1,8 @@
 <?php
+session_start();
+if(!isset($_SESSION["username"])){
+	header('location: portal');
+}
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
@@ -18,72 +22,70 @@ if(isset($_GET["user"])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
-					<legend><span class="glyphicon glyphicon-shopping-cart"></span> Vente de produits <a href="personnalisation.php" role="button" class="btn btn-success" name="next"><span class="glyphicon glyphicon-erase"></span> Valider les achats <span class="glyphicon glyphicon-arrow-right"></span></a>
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+					<legend><span class="glyphicon glyphicon-shopping-cart"></span> Vente de produits <a href="personnalisation.php" role="button" class="btn btn-success" name="next"><span class="glyphicon glyphicon-erase"></span> Valider <span class="glyphicon glyphicon-arrow-right"></span></a>
 					</legend>
-					<div class="content">
+					<div class="content container-fluid">
 						<div class="progress">
 							<div class="progress-bar" role="progressbar" aria-valuenow="33" aria-valuemin="33" aria-valuemax="100" style="width:33.33%;">
 								<span class="glyphicon glyphicon-th"></span> Etape 1/3 : Choix des produits
 							</div>
 						</div>
-						<div class="row">
-							<?php
-							// Product list
-							$listeProduits = $db->query("SELECT * FROM produits ORDER BY est_autre, est_formation_professionnelle, est_cours_particulier, est_sans_engagement, est_abonnement, est_illimite, est_recharge DESC");
-							$previous = -1;
-							while($produits = $listeProduits->fetch(PDO::FETCH_ASSOC)){
-								$current = $produits["est_recharge"].$produits["est_illimite"].$produits["est_abonnement"].$produits["est_sans_engagement"].$produits["est_cours_particulier"].$produits["est_formation_professionnelle"].$produits["est_autre"];
-								if($previous != $current){
-									switch($current){
-										case '1000000':
-										case '1000001':
-											echo "<legend>Recharges</legend>";
-											break;
+						<?php
+						// Product list
+						$listeProduits = $db->query("SELECT * FROM produits ORDER BY est_autre, est_formation_professionnelle, est_cours_particulier, est_sans_engagement, est_abonnement, est_illimite, est_recharge DESC");
+						$previous = -1;
+						while($produits = $listeProduits->fetch(PDO::FETCH_ASSOC)){
+							$current = $produits["est_recharge"].$produits["est_illimite"].$produits["est_abonnement"].$produits["est_sans_engagement"].$produits["est_cours_particulier"].$produits["est_formation_professionnelle"].$produits["est_autre"];
+							if($previous != $current){
+								switch($current){
+									case '1000000':
+									case '1000001':
+										echo "<legend>Recharges</legend>";
+										break;
 
-										case '0100000':
-											echo "<legend>Illimités</legend>";
-											break;
+									case '0100000':
+										echo "<legend>Illimités</legend>";
+										break;
 
-										case '0010000':
-											echo "<legend>Abonnements</legend>";
-											break;
+									case '0010000':
+										echo "<legend>Abonnements</legend>";
+										break;
 
-										case '0001000':
-											echo "<legend>Sans engagement</legend>";
-											break;
+									case '0001000':
+										echo "<legend>Sans engagement</legend>";
+										break;
 
-										case '0000100':
-											echo "<legend>Cours particuliers</legend>";
-											break;
+									case '0000100':
+										echo "<legend>Cours particuliers</legend>";
+										break;
 
-										case '0000010':
-											echo "<legend>Formation professionnelle</legend>";
-											break;
+									case '0000010':
+										echo "<legend>Formation professionnelle</legend>";
+										break;
 
-										case '0000001':
-											echo "<legend>Autres produits</legend>";
-											break;
+									case '0000001':
+										echo "<legend>Autres produits</legend>";
+										break;
 
-										default:
-											echo "<legend>Autres</legend>";
-									}
+									default:
+										echo "<legend>Autres</legend>";
 								}
-							?>
-							<div class="col-sm-6 col-md-4 col-lg-4 panel-product-container">
-								<div class="panel panel-product">
-									<div class="panel-body">
-										<p class="product-title"><?php echo $produits["produit_nom"];?></p>
-										<p class="product-description"><?php echo $produits["description"];?></p>
-										<input type="hidden" value="<?php echo $produits["produit_id"];?>">
-										<a href="#" class="btn btn-primary btn-block" role="button" name="add-shopping">Ajouter au panier</a>
-									</div>
+							}
+						?>
+						<div class="col-sm-6 col-md-4 col-lg-4 panel-product-container">
+							<div class="panel panel-product">
+								<div class="panel-body">
+									<p class="product-title"><?php echo $produits["produit_nom"];?></p>
+									<p class="product-description"><?php echo $produits["description"];?></p>
+									<input type="hidden" value="<?php echo $produits["produit_id"];?>">
+									<a href="#" class="btn btn-primary btn-block" role="button" name="add-shopping">Ajouter au panier</a>
 								</div>
 							</div>
-							<?php
-								$previous = $current;
-							} ?>
 						</div>
+						<?php
+							$previous = $current;
+						} ?>
 						<a href="" role="button" class="btn btn-success btn-block" name="next"><span class="glyphicon glyphicon-erase"></span> Valider les achats <span class="glyphicon glyphicon-arrow-right"></span></a>
 					</div>
 				</div>

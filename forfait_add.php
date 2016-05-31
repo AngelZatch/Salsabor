@@ -1,4 +1,8 @@
 <?php
+session_start();
+if(!isset($_SESSION["username"])){
+	header('location: portal');
+}
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
@@ -60,7 +64,7 @@ if(isset($_POST["add"])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<form action="forfait_add.php" class="form-horizontal" method="post">
 						<legend><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait
 							<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER">
@@ -131,7 +135,7 @@ if(isset($_POST["add"])){
 								<input type="number" class="form-control" name="echeances">
 							</div>
 						</div>
-						<p class="form-section">Période de vente</p>
+						<p class="sub-legend">Période de vente</p>
 						<span class="label-tip">Dans le cas d'une offre promotionnelle limitée dans le temps</span>
 						<div class="form-group">
 							<label for="date_activation" class="col-lg-3 control-label">Ouverture à l'achat</label>

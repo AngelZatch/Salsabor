@@ -1,4 +1,8 @@
 <?php
+session_start();
+if(!isset($_SESSION["username"])){
+	header('location: portal');
+}
 require_once "functions/db_connect.php";
 $db = PDOFactory::getConnection();
 /** Le fichier functions/cours.php contient toutes les fonctions relatives aux cours **/
@@ -44,7 +48,7 @@ if(isset($_POST['deleteCoursAll'])){
 </div>  btn-toolbar
 </div>
 </div>-->
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-time"></span> Planning
 						<a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a>
 					</legend>
@@ -63,7 +67,7 @@ if(isset($_POST['deleteCoursAll'])){
 					<div id="display-planning" style="display:block;">
 						<div id="calendar" class="fc fc-ltr fc-unthemed"></div>
 					</div> <!-- Display en Planning -->
-				</div> <!-- col-lg-10 col-lg-offset-2 main -->
+				</div> <!-- col-sm-offset-3 col-lg-10 col-lg-offset-2 main -->
 				<div id="cours-options" class="popover popover-default">
 					<div class="arrow"></div>
 					<p style="font-weight:700;" id="popover-cours-title"></p>

@@ -1,10 +1,25 @@
 <?php
+session_start();
+if(!isset($_SESSION["username"])){
+	header('location: portal');
+}
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 $data = $_GET['id'];
 
 // User details
-$details = $db->query("SELECT * FROM users WHERE user_id='$data'")->fetch(PDO::FETCH_ASSOC);
+$details = $db->query("SELECT * FROM users u
+						WHERE user_id='$data'")->fetch(PDO::FETCH_ASSOC);
+
+$details["count"] = $db->query("SELECT * FROM tasks
+					WHERE ((task_token LIKE '%USR%' AND task_target = '$data')
+					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$data'))
+					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$data')))
+						AND task_state = 0")->rowCount();
+
+$is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
+								JOIN tags_user tu ON tu.rank_id = ur.tag_id_foreign
+								WHERE rank_name = 'Professeur' AND user_id_foreign = '$data'")->rowCount();
 ?>
 <html>
 	<head>
@@ -26,7 +41,7 @@ $details = $db->query("SELECT * FROM users WHERE user_id='$data'")->fetch(PDO::F
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<?php include "inserts/user_banner.php";?>
 					<legend><span class="glyphicon glyphicon-user"></span> Participations</legend>
 					<ul class="nav nav-tabs">
@@ -35,7 +50,8 @@ $details = $db->query("SELECT * FROM users WHERE user_id='$data'")->fetch(PDO::F
 						<li role="presentation" class="active"><a href="user/<?php echo $data;?>/historique">Participations</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/reservations">Réservations</a></li>
-						<?php if($details["est_professeur"] == 1){ ?>
+						<li role="presentation"><a href="user/<?php echo $data;?>/taches">Tâches</a></li>
+						<?php if($is_teacher == 1){ ?>
 						<li role="presentation"><a>Cours donnés</a></li>
 						<li role="presentation"><a>Tarifs</a></li>
 						<li role="presentation"><a>Statistiques</a></li>

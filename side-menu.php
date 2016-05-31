@@ -1,10 +1,11 @@
 <div class="sidebar-container">
-	<div class="col-sm-2 col-md-2 col-lg-2 sidebar separate-scroll" id="large-menu" style="display:block;">
+	<div class="hidden-xs col-md-3 col-lg-2 sidebar separate-scroll" id="large-menu" style="display:block;">
 		<ul class="nav nav-sidebar">
 
 			<li><a class="main-section"><span class="glyphicon glyphicon-star"></span> Temps réel</a></li>
 			<ul class="nav nav-sub-sidebar" id="collapse-actions">
 				<li class="main-option-container"><a href="notifications" class="main-option"><span class="glyphicon glyphicon-bell"></span> Notifications <span class="badge sidebar-badge badge-notifications" id="badge-notifications"></span></a></li>
+				<li class="main-option-container"><a href="taches/user" class="main-option"><span class="glyphicon glyphicon-list-alt"></span> Tâches à faire <span class="badge sidebar-badge badge-tasks" id="badge-tasks"></span></a></li>
 				<li class="main-option-container"><a href="participations" class="main-option"><span class="glyphicon glyphicon-map-marker"></span> Participations</a></li>
 			</ul>
 
@@ -42,10 +43,10 @@
 			<li><a class="main-section"><span class="glyphicon glyphicon-tasks"></span> Paramétrage</a></li>
 			<ul class="nav nav-sub-sidebar" id="collapse-admin">
 				<!--<li><a href="stats.php" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='stats.php') echo "active";?>"><span class="glyphicon glyphicon-stats"></span> Statistiques</a></li>-->
-				<!--<li><a href="about.php" class="main-option"><span class="glyphicon glyphicon-question-sign"></span> A propos</a></li>-->
-				<li class="main-option-container"><a href="notifications/settings" class="main-option"><span class="glyphicon glyphicon-cog"></span> Réglages notifs.</a></li>
+				<li class="main-option-container"><a href="notifications/settings" class="main-option"><span class="glyphicon glyphicon-cog"></span> Notifications</a></li>
+				<li class="main-option-container"><a href="tags" class="main-option"><span class="glyphicon glyphicon-tags"></span> &Eacute;tiquettes</a></li>
 				<li class="main-option-container"><a href="../phpmyadmin" target="_blank" class="main-option"><span class="glyphicon glyphicon-th-list"></span> Base de données</a></li>
-				<!--<li><a href="" class="main-option"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>-->
+				<li><a href="logout.php" class="main-option"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
 			</ul>
 		</ul>
 	</div>

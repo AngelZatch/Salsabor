@@ -1,4 +1,8 @@
 <?php
+session_start();
+if(!isset($_SESSION["username"])){
+	header('location: portal');
+}
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 ?>
@@ -13,11 +17,9 @@ $db = PDOFactory::getConnection();
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-bell"></span> Notifications</legend>
-					<ul class="notifications-container">
-
-					</ul>
+					<ul class="notifications-container container-fluid"></ul>
 				</div>
 			</div>
 		</div>

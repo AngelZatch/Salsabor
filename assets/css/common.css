@@ -249,8 +249,6 @@
 }
 .notification-icon {
 	font-size: 19px;
-	padding-left: 8px !important;
-	padding-right: 8px !important;
 }
 
 .error-messages {
@@ -271,10 +269,6 @@
 
 .list-item-option-success {
 	color: green;
-}
-
-.relative-start {
-	font-style: italic;
 }
 
 .cours-title {
@@ -338,12 +332,6 @@
 	cursor: pointer;
 }
 
-.form-section {
-	font-size: 21px;
-	color: #a9023a;
-	font-weight: 900;
-}
-
 .label-tip {
 	color: grey;
 	font-size: 11px;
@@ -390,10 +378,6 @@
 	width: 100%;
 	color: white;
 	min-height: 50px;
-}
-
-.editable{
-	cursor: pointer;
 }
 
 .statut-salsabor,.statut-banque {
