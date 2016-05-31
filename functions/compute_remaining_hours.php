@@ -60,7 +60,12 @@ function computeProduct($product_id){
 			}
 		}
 		if($computeEnd){ // We compute the date of expiration
-			$date_expiration = date_create(computeExpirationDate($db, $date_activation, $product_details["validite_initiale"]))->format("Y-m-d H:i:s");
+			if($product_details["est_abonnement"] == 0){
+				$has_holiday = true;
+			} else {
+				$has_holiday = false;
+			}
+			$date_expiration = date_create(computeExpirationDate($db, $date_activation, $product_details["validite_initiale"], $has_holiday))->format("Y-m-d H:i:s");
 		}
 		$sessions->execute();
 		foreach($sessions as $session){
