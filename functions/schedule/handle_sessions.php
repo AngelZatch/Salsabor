@@ -1,5 +1,6 @@
 <?php
 require_once "/opt/lampp/htdocs/Salsabor/functions/db_connect.php";
+require_once "/opt/lampp/htdocs/Salsabor/functions/tools.php";
 $db = PDOFactory::getConnection();
 
 /* This file has to open sessions
