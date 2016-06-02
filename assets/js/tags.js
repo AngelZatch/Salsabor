@@ -11,7 +11,7 @@ $(document).on('click', '.label-deletable', function(e){
 	var tag = document.getElementById($(this).attr("id")).dataset.tag;
 	var target_type = document.getElementById($(this).attr("id")).dataset.targettype;
 	if(target_type == "user"){
-		var target = /([0-9]+)/.exec(document.location.href)[0];
+		var target = /([0-9]+$)/.exec(document.location.href)[0];
 	} else {
 		var target = /([0-9]+)/.exec(window.target)[0];
 	}
