@@ -1,14 +1,20 @@
 <?php
+session_start();
 include "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $limit = $_GET["limit"];
 
-if($limit == 0){
-	$load = $db->query("SELECT * FROM team_notifications ORDER BY notification_id DESC");
-} else {
-	$load = $db->query("SELECT * FROM team_notifications ORDER BY notification_id DESC LIMIT $limit");
+// We construct the query
+$query = "SELECT * FROM team_notifications WHERE notification_recipient IS NULL OR notification_recipient = 0";
+if(isset($_SESSION["user_id"])){
+	$query .= " OR notification_recipient = $_SESSION[user_id]";
 }
+$query .= " ORDER BY notification_id DESC";
+if($limit != 0){
+	$query .= " LIMIT $limit";
+}
+$load = $db->query($query);
 
 $notificationsList = array();
 
@@ -53,9 +59,6 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			$n["photo"] = $sub_query["photo"];
 			break;
 
-		case "TRA":
-			break;
-
 		case "MAI": // Here, we only need the user name for the mail address.
 			$sub_query = $db->query("SELECT user_prenom, user_nom, photo FROM users u WHERE user_id = '$n[target]'")->fetch(PDO::FETCH_ASSOC);
 			$n["user"] = $sub_query["user_prenom"]." ".$sub_query["user_nom"];
@@ -74,7 +77,75 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			$n["cours_start"] = $sub_query["cours_start"];
 			$n["user"] = $sub_query["user_prenom"]." ".$sub_query["user_nom"];
 			$n["photo"] = $sub_query["photo"];
+			$n["cours_status"] = $sub_query["ouvert"];
 			break;
+
+		case "TAS": // Notifications for tasks
+			$sub_query = $db->query("SELECT * FROM tasks t WHERE task_id = '$n[target]'")->fetch(PDO::FETCH_ASSOC);
+			$n["title"] = $sub_query["task_title"];
+			$n["deadline"] = $sub_query["task_deadline"];
+			$n["task_type"] = $sub_query["task_token"];
+			$n["sub_target"] = $sub_query["task_target"];
+			switch($n["task_type"]){
+				case "USR": // Here, we only need the user name for the mail address.
+					$sub_sub_query = $db->query("SELECT CONCAT(user_prenom, ' ', user_nom) AS user, user_id, photo FROM users u WHERE user_id = '$n[sub_target]'")->fetch(PDO::FETCH_ASSOC);
+					$n["user_id"] = $n["target"];
+					$n["link"] = "user/".$sub_sub_query["user_id"];
+					$n["photo"] = $sub_sub_query["photo"];
+					$n["user"] = $sub_sub_query["user"];
+					break;
+
+				case "PRD":
+					$sub_sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id = (SELECT id_user_foreign FROM produits_adherents WHERE id_produit_adherent ='$n[sub_target]')")->fetch(PDO::FETCH_ASSOC);
+					$n["user_id"] = $sub_sub_query["user_id"];
+					$n["link"] = "user/".$n["user_id"]."/abonnements";
+					$n["photo"] = $sub_sub_query["photo"];
+					break;
+
+				case "TRA":
+					$sub_sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id = (SELECT payeur_transaction FROM transactions WHERE id_transaction = '$t[sub_target]')")->fetch(PDO::FETCH_ASSOC);
+					$n["user_id"] = $sub_sub_query["user_id"];
+					$n["link"] = "user/".$n["user_id"]."/achats#purchase-".$n["sub_target"];
+					$n["photo"] = $sub_sub_query["photo"];
+					break;
+
+				default:
+					break;
+			}
+			// Handling the title's tokens.
+			$pattern = "/(![a-z0-9]+!)/i";
+			preg_match_all($pattern, $n["title"], $matches, PREG_SET_ORDER);
+			foreach($matches as $val){
+				switch($val[0]){
+					case "!MAIL!":
+						$n["title"] = preg_replace("/!MAIL!/", $n["mail"], $n["title"]);
+						break;
+
+					case "!USER!":
+						$n["title"] = preg_replace("/!USER!/", "<strong>".$n["user"]."</strong>", $n["title"]);
+						break;
+
+					case "!PRD!":
+						$n["title"] = preg_replace("/!PRD!/", "<strong>".$n["sub_target"]."</strong>", $n["title"]);
+						break;
+
+					case "!TRA!":
+						$n["title"] = preg_replace("/!TRA!/", "<strong>".$n["sub_target"]."</strong>", $n["title"]);
+						break;
+
+					default:
+						break;
+				}
+			}
+			break;
+
+		case "PRO": // Promotions
+			$sub_query = $db->query("SELECT * FROM produits p
+									WHERE produit_id = '$n[target]'")->fetch(PDO::FETCH_ASSOC);
+			$n["product_id"] = $sub_query["produit_id"];
+			$n["product_name"] = $sub_query["produit_nom"];
+			$n["date_activation"] = $sub_query["date_activation"];
+			$n["date_desactivation"] = $sub_query["date_desactivation"];
 	}
 	$n["date"] = $details["notification_date"];
 	$n["status"] = $details["notification_state"];

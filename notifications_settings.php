@@ -1,4 +1,8 @@
 <?php
+session_start();
+if(!isset($_SESSION["username"])){
+	header('location: portal');
+}
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
@@ -16,9 +20,9 @@ $notifications = $db->query("SELECT * FROM master_settings WHERE user_id = '0'")
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-cog"></span> Réglage des notifications<button class="btn btn-primary save-settings">Enregistrer</button></legend>
-					<p>Attention ! Cette page manipule des valeurs qui assurent le bon fonctionnement de l'application. Ne modifiez pas ces valeurs n'importe comment!</p>
+					<div class="alert alert-warning"><strong>Attention !</strong> Cette page manipule des valeurs qui assurent le bon fonctionnement de l'application. Ne modifiez pas ces valeurs n'importe comment!</div>
 					<p class="sub-legend">Notifications qui affectent l'utilisateur</p>
 					<p>Ces valeurs affectent le rythme auquel les utilisateurs recevront des notifications par mail de l'état de leur consommation. Evitez de les changer régulièrement ou vous pourriez spammer les consommateurs.</p>
 					<form action="" class="form-horizontal" name="master_values" id="master_values">

@@ -19,10 +19,7 @@ if(isset($_POST["product_id"])){
 
 function computeProduct($product_id){
 	$db = PDOFactory::getConnection();
-	$product_details = $db->query("SELECT volume_horaire, est_illimite, est_abonnement, pa.date_activation AS produit_adherent_activation, validite_initiale, pa.actif AS produit_adherent_actif, date_achat, date_expiration, date_prolongee, date_fin_utilisation, lock_status, lock_dates,
-						IF(date_prolongee IS NOT NULL, date_prolongee,
-							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
-							) AS produit_validity FROM produits_adherents pa
+	$product_details = $db->query("SELECT volume_horaire, est_illimite, est_abonnement, pa.date_activation AS produit_adherent_activation, validite_initiale, pa.actif AS produit_adherent_actif, date_achat, date_expiration, date_prolongee, date_fin_utilisation, lock_status, lock_dates FROM produits_adherents pa
 						JOIN produits p
 							ON pa.id_produit_foreign = p.produit_id
 						LEFT JOIN transactions t
@@ -40,7 +37,9 @@ function computeProduct($product_id){
 	$computeEnd = false;
 	$status = $product_details["produit_adherent_actif"];
 	$date_activation = $product_details["produit_adherent_activation"];
-	$date_expiration = $product_details["produit_validity"];
+	$date_expiration = max($product_details["date_prolongee"], $product_details["date_expiration"]);
+	$produit_validity = $date_expiration;
+	$date_fin_utilisation = $product_details["date_fin_utilisation"];
 	$lock_dates = ($product_details["lock_dates"]==1)?true:false;
 	$lock_status = ($product_details["lock_status"]==1)?true:false;
 
@@ -61,7 +60,12 @@ function computeProduct($product_id){
 			}
 		}
 		if($computeEnd){ // We compute the date of expiration
-			$date_expiration = date_create(computeExpirationDate($db, $date_activation, $product_details["validite_initiale"]))->format("Y-m-d H:i:s");
+			if($product_details["est_abonnement"] == 0){
+				$has_holiday = true;
+			} else {
+				$has_holiday = false;
+			}
+			$date_expiration = date_create(computeExpirationDate($db, $date_activation, $product_details["validite_initiale"], $has_holiday))->format("Y-m-d H:i:s");
 		}
 		$sessions->execute();
 		foreach($sessions as $session){
@@ -111,7 +115,7 @@ function computeProduct($product_id){
 				if(!$lock_status){
 					$status = '2';
 				}
-				if($date_fin_utilisation < $product_details["produit_validity"]){
+				if($date_fin_utilisation < $produit_validity){
 					$deactivate = $db->query("UPDATE produits_adherents
 							SET date_activation = '$date_activation', actif='$status', date_fin_utilisation='$date_fin_utilisation', date_expiration = '$date_expiration', volume_cours = '$remaining_hours'
 							WHERE id_produit_adherent = '$product_id'");
@@ -185,14 +189,11 @@ function computeProduct($product_id){
 
 	// Once everything is computed, time for notifications
 	if($product_details["produit_adherent_actif"] != '2' && $status == '2'){ // If the product has expired because of this computing.
-		$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
-								VALUES('PRD-E', '$product_id', '$today', '1')");
-	} else if($v["expiration"] <= $expiration_limit){ // If the expiration is in less than x days
-		$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
-								VALUES('PRD-NE', '$product_id', '$today', '1')");
+		$token = "PRD-E";
+		postNotification($db, $token, $product_id, null, $today);
 	} else if($remaining_hours > 0 && $remaining_hours <= $hour_limit){ // If the remaining hours are less than 5.
-		$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
-								VALUES('PRD-NH', '$product_id', '$today', '1')");
+		$token = "PRD-NH";
+		postNotification($db, $token, $product_id, null, $today);
 	}
 
 	if(isset($_POST["product_id"])){

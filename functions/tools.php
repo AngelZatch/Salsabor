@@ -38,26 +38,28 @@ function generateReference() {
 	return $reference;
 }
 
-function computeExpirationDate($db, $date_activation, $validity){
+function computeExpirationDate($db, $date_activation, $validity, $has_holidays){
 	$validity--;
 	$date_expiration = date("Y-m-d 23:59:59", strtotime($date_activation.'+'.$validity.'DAYS'));
-	$queryHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= ? AND date_chomee <= ?");
-	$queryHoliday->bindParam(1, $date_activation);
-	$queryHoliday->bindParam(2, $date_expiration);
-	$queryHoliday->execute();
+	if($has_holidays){
+		$queryHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= ? AND date_chomee <= ?");
+		$queryHoliday->bindParam(1, $date_activation);
+		$queryHoliday->bindParam(2, $date_expiration);
+		$queryHoliday->execute();
 
-	$j = 0;
+		$j = 0;
 
-	for($i = 0; $i < $queryHoliday->rowCount(); $i++){
-		$exp_date = date("Y-m-d 23:59:59",strtotime($date_expiration.'+'.$i.'DAYS'));
-		$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
-		$checkHoliday->bindParam(1, $exp_date);
-		$checkHoliday->execute();
-		if($checkHoliday->rowCount() != 0){
-			$j++;
+		for($i = 0; $i < $queryHoliday->rowCount(); $i++){
+			$exp_date = date("Y-m-d 23:59:59",strtotime($date_expiration.'+'.$i.'DAYS'));
+			$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
+			$checkHoliday->bindParam(1, $exp_date);
+			$checkHoliday->execute();
+			if($checkHoliday->rowCount() != 0){
+				$j++;
+			}
+			$totalOffset = $i + $j;
+			$new_exp_date = date("Y-m-d 23:59:59",strtotime($date_expiration.'+'.$totalOffset.'DAYS'));
 		}
-		$totalOffset = $i + $j;
-		$new_exp_date = date("Y-m-d 23:59:59",strtotime($date_expiration.'+'.$totalOffset.'DAYS'));
 	}
 	if(!isset($new_exp_date)){
 		$new_exp_date = $date_expiration;
@@ -138,6 +140,49 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 		$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, status)
 					VALUES('$tag', '$user_id', '$ip', '$today', '$status')");
 	}
+	// If the user doesn't have any mail address
+	$mail = $db->query("SELECT mail FROM users WHERE user_id = '$user_id'")->fetch(PDO::FETCH_COLUMN);
+	if($mail == ""){
+		include 'post_task.php';
+		include 'attach_tag.php';
+		$new_task_id = createTask($db, "Manque d'informations pour !USER!", "Aucune adresse mail n'a été détectée pour cet utilisateur. Cette tâche a été créée car l'utilisateur est actuellement présent en cours.", "[USR-".$user_id."]");
+		// Tag can now change because it's set by the team.
+		$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
+		associateTag($db, intval($tag), $new_task_id, "task");
+	}
+	// Return something for the reader
 	echo $ligne = $today.";".$tag.";".$ip."$-".$status;
+}
+
+function postNotification($db, $token, $target, $recipient, $date){
+	$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_recipient, notification_date, notification_state)
+								VALUES('$token', '$target', '$recipient', '$date', '1')");
+}
+
+function updateColumn($db, $table, $column, $value, $target_id){
+	$now = date("Y-m-d H:i:s");
+	$value = htmlspecialchars($value, ENT_QUOTES | ENT_HTML5);
+	if($column == "task_recipient"){
+		if($value != ""){
+			$value = solveAdherentToId($value);
+		} else {
+			$value = null;
+		}
+	}
+	try{
+		$primary_key = $db->query("SHOW INDEX FROM $table WHERE Key_name = 'PRIMARY'")->fetch(PDO::FETCH_ASSOC);
+
+		$query = "UPDATE $table SET $column = '$value'";
+
+		if($table == "tasks"){
+			$query .= ", task_last_update = '$now'";
+		}
+
+		$query .= " WHERE $primary_key[Column_name] = '$target_id'";
+
+		$update = $db->query($query);
+	} catch(PDOException $e){
+		echo $e->getMessage();
+	}
 }
 ?>

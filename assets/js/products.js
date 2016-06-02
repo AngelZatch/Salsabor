@@ -62,14 +62,14 @@ $(document).ready(function(){
 			buttons += "<h2 class='modal-body-title'>Verrous</h2>";
 			// Button to toggle automatic computing of this product.
 			if(product_details.lock_status == 1){
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_status' data-product='"+product_details.id+"' data-boolean='"+product_details.lock_status+"' title='Verrouillé : le système n&apos;a désormais pas l&apos;autorisation de changer l&apos;état (en attente, valide, expiré) du produit. Vous pouvez cependant toujours le modifier.'><span class='glyphicon glyphicon-lock'></span> Etat</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_status' data-product='"+product_details.id+"' title='Verrouillé : le système n&apos;a désormais pas l&apos;autorisation de changer l&apos;état (en attente, valide, expiré) du produit. Vous pouvez cependant toujours le modifier.'><span class='glyphicon glyphicon-lock'></span> Etat</button>";
 			} else {
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_status' data-product='"+product_details.id+"' data-boolean='"+product_details.lock_status+"' title='Libre : le système modifiera l&apos;état du produit de façon appropriée en fonction des dates de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Etat</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_status' data-product='"+product_details.id+"' title='Libre : le système modifiera l&apos;état du produit de façon appropriée en fonction des dates de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Etat</button>";
 			}
 			if(product_details.lock_dates == 1){
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_dates' data-product='"+product_details.id+"' data-boolean='"+product_details.lock_dates+"' title='Verrouilé : le système n&apos;a désormais pas l&apos;autorisation de changer les dates de validité, d&apos;activation ni d&apos;expiration du produit. Vous pouvez néanmoins fixer toutes ces dates.'><span class='glyphicon glyphicon-lock'></span> Dates</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_dates' data-product='"+product_details.id+"' title='Verrouilé : le système n&apos;a désormais pas l&apos;autorisation de changer les dates de validité, d&apos;activation ni d&apos;expiration du produit. Vous pouvez néanmoins fixer toutes ces dates.'><span class='glyphicon glyphicon-lock'></span> Dates</button>";
 			} else {
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_dates' data-product='"+product_details.id+"' data-boolean='"+product_details.lock_dates+"' title='Libre : le système modifiera les dates en fonction du premier cours enregistré, de la validité du produit et d&apos;une potentielle extension de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Dates</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_dates' data-product='"+product_details.id+"' title='Libre : le système modifiera les dates en fonction du premier cours enregistré, de la validité du produit et d&apos;une potentielle extension de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Dates</button>";
 			}
 			modal.find(".product-validity").empty();
 			modal.find(".product-validity").html(product_validity);
@@ -116,184 +116,35 @@ $(document).ready(function(){
 			buttons += "<button class='btn btn-danger btn-block btn-modal triger-sub' id='btn-delete-"+maturity_details.id+"' data-maturity='"+maturity_details.id+"' data-subtype='delete-maturity'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";*/
 			buttons += "<h2 class='modal-body-title'>Verrous</h2>";
 			if(maturity_details.lock_montant == 1){
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_montant' data-maturity='"+maturity_details.id+"' data-boolean='"+maturity_details.lock_montant+"' title='Verrouillé : le montant de l&apos;échéance ne variera pas, peu importe les autres échéances de la transaction.'><span class='glyphicon glyphicon-lock'></span> Montant</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_montant' data-maturity='"+maturity_details.id+"' title='Verrouillé : le montant de l&apos;échéance ne variera pas, peu importe les autres échéances de la transaction.'><span class='glyphicon glyphicon-lock'></span> Montant</button>";
 			} else {
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_montant' data-maturity='"+maturity_details.id+"' data-boolean='"+maturity_details.lock_montant+"' title='Non verrouillé : le montant de l&apos;échéance sera affecté par des changements dans d&apos;autres échéances'><span class='glyphicon glyphicon-floppy-remove'></span> Montant</button>";
+				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_montant' data-maturity='"+maturity_details.id+"' title='Non verrouillé : le montant de l&apos;échéance sera affecté par des changements dans d&apos;autres échéances'><span class='glyphicon glyphicon-floppy-remove'></span> Montant</button>";
 			}
 			modal.find(".modal-actions").html(buttons);
 		})
 	}).on('hidden.bs.modal', function(){
 		$(".sub-modal").hide();
 	})
-}).on('click', '.trigger-sub', function(e){
-	e.stopPropagation();
-	$(".sub-modal").hide(0);
-	$(".sub-modal-body").empty();
-	var target = document.getElementById($(this).attr("id"));
-	var tpos = $(this).position(), type = target.dataset.subtype, toffset = $(this).offset();
-	/*console.log(product_id, type);*/
-
-	var title, body = "", footer = "";
-	switch(type){
-		case 'AREP':
-			var product_id = target.dataset.argument;
-			title = "Prolonger";
-			body += "<input type='text' class='form-control datepicker'/>";
-			footer += "<button class='btn btn-success extend-product' data-argument='"+product_id+"' id='btn-sm-extend'>Prolonger</button>";
-			if(moment(target.dataset.arep).isValid()){
-				footer += "<button class='btn btn-danger remove-extension' data-argument='"+product_id+"' id='btn-sm-unextend'>Annuler AREP</button>";
-			}
-			$(".sub-modal").css({top : tpos.top+51+'px'});
-			$(".sub-modal-body").html(body);
-			break;
-
-		case 'activate':
-			var product_id = target.dataset.argument;
-			title = "Activer";
-			body += "<input type='text' class='form-control datepicker'/>";
-			footer += "<button class='btn btn-success activate-product' data-argument='"+product_id+"' id='btn-sm-activate'>Activer</button>";
-			$(".sub-modal").css({top : tpos.top+51+'px'});
-			$(".sub-modal-body").html(body);
-			break;
-
-		case 'set-participation-product':
-			title = "Changer le produit à utiliser";
-			var participation_id = target.dataset.participation;
-			console.log(participation_id);
-			$.when(fetchEligibleProducts(participation_id)).done(function(data){
-				var construct = displayEligibleProducts(data);
-				$(".sub-modal-body").html(construct);
-			})
-			footer += "<button class='btn btn-success set-participation-product' id='btn-set-participation-product' data-participation='"+participation_id+"'>Reporter</button>";
-			footer += " <button class='btn btn-default btn-modal set-participation-product' id='btn-product-null-record' data-participation='"+participation_id+"'><span class='glyphicon glyphicon-link'></span> Retirer</button>";
-			$(".sub-modal").css({top : toffset.top+'px'});
-			if(toffset.left > 1000){
-				$(".sub-modal").css({left : toffset.left-350+'px'});
-			} else {
-				$(".sub-modal").css({left : toffset.left+20+'px'});
-			}
-			break;
-
-		case 'change-participation':
-			title = "Changer le cours associé";
-			var participation_id = target.dataset.argument;
-			$.when(fetchEligibleSessions(participation_id)).done(function(data){
-				console.log(data);
-				var construct = displayTargetSessions(data);
-				$(".sub-modal-body").html(construct);
-			})
-			footer += "<button class='btn btn-success report-participation' id='btn-session-changer-record' data-participation='"+participation_id+"'>Changer</button>";
-			$(".sub-modal").css({top : toffset.top+'px'});
-			if(toffset.left > 1000){
-				$(".sub-modal").css({left : toffset.left-350+'px'});
-			} else {
-				$(".sub-modal").css({left : toffset.left+20+'px'});
-			}
-			break;
-
-		case 'delete':
-			title = "Supprimer une participation";
-			var participation_id = target.dataset.argument;
-			body += "Êtes-vous sûr de vouloir supprimer cette participation ?";
-			$(".sub-modal-body").html(body);
-			footer += "<button class='btn btn-danger delete-participation col-lg-6' id='btn-product-delete' data-session='"+participation_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
-			$(".sub-modal").css({top : tpos.top-45+'px'});
-			break;
-
-		case 'delete-record':
-			title = "Supprimer un passage";
-			var participation_id = target.dataset.argument;
-			body += "Êtes-vous sûr de vouloir supprimer ce passage ?";
-			$(".sub-modal-body").html(body);
-			footer += "<button class='btn btn-danger delete-record col-lg-6' id='btn-record-delete' data-participation='"+participation_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
-			$(".sub-modal").css({top : toffset.top+'px'});
-			if(toffset.left > 1000){
-				$(".sub-modal").css({left : toffset.left-350+'px'});
-			} else {
-				$(".sub-modal").css({left : toffset.left+20+'px'});
-			}
-			break;
-
-		case 'delete-product':
-			title = "Supprimer un produit";
-			var product_id = target.dataset.product;
-			body += "ATTENTION : Si ce produit est seul dans une transaction, la transaction sera supprimée avec ce produit. Une fois validée, cette opération destructrice est irréversible. Êtes-vous sûr de vouloir supprimer ce produit ?";
-			footer += "<button class='btn btn-danger delete-product col-lg-6' id='btn-product-delete' data-product='"+product_id+"' data-dismiss='modal'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
-			$(".sub-modal").css({top : tpos.top+51+'px'});
-			$(".sub-modal-body").html(body);
-			break;
-
-		case 'add-record':
-			title = "Ajouter un passage manuellement";
-			var session_id = target.dataset.session;
-			body += "<input type='text' class='form-control name-input'>";
-			$(".sub-modal-body").html(body);
-			footer += "<button class='btn btn-success add-record col-lg-6' id='btn-add-record' data-session='"+session_id+"'><span class='glyphicon glyphicon-plus'></span> Ajouter </button><button class='btn btn-default col-lg-6'>Annuler</button>";
-			$(".sub-modal").css({top : toffset.top+'px'});
-			if(toffset.left > 1000){
-				$(".sub-modal").css({left : toffset.left-350+'px'});
-			} else {
-				$(".sub-modal").css({left : toffset.left+20+'px'});
-			}
-			break;
-
-		case 'unlink':
-			title = "Délier une participation";
-			var participation_id = target.dataset.argument;
-			body += "Êtes vous sûr de vouloir délier cette participation ? Vous la retrouverez dans les passages non régularisés";
-			$(".sub-modal-body").html(body);
-			footer += "<button class='btn btn-default unlink-session col-lg-6' id='btn-product-unlink' data-session='"+participation_id+"'><span class='glyphicon glyphicon-link'></span> Délier</button> <button class='btn btn-default col-lg-6'>Annuler</button>";
-			$(".sub-modal").css({top : tpos.top-45+'px'});
-			break;
-
-		case 'reception-maturity':
-			var maturity_id = target.dataset.maturity;
-			title = "Réception de l'échéance";
-			body += "<input type='text' class='form-control datepicker'/>";
-			body += "<label class='control-label'>Méthode de paiement</label>";
-			body += "<input type='text' class='form-control reception-method'></input>";
-			footer += "<button class='btn btn-success receive-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
-			$(".sub-modal").css({top : tpos.top+51+'px'});
-			$(".sub-modal-body").html(body);
-			break;
-
-		case 'bank-maturity':
-			var maturity_id = target.dataset.maturity;
-			title = "Encaissement de l'échéance";
-			body += "<input type='text' class='form-control datepicker'/>";
-			footer += "<button class='btn btn-success bank-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
-			$(".sub-modal").css({top : tpos.top+51+'px'});
-			$(".sub-modal-body").html(body);
-			break;
-
-		default:
-			title = "Sub modal";
-			break;
-	}
-	$(".sub-modal-title").text(title);
-	$(".sub-modal-footer").html(footer);
-	$(".datepicker").datetimepicker({
-		format: "DD/MM/YYYY",
-		inline: true,
-		locale: "fr"
-	})
-	var re = /historique/i;
-	if(re.exec(top.location.pathname) != null){
-		console.log("Historique");
-		$(".sub-modal").css({left: 74+'%'});
-	}
-	$(".sub-modal").show(0);
 }).on('click', '.activate-product', function(){
 	var date = moment($(".datepicker").val(),"DD/MM/YYYY").format("YYYY-MM-DD");
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
 	activateProductWithDate(product_id, date);
 }).on('click', '.extend-product', function(){
+	$(".sub-modal").hide();
 	var date = moment($(".datepicker").val(),"DD/MM/YYYY").format("YYYY-MM-DD 23:59:59");
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
-	extendProduct(product_id, date);
+	$.when(updateColumn("produits_adherents", "date_prolongee", date, product_id)).done(function(){
+		$("#btn-arep").attr("data-arep", date);
+		computeRemainingHours(product_id, true);
+	})
 }).on('click', '.remove-extension', function(){
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
-	extendProduct(product_id, null);
+	var table = "produits_adherents";
+	var column = "date_prolongee";
+	$.when(updateColumn(table, column, null, product_id)).done(function(){
+		$("#btn-arep").attr("data-arep", "null");
+		computeRemainingHours(product_id, true);
+	})
 }).on('click', '.product-participation', function(){
 	var session = $(this);
 	var participation_id = document.getElementById($(this).attr("id")).dataset.argument;
@@ -327,12 +178,70 @@ $(document).ready(function(){
 	var boolean_name = $(this).attr("id");
 	var product_id = document.getElementById($(this).attr("id")).dataset.product;
 	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
-	var old_value = document.getElementById($(this).attr("id")).dataset.boolean;
-	if(product_id != null){
-		toggleBoolean(button, boolean_name, product_id, "product_id", old_value);
+
+	if($(this).hasClass("status-disabled")){
+		var value = 1;
+		switch(button.attr("id")){
+			case "lock_montant":
+				var title = "Verrouillé : le montant de l'échéance ne variera pas, peu importe les autres échéances de la transaction.";
+				break;
+
+			case "lock_status":
+				var title = "Verrouillé : le système n'a désormais pas l'autorisation de changer l'état (en attente, valide, expiré) du produit. Vous pouvez cependant toujours le modifier.";
+				break;
+
+			case "lock_dates":
+				var title = "Verrouilé : le système n'a désormais pas l'autorisation de changer les dates de validité, d'activation ni d'expiration du produit. Vous pouvez néanmoins fixer toutes ces dates.";
+				break;
+
+			default:
+				break;
+		}
 	} else {
-		toggleBoolean(button, boolean_name, maturity_id, "maturity_id", old_value);
+		var value = 0;
+		switch(button.attr("id")){
+			case "lock_montant":
+				var title = "Non verrouillé : le montant de l'échéance sera affecté par des changements dans d'autres échéances";
+				break;
+
+			case "lock_status":
+				var title = "Libre : le système modifiera l'état du produit de façon appropriée en fonction des dates de validité.";
+				break;
+
+			case "lock_dates":
+				var title = "Libre : le système modifiera les dates en fonction du premier cours enregistré, de la validité du produit et d'une potentielle extension de validité.";
+				break;
+
+			default:
+				break;
+		}
 	}
+	if(product_id != null){
+		updateColumn("produits_adherents", boolean_name, value, product_id);
+		computeRemainingHours(product_id, true);
+	} else {
+		updateColumn("produits_echeances", boolean_name, value, product_id);
+	}
+	button.removeClass("status-disabled");
+	button.removeClass("status-enabled");
+	if(value == 1){
+		button.addClass("status-enabled");
+		button.children("span").removeClass("glyphicon-floppy-remove");
+		button.children("span").addClass("glyphicon-lock");
+		if(button.attr("id") == "lock_status"){
+					$("#manual-expire").removeClass("disabled");
+					$("#manual-expire").addClass("enabled");
+				}
+	} else {
+		button.addClass("status-disabled");
+		button.children("span").removeClass("glyphicon-lock");
+		button.children("span").addClass("glyphicon-floppy-remove");
+		if(button.attr("id") == "lock_status"){
+			$("#manual-expire").removeClass("enabled");
+			$("#manual-expire").addClass("disabled");
+		}
+	}
+	button.attr("title", title);
 }).on('click', '.delete-product', function(){
 	var product_id = document.getElementById($(this).attr("id")).dataset.product;
 	deleteProduct(product_id);
@@ -515,18 +424,6 @@ function deleteProduct(product_id){
 		if(data != null){
 			$("#purchase-"+data).remove();
 		}
-		$(".sub-modal").hide();
-	})
-}
-
-function extendProduct(product_id, end_date){
-	$.post("functions/extend_product.php", {product_id : product_id, end_date : end_date}).done(function(){
-		if(end_date == null){
-			$("#btn-arep").attr("data-arep", "null");
-		} else {
-			$("#btn-arep").attr("data-arep", end_date);
-		}
-		computeRemainingHours(product_id, true);
 		$(".sub-modal").hide();
 	})
 }

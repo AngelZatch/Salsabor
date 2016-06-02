@@ -1,4 +1,8 @@
 <?php
+session_start();
+if(!isset($_SESSION["username"])){
+	header('location: portal');
+}
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 $queryAdherentsNom = $db->query("SELECT user_id, user_prenom, user_nom FROM users ORDER BY user_nom ASC");
@@ -175,8 +179,8 @@ $indicePanier = $_GET["order"];
 					} else if($("#promotion-pourcent").prop("checked")){
 						prixReduit = prixInitial - ((prixInitial * reductionPourcent)/100);
 					}
-					$("#prix-calcul").val(prixReduit);
-					miniCart["prix_final"] = prixReduit;
+					$("#prix-calcul").val(prixReduit.toFixed(2));
+					miniCart["prix_final"] = prixReduit.toFixed(2);
 				}).blur(function(){
 					console.log(miniCart);
 				})

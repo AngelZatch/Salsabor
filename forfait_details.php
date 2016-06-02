@@ -1,4 +1,8 @@
 <?php
+session_start();
+if(!isset($_SESSION["username"])){
+	header('location: portal');
+}
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
@@ -83,7 +87,7 @@ if(isset($_POST["edit"])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<div class="col-lg-10 col-lg-offset-2 main">
+				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<form action="" class="form-horizontal" method="post">
 						<legend><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $produit["produit_nom"];?>
 							<input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER LES MODIFICATIONS">
@@ -154,7 +158,7 @@ if(isset($_POST["edit"])){
 								<input type="number" class="form-control" name="echeances" value="<?php echo $produit["echeances_paiement"];?>">
 							</div>
 						</div>
-						<p class="form-section">Période de vente</p>
+						<p class="sub-legend">Période de vente</p>
 						<span class="label-tip">Dans le cas d'une offre promotionnelle limitée dans le temps</span>
 						<div class="form-group">
 							<label for="date_activation" class="col-lg-3 control-label">Ouverture à l'achat</label>

@@ -14,12 +14,33 @@ $(document).on('click', '.trigger-nav', function(e){
 }).on('click', '.toggle-read', function(e){
 	e.stopImmediatePropagation();
 	var notification_id = $(this).parents("li").data().notification;
-	var old_value = $(this).parents("li").data().state;
-	changeState(notification_id, old_value);
+
+	if($("#notification-"+notification_id).hasClass("notif-new")){
+		var value = "0";
+	} else {
+		var value = "1";
+	}
+
+	$.when(updateColumn("team_notifications", "notification_state", value, notification_id)).done(function(){
+		$("#notification-"+notification_id).removeClass("notif-old");
+		$("#notification-"+notification_id).removeClass("notif-new");
+		if(value == 1){
+			$("#notification-"+notification_id).addClass("notif-new");
+			var span = $("#notification-"+notification_id).find("span.glyphicon-button");
+			span.replaceWith("<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button toggle-read' title='Marquer comme lue'></span>");
+			$(".badge-notifications").html(parseInt($("#badge-notifications").html())+1);
+		} else {
+			$("#notification-"+notification_id).addClass("notif-old");
+			var span = $("#notification-"+notification_id).find("span.glyphicon-button");
+			span.replaceWith("<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button toggle-read' title='Marquer comme non lue'></span>");
+			$(".badge-notifications").html(parseInt($("#badge-notifications").html())-1);
+		}
+	})
 }).on('click', '.notification-line', function(){
-	if($(this).data().state == 1){
+	var notification_id = $(this).data().notification;
+	if($("#notification-"+notification_id).hasClass("notif-new")){
 		var notification_id = $(this).data().notification;
-		changeState(notification_id, $(this).data().state);
+		updateColumn("team_notifications", "notification_state", 0, notification_id);
 	}
 	window.location = $(this).data().redirect;
 }).on('click', '.read-all', function(e){
@@ -45,87 +66,117 @@ function displayNotifications(data, limit){
 	}
 	for(var i = 0; i < notifications.length; i++){
 		// Status handling
-		var notifMessage = "", notifClass = "";
+		var notifMessage = "", notifClass = "", notif_link = "", notif_image = "", notif_icon = "", notif_message = "";
 		if(notifications[i].status == '1'){
 			notifClass = "notif-new";
 		} else {
 			notifClass = "notif-old";
 		}
-		notifMessage += "<li id='notification-"+notifications[i].id+"' data-notification='"+notifications[i].id+"' data-state ='"+notifications[i].status+"' class='notification-line "+notifClass+" container-fluid'";
+		notifMessage += "<li id='notification-"+notifications[i].id+"' data-notification='"+notifications[i].id+"' class='notification-line "+notifClass+" container-fluid'";
 
 		// Token handling
 		switch(notifications[i].type){
 			case "PRD":
-				notifMessage += "data-redirect='user/"+notifications[i].user_id+"/abonnements'>";
-				notifMessage += "<div class='notif-pp col-sm-2'><image src='"+notifications[i].photo+"'></div><div class='col-sm-10'>";
+				notif_link = "user/"+notifications[i].user_id+"/abonnements";
+				notif_image = notifications[i].photo;
 				switch(notifications[i].subtype){
 					case "NE":
-						notifMessage += "Le produit <strong>"+notifications[i].product_name+"</strong> de "+notifications[i].user+" arrivera à expiration le <strong>"+moment(notifications[i].product_validity).format("DD/MM/YYYY")+"</strong>.";
+						notif_message = "Le produit <strong>"+notifications[i].product_name+"</strong> de "+notifications[i].user+" arrivera à expiration le <strong>"+moment(notifications[i].product_validity).format("DD/MM/YYYY")+"</strong>.";
 						break;
 
 					case "NH":
-						notifMessage += "Le produit <strong>"+notifications[i].product_name+"</strong> de "+notifications[i].user+" n'a plus que <strong>"+notifications[i].remaining_hours+" heures restantes</strong>.";
+						notif_message = "Le produit <strong>"+notifications[i].product_name+"</strong> de "+notifications[i].user+" n'a plus que <strong>"+notifications[i].remaining_hours+" heures restantes</strong>.";
 						break;
 
 					case "E":
-						notifMessage += "Le produit <strong>"+notifications[i].product_name+"</strong> de "+notifications[i].user+" a expiré le <strong>"+moment(notifications[i].product_usage).format("DD/MM/YYYY")+"</strong>.";
+						notif_message = "Le produit <strong>"+notifications[i].product_name+"</strong> de "+notifications[i].user+" a expiré le <strong>"+moment(notifications[i].product_usage).format("DD/MM/YYYY")+"</strong>.";
 						break;
 				}
-				notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon glyphicon-credit-card'></span> ";
+				notif_icon = "glyphicon-credit-card";
 				break;
 
 			case "MAT":
-				notifMessage += "data-redirect='user/"+notifications[i].user_id+"/achats#purchase-"+notifications[i].transaction+"'>";
-				notifMessage += "<div class='notif-pp col-sm-2'><image src='"+notifications[i].photo+"'></div><div class='col-sm-10'>";
+				notif_link = "user/"+notifications[i].user_id+"/achats#purchase-"+notifications[i].transaction;
+				notif_image = notifications[i].photo;
 				switch(notifications[i].subtype){
 					case "NE":
-						notifMessage += "L'échéance de <strong>"+notifications[i].payer+"</strong> pour "+notifications[i].maturity_value+" € de la transaction "+notifications[i].transaction+" arrive à sa date limite, fixée au <strong>"+moment(notifications[i].maturity_date).format("DD/MM/YYYY")+"</strong>.";
+						notif_message = "L'échéance de <strong>"+notifications[i].payer+"</strong> pour "+notifications[i].maturity_value+" € de la transaction "+notifications[i].transaction+" arrive à sa date limite, fixée au <strong>"+moment(notifications[i].maturity_date).format("DD/MM/YYYY")+"</strong>.";
 						break;
 
 					case "E":
-						notifMessage += "L'échéance de <strong>"+notifications[i].payer+"</strong> pour "+notifications[i].maturity_value+" € de la transaction "+notifications[i].transaction+" prévue pour le  "+moment(notifications[i].maturity_date).format("DD/MM/YYYY")+" a expiré.";
+						notif_message = "L'échéance de <strong>"+notifications[i].payer+"</strong> pour "+notifications[i].maturity_value+" € de la transaction "+notifications[i].transaction+" prévue pour le  "+moment(notifications[i].maturity_date).format("DD/MM/YYYY")+" a expiré.";
 						break;
 
 					case "L":
-						notifMessage += "L'échéance de <strong>"+notifications[i].payer+"</strong> pour "+notifications[i].maturity_value+" € de la transaction "+notifications[i].transaction+" prévue pour le  "+moment(notifications[i].maturity_date).format("DD/MM/YYYY")+" <strong>est en retard</strong>.";
+						notif_message = "L'échéance de <strong>"+notifications[i].payer+"</strong> pour "+notifications[i].maturity_value+" € de la transaction "+notifications[i].transaction+" prévue pour le  "+moment(notifications[i].maturity_date).format("DD/MM/YYYY")+" <strong>est en retard</strong>.";
 						break;
 				}
-				notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon glyphicon-repeat'></span> ";
+				notif_icon = "glyphicon-repeat";
 				break;
-
-			case "TRA":
-				notifMessage += ">";
-				notifMessage += "<div class='notif-pp col-sm-2'><image src='"+notifications[i].photo+"'></div><div class='col-sm-10'>";
-				switch(notifications[i].subtype){
-					case "NE":
-						break;
-
-					case "E":
-						break;
-
-					case "L":
-						break;
-				}
-				notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon glyphicon-mail'></span> ";
-				break;
-
 
 			case "MAI":
-				notifMessage += "data-redirect='user/"+notifications[i].user_id+"'>";
-				notifMessage += "<div class='notif-pp col-sm-2'><image src='"+notifications[i].photo+"'></div><div class='col-sm-10'>";
-				notifMessage += "<strong>"+notifications[i].user+"</strong> n'a pas d'adresse mail enregistrée.";
-				notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon glyphicon-envelope'></span> ";
+				notif_link = "user/"+notifications[i].user_id;
+				notif_image = notifications[i].photo;
+				notif_message = "<strong>"+notifications[i].user+"</strong> n'a pas d'adresse mail enregistrée.";
+				notif_icon = "glyphicon-envelope";
 				break;
 
 			case "SES":
-				notifMessage += "data-redirect='passages#ph-session-"+notifications[i].cours_id+"'>";
-				notifMessage += "<div class='notif-pp col-sm-2'><image src='"+notifications[i].photo+"'></div><div class='col-sm-10'>";
-				notifMessage += "Le cours de <strong>"+notifications[i].cours_name+"</strong> tenu par "+notifications[i].user+" et commençant à "+moment(notifications[i].cours_start).format("HH:mm")+" en "+notifications[i].salle+" est désormais <strong>ouvert aux participations</strong>.";
-				notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon glyphicon-map-marker'></span> ";
+				if(notifications[i].cours_status == 1){
+					notif_link = "passages#ph-session-"+notifications[i].cours_id;
+				} else {
+					notif_link = "cours/"+notifications[i].cours_id;
+				}
+				notif_image = notifications[i].photo;
+				notif_message = "Le cours de <strong>"+notifications[i].cours_name+"</strong> tenu par "+notifications[i].user+" et commençant à "+moment(notifications[i].cours_start).format("HH:mm")+" en "+notifications[i].salle+" est désormais <strong>ouvert aux participations</strong>.";
+				notif_icon = "glyphicon-map-marker";
+				break;
+
+			case "TAS":
+				notif_link = notifications[i].link;
+				notif_image = notifications[i].photo;
+				switch(notifications[i].subtype){
+					case "A":
+						notif_message = "La tâche <strong>"+notifications[i].title+"</strong> vous a été assignée.";
+						break;
+
+					case "NE":
+						notif_message = "La tâche <strong>"+notifications[i].title+"</strong> arrive bientôt à sa date limite, fixée au <strong>"+moment(notifications[i].deadline).format("ll [à] HH:mm")+"</strong>";
+						break;
+
+					case "L":
+						notif_message = "La tâche <strong>"+notifications[i].title+"</strong> a dépassé sa date limite du <strong>"+moment(notifications[i].deadline).format("ll [à] HH:mm")+"</strong>";
+						break;
+				}
+				notif_icon = "glyphicon-list-alt";
+				break;
+
+			case "PRO":
+				notif_link = "forfait/"+notifications[i].product_id;
+				notif_image = "assets/images/sticker_promo.png";
+				switch(notifications[i].subtype){
+					case "S":
+						notif_message = "La promotion du produit <strong>"+notifications[i].product_name+"</strong> commence aujourd'hui et durera jusqu'au "+moment(notifications[i].date_desactivation).format("ll");
+						break;
+
+					case "E":
+						notif_message = "La promotion du produit <strong>"+notifications[i].product_name+"</strong> s'est achevée aujourd'hui."
+						break;
+				}
+				notif_icon = "glyphicon-euro";
+				break;
 
 			default:
 				break;
 		}
+
+		notifMessage += "data-redirect='"+notif_link+"'>";
+		notifMessage += "<div class='notif-pp col-sm-2'>";
+		notifMessage += "<image src='"+notif_image+"'>";
+		notifMessage += "</div>";
+		notifMessage += "<div class='col-sm-10'><p>";
+		notifMessage += notif_message;
+		notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon "+notif_icon+"'></span> ";
 		notifMessage += ""+moment(notifications[i].date).fromNow()+"</p>";
 		if(notifications[i].status == 1){
 			notifMessage += "<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button toggle-read' title='Marquer comme lue'></span>";
@@ -142,25 +193,6 @@ function displayNotifications(data, limit){
 		}
 	}
 	setTimeout(fetchNotifications, 10000, limit);
-}
-
-function changeState(notification_id, old_value){
-	$.when(toggleBoolean(null, "notification_state", notification_id, "notification_id", old_value)).done(function(){
-		if(old_value == 0){
-			$("#notification-"+notification_id).removeClass("notif-old");
-			$("#notification-"+notification_id).addClass("notif-new");
-			var span = $("#notification-"+notification_id).find("span.glyphicon-button");
-			span.replaceWith("<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button toggle-read' title='Marquer comme lue'></span>");
-			$("#notification-"+notification_id).data().state = 1;
-			$(".badge-notifications").html(parseInt($("#badge-notifications").html())+1);
-		} else {
-			$("#notification-"+notification_id).removeClass("notif-new");
-			$("#notification-"+notification_id).addClass("notif-old");
-			var span = $("#notification-"+notification_id).find("span.glyphicon-button");
-			span.replaceWith("<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button toggle-read' title='Marquer comme non lue'></span>");
-			$(".badge-notifications").html(parseInt($("#badge-notifications").html())-1);
-		}
-	})
 }
 
 function badgeNotifications(){

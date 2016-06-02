@@ -1,5 +1,6 @@
 <?php
 require_once "/opt/lampp/htdocs/Salsabor/functions/db_connect.php";
+require_once "/opt/lampp/htdocs/Salsabor/functions/tools.php";
 include "/opt/lampp/htdocs/Salsabor/functions/compute_remaining_hours.php";
 /*require_once "../db_connect.php";
 require_once "../compute_remaining_hours.php";*/
@@ -34,14 +35,18 @@ try{
 	}
 
 	// Activate available promotions
-	$activateProduit = $db->prepare("UPDATE produits SET actif=1 WHERE date_activation<=?");
-	$activateProduit->bindParam(1, $compare_start);
-	$activateProduit-> execute();
+	$toActivate = $db->query("SELECT produit_id FROM produits WHERE date_activation <= '$compare_start'");
+	while($match = $toActivate->fetch(PDO::FETCH_ASSOC)){
+		updateColumn($db, "produits", "actif", 1, $match["produit_id"]);
+		postNotification($db, "PRO-S", $match["produit_id"], null, $compare_start);
+	}
 
 	// Or deactivate expired ones
-	$deactivateProduit = $db->prepare("UPDATE produits SET actif=0 WHERE date_desactivation<=?");
-	$deactivateProduit->bindParam(1, $compare_start);
-	$deactivateProduit->execute();
+	$toDeactive = $db->query("SELECT produit_id FROM produits WHERE date_desactivation <= '$compare_start'");
+	while($match = $toDeactive->fetch(PDO::FETCH_ASSOC)){
+		updateColumn($db, "produits", "actif", 0, $match["produit_id"]);
+		postNotification($db, "PRO-E", $match["produit_id"], null, $compare_start);
+	}
 
 	$findActive = $db->query("SELECT date_achat, payeur_transaction FROM transactions GROUP BY payeur_transaction");
 

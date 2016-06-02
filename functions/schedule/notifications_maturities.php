@@ -18,6 +18,9 @@ PRD-NH | 1275 | 1 - The product PRODUCT_NAME of USER has HOUR remaining.
 MAT-L | 10024 | 1 - "The Maturity of the transaction TRANSACTION_ID of user USER, scheduled for MATURITY_DATE, has not been paid yet.
 **/
 require_once "/opt/lampp/htdocs/Salsabor/functions/db_connect.php";
+include "/opt/lampp/htdocs/Salsabor/functions/tools.php";
+/*require_once "../db_connect.php";
+include "../tools.php";*/
 $db = PDOFactory::getConnection();
 
 $master_settings = $db->query("SELECT * FROM master_settings WHERE user_id = 0")->fetch(PDO::FETCH_ASSOC);
@@ -44,8 +47,7 @@ while($maturity = $maturities->fetch(PDO::FETCH_ASSOC)){
 	$target = $maturity["produits_echeances_id"];
 	$date = date("Y-m-d H:i:s");
 
-	$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
-								VALUES('$token', '$target', '$date', '1')");
+	postNotification($db, $token, $target, null, $date);
 }
 
 
