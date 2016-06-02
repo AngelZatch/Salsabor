@@ -283,7 +283,7 @@ if(isset($_POST["edit"])){
 				});
 			})
 				<?php if($is_teacher == 1){?>
-
+/*
 			$("#add-tarif").click(function(){
 				$("#new-tarif").show();
 			});
@@ -391,6 +391,7 @@ if(isset($_POST["edit"])){
 					fetchTarifs();
 				});
 			}
+			*/
 			<?php } ?>
 		</script>
 	</body>
