@@ -5,14 +5,14 @@ if(!isset($_SESSION["username"])){
 }
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
-
-$querySalles = $db->query('SELECT * FROM salle WHERE est_salle_cours=1 ORDER BY salle_name ASC');
 ?>
 <html>
 	<head>
 		<meta charset="UTF-8">
 		<title>Salles | Salsabor</title>
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/circle-progress.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -21,51 +21,115 @@ $querySalles = $db->query('SELECT * FROM salle WHERE est_salle_cours=1 ORDER BY 
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-pushpin"></span> Salles
-						<a href="" role="button" class="btn btn-primary" disabled><span class="glyphicon glyphicon-plus"></span> Ajouter une salle</a>
 					</legend>
-					<div class="input-group input-group-lg search-form">
-						<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
-						<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">
-					</div>
-					<div id="rooms-list">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th class="col-lg-1"></th>
-									<th class="col-lg-4">Nom <span class="glyphicon glyphicon-sort sort" data-sort="room-name"></span></th>
-									<th class="col-lg-6">Adresse <span class="glyphicon glyphicon-sort sort" data-sort="adresse"></span></th>
-									<th class="col-lg-1"></th>
-								</tr>
-							</thead>
-							<tbody id="filter-enabled" class="list">
-								<?php while($salles = $querySalles->fetch(PDO::FETCH_ASSOC)) {
-	$queryCours = $db->prepare("SELECT * FROM cours WHERE ouvert=1 AND cours_salle=?");
-	$queryCours->bindParam(1, $salles["salle_id"]);
-	$queryCours->execute();
-								?>
-								<tr>
-									<?php if($queryCours->rowCount() != 0){ ?>
-									<td class="col-lg-1"><span class="glyphicon glyphicon-certificate glyphicon-danger" title="Un cours a lieu actuellement dans cette salle"></span></td>
-									<?php } else { ?>
-									<td class="col-lg-1"><span class="glyphicon glyphicon-certificate glyphicon-success" title="Salle disponible"></span></td>
-									<?php } ?>
-									<td class="col-lg-4 room-name"><?php echo $salles['salle_name'];?></td>
-									<td class="col-lg-6 adresse"><?php echo $salles['salle_adresse'];?></td>
-									<td class="col-lg-1"><a href="salles_details.php?id=<?php echo $salles["salle_id"];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
-								</tr>
-								<?php } ?>
-							</tbody>
-						</table>
+					<div id="rooms-list" class="container-fluid">
 					</div>
 				</div>
 			</div>
 		</div>
-		<?php include "scripts.php";?>
 		<script>
-			var options = {
-				valueNames: ['room-name', 'adresse']
-			};
-			var roomsList = new List('rooms-list', options);
+			$(document).ready(function(){
+				$.get("functions/fetch_rooms.php").done(function(data){
+					var rooms = JSON.parse(data);
+					console.log(rooms);
+					var contents = "", previousLocation = -1;
+					for(var i = 0; i < rooms.length; i++){
+						if(rooms[i].location_id != previousLocation){
+							if(i != 0){
+								contents += constructNewPanel();
+								// Close the row
+								contents += "</div>";
+							}
+							contents += "<p class='sub-legend'>"+rooms[i].location_name+"</p>";
+							contents += "<div class='row'>";
+						}
+						contents += "<div class='col-xs-12 col-md-6 col-lg-4' id='room-"+rooms[i].room_id+"'>";
+						if(rooms[i].availability == 1){
+							var availability_class = "status-over";
+							var status = "Actuellement occupée";
+							var trash_class = "glyphicon-button-disabled not-allowed";
+							var trash_title = "Vous ne pouvez pas supprimer une salle occupée";
+						} else {
+							var availability_class = "status-success";
+							var status = "Disponible";
+							var trash_class = "glyphicon-button";
+							var trash_title = "Supprimer la salle (Maintenez appuyé)";
+						}
+						contents += "<div class='panel panel-item panel-room "+availability_class+"'>";
+						contents += "<div class='panel-body'>";
+						contents += "<div class='delete-animation-holder' id='dah-"+rooms[i].room_id+"' data-target='"+rooms[i].room_id+"'><p class='hold-text'>Suppression...</p><p class='hold-help'>(Relâchez pour annuler)</p></div>";
+						//contents += "<div>";
+						contents += "<p class='panel-title col-xs-11'>"+rooms[i].room_name+"</p>";
+						contents += "<p class='panel-title col-xs-1'><span class='glyphicon glyphicon-trash "+trash_class+"' id='delete-"+rooms[i].room_id+"' data-target='"+rooms[i].room_id+"' title='"+trash_title+"'></span></p>";
+						//contents += "</div>";
+						contents += "<p class='purchase-sub col-xs-12'><span class='glyphicon glyphicon-star'></span> "+status+"</p>";
+						if(rooms[i].reader_token != null){
+							var reader = rooms[i].reader_token;
+						} else {
+							var reader = "Pas de lecteur couplé";
+						}
+						contents += "<p class='col-xs-12'><span class='glyphicon glyphicon-hdd'></span> "+reader+"</p>";
+						contents += "</div>";
+						contents += "</div>";
+						contents += "</div>";
+						previousLocation = rooms[i].location_id;
+						if(i == rooms.length -1){
+							contents += constructNewPanel();
+							// Close the row
+							contents += "</div>";
+						}
+					}
+					$("#rooms-list").append(contents);
+				})
+			}).on('mousedown', '.glyphicon-trash', function(){
+				if($(this).hasClass("glyphicon-button")){
+					var target = document.getElementById($(this).attr("id")).dataset.target;
+					var toBeDeleted = $("#dah-"+target);
+					$("#dah-"+target).show();
+					var startAngle = -Math.PI/2;
+					toBeDeleted.circleProgress({
+						value: 1,
+						size: 60,
+						startAngle: startAngle,
+						thickness: 100/18,
+						lineCap: "round",
+						fill:{
+							color: "white"
+						},
+						animation: {
+							duration: 2500
+						}
+					}).on('circle-animation-end', function(e){
+						var value = toBeDeleted.data('circle-progress').lastFrameValue;
+						if(value == 1){
+							// Deletion code
+							$.when(deleteEntry("rooms", target)).done(function(data){
+								console.log(data);
+								$("#room-"+target).remove();
+							})
+						}
+					})
+				}
+			}).on('mouseup', '.delete-animation-holder', function(){
+				var target = document.getElementById($(this).attr("id")).dataset.target;
+				var toBeDeleted = $("#dah-"+target);
+				$("#dah-"+target).hide();
+				$(toBeDeleted.circleProgress('widget')).stop();
+			})
+
+			function constructNewPanel(){
+				var contents = "";
+				contents += "<div class='col-xs-12 col-md-6 col-lg-4'>";
+				contents += "<div class='panel panel-item status-new'>";
+				contents += "<div class='panel-body'>";
+				contents += "<p class='panel-title'>Ajouter une salle à cette location</p>";
+				contents += "<p><span class='glyphicon glyphicon-star'></span> - </p>";
+				contents += "<p><span class='glyphicon glyphicon-hdd'></span> - </p>";
+				contents += "</div>";
+				contents += "</div>";
+				contents += "</div>";
+				return contents;
+			}
 		</script>
 	</body>
 </html>
