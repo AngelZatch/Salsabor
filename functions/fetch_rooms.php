@@ -21,15 +21,22 @@ while($room = $load->fetch(PDO::FETCH_ASSOC)){
 	$r["reader_token"] = $room["reader_token"];
 
 	// Look up its availability
-	/*$availability = $db->query("SELECT * FROM cours WHERE
-	(cours_start > '$now' AND cours_start < '$later' AND cours_salle = $r[room_id])
-	OR (cours_start < '$now' AND cours_end > '$now')");
-	if($availability->rowCount() > 0){
-		$r["availability"] = 1;
+	$availability = $db->query("SELECT *, COUNT(*) AS count FROM cours WHERE cours_salle = $r[room_id] AND ((cours_start >= '$now' AND cours_start <= '$later')
+	OR (cours_start <= '$now' AND cours_end >= '$now'))")->fetch(PDO::FETCH_ASSOC);
+	if($availability["count"] != 0){
+		if($availability["cours_start"] < $now){
+			$r["availability"] = 0;
+			$r["current_session"] = $availability["cours_intitule"];
+			$r["current_end"] = $availability["cours_end"];
+		} else {
+			$r["availability"] = 0.5;
+			$r["next_session"] = $availability["cours_intitule"];
+			$r["next_start"] = $availability["cours_start"];
+		}
 	} else {
-		$r["availability"] = 0;
-	}*/
-	$r["availability"] = rand(0,1);
+		$r["availability"] = 1;
+	}
+	//$r["availability"] = rand(0,1);
 	array_push($rooms, $r);
 }
 

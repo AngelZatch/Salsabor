@@ -44,9 +44,14 @@ $db = PDOFactory::getConnection();
 							contents += "<div class='row'>";
 						}
 						contents += "<div class='col-xs-12 col-md-6 col-lg-4' id='room-"+rooms[i].room_id+"'>";
-						if(rooms[i].availability == 1){
+						if(rooms[i].availability == 0){
 							var availability_class = "status-over";
-							var status = "Actuellement occupée";
+							var status = "Occupée : "+rooms[i].current_session+" (jusqu'à "+moment(rooms[i].current_end).format("HH:mm")+")";
+							var trash_class = "glyphicon-button-disabled not-allowed";
+							var trash_title = "Vous ne pouvez pas supprimer une salle occupée";
+						} else if(rooms[i].availability == 0.5){
+							var availability_class = "status-partial-success";
+							var status = "Bientôt : "+rooms[i].next_session+" (à partir de "+moment(rooms[i].next_start).format("HH:mm")+")";
 							var trash_class = "glyphicon-button-disabled not-allowed";
 							var trash_title = "Vous ne pouvez pas supprimer une salle occupée";
 						} else {
