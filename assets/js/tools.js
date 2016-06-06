@@ -217,6 +217,7 @@ $(document).ready(function(){
 	var table = document.getElementById($(this).attr("id")).dataset.table;
 	var column = document.getElementById($(this).attr("id")).dataset.column;
 	var target = document.getElementById($(this).attr("id")).dataset.target;
+	var value = document.getElementById($(this).attr("id")).dataset.value;
 
 	// And the ID.
 	var token = $(this).attr('id');
@@ -237,7 +238,12 @@ $(document).ready(function(){
 		switch(input_type){
 			case "text":
 				initialValue = initialValue.replace(/(['"])/g, "\\$1");
-				$(this).replaceWith("<input type='text' class='form-control editing "+additional_classes+"' id='"+token+"' value='"+initialValue+"'>");
+				if(value != "no-value"){
+					var replacement = "<input type='text' class='form-control editing "+additional_classes+"' id='"+token+"' value='"+initialValue+"'>";
+				} else {
+					var replacement = "<input type='text' class='form-control editing "+additional_classes+"' id='"+token+"' placeholder='"+initialValue+"'>";
+				}
+				$(this).replaceWith(replacement);
 				break;
 
 			case "textarea":
@@ -246,33 +252,51 @@ $(document).ready(function(){
 
 			default:
 				initialValue = initialValue.replace(/(['"])/g, "\\$1");
-				$(this).replaceWith("<input type='"+input_type+"' class='form-control editing "+additional_classes+"' id='"+token+"' value='"+initialValue+"'>");
+				if(value != "no-value"){
+					var replacement = "<input type='"+input_type+"' class='form-control editing "+additional_classes+"' id='"+token+"' value='"+initialValue+"'>";
+				} else {
+					var replacement = "<input type='"+input_type+"' class='form-control editing "+additional_classes+"' id='"+token+"' placeholder='"+initialValue+"'>";
+				}
+				$(this).replaceWith(replacement);
 				break;
 		}
 	}
 	$(".editing").focus();
 	$(".editing").blur(function(e){
 		e.stopPropagation();
-		var editedValue = $(this).val();
+		var editedValue = $(this).val(), replacementValue = "";
 		if(editedValue == ""){
 			switch(column){
 				case "task_recipient":
-					editedValue = "Affecter un membre";
+					replacementValue = "Affecter un membre";
 					break;
 
 				case "task_description":
-					editedValue = "Ajouter une description";
+					replacementValue = "Ajouter une description";
 					break;
+
+				case "room_reader":
+					replacementValue = "Pas de lecteur couplé";
+					break;
+			}
+			var replacement = "<p class='editable' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"' data-value='no-value'>"+replacementValue+"</p>";
+			if(value == "value"){
+				$.when(updateColumn(table, column, editedValue, target)).done(function(data){
+					$("#"+token).replaceWith(replacement);
+				})
+			} else {
+				$("#"+token).replaceWith(replacement);
 			}
 		} else {
 			if(column == "task_recipient"){
 				// Create notification for the recipient
 				postNotification("TAS-A", target, editedValue);
 			}
+			var replacement = "<p class='editable' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"' data-value='value'>"+editedValue+"</p>";
+			$.when(updateColumn(table, column, editedValue, target)).done(function(data){
+				$("#"+token).replaceWith(replacement);
+			})
 		}
-		$.when(updateColumn(table, column, editedValue, target)).done(function(data){
-			$("#"+token).replaceWith("<p class='editable' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"'>"+editedValue+"</p>");
-		})
 		/*if(editedValue != "" && editedValue != initialValue){
 			if(editedValue.indexOf('-') != -1){
 				var editedDate = moment(new Date(editedValue)).format("DD/MM/YYYY");

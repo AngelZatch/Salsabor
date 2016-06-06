@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $load = $db->query("SELECT * FROM rooms r
 					JOIN locations l ON r.room_location = l.location_id
-					LEFT JOIN readers re ON r.room_id = re.reader_room
+					LEFT JOIN readers re ON r.room_reader = re.reader_id
 					ORDER BY location_id, room_name ASC");
 
 $now = date("Y-m-d H:i:s");

@@ -261,7 +261,12 @@ function displayTasks(data, user_id, attached_id, limit, filter, half){
 			}
 			contents += "</span>";
 			contents += "</h4>";
-			contents += "<div><span class='glyphicon glyphicon-align-left glyphicon-description'></span><p class='editable' id='task-description-"+tasks[i].id+"' data-input='textarea' data-table='tasks' data-column='task_description' data-target='"+tasks[i].id+"'>"+tasks[i].description+"</p></div>";
+			if(tasks[i].description == ""){
+				var value = "no-value";
+			} else {
+				var value = "value";
+			}
+			contents += "<div><span class='glyphicon glyphicon-align-left glyphicon-description'></span><p class='editable' id='task-description-"+tasks[i].id+"' data-input='textarea' data-table='tasks' data-column='task_description' data-target='"+tasks[i].id+"' data-value='"+value+"'>"+tasks[i].description+"</p></div>";
 			contents += "<div class='col-md-2 "+comments_count_width+" comment-span' id='comments-count-"+tasks[i].id+"'>";
 			contents += "<span class='glyphicon glyphicon-comment'></span> "+tasks[i].message_count;
 			contents += "</div>";
@@ -277,7 +282,12 @@ function displayTasks(data, user_id, attached_id, limit, filter, half){
 
 			contents += "<div class='col-md-5 "+recipient_width+" comment-span'>";
 			contents += "<span class='glyphicon glyphicon-user glyphicon-description'></span> ";
-			contents += "<p class='editable' id='task-recipient-"+tasks[i].id+"' data-input='text' data-table='tasks' data-column='task_recipient' data-target='"+tasks[i].id+"'>"+tasks[i].recipient+"</p>";
+			if(tasks[i].recipient = ""){
+				var value = "no-value";
+			} else {
+				var value = "value";
+			}
+			contents += "<p class='editable' id='task-recipient-"+tasks[i].id+"' data-input='text' data-table='tasks' data-column='task_recipient' data-target='"+tasks[i].id+"' data-value='"+value+"'>"+tasks[i].recipient+"</p>";
 			contents += "</div>";
 
 			contents += "</div>";
