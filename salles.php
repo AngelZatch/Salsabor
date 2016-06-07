@@ -45,7 +45,7 @@ $db = PDOFactory::getConnection();
 						contents += constructRoomPanel(rooms[i]);
 						previousLocation = rooms[i].location_id;
 						if(i == rooms.length -1){
-							contents += constructNewPanel();
+							contents += constructNewPanel(rooms[i].location_id);
 							// Close the row
 							contents += "</div>";
 						}
@@ -106,7 +106,6 @@ $db = PDOFactory::getConnection();
 
 			function constructRoomPanel(room){
 				var contents = "";
-				console.log(room);
 				contents += "<div class='col-xs-12 col-md-6 col-lg-4' id='room-"+room.room_id+"'>";
 				if(room.availability == 0){
 					var availability_class = "status-over";
@@ -128,12 +127,12 @@ $db = PDOFactory::getConnection();
 				contents += "<div class='panel-body row'>";
 				contents += "<div class='delete-animation-holder' id='dah-"+room.room_id+"' data-target='"+room.room_id+"'><p class='hold-text'>Suppression...</p><p class='hold-help'>(Relâchez pour annuler)</p></div>";
 				contents += "<div class='panel-title container-fluid'>";
-				contents += "<p class='col-xs-10'>"+room.room_name+"</p>";
+				contents += "<p class='col-xs-10 editable' id='room-name-"+room.room_id+"' data-input=-text- data-table='rooms' data-column='room_name' data-target='"+room.room_id+"' data-value='value'>"+room.room_name+"</p>";
 				contents += "<p class='col-xs-2'><span class='glyphicon glyphicon-trash "+trash_class+"' id='delete-"+room.room_id+"' data-target='"+room.room_id+"' title='"+trash_title+"'></span></p>";
 				contents += "</div>"; // panel-title
 				contents += "<div class='container-fluid'>";
 				contents += "<span class='glyphicon glyphicon-star col-xs-2'></span> ";
-				contents += "<p class='col-xs-10 purchase-sub'>"+status+"</p>";
+				contents += "<p class='col-xs-10 purchase-sub no-padding'>"+status+"</p>";
 				contents += "</div>"; // container-fluid
 				if(room.reader_token != null){
 					var reader = room.reader_token;
@@ -143,7 +142,7 @@ $db = PDOFactory::getConnection();
 					var value = "no-value";
 				}
 				contents += "<div class='container-fluid'>";
-				contents += "<span class='glyphicon glyphicon-hdd glyphicon-description col-xs-2'></span> <p class='editable' id='room-reader-"+room.room_id+"' data-input='text' data-table='rooms' data-column='room_reader' data-target='"+room.room_id+"' data-value='"+value+"'>"+reader+"</p>";
+				contents += "<span class='glyphicon glyphicon-hdd col-xs-2'></span> <p class='editable col-xs-10 no-padding' id='room-reader-"+room.room_id+"' data-input='text' data-table='rooms' data-column='room_reader' data-target='"+room.room_id+"' data-value='"+value+"'>"+reader+"</p>";
 				contents += "</div>"; //container-fluid
 				contents += "</div>"; //panel-body
 				contents += "</div>"; //panel

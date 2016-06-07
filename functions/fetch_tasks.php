@@ -52,7 +52,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 		$t["recipient"] = $details["user_prenom"]." ".$details["user_nom"];
 		$t["recipient_id"] = $details["task_recipient"];
 	} else {
-		$t["recipient"] = "Affecter un membre";
+		$t["recipient"] = "";
 	}
 	// Additional details depending of the token
 	$t["type"] = substr($t["token"], 0, 3);

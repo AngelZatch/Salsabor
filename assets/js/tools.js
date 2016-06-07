@@ -212,6 +212,16 @@ $(document).ready(function(){
 	// we get the initial value
 	var initialValue = $(this).val();
 	if(initialValue == ""){initialValue = $(this).html();}
+	var class_list = document.getElementById($(this).attr("id")).className.split(/\s+/);
+	//classes = classes.replace(/,/g, " ");
+	var classes = "";
+	for(var i = 0; i < class_list.length; i++){
+		classes += class_list[i];
+		if(i != class_list.length - 1){
+			classes += " ";
+		}
+	}
+	console.log(classes);
 
 	// We get the data details for the upload
 	var table = document.getElementById($(this).attr("id")).dataset.table;
@@ -279,7 +289,7 @@ $(document).ready(function(){
 					replacementValue = "Pas de lecteur couplé";
 					break;
 			}
-			var replacement = "<p class='editable' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"' data-value='no-value'>"+replacementValue+"</p>";
+			var replacement = "<p class='"+classes.replace(/,/, '')+"' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"' data-value='no-value'>"+replacementValue+"</p>";
 			if(value == "value"){
 				$.when(updateColumn(table, column, editedValue, target)).done(function(data){
 					$("#"+token).replaceWith(replacement);
@@ -292,7 +302,7 @@ $(document).ready(function(){
 				// Create notification for the recipient
 				postNotification("TAS-A", target, editedValue);
 			}
-			var replacement = "<p class='editable' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"' data-value='value'>"+editedValue+"</p>";
+			var replacement = "<p class='"+classes+"' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"' data-value='value'>"+editedValue+"</p>";
 			$.when(updateColumn(table, column, editedValue, target)).done(function(data){
 				$("#"+token).replaceWith(replacement);
 			})

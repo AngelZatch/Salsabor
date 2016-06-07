@@ -282,12 +282,14 @@ function displayTasks(data, user_id, attached_id, limit, filter, half){
 
 			contents += "<div class='col-md-5 "+recipient_width+" comment-span'>";
 			contents += "<span class='glyphicon glyphicon-user glyphicon-description'></span> ";
-			if(tasks[i].recipient = ""){
+			if(tasks[i].recipient == ""){
 				var value = "no-value";
+				var recipient = "Affecter un membre";
 			} else {
 				var value = "value";
+				var recipient = tasks[i].recipient;
 			}
-			contents += "<p class='editable' id='task-recipient-"+tasks[i].id+"' data-input='text' data-table='tasks' data-column='task_recipient' data-target='"+tasks[i].id+"' data-value='"+value+"'>"+tasks[i].recipient+"</p>";
+			contents += "<p class='editable' id='task-recipient-"+tasks[i].id+"' data-input='text' data-table='tasks' data-column='task_recipient' data-target='"+tasks[i].id+"' data-value='"+value+"'>"+recipient+"</p>";
 			contents += "</div>";
 
 			contents += "</div>";
