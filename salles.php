@@ -33,16 +33,27 @@ $db = PDOFactory::getConnection();
 					var rooms = JSON.parse(data);
 					var contents = "", previousLocation = -1;
 					for(var i = 0; i < rooms.length; i++){
+						console.log(i);
 						if(rooms[i].location_id != previousLocation){
 							if(i != 0){
 								contents += constructNewPanel(previousLocation);
 								// Close the row
 								contents += "</div>";
 							}
-							contents += "<p class='sub-legend'>"+rooms[i].location_name+"</p>";
+							contents += "<p class='sub-legend editable' id='location-name-"+rooms[i].location_id+"' data-input='text' data-table='locations' data-column='location_name' data-target='"+rooms[i].location_id+"' data-value='value'>"+rooms[i].location_name+"</p>";
+							if(rooms[i].location_address == ""){
+								var address = "Ajouter une adresse";
+								var value = "no-value";
+							} else {
+								var address = rooms[i].location_address;
+								var value = "value";
+							}
+							contents += "<p class='editable' id='location-address-"+rooms[i].location_id+"' data-input='text' data-table='locations' data-column='location_address' data-target='"+rooms[i].location_id+"' data-value='"+value+"'>"+address+"</p>";
 							contents += "<div class='row'>";
 						}
-						contents += constructRoomPanel(rooms[i]);
+						if(rooms[i].room_id != null){
+							contents += constructRoomPanel(rooms[i]);
+						}
 						previousLocation = rooms[i].location_id;
 						if(i == rooms.length -1){
 							contents += constructNewPanel(rooms[i].location_id);
@@ -50,6 +61,10 @@ $db = PDOFactory::getConnection();
 							contents += "</div>";
 						}
 					}
+					contents += "<div class='panel-heading panel-add-record container-fluid'>";
+					contents += "<div class='col-sm-1'><div class='notif-pp empty-pp'></div></div>";
+					contents += "<div class='col-sm-11 new-task-text'>Ajouter un nouveau lieu</div>";
+					contents += "</div></div>";
 					$("#rooms-list").append(contents);
 				})
 			}).on('mousedown', '.glyphicon-trash', function(){
@@ -102,6 +117,23 @@ $db = PDOFactory::getConnection();
 				if($(this).val() == ""){
 					$(".status-pre-success").parent().remove();
 				}
+			}).on('click', '.panel-add-record', function(){
+				$(this).before("<input type='text' class='form-control' id='new-location'>");
+				$("#new-location").focus();
+			}).on('blur', '#new-location', function(){
+				var name = $("#new-location").val();
+				if(name != ""){
+					$.post("functions/add_location.php", {location_name : name}).done(function(data){
+						var new_location = "<p class='sub-legend editable' id='location-name-"+data+"' data-input='text' data-table='locations' data-column='location_name' data-target='"+data+"' data-value='value'>"+name+"</p>";
+						new_location += "<p class='editable' id='location-address-"+data+"' data-input='text' data-table='locations' data-column='location_address' data-target='"+data+"' data-value='no-value'>Ajouter une adresse</p>";
+						new_location += "<div class='row'>";
+						new_location += constructNewPanel(data);
+						new_location += "</div>";
+						$("#new-location").replaceWith(new_location);
+					})
+				} else {
+					$("#new-location").remove();
+				}
 			})
 
 			function constructRoomPanel(room){
@@ -127,7 +159,7 @@ $db = PDOFactory::getConnection();
 				contents += "<div class='panel-body row'>";
 				contents += "<div class='delete-animation-holder' id='dah-"+room.room_id+"' data-target='"+room.room_id+"'><p class='hold-text'>Suppression...</p><p class='hold-help'>(Relâchez pour annuler)</p></div>";
 				contents += "<div class='panel-title container-fluid'>";
-				contents += "<p class='col-xs-10 editable' id='room-name-"+room.room_id+"' data-input=-text- data-table='rooms' data-column='room_name' data-target='"+room.room_id+"' data-value='value'>"+room.room_name+"</p>";
+				contents += "<p class='col-xs-10 editable' id='room-name-"+room.room_id+"' data-input='text' data-table='rooms' data-column='room_name' data-target='"+room.room_id+"' data-value='value'>"+room.room_name+"</p>";
 				contents += "<p class='col-xs-2'><span class='glyphicon glyphicon-trash "+trash_class+"' id='delete-"+room.room_id+"' data-target='"+room.room_id+"' title='"+trash_title+"'></span></p>";
 				contents += "</div>"; // panel-title
 				contents += "<div class='container-fluid'>";
@@ -157,7 +189,7 @@ $db = PDOFactory::getConnection();
 				contents += "<div class='panel-body'>";
 				// Panel-title
 				contents += "<div class='panel-title'>";
-				contents += "<p class='col-xs-12'>Ajouter une salle à cette location</p>";
+				contents += "<p class='col-xs-12'>Ajouter une salle à ce lieu</p>";
 				contents += "</div>";
 				contents += "</div>";
 				contents += "</div>";
