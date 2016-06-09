@@ -30,6 +30,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<link rel="stylesheet" href="assets/css/bootstrap-slider.min.css">
 		<?php include "scripts.php";?>
 		<script src="assets/js/tasks-js.php"></script>
+		<script src="assets/js/tags.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>

@@ -60,7 +60,7 @@ function addResa(){
 	// Obtention de l'intitulé du type de prestation
 	$nomPresa = $db->query('SELECT prestations_name FROM prestations WHERE prestations_id='.$prestation)->fetch(PDO::FETCH_ASSOC);
 
-	$reservation = $nomPresa['prestations_name']."\nLe ".date_create($date_debut)->format('d/m/Y')." de ".date_create($date_debut)->format('H:i')." à ".date_create($date_fin)->format('H:i')."\nRéservation ".$textPriorite."\n".$salle['salle_name'];
+	$reservation = $nomPresa['prestations_name']."\nLe ".date_create($date_debut)->format('d/m/Y')." de ".date_create($date_debut)->format('H:i')." à ".date_create($date_fin)->format('H:i')."\nRéservation ".$textPriorite."\n".$salle['room_name'];
 	$reservation = iconv('UTF-8', 'windows-1252', $reservation);
 	$pdf->MultiCell(0, 7, $reservation);
 

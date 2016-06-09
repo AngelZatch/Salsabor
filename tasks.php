@@ -33,7 +33,7 @@ $display = $_GET["display"];
 							<a href="taches/user">Vos tâches</a>
 						</li>
 						<li role="presentation" <?php if($display == "all") echo "class='active'";?>>
-							<a href="taches/all">Totues les tâches</a>
+							<a href="taches/all">Toutes les tâches</a>
 						</li>
 					</ul>
 					<?php }?>

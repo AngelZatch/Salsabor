@@ -5,14 +5,14 @@ if(!isset($_SESSION["username"])){
 }
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
-
-$querySalles = $db->query('SELECT * FROM salle WHERE est_salle_cours=1 ORDER BY salle_name ASC');
 ?>
 <html>
 	<head>
 		<meta charset="UTF-8">
 		<title>Salles | Salsabor</title>
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/circle-progress.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -21,51 +21,195 @@ $querySalles = $db->query('SELECT * FROM salle WHERE est_salle_cours=1 ORDER BY 
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-pushpin"></span> Salles
-						<a href="" role="button" class="btn btn-primary" disabled><span class="glyphicon glyphicon-plus"></span> Ajouter une salle</a>
 					</legend>
-					<div class="input-group input-group-lg search-form">
-						<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
-						<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">
-					</div>
-					<div id="rooms-list">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th class="col-lg-1"></th>
-									<th class="col-lg-4">Nom <span class="glyphicon glyphicon-sort sort" data-sort="room-name"></span></th>
-									<th class="col-lg-6">Adresse <span class="glyphicon glyphicon-sort sort" data-sort="adresse"></span></th>
-									<th class="col-lg-1"></th>
-								</tr>
-							</thead>
-							<tbody id="filter-enabled" class="list">
-								<?php while($salles = $querySalles->fetch(PDO::FETCH_ASSOC)) {
-	$queryCours = $db->prepare("SELECT * FROM cours WHERE ouvert=1 AND cours_salle=?");
-	$queryCours->bindParam(1, $salles["salle_id"]);
-	$queryCours->execute();
-								?>
-								<tr>
-									<?php if($queryCours->rowCount() != 0){ ?>
-									<td class="col-lg-1"><span class="glyphicon glyphicon-certificate glyphicon-danger" title="Un cours a lieu actuellement dans cette salle"></span></td>
-									<?php } else { ?>
-									<td class="col-lg-1"><span class="glyphicon glyphicon-certificate glyphicon-success" title="Salle disponible"></span></td>
-									<?php } ?>
-									<td class="col-lg-4 room-name"><?php echo $salles['salle_name'];?></td>
-									<td class="col-lg-6 adresse"><?php echo $salles['salle_adresse'];?></td>
-									<td class="col-lg-1"><a href="salles_details.php?id=<?php echo $salles["salle_id"];?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a></td>
-								</tr>
-								<?php } ?>
-							</tbody>
-						</table>
+					<div id="rooms-list" class="container-fluid">
 					</div>
 				</div>
 			</div>
 		</div>
-		<?php include "scripts.php";?>
 		<script>
-			var options = {
-				valueNames: ['room-name', 'adresse']
-			};
-			var roomsList = new List('rooms-list', options);
+			$(document).ready(function(){
+				$.get("functions/fetch_rooms.php").done(function(data){
+					var rooms = JSON.parse(data);
+					var contents = "", previousLocation = -1;
+					for(var i = 0; i < rooms.length; i++){
+						console.log(i);
+						if(rooms[i].location_id != previousLocation){
+							if(i != 0){
+								contents += constructNewPanel(previousLocation);
+								// Close the row
+								contents += "</div>";
+							}
+							contents += "<p class='sub-legend editable' id='location-name-"+rooms[i].location_id+"' data-input='text' data-table='locations' data-column='location_name' data-target='"+rooms[i].location_id+"' data-value='value'>"+rooms[i].location_name+"</p>";
+							if(rooms[i].location_address == ""){
+								var address = "Ajouter une adresse";
+								var value = "no-value";
+							} else {
+								var address = rooms[i].location_address;
+								var value = "value";
+							}
+							contents += "<p class='editable' id='location-address-"+rooms[i].location_id+"' data-input='text' data-table='locations' data-column='location_address' data-target='"+rooms[i].location_id+"' data-value='"+value+"'>"+address+"</p>";
+							contents += "<div class='row'>";
+						}
+						if(rooms[i].room_id != null){
+							contents += constructRoomPanel(rooms[i]);
+						}
+						previousLocation = rooms[i].location_id;
+						if(i == rooms.length -1){
+							contents += constructNewPanel(rooms[i].location_id);
+							// Close the row
+							contents += "</div>";
+						}
+					}
+					contents += "<div class='panel-heading panel-add-record container-fluid'>";
+					contents += "<div class='col-sm-1'><div class='notif-pp empty-pp'></div></div>";
+					contents += "<div class='col-sm-11 new-task-text'>Ajouter un nouveau lieu</div>";
+					contents += "</div></div>";
+					$("#rooms-list").append(contents);
+				})
+			}).on('mousedown', '.glyphicon-trash', function(){
+				if($(this).hasClass("glyphicon-button")){
+					var target = document.getElementById($(this).attr("id")).dataset.target;
+					var toBeDeleted = $("#dah-"+target);
+					$("#dah-"+target).show();
+					var startAngle = -Math.PI/2;
+					toBeDeleted.circleProgress({
+						value: 1,
+						size: 60,
+						startAngle: startAngle,
+						thickness: 100/18,
+						lineCap: "round",
+						fill:{
+							color: "white"
+						},
+						animation: {
+							duration: 2500
+						}
+					}).on('circle-animation-end', function(e){
+						var value = toBeDeleted.data('circle-progress').lastFrameValue;
+						if(value == 1){
+							// Deletion code
+							$.when(deleteEntry("rooms", target)).done(function(data){
+								console.log(data);
+								$("#room-"+target).remove();
+							})
+						}
+					})
+				}
+			}).on('mouseup', '.delete-animation-holder', function(){
+				var target = document.getElementById($(this).attr("id")).dataset.target;
+				var toBeDeleted = $("#dah-"+target);
+				$("#dah-"+target).hide();
+				$(toBeDeleted.circleProgress('widget')).stop();
+			}).on('click', '.status-new', function(){
+				var parent = $(this).parent();
+				var location = document.getElementById($(this).attr("id")).dataset.location;
+				parent.before(constructEmptyPanel(location));
+				$("#new-name").focus();
+			}).on('click', '.create-room', function(){
+				var location = document.getElementById($(this).attr("id")).dataset.location;
+				var name = $("#new-name").val();
+				$.post("functions/add_room.php", {room_location : location, room_name : name}).done(function(data){
+					var new_room = {room_id : data, room_name : name};
+					$(".status-pre-success").parent().replaceWith(constructRoomPanel(new_room));
+				})
+			}).on('blur', '#new-name', function(){
+				if($(this).val() == ""){
+					$(".status-pre-success").parent().remove();
+				}
+			}).on('click', '.panel-add-record', function(){
+				$(this).before("<input type='text' class='form-control' id='new-location'>");
+				$("#new-location").focus();
+			}).on('blur', '#new-location', function(){
+				var name = $("#new-location").val();
+				if(name != ""){
+					$.post("functions/add_location.php", {location_name : name}).done(function(data){
+						var new_location = "<p class='sub-legend editable' id='location-name-"+data+"' data-input='text' data-table='locations' data-column='location_name' data-target='"+data+"' data-value='value'>"+name+"</p>";
+						new_location += "<p class='editable' id='location-address-"+data+"' data-input='text' data-table='locations' data-column='location_address' data-target='"+data+"' data-value='no-value'>Ajouter une adresse</p>";
+						new_location += "<div class='row'>";
+						new_location += constructNewPanel(data);
+						new_location += "</div>";
+						$("#new-location").replaceWith(new_location);
+					})
+				} else {
+					$("#new-location").remove();
+				}
+			})
+
+			function constructRoomPanel(room){
+				var contents = "";
+				contents += "<div class='col-xs-12 col-md-6 col-lg-4' id='room-"+room.room_id+"'>";
+				if(room.availability == 0){
+					var availability_class = "status-over";
+					var status = room.current_session+" (jusqu'à "+moment(room.current_end).format("HH:mm")+")";
+					var trash_class = "glyphicon-button-disabled not-allowed";
+					var trash_title = "Vous ne pouvez pas supprimer une salle occupée";
+				} else if(room.availability == 0.5){
+					var availability_class = "status-partial-success";
+					var status = room.next_session+" (à partir de "+moment(room.next_start).format("HH:mm")+")";
+					var trash_class = "glyphicon-button-disabled not-allowed";
+					var trash_title = "Vous ne pouvez pas supprimer une salle occupée";
+				} else {
+					var availability_class = "status-success";
+					var status = "Disponible";
+					var trash_class = "glyphicon-button";
+					var trash_title = "Supprimer la salle (Maintenez appuyé)";
+				}
+				contents += "<div class='panel panel-item panel-room "+availability_class+"'>";
+				contents += "<div class='panel-body row'>";
+				contents += "<div class='delete-animation-holder' id='dah-"+room.room_id+"' data-target='"+room.room_id+"'><p class='hold-text'>Suppression...</p><p class='hold-help'>(Relâchez pour annuler)</p></div>";
+				contents += "<div class='panel-title container-fluid'>";
+				contents += "<p class='col-xs-10 editable' id='room-name-"+room.room_id+"' data-input='text' data-table='rooms' data-column='room_name' data-target='"+room.room_id+"' data-value='value'>"+room.room_name+"</p>";
+				contents += "<p class='col-xs-2'><span class='glyphicon glyphicon-trash "+trash_class+"' id='delete-"+room.room_id+"' data-target='"+room.room_id+"' title='"+trash_title+"'></span></p>";
+				contents += "</div>"; // panel-title
+				contents += "<div class='container-fluid'>";
+				contents += "<span class='glyphicon glyphicon-star col-xs-2'></span> ";
+				contents += "<p class='col-xs-10 purchase-sub no-padding'>"+status+"</p>";
+				contents += "</div>"; // container-fluid
+				if(room.reader_token != null){
+					var reader = room.reader_token;
+					var value = "value";
+				} else {
+					var reader = "Pas de lecteur couplé";
+					var value = "no-value";
+				}
+				contents += "<div class='container-fluid'>";
+				contents += "<span class='glyphicon glyphicon-hdd col-xs-2'></span> <p class='editable col-xs-10 no-padding' id='room-reader-"+room.room_id+"' data-input='text' data-table='rooms' data-column='room_reader' data-target='"+room.room_id+"' data-value='"+value+"'>"+reader+"</p>";
+				contents += "</div>"; //container-fluid
+				contents += "</div>"; //panel-body
+				contents += "</div>"; //panel
+				contents += "</div>"; //col-xs-12 col-md-6 col-lg-4
+				return contents;
+			}
+
+			function constructNewPanel(location){
+				var contents = "";
+				contents += "<div class='col-xs-12 col-md-6 col-lg-4'>";
+				contents += "<div class='panel panel-item panel-room status-new' id='new-"+location+"' data-location='"+location+"'>";
+				contents += "<div class='panel-body'>";
+				// Panel-title
+				contents += "<div class='panel-title'>";
+				contents += "<p class='col-xs-12'>Ajouter une salle à ce lieu</p>";
+				contents += "</div>";
+				contents += "</div>";
+				contents += "</div>";
+				contents += "</div>";
+				return contents;
+			}
+
+			function constructEmptyPanel(location){
+				var contents = "";
+				contents += "<div class='col-xs-12 col-md-6 col-lg-4'>";
+				contents += "<div class='panel panel-item panel-room status-pre-success'>";
+				contents += "<div class='panel-body'>";
+				contents += "<p class='panel-title'><input type='text' class='form-control' id='new-name'></p>";
+				contents += "<p><span class='glyphicon glyphicon-hdd'></span> - </p>";
+				contents += "<button class='btn btn-success btn-block create-room' id='create-"+location+"' data-location='"+location+"'>Ajouter</button>";
+				contents += "</div>";
+				contents += "</div>";
+				contents += "</div>";
+				return contents;
+			}
 		</script>
 	</body>
 </html>

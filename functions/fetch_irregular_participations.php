@@ -7,11 +7,9 @@ if($participation_id == 0){
 	$participation_id = PHP_INT_MAX;
 }
 
-$load = $db->query("SELECT *, IF(date_prolongee IS NOT NULL, date_prolongee,
-							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
-							) AS produit_validity, pr.user_rfid AS pr_rfid FROM participations pr
-					LEFT JOIN lecteurs_rfid lr ON pr.room_token = lr.lecteur_ip
-					LEFT JOIN salle s ON lr.lecteur_lieu = s.salle_id
+$load = $db->query("SELECT *, pr.user_rfid AS pr_rfid FROM participations pr
+					LEFT JOIN readers re ON pr.room_token = re.reader_token
+					LEFT JOIN rooms r ON re.reader_id = r.room_reader
 					LEFT JOIN users u ON pr.user_id = u.user_id
 					LEFT JOIN produits_adherents pa ON pr.produit_adherent_id = pa.id_produit_adherent
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
@@ -47,14 +45,14 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$r["photo"] = $details["photo"];
 	$r["date"] = $details["passage_date"];
 	$r["status"] = $details["status"];
-	$r["room"] = $details["salle_name"];
+	$r["room"] = $details["room_name"];
 	$r["cours_id"] = $details["cours_id"];
 	$r["cours_name"] = $details["cours_intitule"];
 	$r["cours_start"] = $details["cours_start"];
 	$r["cours_end"] = $details["cours_end"];
 	if($details["produit_nom"] != null){
 		$r["product_name"] = $details["produit_nom"];
-		$r["product_expiration"] = $details["produit_validity"];
+		$r["product_expiration"] = max($details["date_expiration"], $details["date_fin_utilisation"], $details["date_prolongee"]);
 		if($details["est_illimite"] == "1"){
 			$r["product_hours"] = 9999;
 		} else {

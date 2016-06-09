@@ -3,40 +3,29 @@
 	border-bottom: $width solid $color
 	background-color: transparentize($color, 0.7)
 
-.status-over
+=panel-decoration($color)
 	&.panel-record
-		+status-border(3px, $danger-color)
+		+status-border(3px, $color)
 	&:not(.panel-record)
-		border-left: 7px solid $danger-color
-	&:hover
-		background-color: $danger-color
+		border-left: 7px solid $color
+	&:not(.options-shown)
+		&:hover
+			background-color: $color
+
+.status-over
+	+panel-decoration($danger-color)
 
 .status-pre-success
-	&.panel-record
-		+status-border(3px, $pre-success-color)
-	&:not(.panel-record)
-		border-left: 7px solid $pre-success-color
-	&:not(.options-shown)
-		&:hover
-			background-color: $pre-success-color
+	+panel-decoration($pre-success-color)
 
 .status-success
-	&.panel-record
-		+status-border(3px, $success-color)
-	&:not(.panel-record)
-		border-left: 7px solid $success-color
-	&:not(.options-shown)
-		&:hover
-			background-color: $success-color
+	+panel-decoration($success-color)
 
 .status-partial-success
-	&.panel-record
-		+status-border(3px, $warning-color)
-	&:not(.panel-record)
-		border-left: 7px solid $warning-color
-	&:not(.options-shown)
-		&:hover
-			background-color: $warning-color
+	+panel-decoration($warning-color)
+
+.status-new
+	+panel-decoration($system-color)
 
 .product-soon
 	font-weight: 700

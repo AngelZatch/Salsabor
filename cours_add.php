@@ -25,7 +25,7 @@ while($profs = $queryProfs->fetch(PDO::FETCH_ASSOC)){
 
 $niveaux = $db->query('SELECT * FROM niveau');
 
-$lieux = $db->query('SELECT * FROM salle WHERE est_salle_cours=1');
+$lieux = $db->query('SELECT * FROM rooms');
 
 // Ajout d'un cours
 if(isset($_POST['add'])){
@@ -133,7 +133,7 @@ if(isset($_POST['add'])){
 									<label for="lieu" class="control-label">Lieu</label>
 									<select name="lieu" class="form-control mandatory input-lg" id="lieu" onChange="checkCalendar(false, false)">
 										<?php while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){ ?>
-										<option value="<?php echo $row_lieux['salle_id'];?>"><?php echo $row_lieux['salle_name'];?></option>
+										<option value="<?php echo $row_lieux['room_id'];?>"><?php echo $row_lieux['room_name'];?></option>
 										<?php } ?>
 									</select>
 								</div>

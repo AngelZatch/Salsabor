@@ -18,7 +18,11 @@ $details["count"] = $db->query("SELECT * FROM tasks
 						AND task_state = 0")->rowCount();
 
 // On obtient l'historique de ses réservations
-$queryResa = $db->prepare('SELECT * FROM reservations JOIN users ON reservation_personne=users.user_id JOIN prestations ON type_prestation=prestations_id JOIN salle ON reservation_salle=salle.salle_id WHERE reservation_personne=?');
+$queryResa = $db->prepare('SELECT * FROM reservations b
+							JOIN users u ON b.reservation_personne = u.user_id
+							JOIN prestations p ON b.type_prestation = p.prestations_id
+							JOIN rooms r ON b.reservation_salle = r.room_id
+							WHERE reservation_personne=?');
 $queryResa->bindValue(1, $data);
 $queryResa->execute();
 

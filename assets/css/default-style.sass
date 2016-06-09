@@ -8,6 +8,7 @@ $danger-color: #D9534F
 $pending-color: #9491D6
 $near-danger-color: #F0684B
 $empty-container-color: #888888
+$body-color: #E9EBEE
 $light-red-color: lighten($danger-color, 20%)
 $break-small : 360px
 $break-medium: 768px
@@ -17,6 +18,7 @@ $avatar-size-preview: 120px
 $avatar-big-preview: 170px
 @import 'status'
 @import 'panel-items'
+@import 'holders'
 
 =circle-size($radius)
 	height: $radius !important
@@ -29,8 +31,12 @@ $avatar-big-preview: 170px
 .align-right
 	text-align: right
 
+.no-padding
+	padding: 0 !important
+
 body
 	margin-top: 50px
+	background-color: $body-color
 
 a
 	color: $salsabor-red
@@ -91,6 +97,12 @@ legend
 
 .input-group > .form-control
 	z-index: 0 !important
+
+.not-allowed
+	cursor: not-allowed
+
+.fc-view-container
+	background-color: white
 
 /** LABELS **/
 .user-labels
@@ -160,9 +172,8 @@ a
 	position: relative
 
 .sidebar
-	/*background-color: lighten($salsabor-red, 5%)*/
 	position: fixed
-	background-color: white
+	background-color: $body-color
 	color: black
 	padding: 10px 0 20px 0
 	overflow-y: scroll
@@ -186,6 +197,7 @@ a
 	font-size: 17px
 	font-family: 'globersemibold_free'
 	&:hover
+		background-color: white !important
 		color: black
 	span
 		padding-right: 20px
@@ -613,7 +625,7 @@ h2.modal-body-title.first
 
 /** CATALOGUE **/
 .panel-product
-	background-color: darken(white, 10%)
+	background-color: white
 
 .product-description
 	min-height: 80px
@@ -799,7 +811,7 @@ div.legend:nth-child(1n+0)
 
 .glyphicon-description
 	float: left
-	margin-right: 5px
+	margin-left: 5px
 
 .message-author
 	font-weight: 700

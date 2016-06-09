@@ -68,12 +68,12 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 
 		case "SES": // Notification when a session has been opened by the system
 			$sub_query = $db->query("SELECT * FROM cours c
-									JOIN salle s ON c.cours_salle = s.salle_id
+									JOIN rooms r ON c.cours_salle = r.room_id
 									JOIN users u ON c.prof_principal = u.user_id
 									WHERE cours_id='$n[target]'")->fetch(PDO::FETCH_ASSOC);
 			$n["cours_id"] = $sub_query["cours_id"];
 			$n["cours_name"] = $sub_query["cours_intitule"];
-			$n["salle"] = $sub_query["salle_name"];
+			$n["salle"] = $sub_query["room_name"];
 			$n["cours_start"] = $sub_query["cours_start"];
 			$n["user"] = $sub_query["user_prenom"]." ".$sub_query["user_nom"];
 			$n["photo"] = $sub_query["photo"];

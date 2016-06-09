@@ -28,7 +28,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 // If the user is a teacher
 /*if($is_teacher == 1){
 	// On obtient l'historique de ses cours
-	$queryHistoryDonnes = $db->prepare('SELECT * FROM cours JOIN niveau ON cours_niveau=niveau.niveau_id JOIN salle ON cours_salle=salle.salle_id WHERE prof_principal=? OR prof_remplacant=? ORDER BY cours_start ASC');
+	$queryHistoryDonnes = $db->prepare('SELECT * FROM cours JOIN niveau ON cours_niveau=niveau.niveau_id JOIN rooms r ON cours_salle = r.room_id WHERE prof_principal=? OR prof_remplacant=? ORDER BY cours_start ASC');
 	$queryHistoryDonnes->bindValue(1, $data);
 	$queryHistoryDonnes->bindValue(2, $data);
 	$queryHistoryDonnes->execute();

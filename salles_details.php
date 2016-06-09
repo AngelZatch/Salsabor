@@ -9,7 +9,7 @@ $db = PDOFactory::getConnection();
 $data = $_GET["id"];
 
 // Détails du forfait
-$querySalle = $db->prepare("SELECT * FROM salle WHERE salle_id=?");
+$querySalle = $db->prepare("SELECT * FROM rooms WHERE room_id=?");
 $querySalle->bindParam(1, $data);
 $querySalle->execute();
 $salle = $querySalle->fetch(PDO::FETCH_ASSOC);
