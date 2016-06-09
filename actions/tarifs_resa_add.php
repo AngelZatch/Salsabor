@@ -40,9 +40,9 @@ while($row_liste_plages = $liste_plages->fetch(PDO::FETCH_ASSOC)){
 		<label for="lieu_resa" class="col-sm-3 control-label">Lieu réservé <span class="span-mandatory">*</span></label>
 		<div class="col-sm-9">
 			<?php
-$lieux = $db->query('SELECT * FROM salle WHERE est_salle_cours=1');
+$lieux = $db->query('SELECT * FROM rooms');
 while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){
-	echo "<input type='checkbox' class='checkbox-inline' value=".$row_lieux['salle_id']." name='salle-".$row_lieux['salle_id']."'>".$row_lieux['salle_name'];
+	echo "<input type='checkbox' class='checkbox-inline' value=".$row_lieux['room_id']." name='salle-".$row_lieux['room_id']."'>".$row_lieux['room_name'];
 }
 			?>
 		</div>

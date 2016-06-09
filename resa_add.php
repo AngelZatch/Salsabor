@@ -8,7 +8,7 @@ $db = PDOFactory::getConnection();
 require_once 'functions/reservations.php';
 
 $queryPrestations = $db->query('SELECT * FROM prestations WHERE est_resa=1');
-$queryLieux = $db->query('SELECT * FROM salle WHERE est_salle_cours=1');
+$queryLieux = $db->query('SELECT * FROM rooms');
 
 $queryAdherentsNom = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
 $array_eleves = array();

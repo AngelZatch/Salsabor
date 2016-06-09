@@ -20,8 +20,8 @@ function solveAdherentToId($name){
 
 function getLieu($id){
 	$db = PDOFactory::getConnection();
-	$search = $db->prepare('SELECT * FROM salle WHERE salle_id=?');
-	$search->bindParam(1, $id);
+	$search = $db->prepare('SELECT * FROM rooms WHERE room_id=?');
+	$search->bindParam(1, $id, PDO::PARAM_INT);
 	$search->execute();
 	$res = $search->fetch(PDO::FETCH_ASSOC);
 	return $res;

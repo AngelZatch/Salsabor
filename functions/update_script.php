@@ -24,6 +24,15 @@ try{
 	reader_token VARCHAR(25)
 	)");
 	// Foreign key : reader_room -> rooms.room_id ON DELETE SET NULL ON UPDATE NO ACTION
+
+	/* Modifications of the session table
+		cours_salle : DEFAULT NULL
+		Foreign key : cours_salle -> rooms.room_id ON DELETE SET NULL ON UPDATE NO ACTION
+	*/
+	$cours = $db->query("ALTER TABLE cours ADD FOREIGN KEY (cours_salle) REFERENCES rooms(room_id) ON DELETE SET NULL ON UPDATE NO ACTION");
+	// Delete foreign keys to salle : tarifs_reservations and reservations
+	// Foreign key : tarifs_reserivations -> rooms.room_id ON DELETE CASCADE ON UPDATE NO ACTION
+	// Foreign key : reservations -> rooms.room_id ON DELETE SET NULL ON UPDATE NO ACTION
 } catch(PDOException $e){
 	echo $e->getMessage();
 }

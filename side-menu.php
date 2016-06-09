@@ -16,28 +16,25 @@
 				<!--<li class="main-option-container"><a href="reservation" class="main-option"><span class="glyphicon glyphicon-record"></span> Réservation</a></li>-->
 			</ul>
 
-			<li><a class="main-section"><span class="glyphicon glyphicon-transfer"></span> Emploi du temps</a></li>
-			<ul class="nav nav-sub-sidebar" id="collapse-timetable">
+			<li><a class="main-section"><span class="glyphicon glyphicon-list"></span> Données</a></li>
+			<ul class="nav nav-sub-sidebar" id="collapse-data">
 				<li class="main-option-container"><a href="planning" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='planning.php') echo "active";?>"><span class="glyphicon glyphicon-time"></span> Planning</a></li>
 				<li class="main-option-container"><a href="holidays" class="main-option"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés</a></li>
+				<li class="main-option-container"><a href="salles" class="main-option"><span class="glyphicon glyphicon-pushpin"></span> Salles</a></li>
+				<li class="main-option-container"><a href="forfaits" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='forfaits.php') echo "active";?>"><span class="glyphicon glyphicon-credit-card"></span> Forfaits</a></li>
+				<li class="main-option-container"><a href="tarifs" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='tarifs_liste.php') echo "active";?>"><span class="glyphicon glyphicon-scale"></span> Tarifs de Location</a></li>
 			</ul>
 
 			<li><a class="main-section"><span class="glyphicon glyphicon-euro"></span> Finances</a></li>
 			<ul class="nav nav-sub-sidebar" id="collapse-prices">
 				<li class="main-option-container"><a href="echeances" class="main-option"><span class="glyphicon glyphicon-repeat"></span> Echéances <span class="badge sidebar-badge" id="badge-echeances"></span></a></li>
-				<li class="main-option-container"><a href="tarifs" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='tarifs_liste.php') echo "active";?>"><span class="glyphicon glyphicon-scale"></span> Tarifs de Location</a></li>
+				<li class="main-option-container"><a href="rentabilite" class="main-option"><span class="glyphicon glyphicon-usd"></span> Rentabilité <span class="badge sidebar-badge" id="badge-echeances"></span></a></li>
 			</ul>
 
 			<li><a class="main-section"><span class="glyphicon glyphicon-equalizer"></span> Régularisation</a></li>
 			<ul class="nav nav-sub-sidebar" id="collapse-irregulars">
 				<li class="main-option-container"><a href="regularisation/participations/all" class="main-option"><span class="glyphicon glyphicon-bishop"></span> Participations <span class="badge sidebar-badge" id="badge-participations"></span></a></li>
 				<li class="main-option-container"><a href="regularisation/forfaits" class="main-option"><span class="glyphicon glyphicon-queen"></span> Forfaits</a></li>
-			</ul>
-
-			<li><a class="main-section"><span class="glyphicon glyphicon-list"></span> Données</a></li>
-			<ul class="nav nav-sub-sidebar" id="collapse-data">
-				<li class="main-option-container"><a href="salles" class="main-option"><span class="glyphicon glyphicon-pushpin"></span> Salles</a></li>
-				<li class="main-option-container"><a href="forfaits" class="main-option <?php if(basename($_SERVER['PHP_SELF'])=='forfaits.php') echo "active";?>"><span class="glyphicon glyphicon-credit-card"></span> Forfaits</a></li>
 			</ul>
 
 			<li><a class="main-section"><span class="glyphicon glyphicon-tasks"></span> Paramétrage</a></li>

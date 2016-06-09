@@ -660,7 +660,7 @@ function displaySingleParticipation(participation_details){
 		$("#participation-"+participation_details.id).addClass("status-over");
 	} else {
 		participation += "<p class='col-lg-12 session-title'>"+participation_details.product_name+"</p>";
-		participation += "<p class='col-lg-12 session-hours'>Acheté le "+moment(participation_details.achat).format("DD/MM/YYYY")+" / Valide du "+moment(participation_details.product_activation).format("DD/MM/YYYY")+" au "+moment(participation_details.product_validity).format("DD/MM/YYYY")+"</p>";
+		participation += "<p class='col-lg-12 session-hours'>Acheté le "+moment(participation_details.achat).format("DD/MM/YYYY")+" / Valide du "+moment(participation_details.product_activation).format("DD/MM/YYYY")+" au "+moment(participation_details.product_expiration).format("DD/MM/YYYY")+"</p>";
 		$("#participation-"+participation_details.id).addClass("status-success");
 	}
 	participation += "</div>";

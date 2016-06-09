@@ -11,16 +11,14 @@ $session = $db->query("SELECT cours_salle, cours_start
 $limit_start = date("Y-m-d H:i:s", strtotime($session["cours_start"].'-30MINUTES'));
 $limit_end = date("Y-m-d H:i:s", strtotime($session["cours_start"].'+30MINUTES'));
 
-$load = $db->query("SELECT *, IF(date_prolongee IS NOT NULL, date_prolongee,
-							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
-							) AS produit_validity FROM participations pr
-					LEFT JOIN lecteurs_rfid lr ON pr.room_token = lr.lecteur_ip
-					LEFT JOIN salle s ON lr.lecteur_lieu = s.salle_id
+$load = $db->query("SELECT * FROM participations pr
+					LEFT JOIN readers re ON pr.room_token = re.reader_id
+					LEFT JOIN rooms r ON re.reader_id = r.room_reader
 					LEFT JOIN users u ON pr.user_id = u.user_id
 					LEFT JOIN produits_adherents pa ON pr.produit_adherent_id = pa.id_produit_adherent
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
 					LEFT JOIN cours c ON pr.cours_id = c.cours_id
-					WHERE lr.lecteur_lieu = '$session[cours_salle]' AND pr.cours_id = '$session_id'
+					WHERE pr.cours_id = '$session_id'
 					ORDER BY u.user_nom ASC");
 
 $notifications_settings = $db->query("SELECT * FROM master_settings WHERE user_id = '0'")->fetch(PDO::FETCH_ASSOC);
@@ -37,7 +35,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$r["status"] = $details["status"];
 	if($details["produit_nom"] != null){
 		$r["product_name"] = $details["produit_nom"];
-		$r["product_expiration"] = $details["produit_validity"];
+		$r["product_expiration"] = max($details["date_expiration"], $details["date_fin_utilisation"], $details["date_prolongee"]);
 		if($details["est_illimite"] == "1"){
 			$r["product_hours"] = 9999;
 		} else {
