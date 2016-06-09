@@ -33,6 +33,8 @@ try{
 	// Delete foreign keys to salle : tarifs_reservations and reservations
 	// Foreign key : tarifs_reserivations -> rooms.room_id ON DELETE CASCADE ON UPDATE NO ACTION
 	// Foreign key : reservations -> rooms.room_id ON DELETE SET NULL ON UPDATE NO ACTION
+
+	// Side menu tables : import them directly.
 } catch(PDOException $e){
 	echo $e->getMessage();
 }
