@@ -151,6 +151,7 @@ if(isset($_POST['addSell'])){
 				$delete->bindParam(1, $_POST["rfid"]);
 				$delete->execute();
 			}
+			$id = $db->lastInsertId();
 			$db->commit();
 			header('Location: catalogue.php?user='.$id.'');
 		} catch(PDOException $e){
@@ -185,6 +186,7 @@ if(isset($_POST['addSell'])){
 			$new->bindParam(':actif', $actif);
 			$new->bindParam(':commentaires', $_POST["commentaires"]);
 			$new->execute();
+			$id = $db->lastInsertId();
 			if(isset($_POST["rfid"])){
 				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid=? AND status=1');
 				$delete->bindParam(1, $_POST["rfid"]);
