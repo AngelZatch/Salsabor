@@ -14,10 +14,8 @@ $members = $db->query("SELECT user_id, prix_total FROM participations pr
 						AND prix_total > 150.00
 						GROUP BY user_id");
 
-$sum = $db->query("SELECT user_id, SUM(prix_total) FROM participations pr
-						JOIN transactions t ON t.payeur_transaction = pr.user_id
-						WHERE passage_date > '2015-09-01 00:00:00'
-						GROUP BY user_id")->fetch(PDO::FETCH_ASSOC);
+$sum = $db->query("SELECT SUM(prix_total) FROM transactions
+						WHERE date_achat > '2015-08-15 00:00:00'")->fetch(PDO::FETCH_ASSOC);
 ?>
 <html>
 	<head>
@@ -42,28 +40,30 @@ $sum = $db->query("SELECT user_id, SUM(prix_total) FROM participations pr
 						<p class="sub-legend">Adhérents (participants avec au moins 140€ de dépenses)</p>
 						<p><?php echo $members->rowCount();?> adhérents avec au moins 140€ de dépenses.</p>
 
-						<p class="sub-legend">Somme de toutes les transactions depuis le 01/09/2015</p>
+						<p class="sub-legend">Somme de toutes les transactions depuis le 15/08/2015</p>
 						<p><?php echo $sum["SUM(prix_total)"];?> €</p>
 
-						<p class="sub-legend">Prix moyens (produits achetés après le 01/09/2015)</p>
+						<p class="sub-legend">Prix moyens (produits achetés après le 15/08/2015)</p>
 						<table class="table">
 							<thead>
 								<th>Nom</th>
 								<th>Prix fixé</th>
+								<th>Nb. produits</th>
 								<th>Prix réel</th>
-								<th>Participations</th>
-								<th>Prix du cours moyen</th>
+								<th>Nb. part.</th>
+								<th>Revenu</th>
 							</thead>
 							<tbody>
-								<?php $unlimited = $db->query("SELECT produit_id, produit_nom, tarif_global FROM produits WHERE est_illimite = 1 OR est_recharge = 1");
+								<?php $unlimited = $db->query("SELECT produit_id, produit_nom, tarif_global, volume_horaire, est_illimite FROM produits WHERE est_illimite = 1 OR est_recharge = 1");
 
 								while($product = $unlimited->fetch(PDO::FETCH_ASSOC)){
 									$mean = $db->query("SELECT prix_achat, date_achat, COUNT(pr.passage_id) AS count_participations, prix_achat/COUNT(pr.passage_id) AS mean_value FROM produits_adherents pa
-													JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
-													JOIN participations pr ON pr.produit_adherent_id = pa.id_produit_adherent
-													WHERE id_produit_foreign = $product[produit_id] AND date_achat > '2015-09-01 00:00:00'
+													LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
+													LEFT JOIN participations pr ON pr.produit_adherent_id = pa.id_produit_adherent
+													WHERE id_produit_foreign = $product[produit_id]
 													GROUP BY produit_adherent_id");
 									$value = 0; $total_selling_price = 0; $total_participations = 0;
+									$is_full_pass = $product["est_illimite"];
 									while($single = $mean->fetch(PDO::FETCH_ASSOC)){
 										$value += $single["mean_value"];
 										$total_selling_price += $single["prix_achat"];
@@ -80,9 +80,16 @@ $sum = $db->query("SELECT user_id, SUM(prix_total) FROM participations pr
 									echo "<tr>";
 									echo "<td>".$product["produit_nom"]."</td>";
 									echo "<td>".number_format($product["tarif_global"])." €</td>";
+									echo "<td>".$count."</td>";
 									echo "<td>".number_format($mean_selling_price, 2)." €</td>";
 									echo "<td>".$total_participations."</td>";
-									echo "<td>".number_format($mean_value, 2)." € </td>";
+									if($is_full_pass == 0){
+										$price = ($mean_selling_price / $product["volume_horaire"]) * $total_participations;
+										echo "<td>".number_format($price, 2)." €</td>";
+									} else {
+										$price = ($mean_selling_price * $count / $total_participations);
+										echo "<td>".number_format($price, 2)." €</td>";
+									}
 									echo "</tr>";
 								}
 								?>

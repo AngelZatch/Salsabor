@@ -132,7 +132,6 @@ if(isset($_POST["edit"])){
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<?php include "inserts/user_banner.php";?>
-					<legend>Informations</legend>
 					<?php if($queryEcheances != 0){ ?>
 					<div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
 					<?php } ?>
@@ -235,7 +234,7 @@ if(isset($_POST["edit"])){
 					elErrorContainers: '#kv-avatar-errors',
 					elPreviewContainer: '#avatar-container',
 					msgErrorClass: 'alert alert-block alert-danger',
-					defaultPreviewContent: '<img src="<?php echo $details["photo"];?>" style="width:118px;">',
+					defaultPreviewContent: '<img src="<?php echo $details["photo"];?>" alt="<?php echo $details["user_prenom"]." ".$details["user_nom"];?>" style="width:118px;">',
 					layoutTemplates: {main2: '{preview} {browse}' },
 				});
 				var listening = false;

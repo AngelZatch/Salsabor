@@ -249,7 +249,7 @@ function displayParticipations(session_id){
 				if(records_list[i].count > 0){
 					contents += "<a href='user/"+records_list[i].user_id+"/taches' target='_blank'><span class='glyphicon glyphicon-list-alt remove-extension' title='"+records_list[i].count+" tâche(s) restantes à faire'></span></a>";
 				}
-				contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"'></div>";
+				contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"' alt='"+records_list[i].user+"'></div>";
 				contents += "<p class='col-lg-12 panel-item-title bf'><a href='user/"+records_list[i].user_id+"'>"+records_list[i].user+"</a></p>";
 				contents += "<p class='col-lg-6 participation-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
 				contents += "<p class='col-lg-6 participation-details'><span class='glyphicon glyphicon-qrcode'></span> "+records_list[i].card+"</p>";
@@ -326,7 +326,7 @@ function displayIrregularParticipations(participation_id){
 			} else {
 				var photo = "assets/images/logotype-white.png";
 			}
-			contents += "<div class='notif-pp col-sm-2'><img src='"+photo+"'></div>";
+			contents += "<div class='notif-pp col-sm-2'><img src='"+photo+"' alt='"+records_list[i].user+"'></div>";
 			// Details
 			contents += "<div class='row irregular-record-actions'>";
 

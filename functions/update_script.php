@@ -3,6 +3,10 @@ include "db_connect.php";
 $db = PDOFactory::getConnection();
 try{
 	set_time_limit(0);
+	// Foreign key : assoc_task_tags -> task.task_id ON DELETE CASCADE ON UPDATE NO ACTION
+	// Foreign key : assoc_user_tags -> users.user_id ON DELETE CASCADE ON UPDATE NO ACTION
+	// Foreign key : assoc_user_tags -> tags_user.rank_id ON DELETE CASCADE ON UPDATE NO ACTION
+
 	// Create the locations table
 	$locations = $db->query("CREATE TABLE locations(
 	location_id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -33,6 +37,8 @@ try{
 	// Delete foreign keys to salle : tarifs_reservations and reservations
 	// Foreign key : tarifs_reserivations -> rooms.room_id ON DELETE CASCADE ON UPDATE NO ACTION
 	// Foreign key : reservations -> rooms.room_id ON DELETE SET NULL ON UPDATE NO ACTION
+
+	// Side menu tables : import them directly.
 } catch(PDOException $e){
 	echo $e->getMessage();
 }

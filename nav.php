@@ -13,7 +13,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 				<?php if(isset($_SESSION["username"])){ ?>
 				<button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
 					<div class="nav-pp">
-						<img src="<?php echo $_SESSION["photo"];?>" alt="" style="width:inherit;">
+						<img src="<?php echo $_SESSION["photo"];?>" alt="<?php echo $_SESSION["username"];?>" style="width:inherit;">
 					</div>
 				</button>
 				<?php } else { ?>

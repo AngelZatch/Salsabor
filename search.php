@@ -36,7 +36,7 @@ $numberTransactions = $searchTransactions->rowCount();
 								<div class="panel-body user-entry">
 									<a href="user/<?php echo $users["user_id"];?>">
 										<div class="user-pp">
-											<img src="<?php echo $users["photo"];?>" alt="" class="profile-picture">
+											<img src="<?php echo $users["photo"];?>" alt="<?php echo $users["user_prenom"]." ".$users["user_nom"];?>" class="profile-picture">
 										</div>
 										<p>
 											<?php if($users["actif"] == 1){ ?>
