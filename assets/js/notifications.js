@@ -174,15 +174,17 @@ function displayNotifications(data, limit){
 		notifMessage += "<div class='notif-pp col-sm-2'>";
 		notifMessage += "<image src='"+notif_image+"'>";
 		notifMessage += "</div>";
-		notifMessage += "<div class='col-sm-10'><p>";
-		notifMessage += notif_message;
-		notifMessage += "</p><p class='notif-hour col-sm-10'><span class='glyphicon "+notif_icon+"'></span> ";
-		notifMessage += ""+moment(notifications[i].date).fromNow()+"</p>";
+		notifMessage += "<div class='col-sm-10'>";
+		notifMessage += "<div class='row'>";
+		notifMessage += "<p class='col-sm-11'>"+notif_message+"</p>";
 		if(notifications[i].status == 1){
 			notifMessage += "<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button toggle-read' title='Marquer comme lue'></span>";
 		} else {
 			notifMessage += "<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button toggle-read' title='Marquer comme non lue'></span>";
 		}
+		notifMessage += "<p class='notif-hour col-sm-10'><span class='glyphicon "+notif_icon+"'></span> ";
+		notifMessage += ""+moment(notifications[i].date).fromNow()+"</p>";
+		notifMessage += "</div>";
 		notifMessage += "</div>";
 		notifMessage += "</li>";
 
