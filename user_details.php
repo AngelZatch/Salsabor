@@ -234,7 +234,7 @@ if(isset($_POST["edit"])){
 					elErrorContainers: '#kv-avatar-errors',
 					elPreviewContainer: '#avatar-container',
 					msgErrorClass: 'alert alert-block alert-danger',
-					defaultPreviewContent: '<img src="<?php echo $details["photo"];?>" style="width:118px;">',
+					defaultPreviewContent: '<img src="<?php echo $details["photo"];?>" alt="<?php echo $details["user_prenom"]." ".$details["user_nom"];?>" style="width:118px;">',
 					layoutTemplates: {main2: '{preview} {browse}' },
 				});
 				var listening = false;

@@ -172,7 +172,7 @@ function displayNotifications(data, limit){
 
 		notifMessage += "data-redirect='"+notif_link+"'>";
 		notifMessage += "<div class='notif-pp col-sm-2'>";
-		notifMessage += "<image src='"+notif_image+"'>";
+		notifMessage += "<img src='"+notif_image+"' alt='Notification'>";
 		notifMessage += "</div>";
 		notifMessage += "<div class='col-sm-10'>";
 		notifMessage += "<div class='row'>";

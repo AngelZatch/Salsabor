@@ -354,7 +354,7 @@ if(isset($_POST['addSell'])){
 				elErrorContainers: '#kv-avatar-errors',
 				elPreviewContainer: '#avatar-container',
 				msgErrorClass: 'alert alert-block alert-danger',
-				defaultPreviewContent: '<img src="assets/images/logotype-white.png" style="width:118px;">',
+				defaultPreviewContent: '<img src="assets/images/logotype-white.png" alt="Image par défaut" style="width:118px;">',
 				layoutTemplates: {main2: '{preview} {browse}' },
 			});
 			var listening = false;
