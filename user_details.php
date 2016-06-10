@@ -132,7 +132,6 @@ if(isset($_POST["edit"])){
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<?php include "inserts/user_banner.php";?>
-					<legend>Informations</legend>
 					<?php if($queryEcheances != 0){ ?>
 					<div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
 					<?php } ?>

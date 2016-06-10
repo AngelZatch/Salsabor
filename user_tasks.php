@@ -39,7 +39,6 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<?php include "inserts/user_banner.php";?>
-					<legend><span class="glyphicon glyphicon-user"></span> Tâches</legend>
 					<ul class="nav nav-tabs">
 						<li role="presentation"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/abonnements">Abonnements</a></li>
