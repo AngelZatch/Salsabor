@@ -23,7 +23,8 @@ function prepareParticipation($db, $tag, $reader_token){
 		// For the session, we have to find it based on the time of the record and the position.
 		$session = $db->query("SELECT cours_intitule, cours_id FROM cours c
 								JOIN rooms r ON c.cours_salle = r.room_id
-								WHERE ouvert = '1' AND room_reader = '$reader_token'")->fetch(PDO::FETCH_GROUP);
+								JOIN readers re ON r.room_reader = re.reader_id
+								WHERE ouvert = '1' AND reader_token = '$reader_token'")->fetch(PDO::FETCH_GROUP);
 		$cours_name = $session["cours_intitule"];
 		$session_id = $session["cours_id"];
 		$user_details = $db->query("SELECT user_id, mail FROM users WHERE user_rfid = '$tag'")->fetch(PDO::FETCH_ASSOC);
