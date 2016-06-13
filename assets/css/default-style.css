@@ -1238,4 +1238,27 @@ p.legend, div.legend:nth-child(1n+0) {
     color: white;
     font-weight: 700; }
 
+/* line 847, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.main-maintenance {
+  margin-top: 150px; }
+
+/* line 850, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.maintenance-brand {
+  font-size: 100px;
+  text-align: center;
+  font-family: 'globersemibold_free';
+  font-weight: 800;
+  margin-bottom: 15px;
+  color: #A80139; }
+
+/* line 858, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.social-space {
+  align-content: center;
+  text-align: center;
+  margin-top: 20px;
+  padding: 50px 0; }
+  /* line 863, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  .social-space div > p {
+    font-size: 32px; }
+
 /*# sourceMappingURL=default-style.css.map */
