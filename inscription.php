@@ -151,6 +151,7 @@ if(isset($_POST['addSell'])){
 				$delete->bindParam(1, $_POST["rfid"]);
 				$delete->execute();
 			}
+			$id = $db->lastInsertId();
 			$db->commit();
 			header('Location: catalogue.php?user='.$id.'');
 		} catch(PDOException $e){
@@ -185,6 +186,7 @@ if(isset($_POST['addSell'])){
 			$new->bindParam(':actif', $actif);
 			$new->bindParam(':commentaires', $_POST["commentaires"]);
 			$new->execute();
+			$id = $db->lastInsertId();
 			if(isset($_POST["rfid"])){
 				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid=? AND status=1');
 				$delete->bindParam(1, $_POST["rfid"]);
@@ -352,7 +354,7 @@ if(isset($_POST['addSell'])){
 				elErrorContainers: '#kv-avatar-errors',
 				elPreviewContainer: '#avatar-container',
 				msgErrorClass: 'alert alert-block alert-danger',
-				defaultPreviewContent: '<img src="assets/images/logotype-white.png" style="width:118px;">',
+				defaultPreviewContent: '<img src="assets/images/logotype-white.png" alt="Image par défaut" style="width:118px;">',
 				layoutTemplates: {main2: '{preview} {browse}' },
 			});
 			var listening = false;

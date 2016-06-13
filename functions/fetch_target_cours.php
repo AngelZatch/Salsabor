@@ -9,7 +9,7 @@ $start = date("Y-m-d H:i:s", strtotime($passage["passage_date"].'-80MINUTES'));
 $end = date("Y-m-d H:i:s", strtotime($passage["passage_date"].'+80MINUTES'));
 $queryFeed = $db->prepare("SELECT * FROM cours
 						JOIN niveau ON cours_niveau=niveau.niveau_id
-						JOIN salle ON cours_salle=salle.salle_id
+						JOIN rooms r ON cours.cours_salle = r.room_id
 						JOIN users ON prof_principal=users.user_id
 						WHERE cours_start>='$start' AND cours_end <='$end'");
 $queryFeed->bindValue(1, $id);
@@ -20,7 +20,7 @@ while($feed = $queryFeed->fetch(PDO::FETCH_ASSOC)){
 	$f["id"] = $feed["cours_id"];
 	$f["nom"] = $feed["cours_intitule"];
 	$f["niveau"] = $feed["niveau_name"];
-	$f["salle"] = $feed["salle_name"];
+	$f["salle"] = $feed["room_name"];
 	$f["heure"] = date_create($feed["cours_start"])->format("H:i")."-".date_create($feed["cours_end"])->format("H:i");
 	$f["prof"] = $feed["user_prenom"]." ".$feed["user_nom"];
 	array_push($cours, $f);

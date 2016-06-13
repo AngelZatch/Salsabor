@@ -105,7 +105,7 @@ if(isset($_POST['delete'])){
 						<div class="form-group">
 							<select name="lieu" id="lieu" class="form-control" onChange="checkCalendar(true, false)">
 								<?php while($lieux = $queryLieux->fetch(PDO::FETCH_ASSOC)){
-	if($reservation["reservation_salle"] == $lieux["salle_id"]){?>
+	if($reservation["reservation_salle"] == $lieux["room_id"]){?>
 								<option selected="selected" value="<?php echo $lieux['salle_id'];?>"><?php echo $lieux['salle_name'];?></option>
 								<?php } else { ?>
 								<option value="<?php echo $lieux['salle_id'];?>"><?php echo $lieux['salle_name'];?></option>

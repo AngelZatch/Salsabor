@@ -20,8 +20,8 @@ function solveAdherentToId($name){
 
 function getLieu($id){
 	$db = PDOFactory::getConnection();
-	$search = $db->prepare('SELECT * FROM salle WHERE salle_id=?');
-	$search->bindParam(1, $id);
+	$search = $db->prepare('SELECT * FROM rooms WHERE room_id=?');
+	$search->bindParam(1, $id, PDO::PARAM_INT);
 	$search->execute();
 	$res = $search->fetch(PDO::FETCH_ASSOC);
 	return $res;
@@ -172,7 +172,11 @@ function updateColumn($db, $table, $column, $value, $target_id){
 	try{
 		$primary_key = $db->query("SHOW INDEX FROM $table WHERE Key_name = 'PRIMARY'")->fetch(PDO::FETCH_ASSOC);
 
-		$query = "UPDATE $table SET $column = '$value'";
+		if($value == -1){
+			$query = "UPDATE $table SET $column = NULL";
+		} else {
+			$query = "UPDATE $table SET $column = '$value'";
+		}
 
 		if($table == "tasks"){
 			$query .= ", task_last_update = '$now'";
@@ -181,8 +185,15 @@ function updateColumn($db, $table, $column, $value, $target_id){
 		$query .= " WHERE $primary_key[Column_name] = '$target_id'";
 
 		$update = $db->query($query);
+		//echo $query;
 	} catch(PDOException $e){
 		echo $e->getMessage();
 	}
+}
+
+function addEntry($db, $table, $column, $value){
+	$query = "INSERT INTO $table($column) VALUES('$value')";
+	$add = $db->query($query);
+	return $db->lastInsertId();
 }
 ?>

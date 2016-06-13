@@ -13,9 +13,9 @@ $id_horaires = array();
 $arrayLieux = array();
 
 $queryPrestations = $db->query('SELECT prestations_id, prestations_name FROM prestations WHERE est_resa=1');
-$lieux = $db->query("SELECT * FROM salle WHERE est_salle_cours=1")->fetchAll(PDO::FETCH_ASSOC);
+$lieux = $db->query("SELECT * FROM rooms")->fetchAll(PDO::FETCH_ASSOC);
 foreach ($lieux as $row => $lieu){
-	array_push($arrayLieux, $lieu["salle_id"]);
+	array_push($arrayLieux, $lieu["room_id"]);
 }
 $periodes = $db->query("SELECT * FROM plages_reservations")->fetchAll(PDO::FETCH_ASSOC);
 $queryTarifs = $db->prepare("SELECT tarif_resa_id, prix_resa FROM tarifs_reservations WHERE type_prestation=? AND plage_resa=? AND lieu_resa=?");
@@ -51,7 +51,7 @@ if(isset($_POST['addTarifResa'])){
 												<tr>
 													<th>Période</th>
 													<?php foreach ($lieux as $row => $lieu){ ?>
-													<th><?php echo $lieu["salle_name"];?></th>
+													<th><?php echo $lieu["room_name"];?></th>
 													<?php }?>
 												</tr>
 											</thead>

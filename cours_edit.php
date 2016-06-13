@@ -19,7 +19,7 @@ $res_recurrence = $queryParent->fetch(PDO::FETCH_ASSOC);
 
 $queryTypes = $db->query('SELECT * FROM prestations WHERE est_cours=1');
 
-$querySalles = $db->query("SELECT * FROM salle WHERE est_salle_cours=1");
+$querySalles = $db->query("SELECT * FROM rooms");
 
 if(isset($_POST['editOne'])){
 	$db = PDOFactory::getConnection();
@@ -221,10 +221,10 @@ if(isset($_POST['deleteCoursAll'])){
 							<div class="col-lg-9">
 								<select name="salle" class="form-control">
 									<?php while($salles = $querySalles->fetch(PDO::FETCH_ASSOC)){
-	if($cours["cours_salle"] == $salles["salle_id"]) {?>
-									<option selected="selected" value="<?php echo $salles["salle_id"];?>"><?php echo $salles["salle_name"];?></option>
+	if($cours["cours_salle"] == $salles["room_id"]) {?>
+									<option selected="selected" value="<?php echo $salles["room_id"];?>"><?php echo $salles["room_name"];?></option>
 									<?php } else { ?>
-									<option value="<?php echo $salles["salle_id"];?>"><?php echo $salles["salle_name"];?></option>
+									<option value="<?php echo $salles["room_id"];?>"><?php echo $salles["room_name"];?></option>
 									<?php }
 } ?>
 								</select>

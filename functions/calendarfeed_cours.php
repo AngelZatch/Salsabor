@@ -6,7 +6,10 @@ try
 
 	$db = PDOFactory::getConnection();
 	/** Obtention des cours **/
-	$calendar = $db->prepare('SELECT * FROM cours JOIN salle ON (cours_salle=salle.salle_id) JOIN niveau ON (cours_niveau=niveau.niveau_id) JOIN prestations ON (cours_type=prestations.prestations_id)');
+	$calendar = $db->prepare('SELECT * FROM cours c
+							JOIN rooms r ON c.cours_salle = r.room_id
+							JOIN niveau n ON c.cours_niveau = n.niveau_id
+							JOIN prestations p ON c.cours_type = p.prestations_id');
 	$calendar->execute();
 	$events = array();
 
@@ -14,8 +17,8 @@ try
 	while($row_calendar = $calendar->fetch(PDO::FETCH_ASSOC)){
 		$e = array();
 		$e['id'] = $row_calendar['cours_id'];
-		$e['title'] = $row_calendar['cours_intitule']."\n".$row_calendar['salle_name']."\n".$row_calendar['niveau_name'];
-		$e['lieu'] = $row_calendar['salle_id'];
+		$e['title'] = $row_calendar['cours_intitule']."\n".$row_calendar['room_name']."\n".$row_calendar['niveau_name'];
+		$e['lieu'] = $row_calendar['room_id'];
 		$e['start'] = $row_calendar['cours_start'];
 		$e['end'] = $row_calendar['cours_end'];
 		$e['prestation_id'] = $row_calendar['cours_type'];

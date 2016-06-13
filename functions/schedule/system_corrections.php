@@ -35,14 +35,6 @@ while($record = $records->fetch(PDO::FETCH_GROUP)){
 	$correct = $db->query("UPDATE participations SET user_rfid = (SELECT user_rfid FROM users WHERE user_id = '$user_id') WHERE passage_id='$participation_id'");
 }
 
-// Records with no room_token but a session_id
-$records = $db->query("SELECT * FROM participations WHERE room_token IS NULL OR room_token = '' AND cours_id IS NOT NULL");
-while($record = $records->fetch(PDO::FETCH_GROUP)){
-	$cours_id = $record["cours_id"];
-	$participation_id = $record["passage_id"];
-	$correct = $db->query("UPDATE participations SET room_token = (SELECT lecteur_ip FROM cours c JOIN lecteurs_rfid lr ON c.cours_salle = lr.lecteur_lieu WHERE cours_id='$cours_id') WHERE passage_id = '$participation_id'");
-}
-
 // Delete all participations with no user at all
 $loss = $db->query("DELETE FROM participations WHERE user_id IS NULL AND user_rfid IS NULL");
 

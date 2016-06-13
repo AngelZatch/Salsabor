@@ -23,6 +23,9 @@ RewriteRule ^taches/([A-Za-z]+)$ tasks.php?display=$1 [NC]
 RewriteRule ^tags$ tags.php
 RewriteRule ^portal$ portal.php
 RewriteRule ^link$ link.php
+RewriteRule ^rentabilite$ profits.php
+RewriteRule ^autorisations$ permissions.php
+RewriteRule ^maintenance$ maintenance.php
 
 #User Details
 RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]
@@ -34,3 +37,10 @@ RewriteRule ^user/([0-9-]+)/taches user_tasks.php?id=$1 [NC,L]
 
 RewriteRule ^forfait/([A-Za-z0-9-]+)$ forfait_details.php?id=$1
 RewriteRule ^cours/([A-Za-z0-9-]+)$ cours_edit.php?id=$1
+
+#Maintenance ON
+#RewriteCond %{REQUEST_URI} !/maintenance.php$
+#RewriteRule !^(assets|bootstrap|functions)($|/) /Salsabor/maintenance.php [R=302,NC,L] # Display maintenance page
+#Maintnance OFF
+RewriteRule ^(maintenance)$ /Salsabor/dashboard [R=302,NC,L] # Display home
+RewriteRule ^(maintenance.php)$ /Salsabor/dashboard [R=302,NC,L] # Display home

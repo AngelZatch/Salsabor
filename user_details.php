@@ -28,7 +28,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 // If the user is a teacher
 /*if($is_teacher == 1){
 	// On obtient l'historique de ses cours
-	$queryHistoryDonnes = $db->prepare('SELECT * FROM cours JOIN niveau ON cours_niveau=niveau.niveau_id JOIN salle ON cours_salle=salle.salle_id WHERE prof_principal=? OR prof_remplacant=? ORDER BY cours_start ASC');
+	$queryHistoryDonnes = $db->prepare('SELECT * FROM cours JOIN niveau ON cours_niveau=niveau.niveau_id JOIN rooms r ON cours_salle = r.room_id WHERE prof_principal=? OR prof_remplacant=? ORDER BY cours_start ASC');
 	$queryHistoryDonnes->bindValue(1, $data);
 	$queryHistoryDonnes->bindValue(2, $data);
 	$queryHistoryDonnes->execute();
@@ -132,7 +132,6 @@ if(isset($_POST["edit"])){
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<?php include "inserts/user_banner.php";?>
-					<legend>Informations</legend>
 					<?php if($queryEcheances != 0){ ?>
 					<div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
 					<?php } ?>
@@ -235,7 +234,7 @@ if(isset($_POST["edit"])){
 					elErrorContainers: '#kv-avatar-errors',
 					elPreviewContainer: '#avatar-container',
 					msgErrorClass: 'alert alert-block alert-danger',
-					defaultPreviewContent: '<img src="<?php echo $details["photo"];?>" style="width:118px;">',
+					defaultPreviewContent: '<img src="<?php echo $details["photo"];?>" alt="<?php echo $details["user_prenom"]." ".$details["user_nom"];?>" style="width:118px;">',
 					layoutTemplates: {main2: '{preview} {browse}' },
 				});
 				var listening = false;
