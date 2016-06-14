@@ -36,56 +36,6 @@ $labels = $db->query("SELECT * FROM assoc_session_tags us
 						JOIN tags_session ts ON us.tag_id_foreign = ts.rank_id
 						WHERE session_id_foreign = '$id'");
 
-/*
-if(isset($_POST['editNext'])){
-	* Edition de tous les suivants. Il faut donc rétablir la récurrence en cas de changement de dates *
-	$start = $_POST['date_debut']." ".$_POST['heure_debut'];
-	$end = $_POST['date_debut']." ".$_POST['heure_fin'];
-	$frequence_repetition = $res_recurrence['frequence_repetition'];
-	$date_fin = $_POST['parent_end_date'];
-	(int)$nombre_repetitions = (strtotime($res_recurrence['parent_end_date']) - strtotime($_POST['date_debut']))/(86400*$frequence_repetition)+1;
-	$paiement = $_POST['paiement'];
-	$prix_final = $_POST['prix_cours'];
-
-	$db = PDOFactory::getConnection();
-	try{
-		$db->beginTransaction();
-		for($i = 1; $i < $nombre_repetitions; $i++){
-			$edit = $db->prepare('UPDATE cours SET cours_intitule = :intitule,
-											cours_start = :cours_start,
-											cours_end = :cours_end,
-											cours_prix = :prix,
-											justification_modification = :edit_comment,
-											paiement_effectue = :paiement
-							WHERE cours_parent_id = :parent_id AND cours_id = :id');
-			$edit->bindParam(':intitule', $_POST['intitule']);
-			$edit->bindParam(':cours_start', $start);
-			$edit->bindParam(':cours_end', $end);
-			$edit->bindParam(':prix', $prix_final);
-			$edit->bindParam(':edit_comment', $_POST['edit-comment']);
-			$edit->bindParam(':paiement', $_POST['paiement']);
-			$edit->bindParam(':parent_id', $cours['cours_parent_id']);
-			$edit->bindParam(':id', $id);
-			$edit->execute();
-
-			$start_date = strtotime($start.'+'.$frequence_repetition.'DAYS');
-			$end_date = strtotime($end.'+'.$frequence_repetition.'DAYS');
-			$start = date("Y-m-d H:i", $start_date);
-			$end = date("Y-m-d H:i", $end_date);
-			$id++;
-		}
-		$db->commit();
-	} catch (PDOException $e){
-		$db->rollBack();
-		var_dump($e->getMessage());
-	}
-	header('Location: ../planning');
-}
-
-if(isset($_POST['editAll'])){
-
-}
-
 // Sauf d'un seul cours
 if(isset($_POST['deleteCoursOne'])){
 	deleteCoursOne();
@@ -99,7 +49,7 @@ if(isset($_POST['deleteCoursNext'])){
 // Suppression de tous les cours du même genre que le sélectionné
 if(isset($_POST['deleteCoursAll'])){
 	deleteCoursAll();
-}*/
+}
 ?>
 <html>
 	<head>
@@ -281,6 +231,8 @@ if(isset($_POST['deleteCoursAll'])){
 					$(".in").collapse('hide');
 					// Update the name of the session in the legend
 					$(".session-name").text($("#session_name_input").val());
+					// Update the last edition date
+					$("#last-edit").text("Dernière modification le "+moment().format("DD/MM/YYYY [à] H:mm"));
 				})
 			})
 
