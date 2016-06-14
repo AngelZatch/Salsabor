@@ -155,6 +155,23 @@ a
 
 .textcomplete-dropdown
 	z-index: 1062 !important
+	li
+		&.active
+			background-color: $salsabor-red !important
+			a
+				background-color: $salsabor-red
+		&:hover
+			background-color: $salsabor-red !important
+		a
+			&:hover
+				background-color: $salsabor-red !important
+				color: white
+	&.active
+		background-color: $salsabor-red !important
+
+.dropdown-menu
+	&:hover
+		background-color: white
 
 .editable
 	cursor: pointer
@@ -272,21 +289,6 @@ a
 		box-shadow: inset 0 1px 1px $salsabor-yellow, 0 0 8px lighten($salsabor-yellow, 10%)
 		//box-shadow: none !important
 
-.dropdown-menu
-	li
-		&.active
-			background-color: $salsabor-red !important
-			a
-				background-color: $salsabor-red
-		&:hover
-			background-color: $salsabor-red !important
-		a
-			&:hover
-				background-color: $salsabor-red !important
-				color: white
-	&.active
-		background-color: $salsabor-red !important
-
 /** SUB NAV **/
 .fixed
 	background-color: transparentize(darken($salsabor-red, 2%), 0.01)
@@ -338,7 +340,7 @@ a
 .btn-link-all
 	margin-bottom: 10px
 
-.remove-extension
+.float-right
 	float: right
 
 .link-glyphicon
