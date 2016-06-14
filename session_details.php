@@ -12,11 +12,21 @@ $cours = $db->query("SELECT * FROM cours c
 							JOIN users u ON c.prof_principal = u.user_id
 							WHERE cours_id='$id'")->fetch(PDO::FETCH_ASSOC);
 
-$prev = $db->query("SELECT cours_id FROM cours c WHERE cours_parent_id = $cours[cours_parent_id] AND cours_start < '$cours[cours_start]' LIMIT 1")->fetch(PDO::FETCH_COLUMN);
-$next = $db->query("SELECT cours_id FROM cours c WHERE cours_parent_id = $cours[cours_parent_id] AND cours_start > '$cours[cours_start]' LIMIT 1")->fetch(PDO::FETCH_COLUMN);
+// Array of all the sessions from this parent.
+$all = $db->query("SELECT cours_id FROM cours c WHERE cours_parent_id = $cours[cours_parent_id]")->fetchAll(PDO::FETCH_COLUMN);
+$current = array_search($id, $all);
+$all_js = json_encode($all);
+$next_js = json_encode(array_slice($all, $current));
+// Link to previous and next
+if($all[$current] != reset($all)){
+	$prev = $all[$current - 1];
+}
+if($all[$current] != end($all)){
+	$next = $all[$current + 1];
+}
 
-$queryParent = $db->prepare('SELECT recurrence, frequence_repetition, parent_end_date FROM cours_parent WHERE parent_id=?');
-$queryParent->bindParam(1, $cours['cours_parent_id']);
+$queryParent = $db->prepare("SELECT recurrence, frequence_repetition, parent_end_date FROM cours_parent WHERE parent_id=?");
+$queryParent->bindParam(1, $cours['cours_parent_id'], PDO::PARAM_INT);
 $queryParent->execute();
 $res_recurrence = $queryParent->fetch(PDO::FETCH_ASSOC);
 
@@ -123,9 +133,9 @@ if(isset($_POST['deleteCoursAll'])){
 					<div class="collapse" id="save-options">
 						<div class="well">
 							<span>Enregistrer...</span>
-							<input type="submit" name="editOne" role="button" class="btn btn-success" id="edit-one" value="Cet évènement">
-							<input type="submit" name="editNext" role="button" class="btn btn-success" value="Tous les suivants">
-							<button class="btn btn-primary">Toute la série</button>
+							<button class="btn btn-primary btn-edit" id="edit-one">Ce cours</button>
+							<button class="btn btn-primary btn-edit" id="edit-next">Tous les suivants</button>
+							<button class="btn btn-primary btn-edit" id="edit-all">Toute la série</button>
 						</div>
 					</div>
 					<div class="collapse" id="delete-options">
@@ -136,17 +146,25 @@ if(isset($_POST['deleteCoursAll'])){
 							<input type="submit" name="deleteCoursAll" role="button" class="btn btn-danger" value="Toute la série">
 						</div>
 					</div>
-					<div class="col-sm-6">
-						<?php if($prev != ""){ ?>
-						<a href="cours/<?php echo $prev;?>" class="sub-legend"><span class="glyphicon glyphicon-arrow-left"></span> Cours précédent</a>
-						<?php } ?>
+					<div class="container-fluid session-nav">
+						<div class="col-sm-3">
+							<?php if(isset($prev)){ ?>
+							<a href="cours/<?php echo $prev;?>" class="sub-legend"><span class="glyphicon glyphicon-arrow-left"></span> Cours précédent</a>
+							<?php } else { ?>
+							<p class="sub-legend disabled"><span class="glyphicon glyphicon-arrow-left"></span> - </p>
+							<?php } ?>
+						</div>
+						<div class="col-sm-6">
+						<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
+						</div>
+						<div class="col-sm-3">
+							<?php if(isset($next)){ ?>
+							<a href="cours/<?php echo $next;?>" class="sub-legend float-right">Cours suivant <span class="glyphicon glyphicon-arrow-right"></span></a>
+							<?php } else { ?>
+							<p class="sub-legend float-right disabled"> - <span class="glyphicon glyphicon-arrow-right"></span></p>
+							<?php } ?>
+						</div>
 					</div>
-					<div class="col-sm-6">
-						<?php if($next != ""){ ?>
-						<a href="cours/<?php echo $next;?>" class="sub-legend float-right">Cours suivant <span class="glyphicon glyphicon-arrow-right"></span></a>
-						<?php } ?>
-					</div>
-					<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
 					<form name="session_details" id="session_details" role="form" class="form-horizontal">
 						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">Intitulé du cours</label>
@@ -240,10 +258,25 @@ if(isset($_POST['deleteCoursAll'])){
 				});
 				window.openedSessions = [<?php echo $id;?>];
 				refreshTick();
-			}).on('click', '#edit-one', function(){
-				var form = $("#session_details"), table = "cours", entry_id = <?php echo $id;?>;
-				console.log(form.serialize());
-				$.post("functions/update_entry.php", {table_name : table, entry_id : entry_id, values : form.serialize()}).done(function(data){
+			}).on('click', '.btn-edit', function(){
+				var id = $(this).attr("id");
+				var form = $("#session_details"), entry_id = <?php echo $id;?>;
+				switch(id){
+					case "edit-one":
+						var sessions = [entry_id];
+						break;
+
+					case "edit-next":
+						var sessions = <?php echo $next_js;?>;
+						break;
+
+					case "edit-all":
+						var sessions = <?php echo $all_js;?>;
+						break;
+				}
+				console.log(sessions);
+				$.post("functions/update_session.php", {sessions : sessions, values : form.serialize(), hook : entry_id}).done(function(data){
+					console.log(data);
 					// Close the well
 					$(".in").collapse('hide');
 					// Update the name of the session in the legend

@@ -89,6 +89,11 @@
   .task-old .panel-heading:hover {
     background-color: rgba(135, 206, 119, 0.09) !important; }
 
+/* line 48, C:/xampp/htdocs/Salsabor/assets/css/_status.sass */
+.disabled {
+  color: #888888 !important;
+  opacity: 0.4; }
+
 /* line 1, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .panel-item, .product-participation {
   margin-bottom: 10px;
@@ -1260,5 +1265,15 @@ p.legend, div.legend:nth-child(1n+0) {
   /* line 865, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .social-space div > p {
     font-size: 32px; }
+
+/* line 868, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.session-nav {
+  margin-bottom: 10px; }
+
+/* line 871, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+#last-edit {
+  margin-bottom: 0;
+  font-style: italic;
+  text-align: center; }
 
 /*# sourceMappingURL=default-style.css.map */
