@@ -105,7 +105,7 @@ if(isset($_POST['deleteCoursAll'])){
 							<?php } ?>
 						</div>
 						<div class="col-sm-6">
-						<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
+							<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
 						</div>
 						<div class="col-sm-3">
 							<?php if(isset($next)){ ?>
@@ -145,7 +145,7 @@ if(isset($_POST['deleteCoursAll'])){
 							<div class="col-lg-9">
 								<h4>
 									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
-									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="user-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='user' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
+									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="session-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='session' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
 									<?php } ?>
 									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='session-tags' data-targettype='session' title="Ajouter une étiquette">+</span>
 								</h4>
@@ -207,6 +207,10 @@ if(isset($_POST['deleteCoursAll'])){
 					stepping: 30
 				});
 				window.openedSessions = [<?php echo $id;?>];
+				initial_tags = [];
+				$(".label-salsabor").each(function(){
+					initial_tags.push($(this).text());
+				})
 				refreshTick();
 			}).on('click', '.btn-edit', function(){
 				var id = $(this).attr("id");
@@ -224,9 +228,37 @@ if(isset($_POST['deleteCoursAll'])){
 						var sessions = <?php echo $all_js;?>;
 						break;
 				}
-				console.log(sessions);
+				var definitive_tags = [];
+				$(".label-salsabor").each(function(){
+					definitive_tags.push($(this).text());
+				})
 				$.post("functions/update_session.php", {sessions : sessions, values : form.serialize(), hook : entry_id}).done(function(data){
-					console.log(data);
+					// Attach & detach tags to other sessions
+					for(var i = 0; i < sessions.length; i++){
+						if(sessions[i] != entry_id){
+							var copy_initial_tags = initial_tags;
+							var copy_def_tags = definitive_tags;
+							/* For each session, we have the tags when the page loaded in initial_tags. We'll now do something for each tag that exists NOW (from definitive_tags). 2 actions can be taken for the differences between the two arrays :
+								-> The tag is not in the initial array but in the definitive one : it has to be attached to the sessions.
+								-> The tag was in the initial array but not in the definitive one : it has to be detached from the sessions.
+							*/
+							/*console.log(copy_initial_tags);
+							console.log(copy_def_tags);*/
+							// WARNING : The code below, though very effective, is borderline intended by the developers of jQuery. If something breaks when uploading to a newer version of jQuery (> 2.1.4), please see here first.
+							var to_be_detached = $(copy_initial_tags).not(copy_def_tags).get();
+							var to_be_attached = $(copy_def_tags).not(copy_initial_tags).get();
+							for(var j = 0; j < to_be_detached.length; j++){
+								detachTag(to_be_detached[j], sessions[i], "session");
+								console.log("detaching tag "+to_be_detached[j]+" from session "+sessions[i]);
+							}
+							for(var j = 0; j < to_be_attached.length; j++){
+								attachTag(to_be_attached[j], sessions[i], "session");
+								console.log("attaching tag "+to_be_attached[j]+" to session "+sessions[i]);
+							}
+						}
+					}
+					// We replace the original tags by the new ones after modifying.
+					initial_tags = definitive_tags;
 					// Close the well
 					$(".in").collapse('hide');
 					// Update the name of the session in the legend

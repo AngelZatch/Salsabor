@@ -3,6 +3,7 @@ $(document).on('click', '.label-deletable', function(e){
 	var id = $(this).attr("id");
 	var target = document.getElementById(id).dataset.target;
 	var table = "assoc_"+document.getElementById(id).dataset.targettype+"_tags";
+	console.log(target, table);
 	$.when(deleteEntry(table, target)).done(function(data){
 		$("#"+id).remove();
 	});
