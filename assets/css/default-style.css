@@ -376,23 +376,23 @@ a {
     color: #A80139; }
 
 /* line 160, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-.textcomplete-dropdown {
+.textcomplete-dropdown, .dropdown-custom {
   z-index: 1062 !important; }
   /* line 163, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-  .textcomplete-dropdown li.active {
+  .textcomplete-dropdown li.active, .dropdown-custom li.active {
     background-color: #A80139 !important; }
     /* line 165, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-    .textcomplete-dropdown li.active a {
+    .textcomplete-dropdown li.active a, .dropdown-custom li.active a {
       background-color: #A80139; }
   /* line 167, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-  .textcomplete-dropdown li:hover {
+  .textcomplete-dropdown li:hover, .dropdown-custom li:hover {
     background-color: #A80139 !important; }
   /* line 170, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-  .textcomplete-dropdown li a:hover {
+  .textcomplete-dropdown li a:hover, .dropdown-custom li a:hover {
     background-color: #A80139 !important;
     color: white; }
   /* line 173, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-  .textcomplete-dropdown.active {
+  .textcomplete-dropdown.active, .dropdown-custom.active {
     background-color: #A80139 !important; }
 
 /* line 177, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
