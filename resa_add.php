@@ -82,7 +82,7 @@ if(isset($_POST['addResa'])){
 							<div class="col-lg-9">
 								<select name="lieu" class="form-control mandatory" id="lieu" onChange="checkCalendar(true, false)">
 									<?php while($lieux = $queryLieux->fetch(PDO::FETCH_ASSOC)){?>
-									<option value="<?php echo $lieux['salle_id'];?>"><?php echo $lieux['salle_name'];?></option>;
+									<option value="<?php echo $lieux['room_id'];?>"><?php echo $lieux['room_name'];?></option>;
 									<?php } ?>
 								</select>
 							</div>
