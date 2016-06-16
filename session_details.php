@@ -37,21 +37,6 @@ $labels = $db->query("SELECT * FROM assoc_session_tags us
 						WHERE session_id_foreign = '$id'");
 
 $user_labels = $db->query("SELECT * FROM tags_user");
-
-// Sauf d'un seul cours
-if(isset($_POST['deleteCoursOne'])){
-	deleteCoursOne();
-}
-
-// Suppression de tous les cours suivant le sélectionné
-if(isset($_POST['deleteCoursNext'])){
-	deleteCoursNext();
-}
-
-// Suppression de tous les cours du même genre que le sélectionné
-if(isset($_POST['deleteCoursAll'])){
-	deleteCoursAll();
-}
 ?>
 <html>
 	<head>
@@ -93,9 +78,9 @@ if(isset($_POST['deleteCoursAll'])){
 					<div class="collapse" id="delete-options">
 						<div class="well">
 							<span>Supprimer...</span>
-							<input type="submit" name="deleteCoursOne" role="button" class="btn btn-danger" value="Cet évènement">
-							<input type="submit" name="deleteCoursNext" role="button" class="btn btn-danger" value="Tous les suivants">
-							<input type="submit" name="deleteCoursAll" role="button" class="btn btn-danger" value="Toute la série">
+							<button class="btn btn-danger btn-delete" id="delete-one">Ce cours</button>
+							<button class="btn btn-danger btn-delete" id="delete-next">Tous les suivants</button>
+							<button class="btn btn-danger btn-delete" id="delete-all">Toute la série</button>
 						</div>
 					</div>
 					<div class="container-fluid session-nav">
@@ -280,6 +265,35 @@ if(isset($_POST['deleteCoursAll'])){
 					// Update the last edition date
 					$("#last-edit").text("Dernière modification le "+moment().format("DD/MM/YYYY [à] H:mm"));
 				})
+			}).on('click', '.btn-delete', function(){
+				var id = $(this).attr("id"), entry_id = <?php echo $id;?>;
+				var parent_id = <?php echo $cours['cours_parent_id']?>;
+				switch(id){
+					case "delete-one":
+						var sessions = [entry_id];
+						break;
+
+					case "delete-next":
+						var sessions = <?php echo $next_js;?>;
+						break;
+
+					case "delete-all":
+						var sessions = <?php echo $all_js;?>;
+						break;
+				}
+				for(var i = 0; i < sessions.length; i++){
+					if(i < sessions.length - 1){
+						deleteEntry("cours", sessions[i]);
+					} else {
+						console.log("checking parent");
+						$.when(deleteEntry("cours", sessions[i])).done(function(){
+							$.get("functions/check_session_parent.php", {parent_id : parent_id}).done(function(data){
+								//console.log(data);
+								window.top.location = "planning";
+							})
+						})
+					}
+				}
 			}).on('click', '.completion-option', function(e){
 				e.preventDefault();
 				if($(this).text() == "Ne pas suggérer"){
