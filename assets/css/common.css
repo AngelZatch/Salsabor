@@ -174,9 +174,6 @@
 .btn-resa{
 	background-color: #D21CFC;
 }
-#last-edit {
-	font-style: italic;
-}
 
 .payment-done{
 	color: green;
@@ -203,11 +200,6 @@
 	margin-top: 10px !important;
 }
 
-.btn-toolbar {
-	padding-top: 5px;
-	position: fixed;
-	right: 1%;
-}
 #picture-container {
 	height: 350px;
 }

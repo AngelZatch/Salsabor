@@ -343,7 +343,7 @@ $(document).ready(function(){
 			body += "<input type='text' class='form-control datepicker'/>";
 			footer += "<button class='btn btn-success extend-product' data-argument='"+product_id+"' id='btn-sm-extend'>Prolonger</button>";
 			if(moment(target.dataset.arep).isValid()){
-				footer += "<button class='btn btn-danger remove-extension' data-argument='"+product_id+"' id='btn-sm-unextend'>Annuler AREP</button>";
+				footer += "<button class='btn btn-danger float-right btn-arep' data-argument='"+product_id+"' id='btn-sm-unextend'>Annuler AREP</button>";
 				var options = {
 					format: "DD/MM/YYYY",
 					inline: true,
@@ -515,7 +515,9 @@ $(document).ready(function(){
 			break;
 
 		case 'user-tags':
+		case 'session-tags':
 			var target_type = document.getElementById($(this).attr("id")).dataset.targettype;
+			var tag_type = /^([a-z]+)/i.exec(type);
 			window.target = $(this).attr("id");
 			title = "Ajouter une étiquette";
 			$(".sub-modal").removeClass("col-lg-7");
@@ -525,28 +527,29 @@ $(document).ready(function(){
 			} else {
 				$(".sub-modal").css({top : toffset.top+25+'px', left: toffset.left+25+'px'});
 			}
-			$.when(fetchUserTags()).done(function(data){
-				var construct = displayTargetTags(data, target_type);
+			$.when(fetchTags(tag_type[0])).done(function(data){
+				var construct = displayTargetTags(data, target_type, tag_type[0]);
 				$(".sub-modal-body").html(construct);
 			})
 			break;
 
 		case 'edit-tag':
 			var target = document.getElementById($(this).attr("id")).dataset.target;
+			var tag_type = document.getElementById($(this).attr("id")).dataset.tagtype;
 			var initialValue = $("#tag-"+target).text();
 			title = "Modifier une étiquette";
 			$(".sub-modal").removeClass("col-lg-7");
 			$(".sub-modal").addClass("col-lg-3");
 			$(".sub-modal").css({top : toffset.top+'px', left: toffset.left+45+'px'});
 			body += "<div class='input-group'>";
-			body += "<input type='text' class='form-control' id='edit-tag-name' data-target='"+target+"' placeholder='Nom de l&apos;étiquette' value='"+initialValue+"'>";
+			body += "<input type='text' class='form-control' id='edit-tag-name' data-target='"+target+"' data-tagtype='"+tag_type+"' placeholder='Nom de l&apos;étiquette' value='"+initialValue+"'>";
 			body += "<span class='input-group-btn'><button class='btn btn-success btn-tag-name' type='button'>Valider</button></span>";
 			body += "</div>";
 			$.when(fetchColors()).done(function(data){
 				body += "<div class='row' id='colors'>";
 				var colors = JSON.parse(data);
 				for(var i = 0; i < colors.length; i++){
-					body += "<div class='color-cube col-xs-4 col-md-3 col-lg-2' id='color-"+colors[i].color_id+"' style='background-color:"+colors[i].color_value+"' data-target='"+target+"'>";
+					body += "<div class='color-cube col-xs-4 col-md-3 col-lg-2' id='color-"+colors[i].color_id+"' style='background-color:"+colors[i].color_value+"' data-target='"+target+"'  data-tagtype='"+tag_type+"'>";
 					if("#"+colors[i].color_value == $("#tag-"+target).css("backgroundColor")){
 						body += "<span class='glyphicon glyphicon-ok color-selected'></span>";
 					}
@@ -555,7 +558,7 @@ $(document).ready(function(){
 				body += "</div>";
 				$(".sub-modal-body").html(body);
 			});
-			footer += "<button class='btn btn-danger btn-block delete-tag' id='delete-tag' data-target='"+target+"'><span class='glyphicon glyphicon-trash'></span> Supprimer l'étiquette</button>";
+			footer += "<button class='btn btn-danger btn-block delete-tag' id='delete-tag' data-target='"+target+"' data-tagtype='"+tag_type+"'><span class='glyphicon glyphicon-trash'></span> Supprimer l'étiquette</button>";
 			break;
 
 		default:

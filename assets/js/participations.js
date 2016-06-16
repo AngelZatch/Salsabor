@@ -138,6 +138,15 @@ function displaySessions(data, fetched){
 		as_display += "<p class='col-sm-1 session-option'><span class='glyphicon glyphicon-lock close-session' id='close-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Verrouiller le cours'></span></p>";
 		as_display += "<p class='col-sm-1 session-option'><span class='glyphicon glyphicon-ok-sign validate-session' id='validate-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Valider tous les passages'></span></p>";
 		as_display += "</div>";
+		// Tags
+		as_display += "<div class='container-fluid'>";
+		as_display += "<h5 class='col-lg-6'>";
+		for(var j = 0; j < active_sessions[i].labels.length; j++){
+			console.log(active_sessions[i].labels[j].entry_id);
+			as_display += "<span class='label label-salsabor label-display-only' id='task-tag-"+active_sessions[i].labels[j].entry_id+"' data-target='"+active_sessions[i].labels[j].entry_id+"' data-targettype='task' style='background-color:"+active_sessions[i].labels[j].tag_color+"'>"+active_sessions[i].labels[j].rank_name+"</span>";
+		}
+		as_display += "</h5>";
+		as_display += "</div>";
 		// Container fluid for session level, teacher...
 		as_display += "<div class='container-fluid'>";
 		as_display += "<p class='col-xs-4 col-sm-2 col-lg-1'><span class='glyphicon glyphicon-user'></span> <span class='user-total-count' id='user-total-count-"+active_sessions[i].id+"'></span></p>";
@@ -247,7 +256,7 @@ function displayParticipations(session_id){
 				users++;
 				contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-sm-6 col-md-4 col-lg-3' id='participation-"+records_list[i].id+"' data-participation='"+records_list[i].id+"'>";
 				if(records_list[i].count > 0){
-					contents += "<a href='user/"+records_list[i].user_id+"/taches' target='_blank'><span class='glyphicon glyphicon-list-alt remove-extension' title='"+records_list[i].count+" tâche(s) restantes à faire'></span></a>";
+					contents += "<a href='user/"+records_list[i].user_id+"/taches' target='_blank'><span class='glyphicon glyphicon-list-alt float-right' title='"+records_list[i].count+" tâche(s) restantes à faire'></span></a>";
 				}
 				contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"' alt='"+records_list[i].user+"'></div>";
 				contents += "<p class='col-lg-12 panel-item-title bf'><a href='user/"+records_list[i].user_id+"'>"+records_list[i].user+"</a></p>";

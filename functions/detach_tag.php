@@ -2,16 +2,34 @@
 require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 
-$tag = $_POST["tag"];
-$target = $_POST["target"];
-$type = $_POST["type"];
+if(isset($_POST["tag"]) && isset($_POST["target"]) && isset($_POST["type"])){
+	if(is_numeric($_POST["tag"])){
+		$tag = intval($_POST["tag"]);
+	} else {
+		$tag = $_POST["tag"];
+	}
+	$target = $_POST["target"];
+	$type = $_POST["type"];
 
-$query = "SELECT entry_id FROM assoc_".$type."_tags WHERE ".$type."_id_foreign = $target AND tag_id_foreign = $tag";
+	detachTag($db, $tag, $target, $type);
+}
 
-$entry_id = $db->query($query)->fetch(PDO::FETCH_COLUMN);
+function detachTag($db, $tag, $target, $type){
+	if(!is_numeric($tag)){
+		$tag = $db->query("SELECT rank_id FROM tags_".$type." WHERE rank_name='$tag'")->fetch(PDO::FETCH_COLUMN);
+	}
 
-$query = "DELETE FROM assoc_".$type."_tags WHERE entry_id = $entry_id";
-$detach = $db->query($query);
+	$query = "SELECT entry_id FROM assoc_".$type."_tags WHERE ".$type."_id_foreign = $target AND tag_id_foreign = $tag";
 
-echo $entry_id;
+	$entry_id = $db->query($query)->fetch(PDO::FETCH_COLUMN);
+	echo $entry_id;
+
+	if(isset($entry_id)){
+		$query = "DELETE FROM assoc_".$type."_tags WHERE entry_id = $entry_id";
+		$detach = $db->query($query);
+		echo $query;
+
+		echo $entry_id;
+	}
+}
 ?>

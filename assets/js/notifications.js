@@ -4,7 +4,7 @@ $(document).on('click', '.trigger-nav', function(e){
 	if($(".sub-modal-notification").is(":visible")){
 		$(".sub-modal-notification").hide(0);
 	} else {
-		fetchNotifications(50);
+		fetchNotifications(50, "smn-body");
 		$(".sub-modal-notification").css({left: 64+"%", top:55+"px"});
 		$(".sub-modal-notification").show(0);
 	}
@@ -48,22 +48,17 @@ $(document).on('click', '.trigger-nav', function(e){
 	$.post("functions/read_all.php");
 })
 
-function fetchNotifications(limit){
+function fetchNotifications(limit, destination){
 	$.get("functions/fetch_notifications.php", {limit : limit}).done(function(data){
-		if(limit == 0 || $(".sub-modal-notification").is(":visible")){
-			displayNotifications(data, limit);
+		if($("."+destination).is(":visible")){
+			displayNotifications(data, limit, destination);
 		}
 	});
 }
 
-function displayNotifications(data, limit){
+function displayNotifications(data, limit, destination){
 	var notifications = JSON.parse(data);
-	console.log("displaying");
-	if(limit != 0){
-		$(".smn-body").empty();
-	} else {
-		$(".notifications-container").empty();
-	}
+	$("."+destination).empty();
 	for(var i = 0; i < notifications.length; i++){
 		// Status handling
 		var notifMessage = "", notifClass = "", notif_link = "", notif_image = "", notif_icon = "", notif_message = "";
@@ -188,13 +183,9 @@ function displayNotifications(data, limit){
 		notifMessage += "</div>";
 		notifMessage += "</li>";
 
-		if(limit == 0){
-			$(".notifications-container").append(notifMessage);
-		} else {
-			$(".smn-body").append(notifMessage);
-		}
+		$("."+destination).append(notifMessage);
 	}
-	setTimeout(fetchNotifications, 10000, limit);
+	setTimeout(fetchNotifications, 10000, limit, destination);
 }
 
 function badgeNotifications(){
