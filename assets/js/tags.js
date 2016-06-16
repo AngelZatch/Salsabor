@@ -38,14 +38,16 @@ $(document).on('click', '.label-deletable', function(e){
 	}
 }).on('click', '.label-new-tag', function(){
 	var tag_type = document.getElementById($(this).attr("id")).dataset.tagtype;
-	$(this).before("<input class='tag-input form-control' id='input-new-tag' data-tagtype='"+tag_type+"' placeholder='Titre de l&apos;étiquette'>");
+	var target_type = document.getElementById($(this).attr("id")).dataset.targettype;
+	$(this).before("<input class='tag-input form-control' id='input-new-tag' data-tagtype='"+tag_type+"' data-targettype='"+target_type+"' placeholder='Titre de l&apos;étiquette'>");
 	$(".tag-input").focus();
 }).on('focus', '.tag-input', function(){
 	$(this).keyup(function(event){
 		if(event.which == 13){
 			var tag_type = document.getElementById($(this).attr("id")).dataset.tagtype;
+			var target_type = document.getElementById($(this).attr("id")).dataset.targettype;
 			var tag_name = $(this).val();
-			createTag(tag_name, tag_type);
+			createTag(tag_name, tag_type, target_type);
 		} else if(event.which == 27){
 			$(".tag-input").remove();
 		}
@@ -78,6 +80,7 @@ $(document).on('click', '.label-deletable', function(e){
 	$.when(deleteEntry(table, target)).done(function(){
 		$("#edit-"+target).remove();
 		$("#tag-"+target).remove();
+		$("#mid-"+target).remove();
 	})
 }).on('click', '.mid-button', function(){
 	var clicked = $(this);
@@ -128,12 +131,35 @@ function displayTargetTags(data, target_type, tag_type){
 	return body;
 }
 
-function createTag(tag_name, tag_type){
+function createTag(tag_name, tag_type, target_type){
 	$.post("functions/create_tag.php", {name : tag_name, type : tag_type}).done(function(data){
-		if(top.location.pathname === "/Salsabor/tags"){
-			$(".tag-input").replaceWith("<span class='label col-xs-7 label-salsabor label-clickable label-addable' id='tag-"+data+"' data-tag='"+data+"'>"+tag_name+"</span><span class='glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt col-xs-1 trigger-sub' id='edit-"+data+"' data-subtype='edit-tag' data-target='"+data+"' title='Editer l&apos;étiquette'></span>");
-		} else {
-			$(".tag-input").replaceWith("<h4><span class='label col-xs-12 label-salsabor label-clickable label-addable' id='tag-"+data+"' data-tag='"+data+"'>"+tag_name+"</span></h4>");
+		switch(top.location.pathname){
+			case "/Salsabor/tags/users":
+				var label_content = "<h4>";
+				label_content += "<div class='col-sm-12'>";
+				label_content += "<span class='label col-xs-4 label-clickable label-restyle' id='tag-"+data+"' data-tag='"+data+"' data-tagtype='user' style='background-color:a80139'>"+tag_name+"</span>";
+				label_content += "<p class='col-xs-2'><span class='glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt trigger-sub' id='edit-"+data+"' data-subtype='edit-tag' data-tagtype='user' data-target='"+data+"' title='Editer l&apos;étiquette'></span></p>";
+				label_content += "<p class='col-xs-4'><span class='glyphicon glyphicon-list-alt glyphicon-button glyphicon-button-alt mid-button glyphicon-button-disabled' id='mid-"+data+"' data-target='"+data+"' title='Indiquer l&apos;étiquette comme celle par défaut pour les tâches de type &apos;Informations manquantes&apos;'></span></p>";
+				label_content += "</div>";
+				label_content += "</h4>";
+				$(".tag-input").remove();
+				$(".new-label-space").before(label_content);
+				break;
+
+			case "/Salsabor/tags/sessions":
+				var label_content = "<h4>";
+				label_content += "<div class='col-sm-12'>";
+				label_content += "<span class='label col-xs-4 label-clickable label-restyle' id='tag-"+data+"' data-tag='"+data+"' data-tagtype='session' style='background-color:a80139'>"+tag_name+"</span>";
+				label_content += "<p class='col-xs-2'><span class='glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt trigger-sub' id='edit-"+data+"' data-subtype='edit-tag' data-target='"+data+"' data-tagtype='session' title='Editer l&apos;étiquette'></span></p>";
+				label_content += "</div>";
+				label_content += "</h4>";
+				$(".tag-input").remove();
+				$(".new-label-space").before(label_content);
+				break;
+
+			default:
+				$(".tag-input").replaceWith("<h4><span class='label col-xs-12 label-salsabor label-clickable label-addable' id='tag-"+data+"' data-tag='"+data+"' data-targettype='"+target_type+"' data-tagtype='"+tag_type+"'>"+tag_name+"</span></h4>");
+				break;
 		}
 	})
 }

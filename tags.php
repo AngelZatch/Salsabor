@@ -66,7 +66,7 @@ if($type == "users"){
 						}
 						body += "</div></h4>";
 					}
-					body += "<h4><div class='col-sm-12'><span class='label col-xs-4 label-default label-clickable label-new-tag' id='label-new' data-tagtype='"+tag_type+"'>Créer une étiquette</span></div></h4>";
+					body += "<h4 class='new-label-space'><div class='col-sm-12'><span class='label col-xs-4 label-default label-clickable label-new-tag' id='label-new' data-tagtype='"+tag_type+"'>Créer une étiquette</span></div></h4>";
 					body += "";
 					$(".tags-container").append(body);
 				})
