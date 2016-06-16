@@ -36,6 +36,8 @@ $labels = $db->query("SELECT * FROM assoc_session_tags us
 						JOIN tags_session ts ON us.tag_id_foreign = ts.rank_id
 						WHERE session_id_foreign = '$id'");
 
+$user_labels = $db->query("SELECT * FROM tags_user");
+
 // Sauf d'un seul cours
 if(isset($_POST['deleteCoursOne'])){
 	deleteCoursOne();
@@ -123,9 +125,20 @@ if(isset($_POST['deleteCoursAll'])){
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Professeur</label>
+							<label for="" class="col-lg-3 control-label">Professeur <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Vous pouvez régler les noms qui vous seront suggérés avec le sélecteur 'Suggérer parmi...'"></span></label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="prof_principal" value="<?php echo $cours['user_prenom']." ".$cours['user_nom'];?>">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-default dropdown-toggle suggestion-text" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Suggérer parmi... <span class="caret"></span></button>
+										<ul class="dropdown-menu dropdown-custom">
+											<?php while($user_label = $user_labels->fetch(PDO::FETCH_ASSOC)){ ?>
+											<li class="completion-option"><a><?php echo $user_label["rank_name"];?></a></li>
+											<?php } ?>
+											<li class="completion-option"><a>Ne pas suggérer</a></li>
+										</ul>
+									</div>
+									<input type="text" class="form-control filtered-complete" id="complete-teacher" name="prof_principal" value="<?php echo $cours['user_prenom']." ".$cours['user_nom'];?>">
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -212,6 +225,7 @@ if(isset($_POST['deleteCoursAll'])){
 					initial_tags.push($(this).text());
 				})
 				refreshTick();
+
 			}).on('click', '.btn-edit', function(){
 				var id = $(this).attr("id");
 				var form = $("#session_details"), entry_id = <?php echo $id;?>;
@@ -266,6 +280,37 @@ if(isset($_POST['deleteCoursAll'])){
 					// Update the last edition date
 					$("#last-edit").text("Dernière modification le "+moment().format("DD/MM/YYYY [à] H:mm"));
 				})
+			}).on('click', '.completion-option', function(e){
+				e.preventDefault();
+				if($(this).text() == "Ne pas suggérer"){
+					$(".suggestion-text").html("Suggérer parmi... <span class='caret'></span>");
+				} else {
+					$(".suggestion-text").html("Suggérer parmi <span class='suggestion-token'>"+$(this).text()+"</span> <span class='caret'></span>");
+				}
+			}).on('focus', '.filtered-complete', function(){
+				var token = $(this).prev().find(".suggestion-token").text();
+				if(token != ""){
+					var id = $(this).attr("id");
+					$.get("functions/fetch_user_list.php", {filter : token}).done(function(data){
+						var userList = JSON.parse(data);
+						var autocompleteList = [];
+						for(var i = 0; i < userList.length; i++){
+							autocompleteList.push(userList[i].user);
+						}
+						$("#"+id).textcomplete('destroy');
+						$("#"+id).textcomplete([{
+							match: /(^|\b)(\w{2,})$/,
+							search: function(term, callback){
+								callback($.map(autocompleteList, function(item){
+									return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
+								}));
+							},
+							replace: function(item){
+								return item;
+							}
+						}]);
+					});
+				}
 			})
 
 			$('#paiement').change(function(){
