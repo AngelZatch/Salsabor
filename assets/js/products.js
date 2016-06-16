@@ -137,7 +137,7 @@ $(document).ready(function(){
 		$("#btn-arep").attr("data-arep", date);
 		computeRemainingHours(product_id, true);
 	})
-}).on('click', '.remove-extension', function(){
+}).on('click', '.btn-arep', function(){
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
 	var table = "produits_adherents";
 	var column = "date_prolongee";

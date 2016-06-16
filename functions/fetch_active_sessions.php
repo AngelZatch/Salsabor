@@ -32,6 +32,18 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$s["level"] = $details["niveau_name"];
 	$s["room"] = $details["room_name"];
 	$s["teacher"] = $details["user_prenom"]." ".$details["user_nom"];
+	// Tags
+	$labels = $db->query("SELECT * FROM assoc_session_tags us
+						JOIN tags_session ts ON us.tag_id_foreign = ts.rank_id
+						WHERE session_id_foreign = '$s[id]'");
+	$s["labels"] = array();
+	while($label = $labels->fetch(PDO::FETCH_ASSOC)){
+		$l = array();
+		$l["entry_id"] = $label["entry_id"];
+		$l["tag_color"] = $label["tag_color"];
+		$l["rank_name"] = $label["rank_name"];
+		array_push($s["labels"], $l);
+	}
 	array_push($sessionsList, $s);
 }
 

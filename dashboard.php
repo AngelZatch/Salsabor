@@ -90,11 +90,11 @@ $welcome = $time_message[$rand];
 						</p>
 					</div>
 					<div class="col-lg-6 dashboard-zones clearfix container-fluid">
-						<p class="sub-legend">Récemment...</p>
+						<p class="sub-legend"><span class="glyphicon glyphicon-bell"></span> Récemment...</p>
 						<ul class="notifications-container container-fluid"></ul>
 					</div>
 					<div class="col-lg-6 dashboard-zones clearfix container-fluid">
-						<p class="sub-legend">Il vous reste à faire...</p>
+						<p class="sub-legend"><span class="glyphicon glyphicon-list-alt"></span> Il vous reste à faire...</p>
 						<div class="tasks-container container-fluid"></div>
 					</div>
 				</div>
@@ -104,7 +104,7 @@ $welcome = $time_message[$rand];
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');
-				fetchNotifications(0);
+				fetchNotifications(10, "notifications-container");
 				fetchTasks(0, <?php echo $_SESSION["user_id"];?>, "pending", 0);
 			})
 		</script>

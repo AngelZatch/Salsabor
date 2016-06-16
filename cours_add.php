@@ -43,106 +43,98 @@ if(isset($_POST['add'])){
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<form method="post" role="form">
+				<form method="post" role="form" class="form-horizontal">
 					<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 						<legend><span class="glyphicon glyphicon-plus"></span> Ajouter un cours
 							<input type="submit" name="add" role="button" class="btn btn-primary" value="ENREGISTRER" id="submit-button" disabled>
 						</legend>
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="intitule" class="control-label">Intitulé</label>
-									<input type="text" class="form-control mandatory input-lg" name="intitule" id="cours_tags" placeholder="Nom du cours">
-									<div class="float-right">
-										<p id="intitule-error-message" class="error-messages"></p>
-									</div>
+						<div class="form-group">
+							<label for="intitule" class="col-lg-3 control-label">Intitulé du cours</label>
+							<div class="col-lg-9">
+								<input type="text" class="form-control mandatory" name="intitule" id="session_name_input" placeholder="Nom du cours">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="type" class="col-lg-3 control-label">Type de cours</label>
+							<div class="col-lg-9">
+								<select name="type" class="form-control mandatory">
+									<?php while($row_types = $types->fetch(PDO::FETCH_ASSOC)){ ?>
+									<option value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="date_debut" class="col-lg-3 control-label">Date de Début</label>
+							<div class="col-lg-9">
+								<div class="input-group">
+									<input type="date" class="form-control mandatory" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
+									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="type" class="control-label">Type de cours</label>
-							<select name="type" class="form-control mandatory input-lg">
-								<?php while($row_types = $types->fetch(PDO::FETCH_ASSOC)){ ?>
-								<option value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>
-								<?php } ?>
-							</select>
-						</div>
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="date_debut" class="control-label">Date de Début</label>
-									<div class="input-group input-group-lg">
-										<input type="date" class="form-control mandatory" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
-										<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-3">
-								<div class="form-group">
-									<label for="herue_debut" class="control-label">Début à</label>
-									<input type="time" class="form-control hasTimepicker mandatory input-lg" name="heure_debut" id="heure_debut" onChange="checkCalendar(false, false)">
-								</div>
-							</div>
-							<div class="col-lg-3">
-								<div class="form-group">
-									<label for="heure_fin" class="control-label">Fin à</label>
-									<input type="time" class="form-control hasTimepicker mandatory input-lg" name="heure_fin" id="heure_fin" onChange="checkCalendar(false, false)">
-								</div>
+							<label for="herue_debut" class="col-lg-3 control-label">Début à</label>
+							<div class="col-lg-9">
+								<input type="time" class="form-control hasTimepicker mandatory" name="heure_debut" id="heure_debut" onChange="checkCalendar(false, false)">
 							</div>
 						</div>
 						<div class="form-group">
-							Récurrence <input name="recurrence" id="recurrence" value="0" data-toggle="checkbox-x" data-three-state="false" data-size="lg" value="0">
+							<label for="heure_fin" class="col-lg-3 control-label">Fin à</label>
+							<div class="col-lg-9">
+								<input type="time" class="form-control hasTimepicker mandatory" name="heure_fin" id="heure_fin" onChange="checkCalendar(false, false)">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-lg-3 control-label">Récurrence</label>
+							<div class="col-lg-9">
+								<input name="recurrence" id="recurrence" data-toggle="checkbox-x" data-three-state="false" data-size="lg" value="0">
+							</div>
 						</div>
 						<div class="form-group" id="recurring-options" style="display:none;">
-							<label for="date_fin" class="control-label">Date de Fin</label>
-							<input type="date" class="form-control input-lg" name="date_fin" id="date_fin" onChange="checkCalendar(false, true)">
-							<label for="frequence_repetition" class="control-label">Récurrence<span class="span-mandatory">*</span></label>
-							<div id="options-recurrence">
+							<label for="date_fin" class="col-lg-3 control-label">Date de Fin</label>
+							<div class="col-lg-9">
+								<input type="date" class="form-control" name="date_fin" id="date_fin" onChange="checkCalendar(false, true)">
+							</div>
+							<label for="frequence_repetition" class="col-lg-3 control-label">Récurrence<span class="span-mandatory">*</span></label>
+							<div id="options-recurrence" class="col-lg-9">
 								<input type="radio" value="1" name="frequence_repetition" onChange="checkCalendar(false, true)"> Quotidienne<br>
 								<input type="radio" value="7" name="frequence_repetition" onChange="checkCalendar(false, true)"> Hebdomadaire <br>
 								<input type="radio" value="14" name="frequence_repetition" onChange="checkCalendar(false, true)"> Bi-mensuelle<br>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="prof_principal" class="control-label">Professeur principal</label>
-									<input type="text" name="prof_principal" class="form-control mandatory has-name-completion input-lg">
-								</div>
-							</div>
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="prof_remplacant" class="control-label">Professeur remplaçant</label>
-									<input type="text" name="prof_remplacant" class="form-control has-name-completion input-lg">
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="niveau" class="control-label">Niveau</label>
-									<select name="niveau" class="form-control mandatory input-lg">
-										<?php while($row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC)){ ?>
-										<option value="<?php echo $row_niveaux['niveau_id'];?>"><?php echo $row_niveaux['niveau_name'];?></option>
-										<?php } ?>
-									</select>
-								</div>
-							</div>
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label for="lieu" class="control-label">Lieu</label>
-									<select name="lieu" class="form-control mandatory input-lg" id="lieu" onChange="checkCalendar(false, false)">
-										<?php while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){ ?>
-										<option value="<?php echo $row_lieux['room_id'];?>"><?php echo $row_lieux['room_name'];?></option>
-										<?php } ?>
-									</select>
-								</div>
+						<div class="form-group">
+							<label for="prof_principal" class="col-lg-3 control-label">Professeur principal</label>
+							<div class="col-lg-9">
+								<input type="text" name="prof_principal" class="form-control mandatory has-name-completion">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="paiement" class="control-label">
-								<input type="checkbox" name="paiement" id="paiement" class="checkbox-inline mandatory" value="1">Déjà payé <span class="span-mandatory">*</span>
-							</label>
+							<label for="niveau" class="col-lg-3 control-label">Niveau</label>
+							<div class="col-lg-9">
+								<select name="niveau" class="form-control mandatory">
+									<?php while($row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC)){ ?>
+									<option value="<?php echo $row_niveaux['niveau_id'];?>"><?php echo $row_niveaux['niveau_name'];?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="lieu" class="col-lg-3 control-label">Lieu</label>
+							<div class="col-lg-9">
+								<select name="lieu" class="form-control mandatory" id="lieu" onChange="checkCalendar(false, false)">
+									<?php while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){ ?>
+									<option value="<?php echo $row_lieux['room_id'];?>"><?php echo $row_lieux['room_name'];?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="paiement" class="col-lg-3 control-label">Déja payé</label>
+							<div class="col-lg-9">
+								<input type="checkbox" name="paiement" id="paiement" value="0" data-toggle="checkbox-x" data-three-state="false" data-size="lg">
+							</div>
+
 						</div>
 						<div class="align-right">
 							<p id="error_message"></p>

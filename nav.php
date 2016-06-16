@@ -77,7 +77,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 							<img src="<?php echo $_SESSION["photo"];?>" alt="" style="width:inherit;">
 						</div>
 					</a>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu dropdown-custom">
 						<li><a href="user/<?php echo $_SESSION["user_id"];?>"><span class="glyphicon glyphicon-user"></span> Profil</a></li>
 						<li><a href="logout.php"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
 					</ul>
