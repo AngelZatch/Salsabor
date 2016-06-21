@@ -26,6 +26,7 @@ RewriteRule ^link$ link.php
 RewriteRule ^rentabilite$ profits.php
 RewriteRule ^autorisations$ permissions.php
 RewriteRule ^maintenance$ maintenance.php
+RewriteRule ^my/profile$ my_profile.php
 
 #User Details
 RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]
