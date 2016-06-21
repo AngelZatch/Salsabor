@@ -54,7 +54,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 						<span class="badge badge-notifications" id="badge-notifications"></span>
 					</a>
 				</li>
-				<li class="notification-option">
+				<!--<li class="notification-option">
 					<a href="#" class="notification-icon" data-toggle="popover-x" data-target="#popoverPanier" data-trigger="focus" data-placement="bottom bottom-right">
 						<span class="glyphicon glyphicon-shopping-cart"></span>
 						<span class="badge" id="badge-panier"></span>
@@ -70,7 +70,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 							<a href="" class="btn btn-success btn-block" role="button" name="next">Valider les achats</a>
 						</div>
 					</div>
-				</li>
+				</li>-->
 				<li class="dropdown notification-option">
 					<a href="#" class="dropdown-toggle notification-icon nav-img-container" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
 						<div class="nav-pp">

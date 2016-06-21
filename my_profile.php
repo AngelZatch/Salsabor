@@ -25,7 +25,7 @@ if(isset($_POST['imagebase64'])){
 	file_put_contents($new_file, $data);
 	$target_destination = $new_file;
 	move_uploaded_file($new_file, $target_destination);
-	$update = $db->query("UDPATE users SET photo = '$new_file' WHERE user_id = $user_id");
+	$update = $db->query("UPDATE users SET photo = '$new_file' WHERE user_id = $user_id");
 	$_SESSION["photo"] = $new_file;
 }
 ?>
@@ -41,13 +41,13 @@ if(isset($_POST['imagebase64'])){
 		<script src="assets/js/croppie.min.js"></script>
 	</head>
 	<body>
-		<?php include "nav.php";?>
+		<?php include "my-nav.php";?>
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 banner-container no-padding">
 					<div id="banner">
-						<img src="assets/images/default_banner.jpg">
+						<img src="assets/images/my-salsabor.png">
 					</div>
 					<div class="user-profile-container">
 						<div class="user-pp">
@@ -83,32 +83,32 @@ if(isset($_POST['imagebase64'])){
 					<p class="sub-legend">Modifiez vos informations personnelles</p>
 					<form action="" class="form-horizontal">
 						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Prénom</label>
-							<div class="col-lg-9">
+							<label for="" class="col-sm-3 control-label">Prénom</label>
+							<div class="col-sm-9">
 								<input type="text" class="form-control" placeholder="Prénom" name="user_prenom" value="<?php echo $user_details["user_prenom"];?>">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Nom</label>
-							<div class="col-lg-9">
+							<label for="" class="col-sm-3 control-label">Nom</label>
+							<div class="col-sm-9">
 								<input type="text" class="form-control" placeholder="Nom" name="user_nom" value="<?php echo $user_details["user_nom"];?>">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Adresse mail</label>
-							<div class="col-lg-9">
+							<label for="" class="col-sm-3 control-label">Adresse mail</label>
+							<div class="col-sm-9">
 								<input type="mail" class="form-control" placeholder="Adresse mail" name="mail" value="<?php echo $user_details["mail"];?>">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Numéro de téléphone</label>
-							<div class="col-lg-9">
+							<label for="" class="col-sm-3 control-label">Numéro de téléphone</label>
+							<div class="col-sm-9">
 								<input type="tel" class="form-control" name="telephone" value="<?php echo $user_details["telephone"];?>">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Date de naissance</label>
-							<div class="col-lg-9">
+							<label for="" class="col-sm-3 control-label">Date de naissance</label>
+							<div class="col-sm-9">
 								<input type="date" class="form-control" name="date_naissance" value="<?php echo $birthday;?>">
 							</div>
 						</div>
