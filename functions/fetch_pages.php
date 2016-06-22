@@ -4,7 +4,6 @@ $db = PDOFactory::getConnection();
 
 $pages = $db->query("SELECT * FROM app_menus am
 					JOIN app_pages ap ON am.menu_id = ap.page_menu
-					WHERE am.is_visible = 1
 					ORDER BY ap.page_menu, ap.page_order ASC");
 
 $page_list = array();

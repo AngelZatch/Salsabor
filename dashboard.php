@@ -6,6 +6,19 @@ if(!isset($_SESSION["username"])){
 include "functions/db_connect.php";
 $db = PDOFactory::getConnection();
 
+$user_tags = $db->query("SELECT tag_id_foreign FROM users u
+					LEFT JOIN assoc_user_tags aut ON u.user_id = aut.user_id_foreign
+					LEFT JOIN tags_user tu ON aut.tag_id_foreign = tu.rank_id
+					WHERE user_id = $_SESSION[user_id]")->fetch(PDO::FETCH_COLUMN);
+echo $page = str_replace("/Salsabor/", "", $_SERVER["REQUEST_URI"]);
+$page_tags = $db->query("SELECT tag_id_foreign FROM app_pages ap
+						LEFT JOIN assoc_page_tags apt ON ap.page_id = apt.page_id_foreign
+						LEFT JOIN tags_user tu ON apt.tag_id_foreign = tu.rank_id
+						WHERE page_url = '$page'")->fetch(PDO::FETCH_COLUMN);
+if(!in_array($user_tags, $page_tags)){
+	header("location: my/profile");
+}
+
 $date = date_create('now')->format('H:i:s');
 $welcome = "";
 if($date > "06:00:00" && $date <= "10:00:00"){

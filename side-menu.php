@@ -5,7 +5,7 @@ $menu = $db->query("SELECT * FROM app_menus am
 					WHERE am.is_visible = 1
 					AND (tag_id_foreign IN (SELECT tag_id_foreign FROM assoc_user_tags WHERE user_id_foreign = $_SESSION[user_id]) OR tag_id_foreign IS NULL)
 					GROUP BY ap.page_id
-					ORDER BY ap.page_menu, ap.page_order ASC");
+					ORDER BY am.menu_order, ap.page_order ASC");
 ?>
 <div class="sidebar-container">
 	<div class="hidden-xs col-sm-3 col-lg-2 sidebar separate-scroll" id="large-menu" style="display:block;">
