@@ -23,9 +23,12 @@ RewriteRule ^taches/([A-Za-z]+)$ tasks.php?display=$1 [NC]
 RewriteRule ^tags/([A-Za-z]+)$ tags.php?type=$1 [NC]
 RewriteRule ^portal$ portal.php
 RewriteRule ^link$ link.php
+RewriteRule ^signup$ signup.php
 RewriteRule ^rentabilite$ profits.php
 RewriteRule ^autorisations$ permissions.php
 RewriteRule ^maintenance$ maintenance.php
+RewriteRule ^my/profile$ my_profile.php
+RewriteRule ^my/products$ my_products.php
 
 #User Details
 RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]

@@ -2,8 +2,8 @@
 function getAdherent($prenom, $nom){
 	$db = PDOFactory::getConnection();
 	$search = $db->prepare('SELECT * FROM users WHERE user_prenom=? AND user_nom=?');
-	$search->bindParam(1, $prenom);
-	$search->bindParam(2, $nom);
+	$search->bindParam(1, $prenom, PDO::PARAM_STR);
+	$search->bindParam(2, $nom, PDO::PARAM_STR);
 	$search->execute();
 	$res = $search->fetch(PDO::FETCH_ASSOC);
 	return $res;
