@@ -47,3 +47,6 @@ RewriteRule ^cours/([A-Za-z0-9-]+)$ session_details.php?id=$1
 #Maintnance OFF
 RewriteRule ^(maintenance)$ /Salsabor/dashboard [R=302,NC,L] # Display home
 RewriteRule ^(maintenance.php)$ /Salsabor/dashboard [R=302,NC,L] # Display home
+
+#Erreurs
+ErrorDocument 404 /Salsabor/404.php
