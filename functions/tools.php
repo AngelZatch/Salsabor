@@ -11,19 +11,21 @@ function getAdherent($prenom, $nom){
 
 function solveAdherentToId($name){
 	$db = PDOFactory::getConnection();
-	$user = $db->query("SELECT * FROM (
-	SELECT user_id, CONCAT(user_prenom, ' ', user_nom) as fullname FROM users) base
-	WHERE fullname = '$name'");
-	$res = $user->fetch(PDO::FETCH_ASSOC);
+	$stmt = $db->prepare("SELECT * FROM (
+							SELECT user_id, CONCAT(user_prenom, ' ', user_nom) as fullname FROM users) base
+						WHERE fullname = ?");
+	$stmt->bindParam(1, htmlspecialchars($name), PDO::PARAM_STR);
+	$stmt->execute();
+	$res = $stmt->fetch(PDO::FETCH_ASSOC);
 	return $res["user_id"];
 }
 
 function getLieu($id){
 	$db = PDOFactory::getConnection();
-	$search = $db->prepare('SELECT * FROM rooms WHERE room_id=?');
-	$search->bindParam(1, $id, PDO::PARAM_INT);
-	$search->execute();
-	$res = $search->fetch(PDO::FETCH_ASSOC);
+	$stmt = $db->prepare('SELECT * FROM rooms WHERE room_id=?');
+	$stmt->bindParam(1, $id, PDO::PARAM_INT);
+	$stmt->execute();
+	$res = $stmt->fetch(PDO::FETCH_ASSOC);
 	return $res;
 }
 
@@ -141,7 +143,10 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 					VALUES('$tag', '$user_id', '$ip', '$today', '$status')");
 	}
 	// If the user doesn't have any mail address
-	$mail = $db->query("SELECT mail FROM users WHERE user_id = '$user_id'")->fetch(PDO::FETCH_COLUMN);
+	$stmt = $db->prepare("SELECT mail FROM users WHERE user_id = ?");
+	$stmt->bindParam(1, $user_id, PDO::PARAM_INT);
+	$stmt->execute();
+	$mail = $stmt->fetch(PDO::FETCH_COLUMN);
 	if($mail == ""){
 		include 'post_task.php';
 		include 'attach_tag.php';
@@ -192,8 +197,9 @@ function updateColumn($db, $table, $column, $value, $target_id){
 }
 
 function addEntry($db, $table, $column, $value){
-	$query = "INSERT INTO $table($column) VALUES('$value')";
-	$add = $db->query($query);
+	$stmt = $db->prepare("INSERT INTO $table($column) VALUES(?)");
+	$stmt->bindParam(1, $value);
+	$stmt->execute();
 	return $db->lastInsertId();
 }
 ?>

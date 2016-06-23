@@ -8,8 +8,8 @@ $db = PDOFactory::getConnection();
 parse_str($_POST["values"], $values);
 
 // The table and entry of it we'll update
-$table_name = $_POST["table_name"];
-$entry_id = $_POST["entry_id"];
+$table_name = htmlspecialchars($_POST["table_name"]);
+$entry_id = htmlspecialchars($_POST["entry_id"]);
 
 // We get the name of the primary key
 $primary_key = $db->query("SHOW INDEX FROM $table_name WHERE Key_name = 'PRIMARY'")->fetch(PDO::FETCH_ASSOC);
@@ -33,6 +33,7 @@ $query .= " WHERE $primary_key[Column_name] = '$entry_id'";
 try{
 	$db->beginTransaction();
 	$update = $db->query($query);
+	/*echo $query;*/
 	$db->commit();
 } catch(PDOException $e){
 	$db->rollBack();

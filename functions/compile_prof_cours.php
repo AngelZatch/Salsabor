@@ -5,9 +5,11 @@ $db = PDOFactory::getConnection();
 $prof_id = $_POST["prof_id"];
 
 // Liste des cours
-$queryCoursProf = $db->query("SELECT * FROM cours WHERE prof_principal=$prof_id");
+$stmt = $db->prepare("SELECT * FROM cours WHERE prof_principal=?");
+$stmt->bindParam(1, $prof_id, PDO::PARAM_INT);
+$stmt->execute();
 $result = array();
-while($coursProf = $queryCoursProf->fetch(PDO::FETCH_ASSOC)){
+while($coursProf = $stmt->fetch(PDO::FETCH_ASSOC)){
 	$h = array();
 	$h["day"] = $coursProf["cours_start"];
 	$h["cours_nom"] = $coursProf["cours_intitule"];
