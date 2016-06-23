@@ -14,7 +14,7 @@ $holiday = $queryHoliday->fetch(PDO::FETCH_ASSOC);
 try{
 	$db->beginTransaction();
 	$delete = $db->prepare('DELETE FROM jours_chomes WHERE jour_chome_id=?');
-	$delete->bindParam(1, $_POST["delete_id"]);
+	$delete->bindParam(1, $_POST["delete_id"], PDO::PARAM_INT);
 	$delete->execute();
 
 	foreach ($forfaits as $row => $forfait){

@@ -17,7 +17,7 @@ $(document).ready(function(){
 			regex = new RegExp(matchParams.join('').replace(/^s+|s+$/g,''), regexFlags);
 		return regex.test(jQuery(elem)[attr.method](attr.property));
 	}
-	if(top.location.pathname !== "/Salsabor/my/profile"){
+	if(top.location.pathname !== "/Salsabor/my/profile" && top.location.pathname !== "/Salsabor/notifications/settings"){
 		$.cssHooks.backgroundColor = {
 			get: function(elem) {
 				if (elem.currentStyle)
@@ -121,6 +121,7 @@ $(document).ready(function(){
 		var identite = $(this).val();
 		var token = $(this).attr('name').substr(12);
 		$.post("functions/check_adherent.php", {identite : identite}).done(function(data){
+			console.log(data);
 			if(data == 0){
 				if($(":regex(id,^unknown-user)").length == 0){
 					var addOptions = "<div id='unknown-user"+token+"'>";

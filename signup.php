@@ -12,7 +12,11 @@ if(isset($_SESSION["username"])){
 		$password = htmlspecialchars($_POST["user_pwd"]);
 
 		try{
-			$uploadCredentials = $db->query("UPDATE users SET login = '$username', password = '$password' WHERE user_id = '$user_id'");
+			$uploadCredentials = $db->prepare("UPDATE users SET login = ?, password = ? WHERE user_id = ?");
+			$uploadCredentials->bindParam(1, $username, PDO::PARAM_STR);
+			$uploadCredentials->bindParam(2, $password, PDO::PARAM_STR);
+			$uploadCredentials->bindParam(3, $user_id, PDO::PARAM_INT);
+			$uploadCredentials->execute();
 			header("Location: portal");
 		} catch(PDOException $e){
 			$e->getMessage();

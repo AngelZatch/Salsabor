@@ -10,7 +10,10 @@ $value = $_POST["value"];
 
 try{
 	$db->beginTransaction();
-	$update = $db->query("UPDATE $datatable SET $field = '$value' WHERE ".$datatable."_id = $id");
+	$stmt = $db->prepare("UPDATE $datatable SET $field = ? WHERE ".$datatable."_id = ?");
+	$stmt->bindParam(1, $value);
+	$stmt->bindParam(2, $id);
+	$stmt->execute();
 	$db->commit();
 	echo "Modification enregistrée";
 }catch(PDOException $e){

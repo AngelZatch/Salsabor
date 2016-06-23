@@ -7,7 +7,10 @@ $room_name = htmlspecialchars($_POST["room_name"]);
 
 try{
 	$db->beginTransaction();
-	$create = $db->query("INSERT INTO rooms(room_location, room_name) VALUES('$room_location', '$room_name')");
+	$stmt = $db->prepare("INSERT INTO rooms(room_location, room_name) VALUES(?, ?)");
+	$stmt->bindParam(1, $room_location, PDO::PARAM_INT);
+	$stmt->bindParam(2, $room_name, PDO::PARAM_STR);
+	$stmt->execute();
 	echo $db->lastInsertId();
 	$db->commit();
 } catch(PDOException $e){

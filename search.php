@@ -7,10 +7,12 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 $searchTerms = $_GET["search_terms"];
 
-$searchUsers = $db->query("SELECT user_id, user_prenom, user_nom, mail, telephone, photo, actif FROM users WHERE (user_nom LIKE '%{$searchTerms}%' OR user_prenom LIKE '%{$searchTerms}%') ORDER BY user_nom ASC");
+$searchUsers = $db->prepare("SELECT user_id, user_prenom, user_nom, mail, telephone, photo, actif FROM users WHERE (user_nom LIKE ? OR user_prenom LIKE ? OR mail LIKE ? OR telephone LIKE ?) ORDER BY user_nom ASC");
+$searchUsers->execute(array("%".$searchTerms."%", "%".$searchTerms."%", "%".$searchTerms."%", "%".$searchTerms."%"));
 $numberUsers = $searchUsers->rowCount();
 
-$searchTransactions = $db->query("SELECT * FROM transactions WHERE id_transaction LIKE '%{$searchTerms}%'");
+$searchTransactions = $db->prepare("SELECT * FROM transactions WHERE id_transaction LIKE ?");
+$searchTransactions->execute(array("%".$searchTerms."%"));
 $numberTransactions = $searchTransactions->rowCount();
 ?>
 <html>
