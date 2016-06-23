@@ -10,7 +10,7 @@ $data = $_GET["id"];
 
 // Détails du forfait
 $queryProduit = $db->prepare("SELECT * FROM produits WHERE produit_id=?");
-$queryProduit->bindParam(1, $data);
+$queryProduit->bindParam(1, $data, PDO::PARAM_INT);
 $queryProduit->execute();
 $produit = $queryProduit->fetch(PDO::FETCH_ASSOC);
 

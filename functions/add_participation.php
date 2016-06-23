@@ -6,9 +6,12 @@ $db = PDOFactory::getConnection();
 $name = $_POST["name"];
 $session_id = $_POST["session_id"];
 
-$user_details = $db->query("SELECT * FROM (
+$stmt = $db->prepare("SELECT * FROM (
 	SELECT user_id, user_rfid, CONCAT(user_prenom, ' ', user_nom) as fullname FROM users) base
-	WHERE fullname = '$name'")->fetch(PDO::FETCH_ASSOC);
+	WHERE fullname = ?");
+$stmt->bindParam(1, $name, PDO::PARAM_STR);
+$stmt->execute();
+$user_details = $stmt->fetch(PDO::FETCH_ASSOC);
 $user_id = $user_details["user_id"];
 $user_rfid = $user_details["user_rfid"];
 
