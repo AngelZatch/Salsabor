@@ -24,7 +24,22 @@
 				<p class="editable" id="refresh-mail" data-input="mail" data-table="users" data-column="mail" data-target="<?php echo $data;?>" data-value="<?php echo ($details["mail"]="")?"no-value":"value";?>"><?php echo $details["mail"];?></p>
 			</div>
 			<p id="refresh-rfid"></p>
-			<p id="refresh-tasks"><span class="glyphicon glyphicon-list-alt"></span> <?php if($details["count"] > 0){echo $details["count"]." tâche(s) non résolue(s)";} else { echo "Aucune tâche en attente";}?></p>
+			<?php
+			$count = $details["count"];
+			if($count > 0){
+				if($count > 1){
+					$message = $count." tâches non résolues";
+				} else {
+					$message = $count." tâche non résolue";
+				}
+				$class = "unsolved";
+			} else {
+				$message = "Aucune tâche en attente";
+				$class = "solved";
+			}
+
+			?>
+			<a href="user/<?php echo $data;?>/taches" id="refresh-tasks" class="<?php echo $class;?>"><span class="glyphicon glyphicon-list-alt"></span> <?php echo $message;?></a>
 		</div>
 		<div class="col-lg-6">
 			<div>
