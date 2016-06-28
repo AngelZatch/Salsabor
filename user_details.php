@@ -253,7 +253,7 @@ if(isset($_POST["edit"])){
 				function fetchRFID(){
 					$.post('functions/fetch_rfid.php').done(function(data){
 						if(data != ""){
-							$("[name='rfid']").val(data);
+							$("[name='user_rfid']").val(data);
 							clearInterval(wait);
 							$("[name='fetch-rfid']").html("Lancer la détection");
 							listening = false;
