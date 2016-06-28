@@ -6,3 +6,4 @@ tests.php
 assets/pictures/*
 functions/db_connect.php
 functions/alt_db_connect.php
+back-ups/*
