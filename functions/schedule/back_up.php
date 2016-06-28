@@ -4,7 +4,7 @@ cron : * 4 * * * /usr/bin/php /opt/lampp/htdocs/Salsabor/functions/schedule/back
 */
 $dbhost = "localhost"; // usually localhost
 $dbuser = "root";
-$dbpass = "GztXCDj5AE3UEDXGe";
+$dbpass = "GztXCDj5A3UEDXGe";
 $dbname = "Salsabor";
 
 $backup_file = $dbname."-backup".date("Y-m-d").".sql";
