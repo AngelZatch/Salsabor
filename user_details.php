@@ -65,7 +65,7 @@ if(isset($_POST["edit"])){
 			$edit = $db->prepare('UPDATE users
 								SET user_rfid = :rfid, date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville, tel_secondaire = :tel_secondaire, photo = :photo, commentaires = :commentaires
 								WHERE user_id = :id');
-			$edit->bindParam(':rfid', $_POST["rfid"]);
+			$edit->bindParam(':rfid', $_POST["user_rfid"]);
 			$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
 			$edit->bindParam(':rue', $_POST["rue"]);
 			$edit->bindParam(':code_postal', $_POST["code_postal"]);
@@ -92,7 +92,7 @@ if(isset($_POST["edit"])){
 			$edit = $db->prepare('UPDATE users
 								SET user_rfid = :rfid, date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville, tel_secondaire = :tel_secondaire, commentaires = :commentaires
 								WHERE user_id = :id');
-			$edit->bindParam(':rfid', $_POST["rfid"]);
+			$edit->bindParam(':rfid', $_POST["user_rfid"]);
 			$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
 			$edit->bindParam(':rue', $_POST["rue"]);
 			$edit->bindParam(':code_postal', $_POST["code_postal"]);
@@ -101,9 +101,9 @@ if(isset($_POST["edit"])){
 			$edit->bindParam(':commentaires', $_POST["commentaires"]);
 			$edit->bindParam(':id', $data);
 			$edit->execute();
-			if(isset($_POST["rfid"])){
+			if(isset($_POST["user_rfid"])){
 				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid = ? AND status=1');
-				$delete->bindParam(1, $_POST["rfid"]);
+				$delete->bindParam(1, $_POST["user_rfid"]);
 				$delete->execute();
 			}
 			$db->commit();
