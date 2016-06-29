@@ -18,10 +18,7 @@ $details["count"] = $db->query("SELECT * FROM tasks
 						AND task_state = 0")->rowCount();
 
 // On obtient l'historique de ses forfaits
-$queryForfaits = $db->prepare('SELECT *, pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif,
-								IF(date_prolongee IS NOT NULL, date_prolongee,
-									IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
-									) AS produit_validity
+$queryForfaits = $db->prepare('SELECT *, pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif
 								FROM produits_adherents pa
 								JOIN users u ON id_user_foreign=u.user_id
 								JOIN produits p ON id_produit_foreign=p.produit_id
@@ -71,11 +68,9 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 					<div class="container-fluid purchase-product-list-container">
 						<ul class="purchase-inside-list purchase-product-list">
 							<?php while($forfaits = $queryForfaits->fetch(PDO::FETCH_ASSOC)){
-	$date_activation = date_create($forfaits["produit_adherent_activation"]);
-	$date_expiration = "-";
-	if($forfaits["produit_validity"] != null){
-		$date_expiration = date_create($forfaits["produit_validity"])->format('d/m/Y');
-	}
+	$date_achat = date_create($forfaits["date_achat"])->format('d/m/Y');
+	$date_activation = date_create($forfaits["produit_adherent_activation"])->format('d/m/Y');
+	$date_expiration = date_create(max($forfaits["date_expiration"], $forfaits["date_prolongee"], $forfaits["date_fin_utilisation"]))->format('d/m/Y');
 	$today = date('Y-m-d');
 	if($forfaits["volume_cours"] < '0' && $forfaits["est_illimite"] != '1'){
 		$item_class = "item-overused";
@@ -89,14 +84,15 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		}
 	}?>
 							<li class="purchase-item panel-item <?php echo $item_class;?> container-fluid" id="purchase-item-<?php echo $forfaits["id_produit_adherent"];?>" data-toggle='modal' data-target='#product-modal' data-argument="<?php echo $forfaits["id_produit_adherent"];?>">
-								<p class="col-lg-3 panel-item-title"><?php echo $forfaits["produit_nom"];?></p>
-								<p class="col-lg-3 purchase-product-validity">
+								<p class="col-lg-12 panel-item-title bf"><?php echo $forfaits["produit_nom"];?></p>
+								<p class="col-lg-3">Acheté le <?php echo $date_achat;?></p>
+								<p class="col-lg-5 purchase-product-validity">
 									<?php if($forfaits["produit_adherent_actif"] == '0'){
 		echo "En attente";
 	} else if($forfaits["produit_adherent_actif"] == '2'){
 		echo "Expiré le ".$date_expiration;
 	} else {
-		echo "Valide du <span>".$date_activation->format('d/m/Y')."</span> au <span>".$date_expiration."</span>";
+		echo "Valide du <span>".$date_activation."</span> au <span>".$date_expiration."</span>";
 	}?>
 								</p>
 								<p class="col-lg-3 purchase-product-hours">
