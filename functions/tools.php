@@ -160,6 +160,9 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 }
 
 function postNotification($db, $token, $target, $recipient, $date){
+	// To ensure there aren't two notifications about different states of the same target, we deleted every notification regarding the target before inserting the new one.
+	$type_token = substr($token, 0, 3);
+	$delete_previous_states = $db->query("DELETE FROM team_notifications WHERE notification_token LIKE '%$type_token%' AND notification_target = $target");
 	$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_recipient, notification_date, notification_state)
 								VALUES('$token', '$target', '$recipient', '$date', '1')");
 }

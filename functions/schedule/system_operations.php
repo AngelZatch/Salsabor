@@ -53,6 +53,9 @@ try{
 	// We deactivate any user that didn't buy a product or attended a session for more than 12 months.
 	$deactivateUser = $db->query("UPDATE users SET actif = 0 WHERE actif = '1' AND date_last < '$activationLimit'");
 
+	// We delete "old" notifications about closed sessions
+	$delete_old_notifications = $db->query("DELETE FROM team_notifications WHERE notification_token = 'SES'");
+
 	$db->commit();
 } catch(PDOException $e){
 	$db->rollBack();
