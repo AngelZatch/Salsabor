@@ -46,4 +46,7 @@ while($duplicate = $duplicates->fetch(PDO::FETCH_ASSOC)){
 
 // Delete "lost" records
 $delete = $db->query("DELETE FROM participations WHERE cours_id IS NULL AND produit_adherent_id IS NULL AND passage_date < '$limit'");
+
+//Delete tasks with no target
+$delete_tasks = $db->query("DELETE FROM tasks WHERE task_target = ''");
 ?>
