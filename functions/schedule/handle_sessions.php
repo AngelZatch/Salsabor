@@ -27,7 +27,6 @@ try{
 		postNotification($db, $token, $session_id, null, $compare_start);
 	}
 
-
 	// Leaves the sesssions open but doesn't accept records anymore for sessions that will end in the next 30 minutes.
 	$partial_close = $db->query("UPDATE cours SET ouvert = 2 WHERE cours_end <= '$compare_close' AND ouvert = 1");
 	$db->commit();
