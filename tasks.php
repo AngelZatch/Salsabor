@@ -46,7 +46,7 @@ $display = $_GET["display"];
 			$(document).ready(function(){
 				moment.locale('fr');
 				<?php if($display == "user") {;?>
-				fetchTasks(0, <?php echo $_SESSION["user_id"];?>, null, 0);
+				fetchTasks(0, <?php echo $_SESSION["user_id"];?>, "pending", 0);
 				<?php } else {;?>
 				fetchTasks(0, 0, null, 0);
 				<?php };?>
