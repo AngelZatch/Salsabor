@@ -175,7 +175,12 @@ function refreshTask(task){
 function displayTasks(data, user_id, attached_id, limit, filter, half){
 	var tasks = JSON.parse(data);
 	if(tasks.length == 0){
-		$(".tasks-container").css("background-image", "url(assets/images/logotype_white.png)");
+		$(".tasks-container").empty();
+		$(".tasks-container").css("background-image", "url(assets/images/logotype-white.png)");
+		$(".tasks-container").css("opacity", "0.2");
+	} else {
+		$(".tasks-container").css("background-image", "");
+		$(".tasks-container").css("opacity", "1.0");
 	}
 	for(var i = 0; i < tasks.length; i++){
 		if($("#task-"+tasks[i].id).length > 0){
