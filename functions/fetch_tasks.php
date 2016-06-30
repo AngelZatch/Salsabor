@@ -9,8 +9,9 @@ $attached_id = $_GET["attached_id"];
 $filter = $_GET["filter"];
 
 // We dynamically construct the query depending on the flags
-$query = "SELECT * FROM tasks t
+$query = "SELECT *, CONCAT (u.user_prenom, ' ', u.user_nom) AS recipient, CONCAT (u2.user_prenom, ' ', u2.user_nom) AS creator FROM tasks t
 			LEFT JOIN users u ON t.task_recipient = u.user_id
+			LEFT JOIN users u2 ON t.task_creator = u2.user_id
 			LEFT JOIN assoc_task_tags at ON t.task_id = at.task_id_foreign";
 if($user_id != 0 || $attached_id != 0 || $filter != ""){
 	$query .= " WHERE";
@@ -49,10 +50,15 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$t["token"] = $details["task_token"];
 	$t["target"] = $details["task_target"];
 	if($details["task_recipient"] != null && $details["task_recipient"] != 0){
-		$t["recipient"] = $details["user_prenom"]." ".$details["user_nom"];
+		$t["recipient"] = $details["recipient"];
 		$t["recipient_id"] = $details["task_recipient"];
 	} else {
 		$t["recipient"] = "";
+	}
+	if($details["task_creator"] == null){
+		$t["creator"] = "Système";
+	} else {
+		$t["creator"] = $details["creator"];
 	}
 	// Additional details depending of the token
 	$t["type"] = substr($t["token"], 0, 3);

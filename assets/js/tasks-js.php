@@ -255,7 +255,7 @@ function displayTasks(data, user_id, attached_id, limit, filter, half){
 			contents += "</div>";
 
 			contents += "<div class='container-fluid'>";
-			contents += "<p class='task-hour col-sm-12'> créée "+moment(tasks[i].date).format("[le] ll [à] HH:mm")+"</p>";
+			contents += "<p class='task-hour col-sm-12'> créée "+moment(tasks[i].date).format("[le] ll [à] HH:mm")+" par "+tasks[i].creator+"</p>";
 			contents += "<h4>";
 			for(var j = 0; j < tasks[i].labels.length; j++){
 				contents += "<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='task-tag-"+tasks[i].labels[j].entry_id+"' data-target='"+tasks[i].labels[j].entry_id+"' data-targettype='task' style='background-color:"+tasks[i].labels[j].tag_color+"'>"+tasks[i].labels[j].rank_name+"</span>";
