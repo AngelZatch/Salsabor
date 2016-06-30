@@ -117,7 +117,6 @@ session_start();
 			$("#deadline-"+task_id).removeClass("deadline-near");
 			$("#deadline-"+task_id).removeClass("deadline-expired");
 			$("#deadline-"+task_id).addClass(deadline_class);
-			console.log(deadline_class);
 			$("#deadline-"+task_id).html("<span class='glyphicon glyphicon-time'></span> "+moment(deadline).format("D MMM [à] H:mm"));
 		} else {
 			$("#deadline-"+task_id).html("<span class='glyphicon glyphicon-time'></span> Ajouter une date limite");
@@ -162,7 +161,6 @@ function refreshTask(task){
 		$("#deadline-"+task.id).removeClass("deadline-near");
 		$("#deadline-"+task.id).removeClass("deadline-expired");
 		$("#deadline-"+task.id).addClass(deadline_class);
-		console.log(deadline_class);
 		$("#deadline-"+task.id).html("<span class='glyphicon glyphicon-time'></span> "+moment(task.deadline).format("D MMM [à] H:mm"));
 	} else {
 		$("#deadline-"+task.id).html("<span class='glyphicon glyphicon-time'></span> Ajouter une date limite");
@@ -255,7 +253,7 @@ function displayTasks(data, user_id, attached_id, limit, filter, half){
 			contents += "</div>";
 
 			contents += "<div class='container-fluid'>";
-			contents += "<p class='task-hour col-sm-12'> créée "+moment(tasks[i].date).format("[le] ll [à] HH:mm")+"</p>";
+			contents += "<p class='task-hour col-sm-12'> créée "+moment(tasks[i].date).format("[le] ll [à] HH:mm")+" par <span class='task-creator' id='creator-"+tasks[i].id+"'>"+tasks[i].creator+"</span></p>";
 			contents += "<h4>";
 			for(var j = 0; j < tasks[i].labels.length; j++){
 				contents += "<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='task-tag-"+tasks[i].labels[j].entry_id+"' data-target='"+tasks[i].labels[j].entry_id+"' data-targettype='task' style='background-color:"+tasks[i].labels[j].tag_color+"'>"+tasks[i].labels[j].rank_name+"</span>";
@@ -338,7 +336,7 @@ function displayComments(task_id, data){
 	var messages = "";
 	var message_list = JSON.parse(data);
 	for(var i = 0; i < message_list.length; i++){
-		console.log(message_list[i].own);
+		/*console.log(message_list[i].own);*/
 		messages += "<div class='comment-unit' id='unit-"+message_list[i].id+"'>";
 		messages += "<a href='user/"+message_list[i].author_id+"' class='link-alt message-author'>"+message_list[i].author+"</a>";
 		messages += "<div class='message-container' id='message-"+message_list[i].id+"'>"+message_list[i].comment+"</div>";
@@ -358,6 +356,10 @@ function postComment(comment, author, task_id){
 	$.post("functions/post_comment.php", {comment : comment, user_id : author, task_id : task_id}).done(function(e){
 		console.log(e);
 		$("#comment-form-"+task_id+">textarea").val('');
+		if(e == 1){
+			var creator = $("#creator-"+task_id).text();
+			postNotification("TAS-CMT", task_id, creator);
+		}
 		fetchComments(task_id);
 	})
 }
