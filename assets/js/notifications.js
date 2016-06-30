@@ -142,6 +142,10 @@ function displayNotifications(data, limit, destination){
 					case "L":
 						notif_message = "La tâche <strong>"+notifications[i].title+"</strong> a dépassé sa date limite du <strong>"+moment(notifications[i].deadline).format("ll [à] HH:mm")+"</strong>";
 						break;
+
+					case "CMT":
+						notif_message = "Un commentaire a été ajouté à votre tâche <strong>"+notifications[i].title+"</strong>";
+						break;
 				}
 				notif_icon = "glyphicon-list-alt";
 				break;
