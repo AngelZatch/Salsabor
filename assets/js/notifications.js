@@ -4,7 +4,7 @@ $(document).on('click', '.trigger-nav', function(e){
 	if($(".sub-modal-notification").is(":visible")){
 		$(".sub-modal-notification").hide(0);
 	} else {
-		fetchNotifications(50, "smn-body");
+		fetchNotifications(50, null, "smn-body");
 		$(".sub-modal-notification").css({left: 64+"%", top:55+"px"});
 		$(".sub-modal-notification").show(0);
 	}
@@ -34,6 +34,11 @@ $(document).on('click', '.trigger-nav', function(e){
 			var span = $("#notification-"+notification_id).find("span.glyphicon-button");
 			span.replaceWith("<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button toggle-read' title='Marquer comme non lue'></span>");
 			$(".badge-notifications").html(parseInt($("#badge-notifications").html())-1);
+			if(top.location.pathname === "/Salsabor/dashboard"){
+				$("#notification-"+notification_id).fadeOut('normal', function(){
+					$(this).remove();
+				});
+			}
 		}
 	})
 }).on('click', '.notification-line', function(){
@@ -48,24 +53,38 @@ $(document).on('click', '.trigger-nav', function(e){
 	$.post("functions/read_all.php");
 })
 
-function fetchNotifications(limit, destination){
-	$.get("functions/fetch_notifications.php", {limit : limit}).done(function(data){
+function fetchNotifications(limit, filter, destination){
+	/*console.log(limit);*/
+	$.get("functions/fetch_notifications.php", {filter : filter, limit : limit}).done(function(data){
 		if($("."+destination).is(":visible")){
-			displayNotifications(data, limit, destination);
+			displayNotifications(data, limit, filter, destination);
 		}
 	});
 }
 
-function displayNotifications(data, limit, destination){
+function displayNotifications(data, limit, filter, destination){
 	var notifications = JSON.parse(data);
 	$("."+destination).empty();
+	if(destination == "dashboard-notifications-container"){
+		if(notifications.length == 0){
+			$(".dashboard-notifications-container").empty();
+			$(".dashboard-notifications-container").css("background-image", "url(assets/images/logotype-white.png)");
+			$(".dashboard-notifications-container").css("opacity", "0.2");
+		} else {
+			$(".dashboard-notifications-container").css("background-image", "");
+			$(".dashboard-notifications-container").css("opacity", "1.0");
+		}
+	}
 	for(var i = 0; i < notifications.length; i++){
 		// Status handling
 		var notifMessage = "", notifClass = "", notif_link = "", notif_image = "", notif_icon = "", notif_message = "";
 		if(notifications[i].status == '1'){
-			notifClass = "notif-new";
+			notifClass += "notif-new";
 		} else {
-			notifClass = "notif-old";
+			notifClass += "notif-old";
+		}
+		if(i == notifications.length-1){
+			notifClass += " waypoint-mark";
 		}
 		notifMessage += "<li id='notification-"+notifications[i].id+"' data-notification='"+notifications[i].id+"' class='notification-line "+notifClass+" container-fluid'";
 

@@ -24,10 +24,11 @@ $db = PDOFactory::getConnection();
 			</div>
 		</div>
 		<?php include "scripts.php";?>
+		<script src="assets/js/jquery.waypoints.min.js"></script>
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');
-				fetchNotifications(0, "notifications-container");
+				fetchNotifications(50, null, "notifications-container");
 			})
 		</script>
 	</body>
