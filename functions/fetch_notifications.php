@@ -4,11 +4,21 @@ include "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $limit = $_GET["limit"];
+$filter = $_GET["filter"];
 
 // We construct the query
-$query = "SELECT * FROM team_notifications WHERE notification_recipient IS NULL OR notification_recipient = 0";
+$query = "SELECT * FROM team_notifications WHERE (notification_recipient IS NULL OR notification_recipient = 0";
 if(isset($_SESSION["user_id"])){
 	$query .= " OR notification_recipient = $_SESSION[user_id]";
+}
+$query.= ")";
+if($filter != null){
+	$query .= " AND";
+	if($filter == "seen"){
+		$query .= " notification_state = 0";
+	} else if($filter == "new"){
+		$query .= " notification_state = 1";
+	}
 }
 $query .= " ORDER BY notification_id DESC";
 if($limit != 0){
