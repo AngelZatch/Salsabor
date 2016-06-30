@@ -103,10 +103,15 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 					break;
 
 				case "TRA":
-					$sub_sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id = (SELECT payeur_transaction FROM transactions WHERE id_transaction = '$t[sub_target]')")->fetch(PDO::FETCH_ASSOC);
+					$sub_sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id = (SELECT payeur_transaction FROM transactions WHERE id_transaction = '$n[sub_target]')")->fetch(PDO::FETCH_ASSOC);
 					$n["user_id"] = $sub_sub_query["user_id"];
 					$n["link"] = "user/".$n["user_id"]."/achats#purchase-".$n["sub_target"];
 					$n["photo"] = $sub_sub_query["photo"];
+					break;
+
+				case "CMT":
+					$sub_sub_query = $db->query("SELECT CONCAT(user_prenom, ' ', user_nom) AS user, user_id, photo FROM users u WHERE user_id = '$n[sub_target]'")->fetch(PDO::FETCH_ASSOC);
+					$n["link"] = "user/".$n["user_id"]."/taches";
 					break;
 
 				default:
