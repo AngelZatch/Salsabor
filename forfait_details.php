@@ -14,6 +14,12 @@ $queryProduit->bindParam(1, $data, PDO::PARAM_INT);
 $queryProduit->execute();
 $produit = $queryProduit->fetch(PDO::FETCH_ASSOC);
 
+$labels = $db->prepare("SELECT * FROM assoc_product_tags apt
+						JOIN tags_session ts ON apt.tag_id_foreign = ts.rank_id
+						WHERE product_id_foreign = ?");
+$labels->bindParam(1, $data, PDO::PARAM_INT);
+$labels->execute();
+
 if(isset($_POST["edit"])){
 	if(isset($_POST["volume_horaire"])){
 		$tarif_horaire = $_POST["tarif_global"]/$_POST["volume_horaire"];
@@ -81,6 +87,8 @@ if(isset($_POST["edit"])){
 		<title>Détails du forfait <?php echo $produit["produit_nom"];?> | Salsabor</title>
 		<base href="../">
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/tags.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -89,7 +97,7 @@ if(isset($_POST["edit"])){
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<form action="" class="form-horizontal" method="post">
-						<legend><span class="glyphicon glyphicon-credit-card"></span> Forfait <?php echo $produit["produit_nom"];?>
+						<legend><span class="glyphicon glyphicon-credit-card"></span> <?php echo $produit["produit_nom"];?>
 							<input type="submit" name="edit" role="button" class="btn btn-primary" value="ENREGISTRER LES MODIFICATIONS">
 						</legend>
 						<div class="form-group">
@@ -115,6 +123,17 @@ if(isset($_POST["edit"])){
 								<input name="est_abonnement" id="est_abonnement" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $produit["est_abonnement"];?>">
 								<label for="est_autre" class="contorl-label">Divers</label>
 								<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $produit["est_autre"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-lg-3 control-label">&Eacute;tiquettes</label>
+							<div class="col-lg-9 session-tags">
+								<h4>
+									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
+									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="product-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype="product" style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
+									<?php } ?>
+									<span class="label label-default label-clickable label-add trigger-sub" id="label_add" data-subtype="session-tags" data-targettype="product" title="Ajouter une étiquette">+</span>
+								</h4>
 							</div>
 						</div>
 						<div class="form-group">
@@ -184,6 +203,6 @@ if(isset($_POST["edit"])){
 				</div>
 			</div>
 		</div>
-		<?php include "scripts.php";?>
+		<?php include "inserts/sub_modal_product.php";?>
 	</body>
 </html>

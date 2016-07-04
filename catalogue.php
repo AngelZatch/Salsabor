@@ -77,7 +77,26 @@ if(isset($_GET["user"])){
 							<div class="panel panel-product">
 								<div class="panel-body">
 									<p class="product-title"><?php echo $produits["produit_nom"];?></p>
+									<?php $labels = $db->prepare("SELECT * FROM assoc_product_tags apt
+						JOIN tags_session ts ON apt.tag_id_foreign = ts.rank_id
+						WHERE product_id_foreign = ?
+						ORDER BY tag_color DESC");
+							$labels->bindParam(1, $produits["produit_id"], PDO::PARAM_INT);
+							$labels->execute(); ?>
+								<p>Valable <?php echo $produits["validite_initiale"]/7;?> semaines</p>
+									<div class="tags-display">
+										<h5>
+											<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
+											<span class="label label-salsabor" title="Supprimer l'étiquette" id="product-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype="product" style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
+											<?php } ?>
+										</h5>
+									</div>
+									<?php if($produits["description"] != ""){ ?>
 									<p class="product-description"><?php echo $produits["description"];?></p>
+									<?php } else { ?>
+									<p class="product-description purchase-sub">Pas de description</p>
+									<?php } ?>
+									<p class="product-price"><?php echo $produits["tarif_global"];?> €</p>
 									<input type="hidden" value="<?php echo $produits["produit_id"];?>">
 									<a href="#" class="btn btn-primary btn-block" role="button" name="add-shopping">Ajouter au panier</a>
 								</div>
@@ -86,8 +105,8 @@ if(isset($_GET["user"])){
 						<?php
 							$previous = $current;
 						} ?>
-						<a href="" role="button" class="btn btn-success btn-block" name="next"><span class="glyphicon glyphicon-erase"></span> Valider les achats <span class="glyphicon glyphicon-arrow-right"></span></a>
 					</div>
+					<a href="" role="button" class="btn btn-success btn-block" name="next"><span class="glyphicon glyphicon-erase"></span> Valider les achats <span class="glyphicon glyphicon-arrow-right"></span></a>
 				</div>
 			</div>
 		</div>

@@ -22,12 +22,12 @@ function detachTag($db, $tag, $target, $type){
 	$query = "SELECT entry_id FROM assoc_".$type."_tags WHERE ".$type."_id_foreign = $target AND tag_id_foreign = $tag";
 
 	$entry_id = $db->query($query)->fetch(PDO::FETCH_COLUMN);
-	echo $entry_id;
+	/*echo $entry_id;*/
 
 	if(isset($entry_id)){
 		$query = "DELETE FROM assoc_".$type."_tags WHERE entry_id = $entry_id";
 		$detach = $db->query($query);
-		echo $query;
+		/*echo $query;*/
 
 		echo $entry_id;
 	}
