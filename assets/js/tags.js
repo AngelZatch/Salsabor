@@ -11,14 +11,16 @@ $(document).on('click', '.label-deletable', function(e){
 	e.stopPropagation();
 	var tag = document.getElementById($(this).attr("id")).dataset.tag;
 	var target_type = document.getElementById($(this).attr("id")).dataset.targettype;
-	if(target_type == "user" || target_type == "session"){
-		var target = /([0-9]+$)/.exec(document.location.href)[0];
-	} else {
+	if(target_type == "task"){
 		var target = /([0-9]+)/.exec(window.target)[0];
+	} else {
+		var target = /([0-9]+$)/.exec(document.location.href)[0];
+
 	}
 	var tag_text = $(this).text();
 	if($(this).hasClass("toggled")){
 		$.when(detachTag(tag, target, target_type)).done(function(data){
+			console.log(data);
 			$("#tag-"+tag).removeClass("toggled");
 			$("#tag-"+tag).find("span").remove();
 			$("#"+target_type+"-tag-"+data).remove();
@@ -28,12 +30,12 @@ $(document).on('click', '.label-deletable', function(e){
 		$.when(attachTag(tag, target, target_type)).done(function(data){
 			$("#tag-"+tag).addClass("toggled");
 			$("#tag-"+tag).append("<span class='glyphicon glyphicon-ok float-right'></span>");
-			if(target_type == "user" || target_type == "session"){
-				var insert = ".label-add";
-			} else {
+			if(target_type == "task"){
 				var insert = "#label-add-"+target;
+			} else {
+				var insert = ".label-add";
 			}
-			$(insert).before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='user-tag-"+data+"' data-target='"+data+"' data-targettype='"+target_type+"' style='background-color:"+value[0]+"'>"+tag_text+"</span>");
+			$(insert).before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='"+target_type+"-tag-"+data+"' data-target='"+data+"' data-targettype='"+target_type+"' style='background-color:"+value[0]+"'>"+tag_text+"</span>");
 		})
 	}
 }).on('click', '.label-new-tag', function(){
@@ -110,10 +112,10 @@ function fetchTags(tag_type){
 function displayTargetTags(data, target_type, tag_type){
 	var tags = JSON.parse(data), addable = "", added = "", body = "";
 	for(var i = 0; i < tags.length; i++){
-		if(target_type == "user" || target_type == "session"){
-			var compare = $(".label-deletable");
-		} else {
+		if(target_type == "task"){
 			var compare = $("#task-"+/([0-9]+)/.exec(window.target)[0]).find(".label-deletable");
+		} else {
+			var compare = $(".label-deletable");
 		}
 		compare.each(function(){
 			if(tags[i].rank_name == $(this).text()){
