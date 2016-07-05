@@ -641,7 +641,7 @@ a {
 
 /* line 373, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .glyphicon-button-alt:hover {
-  color: #A80139; }
+  color: #A80139 !important; }
 
 /* line 376, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .glyphicon-button-big {
