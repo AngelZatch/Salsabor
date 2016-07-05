@@ -22,7 +22,7 @@ try{
 	$update->execute();*/
 	while($session = $sessions->fetch(PDO::FETCH_ASSOC)){
 		$session_id = $session["cours_id"];
-		if($sessions["ouvert"] == 0){
+		if($session["ouvert"] == 0){
 			$open = $db->query("UPDATE cours SET ouvert = 1 WHERE cours_id='$session_id'");
 			$token = "SES";
 			postNotification($db, $token, $session_id, null, $compare_start);
