@@ -142,8 +142,13 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<label for="" class="col-lg-3 control-label">Etiquettes</label>
 							<div class="col-lg-9">
 								<h4>
-									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
-									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="session-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='session' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
+									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){
+									if($label["is_mandatory"] == 1){
+										$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
+									} else {
+										$label_name = $label["rank_name"];
+									}?>
+									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="session-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='session' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label_name;?></span>
 									<?php } ?>
 									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='session-tags' data-targettype='session' title="Ajouter une étiquette">+</span>
 								</h4>

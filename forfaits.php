@@ -24,12 +24,12 @@ $produits = $db->query("SELECT * FROM produits");
 						<a href="forfait_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait</a>
 					</legend>
 					<?php while($produit = $produits->fetch(PDO::FETCH_ASSOC)){
-					$validite_semaines = $produit["validite_initiale"] / 7;
-					if($validite_semaines < 1){
-						$validite = $produit["validite_initiale"]." jour(s)";
-					} else {
-						$validite = $validite_semaines." semaine(s)";
-					}
+	$validite_semaines = $produit["validite_initiale"] / 7;
+	if($validite_semaines < 1){
+		$validite = $produit["validite_initiale"]." jour(s)";
+	} else {
+		$validite = $validite_semaines." semaine(s)";
+	}
 					?>
 					<div class="col-sm-6 col-md-4 panel-product-container">
 						<div class="panel panel-product">
@@ -39,13 +39,19 @@ $produits = $db->query("SELECT * FROM produits");
 						JOIN tags_session ts ON apt.tag_id_foreign = ts.rank_id
 						WHERE product_id_foreign = ?
 						ORDER BY tag_color DESC");
-								$labels->bindParam(1, $produit["produit_id"], PDO::PARAM_INT);
-								$labels->execute(); ?>
+	$labels->bindParam(1, $produit["produit_id"], PDO::PARAM_INT);
+	$labels->execute(); ?>
 								<p>Valable <?php echo $validite;?></p>
 								<div class="tags-display">
 									<h5>
-										<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
-										<span class="label label-salsabor" title="Supprimer l'étiquette" id="product-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype="product" style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
+										<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){
+		if($label["is_mandatory"] == 1){
+			$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
+		} else {
+			$label_name = $label["rank_name"];
+		}
+										?>
+										<span class="label label-salsabor" title="Supprimer l'étiquette" id="product-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype="product" style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label_name;?></span>
 										<?php } ?>
 									</h5>
 								</div>

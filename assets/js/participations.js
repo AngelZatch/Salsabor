@@ -143,7 +143,13 @@ function displaySessions(data, fetched){
 		as_display += "<h5 class='col-lg-6'>";
 		for(var j = 0; j < active_sessions[i].labels.length; j++){
 			console.log(active_sessions[i].labels[j].entry_id);
-			as_display += "<span class='label label-salsabor label-display-only' id='task-tag-"+active_sessions[i].labels[j].entry_id+"' data-target='"+active_sessions[i].labels[j].entry_id+"' data-targettype='task' style='background-color:"+active_sessions[i].labels[j].tag_color+"'>"+active_sessions[i].labels[j].rank_name+"</span>";
+			var label;
+			if(active_sessions[i].labels[j].is_mandatory == 1){
+				label = "<span class='glyphicon glyphicon-star'></span> "+active_sessions[i].labels[j].rank_name;
+			} else {
+				label = active_sessions[i].labels[j].rank_name;
+			}
+			as_display += "<span class='label label-salsabor label-display-only' id='task-tag-"+active_sessions[i].labels[j].entry_id+"' data-target='"+active_sessions[i].labels[j].entry_id+"' data-targettype='task' style='background-color:"+active_sessions[i].labels[j].tag_color+"'>"+label+"</span>";
 		}
 		as_display += "</h5>";
 		as_display += "</div>";
