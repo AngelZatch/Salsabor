@@ -1,10 +1,10 @@
 <!-- jQuery -->
 <script src="assets/js/jquery-2.1.4.min.js"></script>
 <script src="assets/js/jquery-ui.min.js"></script>
-<script src="assets/js/jquery.textcomplete.min.js"></script>
 
 <!-- libs -->
 <script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="assets/js/jquery.textcomplete.min.js"></script>
 <script src="assets/js/moment-with-locales.js"></script>
 <script src="assets/js/fullcalendar.min.js"></script>
 <script src="assets/js/jquery.ui.timepicker.js"></script>

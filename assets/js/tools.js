@@ -5,6 +5,7 @@ Dès que le document est prêt, tous les modaux et les fonctions qui doivent tou
 */
 
 $(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
 	jQuery.expr[':'].regex = function(elem, index, match) {
 		var matchParams = match[3].split(','),
 			validLabels = /^(data|css):/,
@@ -46,7 +47,6 @@ $(document).ready(function(){
 	setInterval(notifEcheancesDues, 30000);
 	badgeNotifications();
 	badgeTasks();
-	$('[data-toggle="tooltip"]').tooltip();
 	moment.locale("fra");
 
 	// If we're on one of the user pages, then we have to fetch and refresh details of the user banner.
@@ -559,7 +559,21 @@ $(document).ready(function(){
 					body += "</div>";
 				}
 				body += "</div>";
+				if(tag_type == "session"){
+					var is_mandatory;
+					if($("#tag-"+target).find(".glyphicon-star").length > 0){
+						is_mandatory = 1;
+					} else {
+						is_mandatory = 0;
+					}
+					body += "<input name='is_mandatory' class='mandatory-tag-check' id='is_mandatory-"+target+"' data-target='"+target+"' value='"+is_mandatory+"'> Obligatoire <span class='glyphicon glyphicon-question-sign' id='mandatory-tooltip' data-toggle='tooltip' title='Une étiquette obligatoire devra impérativement figurer sur le produit pour qu&apos;il soit compatible'></span>";
+				}
 				$(".sub-modal-body").html(body);
+				$("#is_mandatory-"+target).checkboxX({
+					threeState: false,
+					size:'lg'
+				});
+				$("#mandatory-tooltip").tooltip();
 			});
 			footer += "<button class='btn btn-danger btn-block delete-tag' id='delete-tag' data-target='"+target+"' data-tagtype='"+tag_type+"'><span class='glyphicon glyphicon-trash'></span> Supprimer l'étiquette</button>";
 			break;
@@ -577,6 +591,16 @@ $(document).ready(function(){
 		$(".sub-modal").css({left: 74+'%'});
 	}
 	$(".sub-modal").show(0);
+}).on('change', '.mandatory-tag-check', function(){
+	var target = document.getElementById($(this).attr("id")).dataset.target;
+	var value = $(this).val();
+	console.log("checkbox of tag "+target+" changed to "+value);
+	$.when(updateColumn("tags_session", "is_mandatory", value, target)).done(function(){
+		if(value == 1)
+			$("#tag-"+target).prepend("<span class='glyphicon glyphicon-star'></span> ");
+		else
+			$("#tag-"+target).remove($(".glyphicon-star"));
+	})
 })
 
 $(".has-name-completion").on('click blur keyup', function(){

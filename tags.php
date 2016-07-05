@@ -51,7 +51,10 @@ if($type == "users"){
 					if(tag_type == "user")
 						body += "<p class='col-xs-4'>Tâches 'infos. manquantes'</p></div>";
 					for(var i = 0; i < tags.length; i++){
-						body += "<h4><div class='col-sm-12'><span class='label col-xs-4 label-clickable label-restyle' id='tag-"+tags[i].rank_id+"' data-tag='"+tags[i].rank_id+"' data-tagtype='"+tag_type+"' style='background-color:"+tags[i].color+"'>"+tags[i].rank_name+"</span>";
+						body += "<h4><div class='col-sm-12'><span class='label col-xs-4 label-clickable label-restyle' id='tag-"+tags[i].rank_id+"' data-tag='"+tags[i].rank_id+"' data-tagtype='"+tag_type+"' style='background-color:"+tags[i].color+"'>";
+						if(tags[i].is_mandatory == 1)
+							body += "<span class='glyphicon glyphicon-star' title='Etiquette obligatoire'></span> ";
+						body += tags[i].rank_name+"</span>";
 
 						body += "<p class='col-xs-2'><span class='glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt trigger-sub' id='edit-"+tags[i].rank_id+"' data-subtype='edit-tag' data-tagtype='"+tag_type+"' data-target='"+tags[i].rank_id+"' title='Editer l&apos;étiquette'></span></p>";
 
