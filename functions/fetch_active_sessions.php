@@ -42,6 +42,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 		$l["entry_id"] = $label["entry_id"];
 		$l["tag_color"] = $label["tag_color"];
 		$l["rank_name"] = $label["rank_name"];
+		$l["is_mandatory"] = $label["is_mandatory"];
 		array_push($s["labels"], $l);
 	}
 	array_push($sessionsList, $s);

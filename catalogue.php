@@ -83,11 +83,17 @@ if(isset($_GET["user"])){
 						ORDER BY tag_color DESC");
 							$labels->bindParam(1, $produits["produit_id"], PDO::PARAM_INT);
 							$labels->execute(); ?>
-								<p>Valable <?php echo $produits["validite_initiale"]/7;?> semaines</p>
+									<p>Valable <?php echo $produits["validite_initiale"]/7;?> semaines</p>
 									<div class="tags-display">
 										<h5>
-											<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
-											<span class="label label-salsabor" title="Supprimer l'étiquette" id="product-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype="product" style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
+											<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){
+								if($label["is_mandatory"] == 1){
+									$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
+								} else {
+									$label_name = $label["rank_name"];
+								}
+											?>
+											<span class="label label-salsabor" title="Supprimer l'étiquette" id="product-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype="product" style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label_name;?></span>
 											<?php } ?>
 										</h5>
 									</div>
