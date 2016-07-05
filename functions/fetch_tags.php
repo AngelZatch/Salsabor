@@ -12,6 +12,8 @@ while($tag = $stmt->fetch(PDO::FETCH_ASSOC)){
 	$t["rank_id"] = $tag["rank_id"];
 	$t["rank_name"] = $tag["rank_name"];
 	$t["color"] = $tag["tag_color"];
+	if($type == "session")
+		$t["is_mandatory"] = $tag["is_mandatory"];
 	if($type == 'user')
 		$t["mid"] = $tag["missing_info_default"];
 	array_push($tags, $t);
