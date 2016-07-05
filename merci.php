@@ -17,7 +17,7 @@ $db = PDOFactory::getConnection();
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<div class="jumbotron">
 						<h1>Merci beaucoup de cet achat !</h1>
-						<a href="dashboard.php" role="button" class="btn btn-default btn-block">Retour au panneau principal</a>
+						<a href="dashboard" role="button" class="btn btn-default btn-block">Retour au panneau principal</a>
 					</div>
 				</div>
 			</div>

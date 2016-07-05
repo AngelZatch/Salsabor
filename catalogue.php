@@ -129,7 +129,7 @@ if(isset($_GET["user"])){
 						composeURL(globalCart[0]);
 					}
 					var produit_id = $(this).parents("div").children("input").val();
-					var produit_nom = $(this).parents("div").children(".thumbnail-title").html();
+					var produit_nom = $(this).parents("div").children(".product-title").html();
 					globalCart.push(produit_id);
 					globalCartNames.push(produit_nom);
 					sessionStorage.setItem("panier", JSON.stringify(globalCart));

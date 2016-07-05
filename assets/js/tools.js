@@ -730,14 +730,16 @@ function fillShoppingCart(){
 		var cart = JSON.parse(sessionStorage.getItem("panier"));
 		var cartSize = JSON.parse(sessionStorage.getItem("panier-noms"));
 		var line = "";
-		for(var i = 0; i < cartSize.length; i++){
-			line += "<tr>"
-			line += "<td class='col-lg-11'>"+cartSize[i]+"</td>";
-			line += "<td class='col-lg-1'><span class='glyphicon glyphicon-trash' onclick='removeCartElement("+i+")'></span></td>";
-			line += "<tr>";
+		if(cart.length != 0){
+			for(var i = 0; i < cartSize.length; i++){
+				line += "<tr>"
+				line += "<td class='col-lg-11'>"+cartSize[i]+"</td>";
+				line += "<td class='col-lg-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt' onclick='removeCartElement("+i+")'></span></td>";
+				line += "<tr>";
+			}
+			$(".table-panier").append(line);
+			composeURL(cart[0]);
 		}
-		$(".table-panier").append(line);
-		composeURL(cart[0]);
 	}
 }
 
