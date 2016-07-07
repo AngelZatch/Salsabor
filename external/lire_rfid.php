@@ -57,16 +57,10 @@ function prepareParticipationBeta($db, $user_tag, $reader_token){
 		// If the tag is not for associating, we search a product that could be used for this session.
 		// First, we get the name of the session and the ID of the user.
 		// For the session, we have to find it based on the time of the record and the position.
-		$session = $db->query("SELECT cours_id FROM cours c
+		$session_id = $db->query("SELECT cours_id FROM cours c
 								JOIN rooms r ON c.cours_salle = r.room_id
 								WHERE ouvert = '1' AND room_reader = '$reader_token'")->fetch(PDO::FETCH_COLUMN);
-		$session_id = $session["cours_id"];
-		$user_details = $db->query("SELECT user_id, mail FROM users WHERE user_rfid = '$user_tag'")->fetch(PDO::FETCH_ASSOC);
-
-		if(!preg_match("/@/", $user_details["mail"], $matches)){
-			$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
-								VALUES('MAI', '$user_details[user_id]', '$today', '1')");
-		}
+		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$user_tag'")->fetch(PDO::FETCH_COLUMN);
 
 		addParticipationBeta($db, $today, $session_id, $user_details["user_id"], $reader_token, $user_tag);
 		/*addParticipation($db, $cours_name, $session_id, $user_details["user_id"], $reader_token, $tag);*/
