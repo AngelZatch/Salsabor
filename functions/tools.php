@@ -174,13 +174,13 @@ function addParticipationBeta($db, $today, $session_id, $user_id, $reader_token,
 			$status = 4;
 			$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, status)
 						VALUES('$user_tag', '$user_id', '$reader_token', '$today', $status)");
-			echo $status;
+			echo "$";
 		}
 	} else {
 		$status = 5;
 		$new = $db->query("INSERT INTO participations(user_rfid, room_token, passage_date, status)
 						VALUES('$user_tag', '$reader_token', '$today', '$status')");
-		echo $status;
+		echo "$";
 	}
 }
 
