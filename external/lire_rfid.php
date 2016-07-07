@@ -17,7 +17,7 @@ function prepareParticipation($db, $user_tag, $reader_token){
 		$status = "1";
 		$new = $db->query("INSERT INTO participations(user_rfid, room_token, passage_date, status)
 					VALUES('$user_tag', '$reader_token', '$today', '$status')");
-		echo $ligne = $today.";".$user_tag.";".$reader_token."$";
+		echo "$";
 	} else {
 		// If the tag is not for associating, we search a product that could be used for this session.
 		// First, we get the name of the session and the ID of the user.
@@ -30,16 +30,11 @@ function prepareParticipation($db, $user_tag, $reader_token){
 		$session_id = $session["cours_id"];
 		$user_details = $db->query("SELECT user_id, mail FROM users WHERE user_rfid = '$user_tag'")->fetch(PDO::FETCH_ASSOC);
 
-		if(preg_match("/@/", $user_details["mail"], $matches)){
-			$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_date, notification_state)
-								VALUES('MAI', '$user_details[user_id]', '$today', '1')");
-		}
-
 		// Ok, we got everything, let's look for potential duplicates
 		$duplicates = $db->query("SELECT * FROM participations WHERE user_rfid = '$user_tag' AND cours_id = '$session_id'")->rowCount();
 
 		if($duplicates > 0){
-			echo $ligne = $today.";".$user_tag.";".$reader_token."$-3";
+			echo "$";
 		} else {
 			addParticipation($db, $cours_name, $session_id, $user_details["user_id"], $reader_token, $user_tag);
 		}
@@ -63,8 +58,5 @@ function prepareParticipationBeta($db, $user_tag, $reader_token){
 		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$user_tag'")->fetch(PDO::FETCH_COLUMN);
 
 		addParticipationBeta($db, $today, $session_id, $user_details["user_id"], $reader_token, $user_tag);
-		/*addParticipation($db, $cours_name, $session_id, $user_details["user_id"], $reader_token, $tag);*/
 	}
 }
-// The reader expects this:
-//echo $ligne = $today.";".$tag_rfid.";".$ip_rfid."$";
