@@ -159,6 +159,103 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 	echo $ligne = $today.";".$tag.";".$ip."$-".$status;
 }
 
+function addParticipationBeta($db, $today, $session_id, $user_id, $reader_token, $user_tag){
+	if($user_id != ""){
+		if($session_id != ""){
+			$product_id = getCorrectProductFromTags($db, $session_id, $user_id);
+			if($product_id != "")
+				$status = 0;
+			else
+				$status = 3;
+			$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, cours_id, produit_adherent_id, status)
+						VALUES('$user_tag', '$user_id', '$reader_token', '$today', '$session_id', '$product_id', $status)");
+			echo "$";
+		} else {
+			$status = 4;
+			$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, status)
+						VALUES('$user_tag', '$user_id', '$reader_token', '$today', $status)");
+		}
+	} else {
+		$status = 5;
+		$new = $db->query("INSERT INTO participations(user_rfid, room_token, passage_date, status)
+						VALUES('$user_tag', '$reader_token', '$today', '$status')");
+	}
+}
+
+function getCorrectProductFromTags($db, $session_id, $user_id){
+	/** When a participation is recorded, this function will be called to find the correct product of the user based on the tags of the session the user is attending to **/
+	$tags_session = $db->query("SELECT tag_id_foreign, is_mandatory FROM assoc_session_tags ast
+								JOIN tags_session ts ON ts.rank_id = ast.tag_id_foreign
+								WHERE session_id_foreign = $session_id
+								ORDER BY is_mandatory DESC")->fetchAll(PDO::FETCH_ASSOC);
+
+	print_r($tags_session);
+	// Step one : cross array with all mandatory tags to get only subs that fit the mandatory tags.
+	// Create an array that takes all the mandatory_result arrays and intersect then later.
+	$mandatory_arrays = [];
+	$i = 0;
+	foreach($tags_session as $tag){
+		if($tag["is_mandatory"] == 1){
+			$query = "SELECT id_produit_foreign FROM produits_adherents pa
+				LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
+				LEFT JOIN assoc_product_tags apt ON p.produit_id = apt.product_id_foreign
+				LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
+				WHERE tag_id_foreign = $tag[tag_id_foreign]
+				AND id_user_foreign = $user_id
+				AND pa.actif != 2
+				ORDER BY date_achat DESC";
+			$mandatory_arrays[$i] = $db->query($query)->fetchAll(PDO::FETCH_COLUMN);
+		}
+		$i++;
+	}
+	echo "result<br>";
+	if(sizeof($mandatory_arrays) > 1)
+		$result = call_user_func_array("array_intersect", $mandatory_arrays);
+	else
+		$result = $mandatory_arrays[0];
+
+	// Step two : take the product_id with the highest number of fitting tags.
+	if(sizeof($result) == 1){ // If there's only one product that can fit.
+		$query = "SELECT id_produit_adherent FROM produits_adherents pa
+				WHERE id_produit_foreign = $result[0]
+				AND id_user_foreign = $user_id";
+		$product_id = $db->query($query)->fetch(PDO::FETCH_COLUMN);
+		return $product_id;
+	} else if(sizeof($result) > 1){ // If there are more than 1 product fitting, we test non-mandatory tags
+		$supplementary_arrays = [];
+		$i = 0;
+		foreach($tags_session as $tag){
+			if($tag["is_mandatory"] == 0){
+				$query = "SELECT id_produit_adherent FROM produits_adherents pa
+				LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
+				LEFT JOIN assoc_product_tags apt ON p.produit_id = apt.product_id_foreign
+				WHERE tag_id_foreign = $tag[tag_id_foreign]";
+				if(sizeof($result) > 1)
+					$query .= " AND product_id_foreign IN (".implode(",", array_map("intval", $result)).")";
+				else
+					$query .= " AND product_id_foreign = $result[0]";
+				$query .= " AND id_user_foreign = $user_id ORDER BY pa.actif DESC";
+				$supplementary_arrays[$i] = $db->query($query)->fetchAll(PDO::FETCH_COLUMN);
+				echo "Résultats pour le tag ".$tag["tag_id_foreign"]."<br>";
+				print_r($supplementary_arrays[$i]);
+			}
+			$i++;
+		}
+
+		if(sizeof($supplementary_arrays) > 0){
+			// Merge all arrays and count values
+			$eligible_products = array_count_values(call_user_func_array("array_merge", $supplementary_arrays));
+			$product_id = array_keys($eligible_products)[0]; // Product that fits
+			return $product_id;
+		} else {
+			return $result[0];
+		}
+	} else {
+		echo "pas de produit correspondant";
+		return null;
+	}
+}
+
 function postNotification($db, $token, $target, $recipient, $date){
 	// To ensure there aren't two notifications about different states of the same target, we deleted every notification regarding the target before inserting the new one.
 	$type_token = substr($token, 0, 3);
