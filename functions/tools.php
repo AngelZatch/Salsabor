@@ -137,12 +137,10 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 		}
 		$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, cours_id, produit_adherent_id, status)
 					VALUES('$tag', '$user_id', '$ip', '$today', '$session_id', '$product_id', '$status')");
-		echo "$";
 	} else {
-		$status = "4";
+		$status = "2";
 		$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, status)
 					VALUES('$tag', '$user_id', '$ip', '$today', '$status')");
-		echo $status;
 	}
 	// If the user doesn't have any mail address
 	$stmt = $db->prepare("SELECT mail FROM users WHERE user_id = ?");
@@ -157,6 +155,8 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 		$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
 		associateTag($db, intval($tag), $new_task_id, "task");
 	}
+	// Return something for the reader
+	echo $ligne = $today.";".$tag.";".$ip."$-".$status;
 }
 
 function addParticipationBeta($db, $today, $session_id, $user_id, $reader_token, $user_tag){
@@ -191,6 +191,7 @@ function getCorrectProductFromTags($db, $session_id, $user_id){
 								WHERE session_id_foreign = $session_id
 								ORDER BY is_mandatory DESC")->fetchAll(PDO::FETCH_ASSOC);
 
+	print_r($tags_session);
 	// Step one : cross array with all mandatory tags to get only subs that fit the mandatory tags.
 	// Create an array that takes all the mandatory_result arrays and intersect then later.
 	$mandatory_arrays = [];
@@ -237,6 +238,8 @@ function getCorrectProductFromTags($db, $session_id, $user_id){
 					$query .= " AND product_id_foreign = $result[0]";
 				$query .= " AND id_user_foreign = $user_id ORDER BY pa.actif DESC";
 				$supplementary_arrays[$i] = $db->query($query)->fetchAll(PDO::FETCH_COLUMN);
+				echo "Résultats pour le tag ".$tag["tag_id_foreign"]."<br>";
+				print_r($supplementary_arrays[$i]);
 			}
 			$i++;
 		}
@@ -250,6 +253,7 @@ function getCorrectProductFromTags($db, $session_id, $user_id){
 			return $result[0];
 		}
 	} else {
+		echo "pas de produit correspondant";
 		return null;
 	}
 }
