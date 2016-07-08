@@ -338,6 +338,7 @@ $(document).ready(function(){
 	var tpos = $(this).position(), type = target.dataset.subtype, toffset = $(this).offset();
 	/*console.log(product_id, type);*/
 
+	console.log(document.getElementById($(this).attr("id")));
 	var title, body = "", footer = "";
 	switch(type){
 		case 'AREP':
@@ -576,6 +577,27 @@ $(document).ready(function(){
 				$("#mandatory-tooltip").tooltip();
 			});
 			footer += "<button class='btn btn-danger btn-block delete-tag' id='delete-tag' data-target='"+target+"' data-tagtype='"+tag_type+"'><span class='glyphicon glyphicon-trash'></span> Supprimer l'étiquette</button>";
+			break;
+
+		case 'room-color':
+			var target = document.getElementById($(this).attr("id")).dataset.target;
+			title = "Modifier la colueur de la salle";
+			$(".sub-modal").removeClass("col-lg-7");
+			$(".sub-modal").addClass("col-lg-3");
+			$(".sub-modal").css({top : toffset.top+'px', left: toffset.left+45+'px'});
+			$.when(fetchColors()).done(function(data){
+				body += "<div class='row' id='colors'>";
+				var colors = JSON.parse(data);
+				for(var i = 0; i < colors.length; i++){
+					body += "<div class='color-cube col-xs-4 col-md-3 col-lg-2' id='color-"+colors[i].color_id+"' style='background-color:"+colors[i].color_value+"' data-target='"+target+"' data-color='"+colors[i].color_id+"'>";
+					if("#"+colors[i].color_value == $("#room-color-cube-"+target).css("backgroundColor")){
+						body += "<span class='glyphicon glyphicon-ok color-selected'></span>";
+					}
+					body += "</div>";
+				}
+				body += "</div>";
+				$(".sub-modal-body").html(body);
+			});
 			break;
 
 		default:
