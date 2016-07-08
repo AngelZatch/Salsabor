@@ -52,7 +52,7 @@ if(isset($_POST['deleteCoursAll'])){
 					<legend><span class="glyphicon glyphicon-time"></span> Planning
 						<a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a>
 					</legend>
-					<div class="filter-options">
+					<!--<div class="filter-options">
 						<label for="" class="cbx-label">Salle 1</label>
 						<input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-salle-1">
 						<label for="" class="cbx-label">Salle 2</label>
@@ -63,7 +63,7 @@ if(isset($_POST['deleteCoursAll'])){
 						<input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-cours">
 						<label for="" class="cbx-label">Réservations</label>
 						<input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-reservation">
-					</div>
+					</div>-->
 					<div id="display-planning" style="display:block;">
 						<div id="calendar" class="fc fc-ltr fc-unthemed"></div>
 					</div> <!-- Display en Planning -->
@@ -121,7 +121,10 @@ if(isset($_POST['deleteCoursAll'])){
 					editable: false,
 					selectable: true,
 					selectHelper: true,
-					minTime: '9:00',
+					hiddenDays: [0],
+					minTime: '6:00',
+					timeFormat: 'H:mm',
+					nowIndicator: true,
 					allDaySlot: false,
 					handleWindowResize: true,
 					contentHeight: height,
@@ -170,6 +173,7 @@ if(isset($_POST['deleteCoursAll'])){
 						}  else if(calEvent.type == 'holiday'){
 							element.css('background-color', '#000');
 						} else {
+							element.css("background-color", "#"+calEvent.color);/*
 							switch(calEvent.prestation_id){
 								case '6':
 								case '7':
@@ -180,7 +184,7 @@ if(isset($_POST['deleteCoursAll'])){
 
 								default:
 									break;
-							}
+							}*/
 						}
 					},
 					eventClick: function(calEvent, element){
@@ -236,7 +240,7 @@ if(isset($_POST['deleteCoursAll'])){
 			height = docHeight - xPos.top - 100;
 			$('#calendar').fullCalendar('option', 'contentHeight', 650);
 		});*/
-				var filterOne = false, filterTwo = false, filterThree = false, filterCours = false, filterReservation = false;
+				/*var filterOne = false, filterTwo = false, filterThree = false, filterCours = false, filterReservation = false;
 				$("#filter-salle-1").change(function(){
 					if(!filterOne){
 						$("[salle='1']").hide();
@@ -326,7 +330,7 @@ if(isset($_POST['deleteCoursAll'])){
 						}
 						filterReservation = false;
 					}
-				});
+				});*/
 			});
 
 			/**$('#timepicker').timepicker({});

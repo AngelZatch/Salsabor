@@ -5,6 +5,7 @@ $db = PDOFactory::getConnection();
 $load = $db->query("SELECT * FROM locations l
 					LEFT JOIN rooms r ON r.room_location = l.location_id
 					LEFT JOIN readers re ON r.room_reader = re.reader_id
+					LEFT JOIN colors co ON r.room_color = co.color_id
 					ORDER BY location_id, room_name ASC");
 
 $now = date("Y-m-d H:i:s");
@@ -16,6 +17,7 @@ while($room = $load->fetch(PDO::FETCH_ASSOC)){
 	$r["location_name"] = $room["location_name"];
 	$r["location_address"] = $room["location_address"];
 	$r["room_id"] = $room["room_id"];
+	$r["room_color"] = $room["color_value"];
 
 	// Look up its availability
 	if($r["room_id"] != null){

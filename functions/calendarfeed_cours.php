@@ -9,7 +9,7 @@ try
 	$calendar = $db->prepare('SELECT * FROM cours c
 							JOIN rooms r ON c.cours_salle = r.room_id
 							JOIN niveau n ON c.cours_niveau = n.niveau_id
-							JOIN prestations p ON c.cours_type = p.prestations_id');
+							JOIN colors co ON r.room_color = co.color_id');
 	$calendar->execute();
 	$events = array();
 
@@ -17,12 +17,12 @@ try
 	while($row_calendar = $calendar->fetch(PDO::FETCH_ASSOC)){
 		$e = array();
 		$e['id'] = $row_calendar['cours_id'];
-		$e['title'] = $row_calendar['cours_intitule']."\n".$row_calendar['room_name']."\n".$row_calendar['niveau_name'];
+		/*$e['title'] = $row_calendar['cours_intitule']."\n".$row_calendar['room_name']."\n".$row_calendar['niveau_name'];*/
+		$e["title"] = $row_calendar["cours_intitule"];
 		$e['lieu'] = $row_calendar['room_id'];
 		$e['start'] = $row_calendar['cours_start'];
 		$e['end'] = $row_calendar['cours_end'];
-		$e['prestation_id'] = $row_calendar['cours_type'];
-		$e['prestation'] = $row_calendar['prestations_name'];
+		$e['color'] = $row_calendar['color_value'];
 		$e['type'] = 'cours';
 		// Paramètre propriétaire de Fullcalendar.js qui sert à délimiter un évènement
 		// à ses heures de début et de fin.
