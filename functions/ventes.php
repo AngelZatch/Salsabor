@@ -7,25 +7,8 @@ require_once "tools.php";
 function vente(){
 	$db = PDOFactory::getConnection();
 
-	/** La fonction vente réalise plusieurs actions. Elle :
-	- Identifie le payeur
-	- Crée une transaction en base
-	- Crée tous les produits adhérents
-	- Les associe à cette transaction
-	- Crée toutes les échéances de la transaction
-	**/
-
-	// Obtention de l'identité du payeur
-	$data = explode(' ', $_POST["payeur"]);
-	$prenom = $data[0];
-	$nom = '';
-	for($i = 1; $i < count($data); $i++){
-		$nom .= $data[$i];
-		if($i != count($data)){
-			$nom .= " ";
-		}
-	}
-	$payeur = getAdherent($prenom, $nom);
+	// Get payer's ID
+	$payer_id = solveAdherentToId($_POST["payeur"]);
 
 	// Génération d'un identifiant unique désignant la transaction
 	$transaction = generateReference();
@@ -44,7 +27,7 @@ function vente(){
 		// Création de la transaction
 		$new_transaction = $db->prepare("INSERT INTO transactions(id_transaction, payeur_transaction, date_achat, prix_total) VALUES(:transaction, :payeur, :date_achat, :prix_total)");
 		$new_transaction->bindParam(':transaction', $transaction);
-		$new_transaction->bindParam(':payeur', $payeur["user_id"]);
+		$new_transaction->bindParam(':payeur', $payer_id);
 		$new_transaction->bindParam(':date_achat', $date_achat);
 		$new_transaction->bindParam(':prix_total', $prix_restant);
 		$new_transaction->execute();
@@ -202,7 +185,7 @@ function vente(){
 			$pdf->Write(0, $infos);*/
 		}
 
-		$activateUser = $db->query("UPDATE users SET actif = '1', date_last='$date_achat' WHERE user_id='$payeur[user_id]'");
+		$activateUser = $db->query("UPDATE users SET actif = '1', date_last='$date_achat' WHERE user_id='$payer_id'");
 
 		$db->commit();
 
@@ -218,16 +201,8 @@ function vente(){
 /** INVITATION **/
 function invitation(){
 	$db = PDOFactory::getConnection();
-	$data = explode(' ', $_POST["identite_nom"]);
-	$prenom = $data[0];
-	$nom = '';
-	for($i = 1; $i < count($data); $i++){
-		$nom .= $data[$i];
-		if($i != count($data)){
-			$nom .= " ";
-		}
-	}
-	$adherent = getAdherent($prenom, $nom);
+
+	$user_id = solveAdherentToId($_POST["identite_nom"]);
 
 	$transaction = generateReference();
 
@@ -247,7 +222,7 @@ function invitation(){
 			$new = $db->prepare("INSERT INTO produits_adherents(id_transaction, id_user_foreign, id_produit, date_achat, volume_cours, prix_achat, actif, arep)
 		VALUES(:transaction, :adherent, :produit_id, :date_achat, :volume_horaire, :prix_achat, :actif, :arep)");
 			$new->bindParam(':transaction', $transaction);
-			$new->bindParam(':adherent', $adherent["user_id"]);
+			$new->bindParam(':adherent', $user_id);
 			$new->bindParam(':produit_id', $_POST["produit"]);
 			$new->bindParam(':date_achat', $date_achat);
 			$new->bindParam(':volume_horaire', $volume_horaire);
@@ -267,7 +242,7 @@ function invitation(){
 			$new = $db->prepare("INSERT INTO produits_adherents(id_transaction, id_user_foreign, id_produit, date_achat, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
 		VALUES(:transaction, :adherent, :produit_id, :date_achat, :date_activation, :date_expiration, :volume_horaire, :prix_achat, :actif, :arep)");
 			$new->bindParam(':transaction', $transaction);
-			$new->bindParam(':adherent', $adherent["user_id"]);
+			$new->bindParam(':adherent', $user_id);
 			$new->bindParam(':produit_id', $_POST["produit"]);
 			$new->bindParam(':date_achat', $date_achat);
 			$new->bindParam(':date_activation', $_POST["date_activation"]);

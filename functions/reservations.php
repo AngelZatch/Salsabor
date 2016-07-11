@@ -29,7 +29,8 @@ function addResa(){
 	$paiement = $_POST['paiement'];
 
 	// Obtention de la personne qui a fait la réservation
-	$adherent = getAdherent($prenom, $nom);
+	$user_id = solveAdherentToId($_POST["identite_nom"]);
+	$adherent = $db->query("SELECT * FROM users WHERE user_id = $user_id")->fetch(PDO::FETCH_ASSOC);
 	$salle = getLieu($lieu);
 
 	/**** PDF ****/
