@@ -14,6 +14,9 @@ require_once "functions/reservations.php";
 		<meta charset="UTF-8">
 		<title>Planning | Salsabor</title>
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/participations.js"></script>
+		<script src="assets/js/check_calendar.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -58,8 +61,6 @@ require_once "functions/reservations.php";
 				margin-right: 20px;
 			}
 		</style>
-		<?php include "scripts.php";?>
-		<script src="assets/js/participations.js"></script>
 		<script>
 			$(document).ready(function ($) {
 				// delegate calls to data-toggle="lightbox"
@@ -94,19 +95,22 @@ require_once "functions/reservations.php";
 					allDaySlot: false,
 					handleWindowResize: true,
 					contentHeight: height,
+					startParam: 'fetch_start',
+					endParam: 'fetch_end',
+					defaultTimedEventDuration: '01:00:00',
 					eventSources:[
 						{
 							url: 'functions/calendarfeed_cours.php',
-							type: 'POST',
+							type: 'GET',
 							color: '#0FC5F5',
 							textColor:'black',
-							error: function(){
-								console.log('Erreur pendant l\'obtention des évènements');
+							error: function(data){
+								console.log(data);
 							}
 						},
 						{
 							url: 'functions/calendarfeed_resa.php',
-							type: 'POST',
+							type: 'GET',
 							color: '#D21CFC',
 							textColor: 'black',
 							error: function(){
@@ -115,7 +119,7 @@ require_once "functions/reservations.php";
 						},
 						{
 							url: 'functions/calendarfeed_holidays.php',
-							type: 'POST',
+							type: 'GET',
 							color: '#C4C4C4',
 							textColor: 'black',
 							rendering: 'background',
@@ -247,6 +251,5 @@ require_once "functions/reservations.php";
 				});
 			});
 		</script>
-		<script src="assets/js/check_calendar.js"></script>
 	</body>
 </html>
