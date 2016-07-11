@@ -29,28 +29,12 @@ require_once "functions/reservations.php";
 					</div> <!-- Display en Planning -->
 				</div> <!-- col-sm-offset-3 col-lg-10 col-lg-offset-2 main -->
 				<?php include "inserts/sub_modal_session.php";?>
-				<div id="cours-options" class="popover popover-default">
-					<div class="arrow"></div>
-					<p style="font-weight:700;" id="popover-cours-title"></p>
-					<p id="popover-cours-type"></p>
-					<p id="popover-cours-hours"></p>
-					<a role="button" class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Détails >></a>
-				</div>
 				<div id="reservation-options" class="popover popover-default">
 					<div class="arrow"></div>
 					<p style="font-weight:700;" id="popover-reservation-title"></p>
 					<p id="popover-reservation-type"></p>
 					<p id="popover-reservation-hours"></p>
 					<a class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Détails >></a>
-				</div>
-			</div>
-			<div id="add-options" class="popover popover-default">
-				<div class="arrow"></div>
-				<p style="font-weight:700;" id="popover-new-title">Ajouter</p>
-				<p id="popover-new-hours"></p>
-				<div class="btn-group col-sm-12" role="group">
-					<a class="btn btn-default" style="background-color:#0FC5F5;" href="cours_add.php?"><span class="glyphicon glyphicon-plus"></span> Cours</a>
-					<a class="btn btn-default" style="background-color:#ebb3f9;" href="resa_add.php"><span class="glyphicon glyphicon-record"></span> Location</a>
 				</div>
 			</div>
 		</div>
@@ -215,144 +199,53 @@ require_once "functions/reservations.php";
 						}
 					},
 					select: function(start, end, jsEvent, view){
-						var options = {
-							target: "#undefined-undefined",
-							placement: 'top',
-							closeOtherPopovers: true,
-						};
-						var position = $("#undefined-undefined").offset();
-						var bWidth = $("#undefined-undefined").width();
-						$('#add-options').popoverX(options);
-						$('#add-options>#popover-new-hours').empty();
-						$('#popover-new-hours').append("Le "+moment(start).format('l')+" de "+moment(start).format('H:mm')+" à "+moment(end).format("H:mm"));
-						$('#add-options>a').attr('href', 'resa_add.php');
-						var pHeight = $('#add-options').height();
-						$('#add-options').on('shown.bs.modal', function(e){
-							$('#add-options').offset({top: position.top - pHeight*1.4, left: position.left - 50});
-						});
-						$('#add-options').popoverX('hide');
-						$('#add-options').popoverX('toggle');
+						jsEvent.stopImmediatePropagation();
+						$(".sub-modal-session").hide();
+						$("#sub-modal-session").data().target = -1;
+
+						$(".sub-modal-title").empty();
+						$(".session-date").empty();
+						$(".session-room").empty();
+						$(".session-participations").empty();
+						$(".sub-modal-footer").empty();
+						// Color change
+						$(".sub-modal-title").css("color", "000000");
+						// Filling fields
+						$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un cours");
+						$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("HH:mm"));
+						$(".sub-modal-footer").append("<a href='cours_add.php' class='btn btn-primary float-right btn-to-session'>Ajouter</a>");
+
+						var top = jsEvent.pageY;
+						var left = jsEvent.pageX;
+						var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+						var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+						var modal_w = $(".sub-modal-session").width();
+						var modal_h = $(".sub-modal-session").height();
+						if(top > h - modal_h){
+							top -= (modal_h + 20);
+						}
+						if(left > w - modal_w){
+							left -= (modal_w + 20);
+						}
+						console.log(top, left);
+						$(".sub-modal-session").css({
+							top : top+'px',
+							left : left+'px'
+						})
+
 						sessionStorage.removeItem('end');
 						sessionStorage.removeItem('start');
 						sessionStorage.setItem('start', start);
 						sessionStorage.setItem('end', end);
-					}
+						// Showing modal once everything is done
+						$(".sub-modal-session").show();
+					},
+					unselect: function(){
+						$(".sub-modal-session").hide();
+					},
+					unselectCancel: '.btn-to-session'
 				});
-
-				$('[data-toggle="popover"]').popover();
-
-				/*        $(window).resize(function(){
-			docHeight = $(document).height();
-			height = docHeight - xPos.top - 100;
-			$('#calendar').fullCalendar('option', 'contentHeight', 650);
-		});*/
-				/*var filterOne = false, filterTwo = false, filterThree = false, filterCours = false, filterReservation = false;
-				$("#filter-salle-1").change(function(){
-					if(!filterOne){
-						$("[salle='1']").hide();
-						filterOne = true;
-					} else {
-						$("[salle='1']").show();
-						filterOne = false;
-						if(filterCours){
-							$(":regex(id,^cours)").hide();
-						}
-					}
-				});
-				$("#filter-salle-2").change(function(){
-					if(!filterTwo){
-						$("[salle='2']").hide();
-						filterTwo = true;
-					} else {
-						$("[salle='2']").show();
-						filterTwo = false;
-						if(filterCours){
-							$(":regex(id,^cours)").hide();
-						}
-					}
-				});
-				$("#filter-salle-3").change(function(){
-					if(!filterThree){
-						$("[salle='3']").hide();
-						filterThree = true;
-					} else {
-						$("[salle='3']").show();
-						filterThree = false;
-						if(filterCours){
-							$(":regex(id,^cours)").hide();
-						}
-					}
-				});
-				$("#filter-cours").change(function(){
-					if(!filterCours){
-						$(":regex(id,^cours)").hide();
-						if(filterOne){
-							$("[salle='1']").hide();
-						}
-						if(filterTwo){
-							$("[salle='2']").hide();
-						}
-						if(filterThree){
-							$("[salle='3']").hide();
-						}
-						filterCours = true;
-					} else {
-						$("[id^='cours']").show();
-						if(filterOne){
-							$("[salle='1']").hide();
-						}
-						if(filterTwo){
-							$("[salle='2']").hide();
-						}
-						if(filterThree){
-							$("[salle='3']").hide();
-						}
-						filterCours = false;
-					}
-				});
-				$("#filter-reservation").change(function(){
-					if(!filterReservation){
-						$(":regex(id,^reservation)").hide();
-						if(filterOne){
-							$("[salle='1']").hide();
-						}
-						if(filterTwo){
-							$("[salle='2']").hide();
-						}
-						if(filterThree){
-							$("[salle='3']").hide();
-						}
-						filterReservation = true;
-					} else {
-						$(":regex(id,^reservation)").show();
-						if(filterOne){
-							$("[salle='1']").hide();
-						}
-						if(filterTwo){
-							$("[salle='2']").hide();
-						}
-						if(filterThree){
-							$("[salle='3']").hide();
-						}
-						filterReservation = false;
-					}
-				});*/
 			});
-			/**$('#timepicker').timepicker({});
-	$(document).ready(function(){
-		$('#timepicker_locale_fin').timepicker({
-			hourText: 'Heures',
-			minuteText: 'Minutes',
-			showPeriodLabels: 'false',
-			timeSeparator: 'h',
-			nowButtonText : 'Maintenant',
-			showNowButton: 'true',
-			closeButtonText: 'Fermer',
-			showCloseButton: 'true',
-			deselectButtonText: 'Déselectionner',
-			showDeselectButton: 'true',
-		});
-	});**/
 		</script>
 		<script src="assets/js/check_calendar.js"></script>
 	</body>
