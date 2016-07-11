@@ -48,6 +48,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 		<script src="assets/js/products.js"></script>
 		<script src="assets/js/participations.js"></script>
 		<script src="assets/js/tags.js"></script>
+		<script src="assets/js/sessions.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -143,11 +144,11 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<div class="col-lg-9">
 								<h4>
 									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){
-									if($label["is_mandatory"] == 1){
-										$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
-									} else {
-										$label_name = $label["rank_name"];
-									}?>
+	if($label["is_mandatory"] == 1){
+		$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
+	} else {
+		$label_name = $label["rank_name"];
+	}?>
 									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="session-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='session' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label_name;?></span>
 									<?php } ?>
 									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='session-tags' data-targettype='session' title="Ajouter une étiquette">+</span>
@@ -298,37 +299,6 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							})
 						})
 					}
-				}
-			}).on('click', '.completion-option', function(e){
-				e.preventDefault();
-				if($(this).text() == "Ne pas suggérer"){
-					$(".suggestion-text").html("Suggérer parmi... <span class='caret'></span>");
-				} else {
-					$(".suggestion-text").html("Suggérer parmi <span class='suggestion-token'>"+$(this).text()+"</span> <span class='caret'></span>");
-				}
-			}).on('focus', '.filtered-complete', function(){
-				var token = $(this).prev().find(".suggestion-token").text();
-				if(token != ""){
-					var id = $(this).attr("id");
-					$.get("functions/fetch_user_list.php", {filter : token}).done(function(data){
-						var userList = JSON.parse(data);
-						var autocompleteList = [];
-						for(var i = 0; i < userList.length; i++){
-							autocompleteList.push(userList[i].user);
-						}
-						$("#"+id).textcomplete('destroy');
-						$("#"+id).textcomplete([{
-							match: /(^|\b)(\w{2,})$/,
-							search: function(term, callback){
-								callback($.map(autocompleteList, function(item){
-									return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
-								}));
-							},
-							replace: function(item){
-								return item;
-							}
-						}]);
-					});
 				}
 			})
 

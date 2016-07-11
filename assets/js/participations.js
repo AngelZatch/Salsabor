@@ -44,9 +44,11 @@ $(document).ready(function(){
 	console.log(participation_id);
 	deleteParticipation(participation_id);
 }).on('click', function(e){
-	if($(".sub-modal:hidden")){
-		$(".sub-modal").hide();
-	}
+	//if(top.location.pathname !== "/Salsabor/planning"){
+		if($(".sub-modal:hidden") && !$(".sub-modal").hasClass("sub-modal-session")){
+			$(".sub-modal").hide();
+		}
+	//}
 }).on('focus', '.name-input', function(){
 	$.get("functions/fetch_user_list.php", {filter : "active"}).done(function(data){
 		var userList = JSON.parse(data);

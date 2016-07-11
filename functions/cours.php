@@ -5,153 +5,121 @@ require_once "tools.php";
 function addCours(){
 	$db = PDOFactory::getConnection();
 
-	$intitule = $_POST['intitule'];
-	$weekday = date('N', strtotime($_POST['date_debut']));
-	$date_debut = $_POST['date_debut'];
-	$heure_debut = $_POST['heure_debut'];
-	$heure_fin = $_POST['heure_fin'];
-	$prof_principal = solveAdherentToId($_POST["prof_principal"]);
-	$prof_remplacement = solveAdherentToId($_POST["prof_remplacant"]);
-	$niveau = $_POST['niveau'];
-	$salle = $_POST['lieu'];
-	$start = $date_debut." ".$heure_debut;
-	$end = $date_debut." ".$heure_fin;
-	$type = $_POST['type'];
-	$priorite = 2;
+	$session_name = $_POST['intitule'];
+	$user_id = solveAdherentToId($_POST["prof_principal"]);
+	$room_id = $_POST['lieu'];
 
-	/** Calculs automatiques de valeurs **/
-	$unite = (strtotime($heure_fin) - strtotime($heure_debut))/3600;
+	// Times
+	$start = $_POST["cours_start"];
+	$end = $_POST["cours_end"];
+	$weekday = date('N', strtotime($start));
 
-	$prof = $db->query("SELECT * FROM tarifs_professeurs WHERE prof_id_foreign=$prof_principal AND type_prestation=$type")->fetch(PDO::FETCH_ASSOC);
-	if($prof["ratio_multiplicatif"] == "heure"){
-		$cout_horaire = $unite * $prof["tarif_prestation"];
-	} else if($prof["ratio_multiplicatif"] == "prestation"){
-		$cout_horaire = $prof["tarif_prestation"];
-	} else {
-		$cout_horaire = 0;
-	}
+	// Computing duration of the session(s)
+	$session_duration = (strtotime($end) - strtotime($start))/3600;
 
-	if(isset($_POST['paiement'])) $paiement = $_POST['paiement']; else $paiement = 0;
-
-	/** Insertion du cours si pas de récurrence (cours ponctuel) **/
-	if($_POST['recurrence'] == 0){
-		$recurrence = 0;
-		$frequence_repetition = 0;
-		$date_fin = $_POST['date_debut'];
+	if($_POST['recurrence'] == 0){ // No recurrence
 		try{
 			$db->beginTransaction();
-			/** Insertion du cours principal dans cours_parent **/
-			$insertCours = $db->prepare('INSERT INTO cours_parent(parent_intitule, weekday, parent_type, parent_start_date, parent_end_date, parent_start_time, parent_end_time, parent_prof_principal, parent_prof_remplacant, parent_niveau, parent_salle, parent_unite, parent_cout_horaire, recurrence, frequence_repetition, priorite)
-			VALUES(:intitule, :weekday, :type, :date_debut, :date_fin, :heure_debut, :heure_fin, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :recurrence, :frequence_repetition, :priorite)');
-			$insertCours->bindParam(':intitule', $intitule);
-			$insertCours->bindParam(':weekday', $weekday);
-			$insertCours->bindParam(':type', $type);
-			$insertCours->bindParam(':date_debut', $date_debut);
-			$insertCours->bindParam(':date_fin', $date_fin);
-			$insertCours->bindParam(':heure_debut', $heure_debut);
-			$insertCours->bindParam(':heure_fin', $heure_fin);
-			$insertCours->bindParam(':prof_principal', $prof_principal);
-			$insertCours->bindParam(':prof_remplacant', $prof_remplacement);
-			$insertCours->bindParam(':niveau', $niveau);
-			$insertCours->bindParam(':lieu', $salle);
-			$insertCours->bindParam(':unite', $unite);
-			$insertCours->bindParam(':cout_horaire', $cout_horaire);
-			$insertCours->bindParam(':recurrence', $recurrence);
-			$insertCours->bindParam(':frequence_repetition', $frequence_repetition);
-			$insertCours->bindParam(':priorite', $priorite);
+			/** Inserting parent **/
+			$parent_id = insertParent($db, $session_name, $weekday, $start, $end, $user_id, $room_id, $session_duration, 0, 0, 0, 2);
 
-			$insertCours->execute();
-			/** Récupération de l'ID de la dernière insertion dans cours_parent **/
-			$last_id = $db->lastInsertId();
+			/** Inserting lone child **/
+			$session_id = createSession($db, $parent_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
 
-			/** Insertion du cours principal dans cours **/
-			$insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_type, cours_start, cours_end, prof_principal, prof_remplacant, cours_niveau, cours_salle, cours_unite, cours_prix, priorite, paiement_effectue)
-			VALUES(:cours_parent_id, :intitule, :type, :cours_start, :cours_end, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :priorite, :paiement)');
-			$insertCours->bindParam(':cours_parent_id', $last_id);
-			$insertCours->bindParam(':intitule', $intitule);
-			$insertCours->bindParam(':type', $type);
-			$insertCours->bindParam(':cours_start', $start);
-			$insertCours->bindParam(':cours_end', $end);
-			$insertCours->bindParam(':prof_principal', $prof_principal);
-			$insertCours->bindParam(':prof_remplacant', $prof_remplacement);
-			$insertCours->bindParam(':niveau', $niveau);
-			$insertCours->bindParam(':lieu', $salle);
-			$insertCours->bindParam(':unite', $unite);
-			$insertCours->bindParam(':cout_horaire', $cout_horaire);
-			$insertCours->bindParam(':priorite', $priorite);
-			$insertCours->bindParam(':paiement', $paiement);
-
-			$insertCours->execute();
 			$db->commit();
-			header("Location: planning");
+			header("Location: cours/$session_id");
 		} catch(PDOException $e){
 			$db->rollBack();
 			var_dump($e->getMessage());
 		}
-	} else {
+	} else { // Recurrence
 		$recurrence = $_POST['recurrence'];
-		$frequence_repetition = $_POST['frequence_repetition'];
-		$date_fin = $_POST['date_fin'];
-		(int)$nombre_repetitions = (strtotime($date_fin) - strtotime($date_debut))/(86400*$frequence_repetition)+1;
-		if($frequence_repetition == 1){
-			$weekday = 0;
-		}
+		$frequency = 7; // By default, weekly recurrence
+		$recurrence_steps = $_POST["steps"];
+		// Computing end date and hour
+		$end_hour = new DateTime($end);
+		$end_hour = $end_hour->format("H:i:s");
+		$recurrence_stop = $_POST['date_fin']." ".$end_hour;
 		try{
 			$db->beginTransaction();
-			/** Insertion du modèle de cours dans cours_parent **/
-			$insertCours = $db->prepare('INSERT INTO cours_parent(parent_intitule, weekday, parent_type, parent_start_date, parent_end_date, parent_start_time, parent_end_time, parent_prof_principal, parent_prof_remplacant, parent_niveau, parent_salle, parent_unite, parent_cout_horaire, recurrence, frequence_repetition, priorite)
-			VALUES(:intitule, :weekday, :type, :date_debut, :date_fin, :heure_debut, :heure_fin, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :recurrence, :frequence_repetition, :priorite)');
-			$insertCours->bindParam(':intitule', $intitule);
-			$insertCours->bindParam(':weekday', $weekday);
-			$insertCours->bindParam(':type', $type);
-			$insertCours->bindParam(':date_debut', $date_debut);
-			$insertCours->bindParam(':date_fin', $date_fin);
-			$insertCours->bindParam(':heure_debut', $heure_debut);
-			$insertCours->bindParam(':heure_fin', $heure_fin);
-			$insertCours->bindParam(':prof_principal', $prof_principal);
-			$insertCours->bindParam(':prof_remplacant', $prof_remplacement);
-			$insertCours->bindParam(':niveau', $niveau);
-			$insertCours->bindParam(':lieu', $salle);
-			$insertCours->bindParam(':unite', $unite);
-			$insertCours->bindParam(':cout_horaire', $cout_horaire);
-			$insertCours->bindParam(':recurrence', $recurrence);
-			$insertCours->bindParam(':frequence_repetition', $frequence_repetition);
-			$insertCours->bindParam(':priorite', $priorite);
 
-			$insertCours->execute();
-			/** Récupération de l'ID de la dernière insertion dans cours_parent **/
-			$last_id = $db->lastInsertId();
+			/** Inserting parent **/
+			$parent_id = insertParent($db, $session_name, $weekday, $start, $recurrence_stop, $user_id, $room_id, $session_duration, 0, $recurrence, $frequency, 2);
 
-			for($i = 1; $i < $nombre_repetitions; $i++){
-				/** Insertion de toutes les récurrences du cours dans la table cours **/
-				$insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_type, cours_start, cours_end, prof_principal, prof_remplacant, cours_niveau, cours_salle, cours_unite, cours_prix, priorite, paiement_effectue)
-				VALUES(:cours_parent_id, :intitule, :type, :cours_start, :cours_end, :prof_principal, :prof_remplacant, :niveau, :lieu, :unite, :cout_horaire, :priorite, :paiement)');
-				$insertCours->bindParam(':cours_parent_id', $last_id);
-				$insertCours->bindParam(':intitule', $intitule);
-				$insertCours->bindParam(':type', $type);
-				$insertCours->bindParam(':cours_start', $start);
-				$insertCours->bindParam(':cours_end', $end);
-				$insertCours->bindParam(':prof_principal', $prof_principal);
-				$insertCours->bindParam(':prof_remplacant', $prof_remplacement);
-				$insertCours->bindParam(':niveau', $niveau);
-				$insertCours->bindParam(':lieu', $salle);
-				$insertCours->bindParam(':unite', $unite);
-				$insertCours->bindParam(':cout_horaire', $cout_horaire);
-				$insertCours->bindParam(':priorite', $priorite);
-				$insertCours->bindParam(':paiement', $paiement);
-				$insertCours->execute();
+			for($i = 1; $i < $recurrence_steps; $i++){
+				// Inserting session
+				if($i == 1)
+					$first_session_id = createSession($db, $parent_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
+				else
+					createSession($db, $parent_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
 
-				$start_date = strtotime($start.'+'.$frequence_repetition.'DAYS');
-				$end_date = strtotime($end.'+'.$frequence_repetition.'DAYS');
-				$start = date("Y-m-d H:i", $start_date);
-				$end = date("Y-m-d H:i", $end_date);
+				// Changing dates for next one
+				$start_date = strtotime($start.'+'.$frequency.'DAYS');
+				$end_date = strtotime($end.'+'.$frequency.'DAYS');
+				$start = date("Y-m-d H:i:s", $start_date);
+				$end = date("Y-m-d H:i:s", $end_date);
+
 			}
 			$db->commit();
-			header("Location: planning");
+			header("Location: cours/$first_session_id");
 		} catch(PDOException $e){
 			$db->rollBack();
 			var_dump($e->getMessage());
 		}
 	}
+}
+
+function insertParent($db, $session_name, $weekday, $start, $end, $user_id, $room_id, $session_duration, $hour_fee, $recurrence, $frequency, $priorite){
+	// Formats
+	$start_date = new DateTime($start);
+	$start_date = $start_date->format("Y-m-d");
+
+	$end_date = new DateTime($end);
+	$end_date = $end_date->format("Y-m-d");
+
+	$start_hour = new DateTime($start);
+	$start_hour = $start_hour->format("H:i:s");
+
+	$end_hour = new DateTime($end);
+	$end_hour = $end_hour->format("H:i:s");
+
+	// Insert into parent
+	$insertCours = $db->prepare('INSERT INTO cours_parent(parent_intitule, weekday, parent_start_date, parent_end_date, parent_start_time, parent_end_time, parent_prof_principal, parent_salle, parent_unite, parent_cout_horaire, recurrence, frequence_repetition, priorite)
+			VALUES(:intitule, :weekday, :date_debut, :date_fin, :heure_debut, :heure_fin, :prof_principal, :lieu, :unite, :cout_horaire, :recurrence, :frequence_repetition, :priorite)');
+	$insertCours->bindParam(':intitule', $session_name);
+	$insertCours->bindParam(':weekday', $weekday);
+	$insertCours->bindParam(':date_debut', $start_date);
+	$insertCours->bindParam(':date_fin', $end_date);
+	$insertCours->bindParam(':heure_debut', $start_hour);
+	$insertCours->bindParam(':heure_fin', $end_hour);
+	$insertCours->bindParam(':prof_principal', $user_id);
+	$insertCours->bindParam(':lieu', $room_id);
+	$insertCours->bindParam(':unite', $session_duration);
+	$insertCours->bindParam(':cout_horaire', $hour_fee);
+	$insertCours->bindParam(':recurrence', $recurrence);
+	$insertCours->bindParam(':frequence_repetition', $frequency);
+	$insertCours->bindParam(':priorite', $priorite);
+
+	$insertCours->execute();
+	$parent_id = $db->lastInsertId();
+	return $parent_id;
+}
+
+function createSession($db, $parent_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, $hour_fee, $priorite){
+	$insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_start, cours_end, prof_principal, cours_salle, cours_unite, cours_prix, priorite)
+			VALUES(:cours_parent_id, :intitule, :cours_start, :cours_end, :prof_principal, :lieu, :unite, :cout_horaire, :priorite)');
+	$insertCours->bindParam(':cours_parent_id', $parent_id);
+	$insertCours->bindParam(':intitule', $session_name);
+	$insertCours->bindParam(':cours_start', $start);
+	$insertCours->bindParam(':cours_end', $end);
+	$insertCours->bindParam(':prof_principal', $user_id);
+	$insertCours->bindParam(':lieu', $room_id);
+	$insertCours->bindParam(':unite', $session_duration);
+	$insertCours->bindParam(':cout_horaire', $hour_fee);
+	$insertCours->bindParam(':priorite', $priorite);
+	$insertCours->execute();
+
+	$session_id = $db->lastInsertId();
+	return $session_id;
 }
 ?>
