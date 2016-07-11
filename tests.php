@@ -23,32 +23,11 @@ $db = PDOFactory::getConnection();
 					$loading = $loading[1] + $loading[0];
 					$start = $loading;
 					/** CODE **/
-					$hook = 2094;
-					$new_start = new DateTime('2016-06-14 13:45:00');
-					$new_end = new DateTime('2016-06-14 14:45:00');
-
-					$hook_times = $db->query("SELECT cours_start, cours_end FROM cours WHERE cours_id = $hook")->fetch(PDO::FETCH_ASSOC);
-					$old_start = new DateTime($hook_times["cours_start"]);
-					$old_end = new DateTime($hook_times["cours_end"]);
-
-					$start_delta = $old_start->diff($new_start);
-					$end_delta = $old_end->diff($new_end);
+					$start_date = new DateTime("2016-07-11 11:00:00");
 					?>
 					<pre>
 						<?php
-print_r($hook_times);
-print_r($start_delta);
-echo $start_delta->format("%R%h hours, %i minutes");
-if($new_start < $old_start){
-	$old_start->sub(new DateInterval("P".$start_delta->format("%d")."DT".$start_delta->format("%h")."H".$start_delta->format("%i")."M"));
-} else {
-	$old_start->add(new DateInterval("P".$start_delta->format("%d")."DT".$start_delta->format("%h")."H".$start_delta->format("%i")."M"));
-}
-$old_end->add(new DateInterval("PT".$start_delta->format("%h")."H".$start_delta->format("%i")."M"));
-echo "<br>";
-echo $old_start->format("Y-m-d H:i:s");
-echo "<br>";
-echo $old_end->format("Y-m-d H:i:s");
+	echo $start_date = $start_date->format("Y-m-d");
 
 						?>
 					</pre>

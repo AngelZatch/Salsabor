@@ -13,10 +13,10 @@ if(!isset($_GET["fetched"])){
 								ORDER BY cours_start ASC, cours_id ASC");
 } else {
 	$fetched = $_GET["fetched"];
-	$load = $db->query("SELECT * FROM cours
-								JOIN rooms ON cours_salle = r.room_id
-								JOIN users ON prof_principal=users.user_id
-								JOIN niveau ON cours_niveau=niveau.niveau_id
+	$load = $db->query("SELECT * FROM cours c
+								JOIN rooms r ON c.cours_salle = r.room_id
+								LEFT JOIN users u ON c.prof_principal=u.user_id
+								JOIN niveau l ON c.cours_niveau=l.niveau_id
 								WHERE ouvert != 0 AND cours_id NOT IN ('".implode($fetched, "','")."')
 								ORDER BY cours_start ASC, cours_id ASC");
 }

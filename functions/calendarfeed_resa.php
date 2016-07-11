@@ -1,14 +1,15 @@
 <?php
 require_once "db_connect.php";
-/** Page servant à alimenter le planning des cours **/
-try
-{
-	$db = PDOFactory::getConnection();
-	/** Obtention des cours **/
+// Feeding reservations to the calendar
+$db = PDOFactory::getConnection();
+$fetch_start = $_GET["fetch_start"];
+$fetch_end = $_GET["fetch_end"];
+try{
 	$calendar = $db->prepare('SELECT * FROM reservations b
 							JOIN users u ON b.reservation_personne = u.user_id
 							JOIN rooms r ON b.reservation_salle = r.room_id
-							JOIN prestations p ON b.type_prestation = p.prestations_id');
+							JOIN prestations p ON b.type_prestation = p.prestations_id
+							WHERE reservation_start > '$fetch_start' AND reservation_end < '$fetch_end'');
 	$calendar->execute();
 	$events = array();
 
@@ -22,8 +23,7 @@ try
 		$e['end'] = $row_calendar['reservation_end'];
 		$e['type'] = 'reservation';
 		$e['priorite'] = $row_calendar['priorite'];
-		// Paramètre propriétaire de Fullcalendar.js qui sert à délimiter un évènement
-		// à ses heures de début et de fin.
+		// Fullcalendar.js parameter
 		$e['allDay'] = false;
 
 		array_push($events, $e);

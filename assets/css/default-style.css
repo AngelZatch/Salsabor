@@ -418,7 +418,7 @@ a {
 
 /* line 189, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .dropdown-menu:hover {
-  background-color: white; }
+  background-color: white !important; }
 
 /* line 192, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .editable {

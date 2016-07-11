@@ -13,19 +13,9 @@ while($row_cours_name = $cours_name->fetch(PDO::FETCH_ASSOC)){
 	array_push($arr_cours_name, trim(preg_replace('/[0-9]+/', '', $row_cours_name['cours_intitule'])));
 }
 
-$suffixes = $db->query("SHOW COLUMNS FROM cours_parent LIKE 'parent_suffixe'");
-
-$types = $db->query('SELECT * FROM prestations WHERE est_cours=1');
-
-$queryProfs = $db->query("SELECT * FROM users WHERE user_id IN (SELECT user_id_foreign FROM assoc_user_tags ur JOIN tags_user tu ON ur.tag_id_foreign = tu.rank_id WHERE rank_name = 'Professeur')");
-$array_profs = array();
-while($profs = $queryProfs->fetch(PDO::FETCH_ASSOC)){
-	array_push($array_profs, $profs["user_prenom"]." ".$profs["user_nom"]);
-}
-
-$niveaux = $db->query('SELECT * FROM niveau');
-
 $lieux = $db->query('SELECT * FROM rooms');
+
+$user_labels = $db->query("SELECT * FROM tags_user");
 
 // Ajout d'un cours
 if(isset($_POST['add'])){
@@ -55,34 +45,32 @@ if(isset($_POST['add'])){
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="type" class="col-lg-3 control-label">Type de cours</label>
-							<div class="col-lg-9">
-								<select name="type" class="form-control mandatory">
-									<?php while($row_types = $types->fetch(PDO::FETCH_ASSOC)){ ?>
-									<option value="<?php echo $row_types['prestations_id'];?>"><?php echo $row_types['prestations_name'];?></option>
-									<?php } ?>
-								</select>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="date_debut" class="col-lg-3 control-label">Date de Début</label>
+							<label for="" class="col-lg-3 control-label">Professeur <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Vous pouvez régler les noms qui vous seront suggérés avec le sélecteur 'Suggérer parmi...'"></span></label>
 							<div class="col-lg-9">
 								<div class="input-group">
-									<input type="date" class="form-control mandatory" name="date_debut" id="date_debut" onChange="checkCalendar(false, false)">
-									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-default dropdown-toggle suggestion-text" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Suggérer parmi... <span class="caret"></span></button>
+										<ul class="dropdown-menu dropdown-custom">
+											<?php while($user_label = $user_labels->fetch(PDO::FETCH_ASSOC)){ ?>
+											<li class="completion-option"><a><?php echo $user_label["rank_name"];?></a></li>
+											<?php } ?>
+											<li class="completion-option"><a>Ne pas suggérer</a></li>
+										</ul>
+									</div>
+									<input type="text" class="form-control filtered-complete" id="complete-teacher" name="prof_principal">
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="herue_debut" class="col-lg-3 control-label">Début à</label>
+							<label for="" class="col-lg-3 control-label">Début</label>
 							<div class="col-lg-9">
-								<input type="time" class="form-control hasTimepicker mandatory" name="heure_debut" id="heure_debut" onChange="checkCalendar(false, false)">
+								<input type="text" class="form-control" name="cours_start" id="datepicker-start">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="heure_fin" class="col-lg-3 control-label">Fin à</label>
+							<label for="" class="col-lg-3 control-label">Fin</label>
 							<div class="col-lg-9">
-								<input type="time" class="form-control hasTimepicker mandatory" name="heure_fin" id="heure_fin" onChange="checkCalendar(false, false)">
+								<input type="text" class="form-control" name="cours_end" id="datepicker-end">
 							</div>
 						</div>
 						<div class="form-group">
@@ -92,31 +80,18 @@ if(isset($_POST['add'])){
 							</div>
 						</div>
 						<div class="form-group" id="recurring-options" style="display:none;">
-							<label for="date_fin" class="col-lg-3 control-label">Date de Fin</label>
-							<div class="col-lg-9">
-								<input type="date" class="form-control" name="date_fin" id="date_fin" onChange="checkCalendar(false, true)">
+							<span class="help-block col-lg-9 col-lg-offset-3">Par défaut, la récurrence est hebdomadaire</span>
+							<div class="form-group">
+								<label for="" class="col-lg-3 control-label">Nombre de récurrences</label>
+								<div class="col-lg-9">
+									<input type="number" class="form-control" id="steps" name="steps">
+								</div>
 							</div>
-							<label for="frequence_repetition" class="col-lg-3 control-label">Récurrence<span class="span-mandatory">*</span></label>
-							<div id="options-recurrence" class="col-lg-9">
-								<input type="radio" value="1" name="frequence_repetition" onChange="checkCalendar(false, true)"> Quotidienne<br>
-								<input type="radio" value="7" name="frequence_repetition" onChange="checkCalendar(false, true)"> Hebdomadaire <br>
-								<input type="radio" value="14" name="frequence_repetition" onChange="checkCalendar(false, true)"> Bi-mensuelle<br>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="prof_principal" class="col-lg-3 control-label">Professeur principal</label>
-							<div class="col-lg-9">
-								<input type="text" name="prof_principal" class="form-control mandatory has-name-completion">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="niveau" class="col-lg-3 control-label">Niveau</label>
-							<div class="col-lg-9">
-								<select name="niveau" class="form-control mandatory">
-									<?php while($row_niveaux = $niveaux->fetch(PDO::FETCH_ASSOC)){ ?>
-									<option value="<?php echo $row_niveaux['niveau_id'];?>"><?php echo $row_niveaux['niveau_name'];?></option>
-									<?php } ?>
-								</select>
+							<div class="form-group">
+								<label for="date_fin" class="col-lg-3 control-label">Fin de récurrence</label>
+								<div class="col-lg-9">
+									<input type="text" class="form-control" name="date_fin" id="date_fin">
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -129,13 +104,6 @@ if(isset($_POST['add'])){
 								</select>
 							</div>
 						</div>
-						<div class="form-group">
-							<label for="paiement" class="col-lg-3 control-label">Déja payé</label>
-							<div class="col-lg-9">
-								<input type="checkbox" name="paiement" id="paiement" value="0" data-toggle="checkbox-x" data-three-state="false" data-size="lg">
-							</div>
-
-						</div>
 						<div class="align-right">
 							<p id="error_message"></p>
 						</div>
@@ -143,43 +111,77 @@ if(isset($_POST['add'])){
 				</form>
 			</div>
 		</div>
+		<style>
+			.main{
+				overflow: visible;
+			}
+		</style>
 		<?php include "scripts.php";?>
 		<script src="assets/js/check_calendar.js"></script>
+		<script src="assets/js/sessions.js"></script>
 		<script>
 			$(document).ready(function(){
-				var coursNameTags = JSON.parse('<?php echo json_encode($arr_cours_name);?>');
-				var listeProfs = JSON.parse('<?php echo json_encode($array_profs);?>');
-				$('#cours_tags').autocomplete({
-					source: coursNameTags
-				});
-				$(".has-name-completion").autocomplete({
-					source: listeProfs
-				})
 				var start = sessionStorage.getItem('start');
+				var default_start, default_end;
 				if(start != null){
 					var format_start = new Date(start).toISOString();
 					var end = sessionStorage.getItem('end');
 					var format_end = new Date(end).toISOString();
-					var start_hour = moment(format_start).format('HH:mm');
-					var end_hour = moment(format_end).format('HH:mm');
+					var default_start = moment(format_start).format('YYYY-MM-DD HH:mm:ss');
+					var default_end = moment(format_end).format('YYYY-MM-DD HH:mm:ss');
 				} else {
 					var format_start = new Date().toISOString();
-					var format_end = new Date().toISOString();
-					var start_hour = moment(format_start).startOf('hour').add(1, 'h').format('HH:mm');
-					var end_hour = moment(format_end).startOf('hour').add(2, 'h').format('HH:mm');
+					var default_start = moment(format_start).startOf('hour').add(1, 'h').format('YYYY-MM-DD HH:mm:ss');
+					var default_end = moment(format_start).startOf('hour').add(2, 'h').format('YYYY-MM-DD HH:mm:ss');
 				}
 				var start_day = moment(format_start).format('YYYY-MM-DD');
-
-				$("#date_debut").val(start_day);
-				$("#heure_debut").val(start_hour);
-				$("#heure_fin").val(end_hour);
+				$("#datepicker-start").datetimepicker({
+					format: "YYYY-MM-DD HH:mm:00",
+					defaultDate: default_start,
+					locale: "fr",
+					sideBySide: true,
+					stepping: 30
+				});
+				$("#datepicker-end").datetimepicker({
+					format: "YYYY-MM-DD HH:mm:00",
+					defaultDate: default_end,
+					locale: "fr",
+					sideBySide: true,
+					stepping: 30
+				});
+				$("#date_fin").datetimepicker({
+					format : "YYYY-MM-DD",
+					locale: 'fr',
+					debug: true
+				}).on('dp.change', function(e){
+					console.log("changed");
+					if(!$("#steps").is(":focus")){
+						var end_date = $(this).val();
+						var starting_date = moment($("#datepicker-start").val()).format("YYYY-MM-DD");
+						if(moment(end_date).isValid()){
+							var delta = moment(moment(end_date).diff(starting_date));
+							var delta_days = delta / (7 * 24 * 3600 * 1000);
+							$("#steps").val(Math.trunc(delta_days));
+						}
+					}
+				})
+				var coursNameTags = JSON.parse('<?php echo json_encode($arr_cours_name);?>');
+				$('#cours_tags').autocomplete({
+					source: coursNameTags
+				});
 
 				sessionStorage.removeItem('end');
 				sessionStorage.removeItem('start');
-			});
+			})
 			$("#recurrence").change(function(){
 				$("#recurring-options").toggle('600');
 			});
+			$("#steps").keyup(function(){
+				var steps = $(this).val();
+				var starting_date = moment($("#datepicker-start").val()).format("YYYY-MM-DD");
+				var end_date = moment(starting_date).add(steps, 'w').format("YYYY-MM-DD")
+				$("#date_fin").val(end_date);
+			})
 		</script>
 	</body>
 </html>

@@ -8,73 +8,30 @@ $db = PDOFactory::getConnection();
 /** Le fichier functions/cours.php contient toutes les fonctions relatives aux cours **/
 require_once "functions/cours.php";
 require_once "functions/reservations.php";
-
-/** Chaque trigger de tous les formulaires appelle une des fonctions dans functions/cours.php **/
-// Sauf d'un seul cours
-if(isset($_POST['deleteCoursOne'])){
-	deleteCoursOne();
-}
-
-// Suppression de tous les cours suivant le sélectionné
-if(isset($_POST['deleteCoursNext'])){
-	deleteCoursNext();
-}
-
-// Suppression de tous les cours du même genre que le sélectionné
-if(isset($_POST['deleteCoursAll'])){
-	deleteCoursAll();
-}
 ?>
 <html>
 	<head>
 		<meta charset="UTF-8">
 		<title>Planning | Salsabor</title>
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/participations.js"></script>
+		<script src="assets/js/check_calendar.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
 		<div class="container-fluid">
 			<div class="row">
 				<?php include "side-menu.php";?>
-				<!--				<div class="fixed">
-<div class="col-lg-6">
-<p class="page-title"><span class="glyphicon glyphicon-time"></span> Planning des salles et locations</p>
-</div>
-<div class="col-lg-6">
-<div class="btn-toolbar">
-<a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a>
-<a href="resa_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-record"></span> Réserver une salle</a>
-<a href="jours_chomes.php" role="button" class="btn btn-default"><span class="glyphicon glyphicon-leaf"></span> Jours Chômés...</a>
-</div>  btn-toolbar
-</div>
-</div>-->
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-time"></span> Planning
 						<a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a>
 					</legend>
-					<!--<div class="filter-options">
-						<label for="" class="cbx-label">Salle 1</label>
-						<input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-salle-1">
-						<label for="" class="cbx-label">Salle 2</label>
-						<input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-salle-2">
-						<label for="" class="cbx-label">Salle 3</label>
-						<input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-salle-3">
-						<label for="" class="cbx-label">Cours</label>
-						<input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-cours">
-						<label for="" class="cbx-label">Réservations</label>
-						<input type="checkbox" data-toggle="checkbox-x" value="1" data-three-state="false" id="filter-reservation">
-					</div>-->
 					<div id="display-planning" style="display:block;">
 						<div id="calendar" class="fc fc-ltr fc-unthemed"></div>
 					</div> <!-- Display en Planning -->
 				</div> <!-- col-sm-offset-3 col-lg-10 col-lg-offset-2 main -->
-				<div id="cours-options" class="popover popover-default">
-					<div class="arrow"></div>
-					<p style="font-weight:700;" id="popover-cours-title"></p>
-					<p id="popover-cours-type"></p>
-					<p id="popover-cours-hours"></p>
-					<a role="button" class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Détails >></a>
-				</div>
+				<?php include "inserts/sub_modal_session.php";?>
 				<div id="reservation-options" class="popover popover-default">
 					<div class="arrow"></div>
 					<p style="font-weight:700;" id="popover-reservation-title"></p>
@@ -83,17 +40,27 @@ if(isset($_POST['deleteCoursAll'])){
 					<a class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Détails >></a>
 				</div>
 			</div>
-			<div id="add-options" class="popover popover-default">
-				<div class="arrow"></div>
-				<p style="font-weight:700;" id="popover-new-title">Ajouter</p>
-				<p id="popover-new-hours"></p>
-				<div class="btn-group col-sm-12" role="group">
-					<a class="btn btn-default" style="background-color:#0FC5F5;" href="cours_add.php?"><span class="glyphicon glyphicon-plus"></span> Cours</a>
-					<a class="btn btn-default" style="background-color:#ebb3f9;" href="resa_add.php"><span class="glyphicon glyphicon-record"></span> Location</a>
-				</div>
-			</div>
 		</div>
-		<?php include "scripts.php";?>
+		<style>
+			.sub-modal{
+				z-index: 3;
+			}
+			.sub-modal-header{
+				border: none;
+			}
+			.sub-modal-body{
+				overflow: visible;
+			}
+			.sub-modal-title{
+				font-weight: 700;
+				margin: 0;
+				font-size: 18px;
+			}
+			.session-modal-details>span{
+				color: #CCC;
+				margin-right: 20px;
+			}
+		</style>
 		<script>
 			$(document).ready(function ($) {
 				// delegate calls to data-toggle="lightbox"
@@ -128,19 +95,22 @@ if(isset($_POST['deleteCoursAll'])){
 					allDaySlot: false,
 					handleWindowResize: true,
 					contentHeight: height,
+					startParam: 'fetch_start',
+					endParam: 'fetch_end',
+					defaultTimedEventDuration: '01:00:00',
 					eventSources:[
 						{
 							url: 'functions/calendarfeed_cours.php',
-							type: 'POST',
+							type: 'GET',
 							color: '#0FC5F5',
 							textColor:'black',
-							error: function(){
-								console.log('Erreur pendant l\'obtention des évènements');
+							error: function(data){
+								console.log(data);
 							}
 						},
 						{
 							url: 'functions/calendarfeed_resa.php',
-							type: 'POST',
+							type: 'GET',
 							color: '#D21CFC',
 							textColor: 'black',
 							error: function(){
@@ -149,7 +119,7 @@ if(isset($_POST['deleteCoursAll'])){
 						},
 						{
 							url: 'functions/calendarfeed_holidays.php',
-							type: 'POST',
+							type: 'GET',
 							color: '#C4C4C4',
 							textColor: 'black',
 							rendering: 'background',
@@ -187,168 +157,99 @@ if(isset($_POST['deleteCoursAll'])){
 							}*/
 						}
 					},
-					eventClick: function(calEvent, element){
-						var options = {
-							target: '#'+$(this).attr('id'),
-							placement: 'top',
-							closeOtherPopovers: true,
-							useOffsetForpos: true
-						};
-						var position = $(this).offset();
-						var bWidth = $(this).width();
-						$('#'+calEvent.type+'-options').popoverX(options);
-						$('#'+calEvent.type+'-options>p').empty();
-						$('#popover-'+calEvent.type+'-title').append(calEvent.title);
-						$('#popover-'+calEvent.type+'-type').append(calEvent.prestation);
-						$('#popover-'+calEvent.type+'-hours').append("Le "+$.format.date(calEvent.start._i, "dd/MM/yyyy")+" de "+$.format.date(calEvent.start._i, "HH:mm")+" à "+$.format.date(calEvent.end._i, "HH:mm"));
-						$('#'+calEvent.type+'-options>a').attr('href', calEvent.type+'/'+calEvent.id);
-						var pHeight = $('#'+calEvent.type+'-options').height();
-						$('#'+calEvent.type+'-options').on('shown.bs.modal', function(e){
-							$('#'+calEvent.type+'-options').offset({top: position.top - pHeight*1.4, left: position.left - 50});
-						});
-						$('#'+calEvent.type+'-options').popoverX('toggle');
+					eventClick: function(calEvent, jsEvent, element){
+						var target = $(this).attr("id").match(/\d+/);
+						if(target == $("#sub-modal-session").data().target){
+							$(".sub-modal-session").hide();
+							$("#sub-modal-session").data().target = -1;
+						} else {
+							$("#sub-modal-session").data().target = target[0];
+							$.get("functions/fetch_session_details.php", {session_id : target[0]}).done(function(data){
+								var session = JSON.parse(data);
+								// Emptying fields
+								$(".sub-modal-title").empty();
+								$(".session-date").empty();
+								$(".session-room").empty();
+								$(".session-participations").empty();
+								$(".sub-modal-footer").empty();
+								// Color change
+								$(".sub-modal-title").css("color", session.color);
+								// Filling fields
+								$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> "+session.title);
+								$(".session-date").append("<span>Date</span>"+moment(session.start).format("ll[,] HH:mm")+" - "+moment(session.end).format("HH:mm"));
+								$(".session-room").append("<span>Lieu</span>"+session.room);
+								$(".session-participations").append("<span>Participants</span>"+session.participations_count);
+								$(".sub-modal-footer").append("<a href='cours/"+target+"' class='btn btn-primary float-right btn-to-session'>Modifier</a>");
+								// Showing modal once everything is done
+								$(".sub-modal-session").show();
+							})
+							var top = jsEvent.pageY;
+							var left = jsEvent.pageX;
+							var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+							var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+							var modal_w = $(".sub-modal-session").width();
+							var modal_h = $(".sub-modal-session").height();
+							if(top > h - modal_h){
+								top -= (modal_h + 20);
+							}
+							if(left > w - modal_w){
+								left -= (modal_w + 20);
+							}
+							console.log(top, left);
+							$(".sub-modal-session").css({
+								top : top+'px',
+								left : left+'px'
+							})
+						}
 					},
 					select: function(start, end, jsEvent, view){
-						var options = {
-							target: "#undefined-undefined",
-							placement: 'top',
-							closeOtherPopovers: true,
-						};
-						var position = $("#undefined-undefined").offset();
-						var bWidth = $("#undefined-undefined").width();
-						$('#add-options').popoverX(options);
-						$('#add-options>#popover-new-hours').empty();
-						$('#popover-new-hours').append("Le "+moment(start).format('l')+" de "+moment(start).format('H:mm')+" à "+moment(end).format("H:mm"));
-						$('#add-options>a').attr('href', 'resa_add.php');
-						var pHeight = $('#add-options').height();
-						$('#add-options').on('shown.bs.modal', function(e){
-							$('#add-options').offset({top: position.top - pHeight*1.4, left: position.left - 50});
-						});
-						$('#add-options').popoverX('hide');
-						$('#add-options').popoverX('toggle');
+						jsEvent.stopImmediatePropagation();
+						$(".sub-modal-session").hide();
+						$("#sub-modal-session").data().target = -1;
+
+						$(".sub-modal-title").empty();
+						$(".session-date").empty();
+						$(".session-room").empty();
+						$(".session-participations").empty();
+						$(".sub-modal-footer").empty();
+						// Color change
+						$(".sub-modal-title").css("color", "000000");
+						// Filling fields
+						$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un cours");
+						$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("HH:mm"));
+						$(".sub-modal-footer").append("<a href='cours_add.php' class='btn btn-primary float-right btn-to-session'>Ajouter</a>");
+
+						var top = jsEvent.pageY;
+						var left = jsEvent.pageX;
+						var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+						var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+						var modal_w = $(".sub-modal-session").width();
+						var modal_h = $(".sub-modal-session").height();
+						if(top > h - modal_h){
+							top -= (modal_h + 20);
+						}
+						if(left > w - modal_w){
+							left -= (modal_w + 20);
+						}
+						console.log(top, left);
+						$(".sub-modal-session").css({
+							top : top+'px',
+							left : left+'px'
+						})
+
 						sessionStorage.removeItem('end');
 						sessionStorage.removeItem('start');
 						sessionStorage.setItem('start', start);
 						sessionStorage.setItem('end', end);
-					}
+						// Showing modal once everything is done
+						$(".sub-modal-session").show();
+					},
+					unselect: function(){
+						$(".sub-modal-session").hide();
+					},
+					unselectCancel: '.btn-to-session'
 				});
-
-				$('[data-toggle="popover"]').popover();
-
-				/*        $(window).resize(function(){
-			docHeight = $(document).height();
-			height = docHeight - xPos.top - 100;
-			$('#calendar').fullCalendar('option', 'contentHeight', 650);
-		});*/
-				/*var filterOne = false, filterTwo = false, filterThree = false, filterCours = false, filterReservation = false;
-				$("#filter-salle-1").change(function(){
-					if(!filterOne){
-						$("[salle='1']").hide();
-						filterOne = true;
-					} else {
-						$("[salle='1']").show();
-						filterOne = false;
-						if(filterCours){
-							$(":regex(id,^cours)").hide();
-						}
-					}
-				});
-				$("#filter-salle-2").change(function(){
-					if(!filterTwo){
-						$("[salle='2']").hide();
-						filterTwo = true;
-					} else {
-						$("[salle='2']").show();
-						filterTwo = false;
-						if(filterCours){
-							$(":regex(id,^cours)").hide();
-						}
-					}
-				});
-				$("#filter-salle-3").change(function(){
-					if(!filterThree){
-						$("[salle='3']").hide();
-						filterThree = true;
-					} else {
-						$("[salle='3']").show();
-						filterThree = false;
-						if(filterCours){
-							$(":regex(id,^cours)").hide();
-						}
-					}
-				});
-				$("#filter-cours").change(function(){
-					if(!filterCours){
-						$(":regex(id,^cours)").hide();
-						if(filterOne){
-							$("[salle='1']").hide();
-						}
-						if(filterTwo){
-							$("[salle='2']").hide();
-						}
-						if(filterThree){
-							$("[salle='3']").hide();
-						}
-						filterCours = true;
-					} else {
-						$("[id^='cours']").show();
-						if(filterOne){
-							$("[salle='1']").hide();
-						}
-						if(filterTwo){
-							$("[salle='2']").hide();
-						}
-						if(filterThree){
-							$("[salle='3']").hide();
-						}
-						filterCours = false;
-					}
-				});
-				$("#filter-reservation").change(function(){
-					if(!filterReservation){
-						$(":regex(id,^reservation)").hide();
-						if(filterOne){
-							$("[salle='1']").hide();
-						}
-						if(filterTwo){
-							$("[salle='2']").hide();
-						}
-						if(filterThree){
-							$("[salle='3']").hide();
-						}
-						filterReservation = true;
-					} else {
-						$(":regex(id,^reservation)").show();
-						if(filterOne){
-							$("[salle='1']").hide();
-						}
-						if(filterTwo){
-							$("[salle='2']").hide();
-						}
-						if(filterThree){
-							$("[salle='3']").hide();
-						}
-						filterReservation = false;
-					}
-				});*/
 			});
-
-			/**$('#timepicker').timepicker({});
-	$(document).ready(function(){
-		$('#timepicker_locale_fin').timepicker({
-			hourText: 'Heures',
-			minuteText: 'Minutes',
-			showPeriodLabels: 'false',
-			timeSeparator: 'h',
-			nowButtonText : 'Maintenant',
-			showNowButton: 'true',
-			closeButtonText: 'Fermer',
-			showCloseButton: 'true',
-			deselectButtonText: 'Déselectionner',
-			showDeselectButton: 'true',
-		});
-	});**/
 		</script>
-		<script src="assets/js/check_calendar.js"></script>
 	</body>
 </html>
