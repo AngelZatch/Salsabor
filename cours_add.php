@@ -80,7 +80,7 @@ if(isset($_POST['add'])){
 							</div>
 						</div>
 						<div class="form-group" id="recurring-options" style="display:none;">
-						<span class="help-block col-lg-9 col-lg-offset-3">Par défaut, la récurrence est hebdomadaire</span>
+							<span class="help-block col-lg-9 col-lg-offset-3">Par défaut, la récurrence est hebdomadaire</span>
 							<div class="form-group">
 								<label for="" class="col-lg-3 control-label">Nombre de récurrences</label>
 								<div class="col-lg-9">
@@ -90,7 +90,7 @@ if(isset($_POST['add'])){
 							<div class="form-group">
 								<label for="date_fin" class="col-lg-3 control-label">Fin de récurrence</label>
 								<div class="col-lg-9">
-									<input type="date" class="form-control" name="date_fin" id="date_fin" onChange="checkCalendar(false, true)">
+									<input type="text" class="form-control" name="date_fin" id="date_fin">
 								</div>
 							</div>
 						</div>
@@ -149,6 +149,22 @@ if(isset($_POST['add'])){
 					sideBySide: true,
 					stepping: 30
 				});
+				$("#date_fin").datetimepicker({
+					format : "YYYY-MM-DD",
+					locale: 'fr',
+					debug: true
+				}).on('dp.change', function(e){
+					console.log("changed");
+					if(!$("#steps").is(":focus")){
+						var end_date = $(this).val();
+						var starting_date = moment($("#datepicker-start").val()).format("YYYY-MM-DD");
+						if(moment(end_date).isValid()){
+							var delta = moment(moment(end_date).diff(starting_date));
+							var delta_days = delta / (7 * 24 * 3600 * 1000);
+							$("#steps").val(Math.trunc(delta_days));
+						}
+					}
+				})
 				var coursNameTags = JSON.parse('<?php echo json_encode($arr_cours_name);?>');
 				$('#cours_tags').autocomplete({
 					source: coursNameTags
