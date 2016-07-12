@@ -61,10 +61,12 @@ session_start();
 	var task_title = $(".task-title-input").val();
 	var task_description = $(".task-description-input").val();
 	var task_token = $("#task-target-input").val();
+	var task_creator = <?php echo json_encode($_SESSION["user_id"]);?>;
 	if(task_token == ""){
 		task_token = "[USR-"+$("#task-target-input").data().user+"]";
 	}
-	postTask(task_title, task_description, task_token);
+	console.log(task_creator);
+	postTask(task_title, task_description, task_token, task_creator);
 }).on('click', '.delete-task', function(){
 	var task_id = document.getElementById($(this).attr("id")).dataset.task;
 	var table = "tasks";
@@ -129,15 +131,15 @@ session_start();
 	})
 })
 
-function fetchTasks(user_id, attached_id, filter, limit){
-	$.get("functions/fetch_tasks.php", {user_id : user_id, attached_id : attached_id, limit : limit, filter : filter}).done(function(data){
+function fetchTasks(task_token, user_id, attached_id, filter, limit){
+	$.get("functions/fetch_tasks.php", {task_token : task_token, user_id : user_id, attached_id : attached_id, limit : limit, filter : filter}).done(function(data){
 		if(limit == 0 || $(".sub-modal-notification").is(":visible")){
 			if(top.location.pathname === "/Salsabor/dashboard"){
 				var half = true;
 			} else {
 				var half = false;
 			}
-			displayTasks(data, user_id, attached_id, limit, filter, half);
+			displayTasks(data, task_token, user_id, attached_id, limit, filter, half);
 		}
 	});
 }
@@ -170,12 +172,12 @@ function refreshTask(task){
 	$("#comments-count-"+task.id).html("<span class='glyphicon glyphicon-comment'></span> "+task.message_count);
 }
 
-function displayTasks(data, user_id, attached_id, limit, filter, half){
+function displayTasks(data, task_token, user_id, attached_id, limit, filter, half){
 	var tasks = JSON.parse(data);
 	if(tasks.length == 0){
 		$(".tasks-container").empty();
-		$(".tasks-container").css("background-image", "url(assets/images/logotype-white.png)");
-		$(".tasks-container").css("opacity", "0.2");
+		$(".dashboard-task-container").css("background-image", "url(assets/images/logotype-white.png)");
+		$(".dashboard-task-container").css("opacity", "0.2");
 	} else {
 		$(".tasks-container").css("background-image", "");
 		$(".tasks-container").css("opacity", "1.0");
@@ -191,125 +193,8 @@ function displayTasks(data, user_id, attached_id, limit, filter, half){
 					$(".tasks-container").empty();
 				}
 			}
-			// Status handling
-			var contents = "", notifClass = "", link = "", linkTitle = "", deadline = moment(tasks[i].deadline);
-			if(tasks[i].status == '0'){
-				notifClass = "task-new";
-			} else {
-				notifClass = "task-old";
-			}
-			contents += "<div id='task-"+tasks[i].id+"' data-task='"+tasks[i].id+"' data-state='"+tasks[i].status+"' class='panel task-line "+notifClass+"'>";
-			contents += "<div class='panel-heading panel-heading-task container-fluid' id='ph-task-"+tasks[i].id+"' data-trigger='"+tasks[i].id+"'>";
 
-			if(half){
-				var image_width = "col-lg-2";
-				var contents_width = "col-lg-10";
-				var comments_count_width = "col-lg-3";
-				var deadline_width = "col-lg-5";
-				var recipient_width = "col-lg-4"
-				} else {
-					var image_width = "col-lg-1";
-					var contents_width = "col-lg-11";
-					var comments_count_width = "col-lg-2";
-					var deadline_width = "col-lg-3";
-					var recipient_width = "col-lg-3";
-				}
-			contents += "<div class='col-sm-2 "+image_width+"'>";
-			contents += "<div class='notif-pp'>";
-			contents += "<image src='"+tasks[i].photo+"'>";
-			contents += "</div>";
-			contents += "</div>";
-
-			contents += "<div class='col-sm-10 "+contents_width+"'>";
-			contents += "<div class='row'>";
-
-			contents += "<p class='task-title col-sm-9' id='task-title-"+tasks[i].id+"'>";
-
-			contents += tasks[i].title;
-
-			// Token handling
-			switch(tasks[i].type){
-				case "USR":
-					linkTitle += "Aller à l&apos;utilisateur";
-					break;
-
-				case "PRD":
-					linkTitle += "Aller au produit";
-					break;
-
-				default:
-					break;
-			}
-
-			contents += "</p>";
-
-			contents += "<a href='"+tasks[i].link+"' class='link-glyphicon' target='_blank'><span class='glyphicon glyphicon-share-alt col-sm-1 glyphicon-button-alt glyphicon-button-big' title='"+linkTitle+"'></span></a>";
-			if(tasks[i].status == 1){
-				contents += "<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+tasks[i].id+"' data-target='"+tasks[i].id+"' title='Marquer comme non traitée'></span>";
-			} else {
-				contents += "<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+tasks[i].id+"' data-target='"+tasks[i].id+"' title='Marquer comme traitée'></span>";
-			}
-			contents += "<p class='col-sm-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button-alt glyphicon-button-big trigger-sub' id='delete-task-"+tasks[i].id+"' data-subtype='delete-task' data-target='"+tasks[i].id+"' title='Supprimer la tache'></span></p>";
-			contents += "</div>";
-
-			contents += "<div class='container-fluid'>";
-			contents += "<p class='task-hour col-sm-12'> créée "+moment(tasks[i].date).format("[le] ll [à] HH:mm")+" par <span class='task-creator' id='creator-"+tasks[i].id+"'>"+tasks[i].creator+"</span></p>";
-			contents += "<h4>";
-			for(var j = 0; j < tasks[i].labels.length; j++){
-				contents += "<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='task-tag-"+tasks[i].labels[j].entry_id+"' data-target='"+tasks[i].labels[j].entry_id+"' data-targettype='task' style='background-color:"+tasks[i].labels[j].tag_color+"'>"+tasks[i].labels[j].rank_name+"</span>";
-			}
-			contents += "<span class='label label-default label-clickable label-add trigger-sub' id='label-add-"+tasks[i].id+"' data-subtype='user-tags' data-targettype='task' title='Ajouter une étiquette'>+";
-			if(tasks[i].labels.length == 0){
-				contents += " Ajouter une étiqutte";
-			}
-			contents += "</span>";
-			contents += "</h4>";
-			if(tasks[i].description == ""){
-				var value = "no-value";
-			} else {
-				var value = "value";
-			}
-			contents += "<div><span class='glyphicon glyphicon-align-left glyphicon-description'></span><p class='editable' id='task-description-"+tasks[i].id+"' data-input='textarea' data-table='tasks' data-column='task_description' data-target='"+tasks[i].id+"' data-value='"+value+"'>"+tasks[i].description+"</p></div>";
-			contents += "<div class='col-md-2 "+comments_count_width+" comment-span' id='comments-count-"+tasks[i].id+"'>";
-			contents += "<span class='glyphicon glyphicon-comment'></span> "+tasks[i].message_count;
-			contents += "</div>";
-
-			var deadline_class = displayDeadline(deadline);
-			contents += "<div class='col-md-5 "+deadline_width+" deadline-span "+deadline_class+" trigger-sub' id='deadline-"+tasks[i].id+"' data-subtype='deadline' data-task='"+tasks[i].id+"'>";
-			if(tasks[i].deadline != null){
-				contents += "<span class='glyphicon glyphicon-time'></span> "+deadline.format("D MMM [à] HH:mm");
-			} else {
-				contents += "<span class='glyphicon glyphicon-time'></span> Ajouter une date limite";
-			}
-			contents += "</div>";
-
-			contents += "<div class='col-md-5 "+recipient_width+" comment-span'>";
-			contents += "<span class='glyphicon glyphicon-user glyphicon-description'></span> ";
-			if(tasks[i].recipient == ""){
-				var value = "no-value";
-				var recipient = "Affecter un membre";
-			} else {
-				var value = "value";
-				var recipient = tasks[i].recipient;
-			}
-			contents += "<p class='editable' id='task-recipient-"+tasks[i].id+"' data-input='text' data-table='tasks' data-column='task_recipient' data-target='"+tasks[i].id+"' data-value='"+value+"'>"+recipient+"</p>";
-			contents += "</div>";
-
-			contents += "</div>";
-			contents += "</div>";
-			contents += "</div>";
-
-			// Commentaires de la notification
-			contents += "<div class='panel-body panel-task-body collapse' id='body-task-"+tasks[i].id+"' data-task='"+tasks[i].id+"'>";
-			contents += "<p><span class='glyphicon glyphicon-comment'></span> Commentaires</p>";
-			contents += "<div class='comment-unit comment-form' id='comment-form-"+tasks[i].id+"'>";
-			contents += "<textarea rows='2' class='form-control' placeholder='&Eacute;crire un commentaire...'></textarea>";
-			contents += "<div class='input-group'>";
-			contents += "<span class='input-group-btn'><button class='btn btn-primary btn-comment' id='comment-task-"+tasks[i].id+"' data-task='"+tasks[i].id+"'>Envoyer</button></span>";
-			contents += "</div>";
-			contents += "</div>";
-			contents += "<div class='task-comments' id='task-comments-"+tasks[i].id+"'></div>";
-			contents += "</div>";
+			var contents = renderTask(tasks[i], half);
 
 			if(limit == 0){
 				$(".tasks-container").append(contents);
@@ -318,7 +203,7 @@ function displayTasks(data, user_id, attached_id, limit, filter, half){
 			}
 		}
 	}
-	setTimeout(fetchTasks, 10000, user_id, attached_id, filter, limit);
+	setTimeout(fetchTasks, 5000, task_token, user_id, attached_id, filter, limit);
 }
 
 function displayDeadline(deadline){
@@ -364,9 +249,140 @@ function postComment(comment, author, task_id){
 	})
 }
 
-function postTask(title, description, token){
-	$.post("functions/post_task.php", {task_title : title, task_description : description, task_token : token}).done(function(message){
-		console.log(message);
+function postTask(title, description, token, task_creator_id){
+	$.post("functions/post_task.php", {task_title : title, task_description : description, task_token : token, task_creator_id : task_creator_id}).done(function(new_id){
 		$(".panel-new-task").remove();
 	})
+}
+
+function renderTask(task, half){
+	// Status handling
+	var contents = "", notifClass = "", link = "", linkTitle = "", deadline = moment(task.deadline);
+	if(task.status == '0'){
+		notifClass = "task-new";
+	} else {
+		notifClass = "task-old";
+	}
+	contents += "<div id='task-"+task.id+"' data-task='"+task.id+"' data-state='"+task.status+"' class='panel task-line "+notifClass+"'>";
+	contents += "<div class='panel-heading panel-heading-task container-fluid' id='ph-task-"+task.id+"' data-trigger='"+task.id+"'>";
+
+	if(half){
+		var image_width = "col-lg-2";
+		var contents_width = "col-lg-10";
+		var comments_count_width = "col-lg-3";
+		var deadline_width = "col-lg-5";
+		var recipient_width = "col-lg-4"
+		} else {
+			var image_width = "col-lg-1";
+			var contents_width = "col-lg-11";
+			var comments_count_width = "col-lg-2";
+			var deadline_width = "col-lg-3";
+			var recipient_width = "col-lg-3";
+		}
+	contents += "<div class='col-sm-2 "+image_width+"'>";
+	contents += "<div class='notif-pp'>";
+	contents += "<image src='"+task.photo+"'>";
+	contents += "</div>";
+	contents += "</div>";
+
+	contents += "<div class='col-sm-10 "+contents_width+"'>";
+	contents += "<div class='row'>";
+
+	contents += "<p class='task-title col-sm-9' id='task-title-"+task.id+"'>";
+
+	contents += task.title;
+
+	// Token handling
+	switch(task.type){
+		case "USR":
+			linkTitle += "Aller à l&apos;utilisateur";
+			break;
+
+		case "PRD":
+			linkTitle += "Aller au produit";
+			break;
+
+		case "SES":
+			linkTitle += "Aller au cours";
+
+		default:
+			break;
+	}
+
+	contents += "</p>";
+
+	if("/Salsabor/"+task.link !== top.location.pathname){
+		contents += "<a href='"+task.link+"' class='link-glyphicon' target='_blank'><span class='glyphicon glyphicon-share-alt col-sm-1 glyphicon-button-alt glyphicon-button-big' title='"+linkTitle+"'></span></a>";
+	} else {
+		contents += "<span class='col-sm-1'></span>";
+	}
+	if(task.status == 1){
+		contents += "<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme non traitée'></span>";
+	} else {
+		contents += "<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme traitée'></span>";
+	}
+	contents += "<p class='col-sm-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button-alt glyphicon-button-big trigger-sub' id='delete-task-"+task.id+"' data-subtype='delete-task' data-target='"+task.id+"' title='Supprimer la tache'></span></p>";
+	contents += "</div>";
+
+	contents += "<div class='container-fluid'>";
+	contents += "<p class='task-target col-sm-12'><span class='glyphicon glyphicon-play'></span> <strong>"+task.target_phrase+"</strong></p>";
+	contents += "<p class='task-hour col-sm-12'> créée "+moment(task.date).format("[le] ll [à] HH:mm")+" par <span class='task-creator' id='creator-"+task.id+"'>"+task.creator+"</span></p>";
+	contents += "<h4>";
+	for(var j = 0; j < task.labels.length; j++){
+		contents += "<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='task-tag-"+task.labels[j].entry_id+"' data-target='"+task.labels[j].entry_id+"' data-targettype='task' style='background-color:"+task.labels[j].tag_color+"'>"+task.labels[j].rank_name+"</span>";
+	}
+	contents += "<span class='label label-default label-clickable label-add trigger-sub' id='label-add-"+task.id+"' data-subtype='user-tags' data-targettype='task' title='Ajouter une étiquette'>+";
+	if(task.labels.length == 0){
+		contents += " Ajouter une étiqutte";
+	}
+	contents += "</span>";
+	contents += "</h4>";
+	if(task.description == ""){
+		var value = "no-value";
+	} else {
+		var value = "value";
+	}
+	contents += "<div><span class='glyphicon glyphicon-align-left glyphicon-description'></span><p class='editable' id='task-description-"+task.id+"' data-input='textarea' data-table='tasks' data-column='task_description' data-target='"+task.id+"' data-value='"+value+"'>"+task.description+"</p></div>";
+	contents += "<div class='col-md-2 "+comments_count_width+" comment-span' id='comments-count-"+task.id+"'>";
+	contents += "<span class='glyphicon glyphicon-comment'></span> "+task.message_count;
+	contents += "</div>";
+
+	var deadline_class = displayDeadline(deadline);
+	contents += "<div class='col-md-5 "+deadline_width+" deadline-span "+deadline_class+" trigger-sub' id='deadline-"+task.id+"' data-subtype='deadline' data-task='"+task.id+"'>";
+	if(task.deadline != null){
+		contents += "<span class='glyphicon glyphicon-time'></span> "+deadline.format("D MMM [à] HH:mm");
+	} else {
+		contents += "<span class='glyphicon glyphicon-time'></span> Ajouter une date limite";
+	}
+	contents += "</div>";
+
+	contents += "<div class='col-md-5 "+recipient_width+" comment-span'>";
+	contents += "<span class='glyphicon glyphicon-user glyphicon-description'></span> ";
+	if(task.recipient == ""){
+		var value = "no-value";
+		var recipient = "Affecter un membre";
+	} else {
+		var value = "value";
+		var recipient = task.recipient;
+	}
+	contents += "<p class='editable' id='task-recipient-"+task.id+"' data-input='text' data-table='tasks' data-column='task_recipient' data-target='"+task.id+"' data-value='"+value+"'>"+recipient+"</p>";
+	contents += "</div>";
+
+	contents += "</div>";
+	contents += "</div>";
+	contents += "</div>";
+
+	// Commentaires de la notification
+	contents += "<div class='panel-body panel-task-body collapse' id='body-task-"+task.id+"' data-task='"+task.id+"'>";
+	contents += "<p><span class='glyphicon glyphicon-comment'></span> Commentaires</p>";
+	contents += "<div class='comment-unit comment-form' id='comment-form-"+task.id+"'>";
+	contents += "<textarea rows='2' class='form-control' placeholder='&Eacute;crire un commentaire...'></textarea>";
+	contents += "<div class='input-group'>";
+	contents += "<span class='input-group-btn'><button class='btn btn-primary btn-comment' id='comment-task-"+task.id+"' data-task='"+task.id+"'>Envoyer</button></span>";
+	contents += "</div>";
+	contents += "</div>";
+	contents += "<div class='task-comments' id='task-comments-"+task.id+"'></div>";
+	contents += "</div>";
+
+	return contents;
 }
