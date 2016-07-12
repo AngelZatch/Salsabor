@@ -1405,4 +1405,8 @@ p.legend, div.legend:nth-child(1n+0) {
   height: 20px;
   border: 2px solid black; }
 
+/* line 977, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.chart {
+  background-color: white; }
+
 /*# sourceMappingURL=default-style.css.map */

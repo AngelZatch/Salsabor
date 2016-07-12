@@ -49,6 +49,8 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 		<script src="assets/js/participations.js"></script>
 		<script src="assets/js/tags.js"></script>
 		<script src="assets/js/sessions.js"></script>
+		<script src="assets/js/raphael-min.js"></script>
+		<script src="assets/js/morris.min.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -103,6 +105,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<?php } ?>
 						</div>
 					</div>
+					<p class="sub-legend">Détails</p>
 					<form name="session_details" id="session_details" role="form" class="form-horizontal">
 						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">Intitulé du cours</label>
@@ -169,27 +172,25 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 								</select>
 							</div>
 						</div>
-						<!--<div class="form-group">
-<label for="" class="col-lg-3 control-label">Commentaires</label>
-<div class="col-lg-9">
-<textarea name="justification_modification" cols="30" rows="5" class="form-control"></textarea>
-</div>
-</div>-->
-						<div class="panel panel-session" id="session-<?php echo $id;?>">
-							<a class="panel-heading-container" id='ph-session-<?php echo $id;?>' data-session='<?php echo $id;?>' data-trigger='<?php echo $id;?>'>
-								<div class="panel-heading">
-									<div class="container-fluid">
-										<p class="col-md-3">Liste des participants</p>
-										<p class="col-lg-1"><span class="glyphicon glyphicon-user"></span> <span class="user-total-count" id="user-total-count-<?php echo $id;?>"></span></p>
-										<p class="col-lg-1"><span class="glyphicon glyphicon-ok"></span> <span class="user-ok-count" id="user-ok-count-<?php echo $id;?>"></span></p>
-										<p class="col-lg-1"><span class="glyphicon glyphicon-warning-sign"></span> <span class="user-warning-count" id="user-warning-count-<?php echo $id;?>"></span></p>
-										<p class="col-md-1 col-md-offset-5 session-option"><span class="glyphicon glyphicon-ok-sign validate-session" id="validate-session-<?php echo $id;?>" data-session="<?php echo $id;?>" title="Valider tous les passages"></span></p>
-									</div>
-								</div>
-							</a>
-							<div class="panel-body collapse" id="body-session-<?php echo $id;?>" data-session="<?php echo $id;?>"></div>
-						</div>
 					</form>
+					<p class="sub-legend">Participations</p>
+					<div class="panel panel-session" id="session-<?php echo $id;?>">
+						<a class="panel-heading-container" id='ph-session-<?php echo $id;?>' data-session='<?php echo $id;?>' data-trigger='<?php echo $id;?>'>
+							<div class="panel-heading">
+								<div class="container-fluid">
+									<p class="col-md-3">Liste des participants</p>
+									<p class="col-lg-1"><span class="glyphicon glyphicon-user"></span> <span class="user-total-count" id="user-total-count-<?php echo $id;?>"></span></p>
+									<p class="col-lg-1"><span class="glyphicon glyphicon-ok"></span> <span class="user-ok-count" id="user-ok-count-<?php echo $id;?>"></span></p>
+									<p class="col-lg-1"><span class="glyphicon glyphicon-warning-sign"></span> <span class="user-warning-count" id="user-warning-count-<?php echo $id;?>"></span></p>
+									<p class="col-md-1 col-md-offset-5 session-option"><span class="glyphicon glyphicon-ok-sign validate-session" id="validate-session-<?php echo $id;?>" data-session="<?php echo $id;?>" title="Valider tous les passages"></span></p>
+								</div>
+							</div>
+						</a>
+						<div class="panel-body collapse" id="body-session-<?php echo $id;?>" data-session="<?php echo $id;?>"></div>
+					</div>
+					<p class="sub-legend">Statistiques</p>
+					<span class="help-block">Nombre de participants à chaque cours</span>
+					<div class="chart" id="session-chart" style="height:250px"></div>
 				</div>
 			</div>
 		</div>
@@ -217,6 +218,25 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				})
 				refreshTick();
 
+				var parent_id = <?php echo $cours["cours_parent_id"];?>;
+
+				$.getJSON("functions/fetch_all_sessions_participations.php", {parent_id : parent_id}, function(data){
+					new Morris.Line({
+						// ID of the element in which to draw the chart.
+						element: 'session-chart',
+						// Chart data records -- each entry in this array corresponds to a point on
+						// the chart.
+						data: data,
+						// The name of the data record attribute that contains x-values.
+						xkey: 'date',
+						// A list of names of data record attributes that contain y-values.
+						ykeys: ['participations'],
+						// Labels for the ykeys -- will be displayed when you hover over the
+						// chart.
+						labels: ['Participants'],
+						lineColors: ['#A80139']
+					});
+				});
 			}).on('click', '.btn-edit', function(){
 				var id = $(this).attr("id");
 				var form = $("#session_details"), entry_id = <?php echo $id;?>;
