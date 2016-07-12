@@ -47,6 +47,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
 		<script src="assets/js/participations.js"></script>
+		<script src="assets/js/tasks-js.php"></script>
 		<script src="assets/js/tags.js"></script>
 		<script src="assets/js/sessions.js"></script>
 		<script src="assets/js/raphael-min.js"></script>
@@ -191,6 +192,14 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					<p class="sub-legend">Statistiques</p>
 					<span class="help-block">Nombre de participants à chaque cours</span>
 					<div class="chart" id="session-chart" style="height:250px"></div>
+					<p class="sub-legend">Tâches à faire</p>
+					<div class="tasks-container container-fluid"></div>
+					<div class="sub-container container-fluid">
+						<div class="panel-heading panel-add-record container-fluid">
+							<div class="col-sm-1"><div class="notif-pp empty-pp"></div></div>
+							<div class="col-sm-11 new-task-text">Ajouter une nouvelle tâche...</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -217,6 +226,8 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					initial_tags.push($(this).text());
 				})
 				refreshTick();
+
+				fetchTasks("SES", <?php echo $id;?>, 0, null, 0);
 
 				var parent_id = <?php echo $cours["cours_parent_id"];?>;
 
@@ -320,6 +331,29 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						})
 					}
 				}
+			}).on('click', '.panel-add-record', function(){
+				var emptyTask = "<div class='panel task-line task-new panel-new-task'>";
+				emptyTask += "<div class='panel-heading container-fluid'>";
+				emptyTask += "<div class='col-lg-1'>";
+				emptyTask += "<div class='notif-pp'>";
+				emptyTask += "<image src='' alt=''>";
+				emptyTask += "</div>";
+				emptyTask += "</div>";
+				emptyTask += "<div class='col-sm-11'>";
+				emptyTask += "<div class='row'>";
+				emptyTask += "<p class='task-title col-sm-10'>";
+				emptyTask += "<input class='form-control task-title-input' type='text' placeholder='Titre de la tâche'>";
+				emptyTask += "</p>"
+				emptyTask += "<div class='container-fluid'>";
+				emptyTask += "<input class='form-control' id='task-target-input' type='hidden' value='[SES-<?php echo $id;?>]'>";
+				emptyTask += "<textarea class='form-control task-description-input'></textarea>";
+				emptyTask += "<button class='btn btn-primary post-task' id='post-task-button'>Valider</button>";
+				emptyTask += "</div>";
+				emptyTask += "</div>";
+				emptyTask += "</div>";
+				emptyTask += "</div>";
+				$(".tasks-container").append(emptyTask);
+				// When validating a new task, we delete the new template one and reload the correct one. Easy!
 			})
 
 			$('#paiement').change(function(){

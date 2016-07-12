@@ -21,10 +21,10 @@ $(document).ready(function(){
 		var id = document.getElementById($(this).attr("id")).dataset.session;
 		$("#body-session-"+id).collapse("toggle");
 	}
-}).on('shown.bs.collapse', ".panel-body", function(){
+}).on('shown.bs.collapse', ".panel-body:not(.panel-task-body)", function(){
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
 	displayParticipations(session_id);
-}).on('hidden.bs.collapse', ".panel-body", function(){
+}).on('hidden.bs.collapse', ".panel-body:not(.panel-task-body)", function(){
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
 }).on('click', '.set-participation-product', function(){
 	var participation_id = document.getElementById($(this).attr("id")).dataset.participation;
@@ -45,9 +45,9 @@ $(document).ready(function(){
 	deleteParticipation(participation_id);
 }).on('click', function(e){
 	//if(top.location.pathname !== "/Salsabor/planning"){
-		if($(".sub-modal:hidden") && !$(".sub-modal").hasClass("sub-modal-session")){
-			$(".sub-modal").hide();
-		}
+	if($(".sub-modal:hidden") && !$(".sub-modal").hasClass("sub-modal-session")){
+		$(".sub-modal").hide();
+	}
 	//}
 }).on('focus', '.name-input', function(){
 	$.get("functions/fetch_user_list.php", {filter : "active"}).done(function(data){
