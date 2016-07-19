@@ -279,7 +279,7 @@ function renderTask(task, half){
 			var deadline_width = "col-lg-3";
 			var recipient_width = "col-lg-3";
 		}
-	contents += "<div class='col-sm-2 "+image_width+"'>";
+	contents += "<div class='hidden-xs col-sm-2 "+image_width+"'>";
 	contents += "<div class='notif-pp'>";
 	contents += "<image src='"+task.photo+"'>";
 	contents += "</div>";
@@ -288,7 +288,13 @@ function renderTask(task, half){
 	contents += "<div class='col-sm-10 "+contents_width+"'>";
 	contents += "<div class='row'>";
 
-	contents += "<p class='task-title col-sm-9' id='task-title-"+task.id+"'>";
+	contents += "<div class='visible-xs-* col-sm-2 "+image_width+"'>";
+	contents += "<div class='notif-pp'>";
+	contents += "<image src='"+task.photo+"'>";
+	contents += "</div>";
+	contents += "</div>";
+
+	contents += "<p class='task-title col-xs-7 col-sm-9' id='task-title-"+task.id+"'>";
 
 	contents += task.title;
 
@@ -312,21 +318,21 @@ function renderTask(task, half){
 	contents += "</p>";
 
 	if("/Salsabor/"+task.link !== top.location.pathname){
-		contents += "<a href='"+task.link+"' class='link-glyphicon' target='_blank'><span class='glyphicon glyphicon-share-alt col-sm-1 glyphicon-button-alt glyphicon-button-big' title='"+linkTitle+"'></span></a>";
+		contents += "<a href='"+task.link+"' class='link-glyphicon' target='_blank'><span class='glyphicon glyphicon-share-alt col-xs-1 col-sm-1 glyphicon-button-alt glyphicon-button-big' title='"+linkTitle+"'></span></a>";
 	} else {
-		contents += "<span class='col-sm-1'></span>";
+		contents += "<span class='col-xs-1 col-sm-1'></span>";
 	}
 	if(task.status == 1){
-		contents += "<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme non traitée'></span>";
+		contents += "<span class='glyphicon glyphicon-ok-circle col-xs-1 col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme non traitée'></span>";
 	} else {
-		contents += "<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme traitée'></span>";
+		contents += "<span class='glyphicon glyphicon-ok-sign col-xs-1 col-sm-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme traitée'></span>";
 	}
-	contents += "<p class='col-sm-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button-alt glyphicon-button-big trigger-sub' id='delete-task-"+task.id+"' data-subtype='delete-task' data-target='"+task.id+"' title='Supprimer la tache'></span></p>";
+	contents += "<p class='col-xs-1 col-sm-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button-alt glyphicon-button-big trigger-sub' id='delete-task-"+task.id+"' data-subtype='delete-task' data-target='"+task.id+"' title='Supprimer la tache'></span></p>";
 	contents += "</div>";
 
 	contents += "<div class='container-fluid'>";
-	contents += "<p class='task-target col-sm-12'><span class='glyphicon glyphicon-play'></span> <strong>"+task.target_phrase+"</strong></p>";
-	contents += "<p class='task-hour col-sm-12'> créée "+moment(task.date).format("[le] ll [à] HH:mm")+" par <span class='task-creator' id='creator-"+task.id+"'>"+task.creator+"</span></p>";
+	contents += "<p class='task-target col-xs-11 col-xs-offset-1 col-sm-12'><span class='glyphicon glyphicon-play'></span> <strong>"+task.target_phrase+"</strong></p>";
+	contents += "<p class='task-hour col-xs-12 col-sm-12'> créée "+moment(task.date).format("[le] ll [à] HH:mm")+" par <span class='task-creator' id='creator-"+task.id+"'>"+task.creator+"</span></p>";
 	contents += "<h4>";
 	for(var j = 0; j < task.labels.length; j++){
 		contents += "<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='task-tag-"+task.labels[j].entry_id+"' data-target='"+task.labels[j].entry_id+"' data-targettype='task' style='background-color:"+task.labels[j].tag_color+"'>"+task.labels[j].rank_name+"</span>";
@@ -343,12 +349,12 @@ function renderTask(task, half){
 		var value = "value";
 	}
 	contents += "<div><span class='glyphicon glyphicon-align-left glyphicon-description'></span><p class='editable' id='task-description-"+task.id+"' data-input='textarea' data-table='tasks' data-column='task_description' data-target='"+task.id+"' data-value='"+value+"'>"+task.description+"</p></div>";
-	contents += "<div class='col-md-2 "+comments_count_width+" comment-span' id='comments-count-"+task.id+"'>";
+	contents += "<div class='col-xs-2 col-md-2 "+comments_count_width+" comment-span' id='comments-count-"+task.id+"'>";
 	contents += "<span class='glyphicon glyphicon-comment'></span> "+task.message_count;
 	contents += "</div>";
 
 	var deadline_class = displayDeadline(deadline);
-	contents += "<div class='col-md-5 "+deadline_width+" deadline-span "+deadline_class+" trigger-sub' id='deadline-"+task.id+"' data-subtype='deadline' data-task='"+task.id+"'>";
+	contents += "<div class='col-xs-5 col-md-5 "+deadline_width+" deadline-span "+deadline_class+" trigger-sub' id='deadline-"+task.id+"' data-subtype='deadline' data-task='"+task.id+"'>";
 	if(task.deadline != null){
 		contents += "<span class='glyphicon glyphicon-time'></span> "+deadline.format("D MMM [à] HH:mm");
 	} else {
@@ -356,7 +362,7 @@ function renderTask(task, half){
 	}
 	contents += "</div>";
 
-	contents += "<div class='col-md-5 "+recipient_width+" comment-span'>";
+	contents += "<div class='col-xs-5 col-md-5 "+recipient_width+" comment-span'>";
 	contents += "<span class='glyphicon glyphicon-user glyphicon-description'></span> ";
 	if(task.recipient == ""){
 		var value = "no-value";

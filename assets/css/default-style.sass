@@ -36,7 +36,8 @@ $avatar-big-preview: 170px
 	padding: 0 !important
 
 body
-	margin-top: 50px
+	@media screen and (min-width: $break-medium)
+		margin-top: 50px
 	background-color: $body-color
 
 a
@@ -68,7 +69,9 @@ a
 	border-radius: 10px
 
 .main
-	padding: 40px 4% 20px
+	@media screen and (min-width: $break-medium)
+		padding-top: 40px !important
+	padding: 0 4% 20px
 	position: relative
 	overflow: auto
 
@@ -254,6 +257,7 @@ a
 
 .navbar-toggle
 	border: 0
+	background-color: inherit !important
 
 .navbar-brand
 	margin-top: 13px
@@ -275,6 +279,7 @@ a
 
 .small-nav
 	color: white
+	text-align: center
 
 .notification-icon
 	color: white !important
@@ -849,6 +854,9 @@ div.legend:nth-child(1n+0)
 
 .task-target
 	margin-top: -12px
+	@media screen and (min-width: $break-small)
+		margin-top: -40px
+		margin-bottom: 28px
 
 .task-hour
 	@extend .notif-hour
