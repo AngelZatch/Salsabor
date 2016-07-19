@@ -13,7 +13,8 @@ $details = $db->query("SELECT * FROM users u
 
 $labels = $db->query("SELECT * FROM assoc_user_tags ur
 						JOIN tags_user tu ON ur.tag_id_foreign = tu.rank_id
-						WHERE user_id_foreign = '$data'");
+						WHERE user_id_foreign = '$data'
+						ORDER BY tag_color DESC");
 
 $details["count"] = $db->query("SELECT * FROM tasks
 					WHERE ((task_token LIKE '%USR%' AND task_target = '$data')

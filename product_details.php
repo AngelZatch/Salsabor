@@ -17,7 +17,8 @@ $produit = $queryProduit->fetch(PDO::FETCH_ASSOC);
 // Labels
 $labels = $db->prepare("SELECT * FROM assoc_product_tags apt
 						JOIN tags_session ts ON apt.tag_id_foreign = ts.rank_id
-						WHERE product_id_foreign = ?");
+						WHERE product_id_foreign = ?
+						ORDER BY tag_color DESC");
 $labels->bindParam(1, $data, PDO::PARAM_INT);
 $labels->execute();
 

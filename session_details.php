@@ -34,7 +34,8 @@ $querySalles = $db->query("SELECT * FROM rooms");
 
 $labels = $db->query("SELECT * FROM assoc_session_tags us
 						JOIN tags_session ts ON us.tag_id_foreign = ts.rank_id
-						WHERE session_id_foreign = '$id'");
+						WHERE session_id_foreign = '$id'
+						ORDER BY tag_color DESC");
 
 $user_labels = $db->query("SELECT * FROM tags_user");
 ?>
