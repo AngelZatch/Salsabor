@@ -207,14 +207,14 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 		<script>
 			$(document).ready(function(){
 				$("#datepicker-start").datetimepicker({
-					format: "YYYY-MM-DD HH:mm:00",
+					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: "<?php echo date_create($cours['cours_start'])->format("m/d/Y H:i");?>",
 					locale: "fr",
 					sideBySide: true,
 					stepping: 30
 				});
 				$("#datepicker-end").datetimepicker({
-					format: "YYYY-MM-DD HH:mm:00",
+					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: "<?php echo date_create($cours['cours_end'])->format("m/d/Y H:i");?>",
 					locale: "fr",
 					sideBySide: true,

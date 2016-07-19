@@ -79,3 +79,21 @@
 
 .panel-product-container
 	min-height: 240px
+
+.panel-promotion
+	padding: 10px
+	.promotion-details
+		padding-left: 20px
+	&.promotion-running
+		background-color: $salsabor-yellow
+		font-size: 1.2em
+		.promotion-title
+			font-size: 20px
+	&.promotion-over
+		background-color: darken(white, 15%)
+		color: $system-color
+	&.promotion-upcoming
+		background-color: $pre-success-color
+
+.promotion-value
+	font-weight: 700
