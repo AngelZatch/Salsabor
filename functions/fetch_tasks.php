@@ -25,6 +25,8 @@ if($task_token != null){
 		$query .= " (task_token LIKE '%USR%' AND task_target = '$target_id')
 					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$target_id'))
 					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$target_id'))";
+	} else if($attached_id == null){
+		$query .= " task_recipient IS NULL AND task_id NOT IN (SELECT task_id_foreign FROM assoc_task_tags) AND";
 	}
 }
 if($target_id != 0 && $attached_id != 0){

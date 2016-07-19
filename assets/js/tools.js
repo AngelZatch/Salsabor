@@ -5,7 +5,6 @@ Dès que le document est prêt, tous les modaux et les fonctions qui doivent tou
 */
 
 $(document).ready(function(){
-	$('[data-toggle="tooltip"]').tooltip();
 	jQuery.expr[':'].regex = function(elem, index, match) {
 		var matchParams = match[3].split(','),
 			validLabels = /^(data|css):/,
@@ -18,6 +17,7 @@ $(document).ready(function(){
 			regex = new RegExp(matchParams.join('').replace(/^s+|s+$/g,''), regexFlags);
 		return regex.test(jQuery(elem)[attr.method](attr.property));
 	}
+	$('[data-toggle="tooltip"]').tooltip();
 	if(top.location.pathname !== "/Salsabor/my/profile" && top.location.pathname !== "/Salsabor/notifications/settings"){
 		$.cssHooks.backgroundColor = {
 			get: function(elem) {
