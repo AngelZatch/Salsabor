@@ -5,9 +5,9 @@ $db = PDOFactory::getConnection();
 $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0 AND priorite=1")->rowCount();
 ?>
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
-	<div class="container-fluid">
-		<div class="hidden-sm hidden-md hidden-lg">
+<div class="visible-xs-block">
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
 			<div class="navbar-header">
 				<a href="dashboard" class="navbar-brand"><img src="assets/images/logotest.png" alt="Salsabor Gestion" style="height:100%;"></a>
 				<?php if(isset($_SESSION["username"])){ ?>
@@ -15,6 +15,9 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 					<div class="nav-pp">
 						<img src="<?php echo $_SESSION["photo"];?>" alt="<?php echo $_SESSION["username"];?>" style="width:inherit;">
 					</div>
+				</button>
+				<button class="navbar-toggle sub-menu-toggle">
+					<span class="glyphicon glyphicon-menu-hamburger"></span>
 				</button>
 				<?php } else { ?>
 				<button class="navbar-toggle collapse" data-toggle="collapse" data-target="#navbar">
@@ -26,14 +29,19 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar">
-					<li><a class="small-nav" href="notifications"><span class="glyphicon glyphicon-list-alt"></span> Notifications</a></li>
-					<li><a class="small-nav" href="taches"><span class="glyphicon glyphicon-bell"></span> Tâches</a></li>
-					<li><a href="user/<?php echo $_SESSION["user_id"];?>" class="small-nav"><span class="glyphicon glyphicon-user"></span> Profil</a></li>
-					<li><a class="small-nav" href="logout.php"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
+					<li><a class="col-xs-3 small-nav" href="taches/user"><span class="glyphicon glyphicon-list-alt"></span> Tâches</a></li>
+					<li><a class="col-xs-3 small-nav" href="notifications"><span class="glyphicon glyphicon-bell"></span> Notifications</a></li>
+					<li><a href="user/<?php echo $_SESSION["user_id"];?>" class="col-xs-3 small-nav"><span class="glyphicon glyphicon-user"></span> Profil</a></li>
+					<li><a class="col-xs-3 small-nav" href="logout.php"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
 				</ul>
 			</div>
 		</div>
-		<div class="visible-sm visible-md visible-lg">
+	</nav>
+</div>
+
+<div class="visible-sm visible-md visible-lg">
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
 			<div class="navbar-header">
 				<a href="dashboard" class="navbar-brand"><img src="assets/images/logotest.png" alt="Salsabor Gestion" style="height:100%;"></a>
 			</div>
@@ -85,7 +93,8 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 			</ul>
 			<?php }?>
 		</div>
-	</div>
-</nav>
+	</nav>
+</div>
+
 <?php include "inserts/sub_modal_notifications.php";?>
 

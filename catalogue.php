@@ -73,7 +73,7 @@ if(isset($_GET["user"])){
 								}
 							}
 						?>
-						<div class="col-sm-6 col-md-4 col-lg-4 panel-product-container">
+						<div class="col-xs-6 col-md-4 panel-product-container">
 							<div class="panel panel-product">
 								<div class="panel-body">
 									<p class="product-title"><?php echo $produits["produit_nom"];?></p>

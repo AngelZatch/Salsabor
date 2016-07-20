@@ -15,8 +15,8 @@ $hook = $_POST["hook"];
 
 // == GET THE DELTA ==
 // New values from the serialized array
-$new_start = new DateTime($values["cours_start"]);
-$new_end = new DateTime($values["cours_end"]);
+$new_start = DateTime::createFromFormat("d/m/Y H:i:s", $values["cours_start"]);
+$new_end = DateTime::createFromFormat("d/m/Y H:i:s", $values["cours_end"]);
 
 // Old values from the database and the hook
 $hook_times = $db->query("SELECT cours_start, cours_end FROM cours WHERE cours_id = $hook")->fetch(PDO::FETCH_ASSOC);
