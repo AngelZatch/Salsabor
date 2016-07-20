@@ -33,7 +33,7 @@ try{
 		computeProduct($product);
 	}
 
-	// Activate available promotions
+	/*// Activate available promotions
 	$toActivate = $db->query("SELECT produit_id FROM produits WHERE date_activation <= '$compare_start' AND date_activation != '0000-00-00 00:00:00'");
 	while($match = $toActivate->fetch(PDO::FETCH_ASSOC)){
 		updateColumn($db, "produits", "actif", 1, $match["produit_id"]);
@@ -45,19 +45,24 @@ try{
 	while($match = $toDeactive->fetch(PDO::FETCH_ASSOC)){
 		updateColumn($db, "produits", "actif", 0, $match["produit_id"]);
 		postNotification($db, "PRO-E", $match["produit_id"], null, $compare_start);
-	}
-
-	$findActive = $db->query("SELECT date_achat, payeur_transaction FROM transactions GROUP BY payeur_transaction");
-
-	// We deactivate any user that didn't buy a product or attended a session for more than 12 months.
-	$deactivateUser = $db->query("UPDATE users SET actif = 0 WHERE actif = '1' AND date_last < '$activationLimit'");
-
-	// We delete "old" notifications about closed sessions
-	$delete_old_notifications = $db->query("DELETE FROM team_notifications WHERE notification_token = 'SES'");
+	}*/
 
 	$db->commit();
 } catch(PDOException $e){
 	$db->rollBack();
 	echo $e->getMessage();
 }
+
+try{
+	$db->beginTransaction();
+	// We deactivate any user that didn't buy a product or attended a session for more than 12 months.
+	$deactivateUser = $db->query("UPDATE users SET actif = 0 WHERE actif = '1' AND date_last < '$activationLimit'");
+	$db->commit();
+} catch(PDOException $e){
+	$db->rollBack();
+	echo $e->getMessage();
+}
+
+// We delete "old" notifications about closed sessions
+$delete_old_notifications = $db->query("DELETE FROM team_notifications WHERE notification_token = 'SES'");
 ?>

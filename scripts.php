@@ -16,7 +16,6 @@
 <script src="assets/js/js.cookie.js"></script>
 <script src="assets/js/checkbox-x.min.js"></script>
 <script src="assets/js/notify.min.js"></script>
-<!--<script src="assets/js/list.min.js"></script>-->
 <script src="assets/js/fuelux.min.js"></script>
 <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
 

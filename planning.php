@@ -27,6 +27,7 @@ require_once "functions/reservations.php";
 					<legend><span class="glyphicon glyphicon-time"></span> Planning
 						<a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a>
 					</legend>
+					<span class="help-block">Sur périphériques tactiles, maintenez appuyé pour sélectionner un événement ou une plage horaire.</span>
 					<div id="display-planning" style="display:block;">
 						<div id="calendar" class="fc fc-ltr fc-unthemed"></div>
 					</div> <!-- Display en Planning -->
@@ -89,15 +90,14 @@ require_once "functions/reservations.php";
 					selectable: true,
 					selectHelper: true,
 					hiddenDays: [0],
-					minTime: '6:00',
+					minTime: '9:00',
 					timeFormat: 'H:mm',
 					nowIndicator: true,
-					allDaySlot: false,
 					handleWindowResize: true,
 					contentHeight: height,
 					startParam: 'fetch_start',
 					endParam: 'fetch_end',
-					defaultTimedEventDuration: '01:00:00',
+					snapDuration: "01:00",
 					eventSources:[
 						{
 							url: 'functions/calendarfeed_cours.php',
@@ -123,8 +123,8 @@ require_once "functions/reservations.php";
 							color: '#C4C4C4',
 							textColor: 'black',
 							rendering: 'background',
-							error: function(){
-								console.log('Erreur pendant l\'obtention des jours chômés');
+							error: function(data){
+								console.log(data);
 							},
 						}
 					],
@@ -179,7 +179,7 @@ require_once "functions/reservations.php";
 								$(".session-date").append("<span>Date</span>"+moment(session.start).format("ll[,] HH:mm")+" - "+moment(session.end).format("HH:mm"));
 								$(".session-room").append("<span>Lieu</span>"+session.room);
 								$(".session-participations").append("<span>Participants</span>"+session.participations_count);
-								$(".sub-modal-footer").append("<a href='cours/"+target+"' class='btn btn-primary float-right btn-to-session'>Modifier</a>");
+								$(".sub-modal-footer").append("<a href='cours/"+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
 								// Showing modal once everything is done
 								$(".sub-modal-session").show();
 							})
@@ -204,6 +204,7 @@ require_once "functions/reservations.php";
 					},
 					select: function(start, end, jsEvent, view){
 						jsEvent.stopImmediatePropagation();
+						console.log(start, end);
 						$(".sub-modal-session").hide();
 						$("#sub-modal-session").data().target = -1;
 
@@ -215,8 +216,18 @@ require_once "functions/reservations.php";
 						// Color change
 						$(".sub-modal-title").css("color", "000000");
 						// Filling fields
-						$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un cours");
-						$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("HH:mm"));
+						if(end.diff(start) == 86400000){
+							$(".sub-modal-title").append("<span class='glyphicon glyphicon-calendar'></span> Jour entier");
+							$(".session-date").append("<span>Date</span>"+moment(start).format("ll"));
+							$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session'' id='quick-add-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"'><span class='glyphicon glyphicon-leaf'></span> Ajouter un jour chômé</a>");
+						} else if(end.diff(start) < 8640000) {
+							$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un cours");
+							$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("HH:mm"));
+						} else {
+							$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un événement");
+							$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("ll[,] HH:mm"));
+
+						}
 						$(".sub-modal-footer").append("<a href='cours_add.php' class='btn btn-primary float-right btn-to-session'>Ajouter</a>");
 
 						var top = jsEvent.pageY;
@@ -249,7 +260,13 @@ require_once "functions/reservations.php";
 					},
 					unselectCancel: '.btn-to-session'
 				});
-			});
+			}).on('click', '#quick-add-holiday', function(){
+				var date = document.getElementById($(this).attr("id")).dataset.date;
+				$.post("functions/post_holiday.php", {holiday_date : date}).done(function(data){
+					$(".sub-modal-session").hide();
+					$("#calendar").fullCalendar('refetchEvents');
+				})
+			})
 		</script>
 	</body>
 </html>

@@ -5,7 +5,6 @@ Dès que le document est prêt, tous les modaux et les fonctions qui doivent tou
 */
 
 $(document).ready(function(){
-	$('[data-toggle="tooltip"]').tooltip();
 	jQuery.expr[':'].regex = function(elem, index, match) {
 		var matchParams = match[3].split(','),
 			validLabels = /^(data|css):/,
@@ -18,6 +17,7 @@ $(document).ready(function(){
 			regex = new RegExp(matchParams.join('').replace(/^s+|s+$/g,''), regexFlags);
 		return regex.test(jQuery(elem)[attr.method](attr.property));
 	}
+	$('[data-toggle="tooltip"]').tooltip();
 	if(top.location.pathname !== "/Salsabor/my/profile" && top.location.pathname !== "/Salsabor/notifications/settings"){
 		$.cssHooks.backgroundColor = {
 			get: function(elem) {
@@ -550,10 +550,10 @@ $(document).ready(function(){
 			body += "<span class='input-group-btn'><button class='btn btn-success btn-tag-name' type='button'>Valider</button></span>";
 			body += "</div>";
 			$.when(fetchColors()).done(function(data){
-				body += "<div class='row' id='colors'>";
+				body += "<div class='container-fluid' id='colors'>";
 				var colors = JSON.parse(data);
 				for(var i = 0; i < colors.length; i++){
-					body += "<div class='color-cube col-xs-4 col-md-3 col-lg-2' id='color-"+colors[i].color_id+"' style='background-color:"+colors[i].color_value+"' data-target='"+target+"'  data-tagtype='"+tag_type+"'>";
+					body += "<div class='color-cube col-xs-3 col-md-3 col-lg-2' id='color-"+colors[i].color_id+"' style='background-color:"+colors[i].color_value+"' data-target='"+target+"'  data-tagtype='"+tag_type+"'>";
 					if("#"+colors[i].color_value == $("#tag-"+target).css("backgroundColor")){
 						body += "<span class='glyphicon glyphicon-ok color-selected'></span>";
 					}
@@ -623,6 +623,9 @@ $(document).ready(function(){
 		else
 			$("#tag-"+target).remove($(".glyphicon-star"));
 	})
+}).on('click', '.sub-menu-toggle', function(){
+	console.log("toggling");
+	$(".small-sidebar-container").toggle();
 })
 
 $(".has-name-completion").on('click blur keyup', function(){

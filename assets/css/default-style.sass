@@ -36,7 +36,8 @@ $avatar-big-preview: 170px
 	padding: 0 !important
 
 body
-	margin-top: 50px
+	@media screen and (min-width: $break-medium)
+		margin-top: 50px
 	background-color: $body-color
 
 a
@@ -68,7 +69,9 @@ a
 	border-radius: 10px
 
 .main
-	padding: 40px 4% 20px
+	@media screen and (min-width: $break-medium)
+		padding-top: 40px !important
+	padding: 0 4% 20px
 	position: relative
 	overflow: auto
 
@@ -145,6 +148,7 @@ legend
 
 #colors
 	margin-top: 5px
+	text-align: center
 
 .color-cube
 	height: 30px
@@ -200,9 +204,22 @@ a
 	p:first-child
 		margin-right: .15em
 
+.edit-input
+	position: relative
+	width: 25%
+	margin-bottom: 15px
+	margin-top: -10px
+	background-color: transparent
+	border: 2px solid
+	border-top: none
+	border-radius: 0
+
 /** SIDE MENU **/
 .sidebar-container
 	position: relative
+
+.small-sidebar-container
+	display: none
 
 .sidebar
 	position: fixed
@@ -211,6 +228,19 @@ a
 	padding: 10px 0 20px 0
 	overflow-y: scroll
 	height: 94.5vh
+	z-index: 1000
+	@media screen and (max-width: $break-small)
+		background-color: $salsabor-red
+		color: white !important
+	.sub-menu-toggle
+		font-size: 1em
+
+#small-menu
+	top: 0
+	height: 100%
+	background-color: $salsabor-red
+	.main-option, .main-option>.glyphicon
+		color: white
 
 .main-section
 	cursor: default
@@ -244,6 +274,11 @@ a
 
 .navbar-toggle
 	border: 0
+	background-color: inherit !important
+
+.sub-menu-toggle
+	color: white
+	font-size: 2.5em
 
 .navbar-brand
 	margin-top: 13px
@@ -265,6 +300,7 @@ a
 
 .small-nav
 	color: white
+	text-align: center
 
 .notification-icon
 	color: white !important
@@ -559,6 +595,11 @@ a
 	color: $system-color
 	text-decoration: underline
 
+.participation-count
+	font-weight: 700
+	color: $salsabor-red
+	font-size: 1.2em
+
 .participation-pending
 	border-left: 7px solid $pre-success-color
 	&:not(.options-shown)
@@ -842,7 +883,6 @@ div.legend:nth-child(1n+0)
 
 .task-hour
 	@extend .notif-hour
-	margin-top: -12px
 	font-style: italic
 
 .new-task-text

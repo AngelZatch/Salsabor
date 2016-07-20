@@ -139,7 +139,7 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 	$stmt->bindParam(1, $user_id, PDO::PARAM_INT);
 	$stmt->execute();
 	$mail = $stmt->fetch(PDO::FETCH_COLUMN);
-	if($mail == ""){
+	if($mail == "" && $user_id != null){
 		include 'post_task.php';
 		include 'attach_tag.php';
 		// System created task

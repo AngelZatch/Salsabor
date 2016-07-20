@@ -27,16 +27,22 @@ $display = $_GET["display"];
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-list-alt"></span> Tâches à faire</legend>
-					<?php if($is_super_admin){;?>
 					<ul class="nav nav-tabs">
 						<li role="presentation" <?php if($display == "user") echo "class='active'";?>>
 							<a href="taches/user">Vos tâches</a>
 						</li>
+						<?php if($is_super_admin){?>
 						<li role="presentation" <?php if($display == "all") echo "class='active'";?>>
 							<a href="taches/all">Toutes les tâches</a>
 						</li>
+						<?php } ?>
+						<li role="presentation" <?php if($display == "free") echo "class='active'";?>>
+							<a href="taches/free">Tâches libres</a>
+						</li>
 					</ul>
-					<?php }?>
+					<?php if($display == "free") { ?>
+					<span class="help-block">Vous pouvez accomplir les tâches libres comme si elles vous étaient associées.</span>
+					<?php } ?>
 					<div class="tasks-container container-fluid"></div>
 				</div>
 			</div>
@@ -45,11 +51,20 @@ $display = $_GET["display"];
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');
-				<?php if($display == "user") {;?>
+				<?php
+				switch($display){
+					case "user": ?>
 				fetchTasks(null, 0, <?php echo $_SESSION["user_id"];?>, "pending", 0);
-				<?php } else {;?>
+				<?php break;
+
+					case "all": ?>
 				fetchTasks(null, 0, 0, null, 0);
-				<?php };?>
+				<?php break;
+
+					case "free": ?>
+				fetchTasks(null, 0, null, "pending", 0);
+				<?php break;
+				}?>
 			})
 		</script>
 	</body>

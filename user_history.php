@@ -44,7 +44,8 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<?php include "inserts/user_banner.php";?>
 					<ul class="nav nav-tabs">
-						<li role="presentation"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
+						<li role="presentation" class="visible-xs-block"><a href="user/<?php echo $data;?>">Infos perso</a></li>
+						<li role="presentation" class="hidden-xs"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/abonnements">Abonnements</a></li>
 						<li role="presentation" class="active"><a href="user/<?php echo $data;?>/historique">Participations</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
@@ -56,10 +57,12 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 						<li role="presentation"><a>Statistiques</a></li>
 						<?php } ?>
 					</ul>
+					<div class="container-fluid">
+						<p class="col-xs-4"><span class="participation-count" id="total-count"></span> Participations</p>
+						<p class="col-xs-4"><span class="participation-count" id="valid-count"></span> Participations valides</p>
+						<p class="col-xs-4"><span class="participation-count" id="over-count"></span> Participations hors forfait</p>
+					</div>
 					<div class="container-fluid participations-list-container">
-						<p class="col-md-4"><span id="total-count"></span> Participations</p>
-						<p class="col-md-4"><span id="valid-count"></span> Participations valides</p>
-						<p class="col-md-4"><span id="over-count"></span> Participations hors forfait</p>
 						<!--<button class='btn btn-default btn-modal btn-link-all' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Associer toutes les participations irrégulières</button>-->
 						<ul class="participations-list">
 						</ul>

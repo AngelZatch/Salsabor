@@ -34,7 +34,8 @@ $querySalles = $db->query("SELECT * FROM rooms");
 
 $labels = $db->query("SELECT * FROM assoc_session_tags us
 						JOIN tags_session ts ON us.tag_id_foreign = ts.rank_id
-						WHERE session_id_foreign = '$id'");
+						WHERE session_id_foreign = '$id'
+						ORDER BY tag_color DESC");
 
 $user_labels = $db->query("SELECT * FROM tags_user");
 ?>
@@ -207,14 +208,14 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 		<script>
 			$(document).ready(function(){
 				$("#datepicker-start").datetimepicker({
-					format: "YYYY-MM-DD HH:mm:00",
+					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: "<?php echo date_create($cours['cours_start'])->format("m/d/Y H:i");?>",
 					locale: "fr",
 					sideBySide: true,
 					stepping: 30
 				});
 				$("#datepicker-end").datetimepicker({
-					format: "YYYY-MM-DD HH:mm:00",
+					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: "<?php echo date_create($cours['cours_end'])->format("m/d/Y H:i");?>",
 					locale: "fr",
 					sideBySide: true,

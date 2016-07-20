@@ -19,7 +19,8 @@ while($details = $pages->fetch(PDO::FETCH_ASSOC)){
 	$p["labels"] = array();
 	$labels = $db->query("SELECT * FROM assoc_page_tags apt
 						JOIN tags_user tu ON apt.tag_id_foreign = tu.rank_id
-						WHERE page_id_foreign = '$p[id]'");
+						WHERE page_id_foreign = '$p[id]'
+						ORDER BY tag_color DESC");
 	while($label = $labels->fetch(PDO::FETCH_ASSOC)){
 		$l = array();
 		$l["entry_id"] = $label["entry_id"];

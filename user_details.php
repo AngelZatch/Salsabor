@@ -13,7 +13,8 @@ $details = $db->query("SELECT * FROM users u
 
 $labels = $db->query("SELECT * FROM assoc_user_tags ur
 						JOIN tags_user tu ON ur.tag_id_foreign = tu.rank_id
-						WHERE user_id_foreign = '$data'");
+						WHERE user_id_foreign = '$data'
+						ORDER BY tag_color DESC");
 
 $details["count"] = $db->query("SELECT * FROM tasks
 					WHERE ((task_token LIKE '%USR%' AND task_target = '$data')
@@ -136,7 +137,8 @@ if(isset($_POST["edit"])){
 					<div class="alert alert-danger"><strong>Attention !</strong> Cet adhérent a des échéances en retard.</div>
 					<?php } ?>
 					<ul class="nav nav-tabs">
-						<li role="presentation" class="active"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
+						<li role="presentation" class="active visible-xs-block"><a href="user/<?php echo $data;?>">Infos perso</a></li>
+						<li role="presentation" class="active hidden-xs"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/abonnements">Abonnements</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/historique">Participations</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
@@ -214,7 +216,7 @@ if(isset($_POST["edit"])){
 								<textarea rows="5" class="form-control" name="commentaires"><?php echo $details["commentaires"];?></textarea>
 							</div>
 						</div>
-						<input type="submit" name="edit" role="button" class="btn btn-primary btn-block" value="ENREGISTRER LES MODIFICATIONS">
+						<input type="submit" name="edit" role="button" class="btn btn-primary btn-block" value="Enregistrer les modifications">
 					</form>
 				</div>
 			</div>

@@ -5,8 +5,8 @@ $db = PDOFactory::getConnection();
 $fetch_start = $_GET["fetch_start"];
 $fetch_end = $_GET["fetch_end"];
 try{
-	/** Obtention des cours **/
-	$calendar = $db->prepare('SELECT * FROM jours_chomes WHERE date_chomee > '$fetch_start' AND date_chomee < '$fetch_end'');
+	// Fetching holidays
+	$calendar = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= '$fetch_start' AND date_chomee < '$fetch_end'");
 	$calendar->execute();
 	$events = array();
 
@@ -20,7 +20,7 @@ try{
 		$e['type'] = "holiday";
 		// Paramètre propriétaire de Fullcalendar.js qui sert à délimiter un évènement
 		// à ses heures de début et de fin.
-		$e['allDay'] = false;
+		$e['allDay'] = true;
 
 		array_push($events, $e);
 	}
