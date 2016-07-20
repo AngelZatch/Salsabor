@@ -47,7 +47,8 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<?php include "inserts/user_banner.php";?>
 					<ul class="nav nav-tabs">
-						<li role="presentation"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
+						<li role="presentation" class="visible-xs-block"><a href="user/<?php echo $data;?>">Infos perso</a></li>
+						<li role="presentation" class="hidden-xs"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/abonnements">Abonnements</a></li>
 						<li role="presentation"><a href="user/<?php echo $data;?>/historique">Participations</a></li>
 						<li role="presentation" class="active"><a href="user/<?php echo $data;?>/achats">Achats</a></li>

@@ -623,6 +623,9 @@ $(document).ready(function(){
 		else
 			$("#tag-"+target).remove($(".glyphicon-star"));
 	})
+}).on('click', '.sub-menu-toggle', function(){
+	console.log("toggling");
+	$(".small-sidebar-container").toggle();
 })
 
 $(".has-name-completion").on('click blur keyup', function(){

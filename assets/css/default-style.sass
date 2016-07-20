@@ -217,6 +217,9 @@ a
 .sidebar-container
 	position: relative
 
+.small-sidebar-container
+	display: none
+
 .sidebar
 	position: fixed
 	background-color: $body-color
@@ -224,6 +227,19 @@ a
 	padding: 10px 0 20px 0
 	overflow-y: scroll
 	height: 94.5vh
+	z-index: 1000
+	@media screen and (max-width: $break-small)
+		background-color: $salsabor-red
+		color: white !important
+	.sub-menu-toggle
+		font-size: 1em
+
+#small-menu
+	top: 0
+	height: 100%
+	background-color: $salsabor-red
+	.main-option, .main-option>.glyphicon
+		color: white
 
 .main-section
 	cursor: default
@@ -258,6 +274,10 @@ a
 .navbar-toggle
 	border: 0
 	background-color: inherit !important
+
+.sub-menu-toggle
+	color: white
+	font-size: 2.5em
 
 .navbar-brand
 	margin-top: 13px
@@ -574,6 +594,11 @@ a
 	color: $system-color
 	text-decoration: underline
 
+.participation-count
+	font-weight: 700
+	color: $salsabor-red
+	font-size: 1.2em
+
 .participation-pending
 	border-left: 7px solid $pre-success-color
 	&:not(.options-shown)
@@ -854,13 +879,9 @@ div.legend:nth-child(1n+0)
 
 .task-target
 	margin-top: -12px
-	@media screen and (min-width: $break-small)
-		margin-top: -40px
-		margin-bottom: 28px
 
 .task-hour
 	@extend .notif-hour
-	margin-top: -12px
 	font-style: italic
 
 .new-task-text

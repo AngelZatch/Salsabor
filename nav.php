@@ -5,7 +5,7 @@ $db = PDOFactory::getConnection();
 $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0 AND priorite=1")->rowCount();
 ?>
 
-<div class="hidden-sm hidden-md hidden-lg">
+<div class="visible-xs-block">
 	<nav class="navbar navbar-inverse">
 		<div class="container-fluid">
 			<div class="navbar-header">
@@ -15,6 +15,9 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue
 					<div class="nav-pp">
 						<img src="<?php echo $_SESSION["photo"];?>" alt="<?php echo $_SESSION["username"];?>" style="width:inherit;">
 					</div>
+				</button>
+				<button class="navbar-toggle sub-menu-toggle">
+					<span class="glyphicon glyphicon-menu-hamburger"></span>
 				</button>
 				<?php } else { ?>
 				<button class="navbar-toggle collapse" data-toggle="collapse" data-target="#navbar">

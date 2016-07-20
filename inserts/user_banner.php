@@ -7,7 +7,7 @@
 		<p class="editable" id="user_nom" data-input="text" data-table="users" data-column="user_nom" data-target="<?php echo $data;?>" data-value="value"><?php echo $details["user_nom"];?></p>
 	</div>
 	<div class="user-summary">
-		<div class="col-lg-12 user-labels">
+		<div class="col-xs-12 user-labels">
 			<?php if($details["actif"] == 1){ ?>
 			<span class="label label-success">Actif</span>
 			<?php } else {
@@ -18,7 +18,7 @@
 			<?php }
 } ?>
 		</div>
-		<div class="col-lg-6">
+		<div class="col-Xs-6">
 			<div>
 				<span class="glyphicon glyphicon-envelope glyphicon-description"></span>
 				<p class="editable" id="refresh-mail" data-input="mail" data-table="users" data-column="mail" data-target="<?php echo $data;?>" data-value="<?php echo ($details["mail"]="")?"no-value":"value";?>"><?php echo $details["mail"];?></p>
@@ -41,7 +41,7 @@
 			?>
 			<a href="user/<?php echo $data;?>/taches" id="refresh-tasks" class="<?php echo $class;?>"><span class="glyphicon glyphicon-list-alt"></span> <?php echo $message;?></a>
 		</div>
-		<div class="col-lg-6">
+		<div class="col-xs-6">
 			<div>
 				<span class="glyphicon glyphicon-earphone glyphicon-description"></span>
 				<p class="editable" id="refresh-phone" data-input="tel" data-table="users" data-column="telephone" data-target="<?php echo $data;?>" data-value="<?php echo ($details["mail"]="")?"no-value":"value";?>"><?php echo $details["telephone"];?></p>
