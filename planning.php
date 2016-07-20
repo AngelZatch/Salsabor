@@ -78,26 +78,10 @@ require_once "functions/reservations.php";
 
 				// Full calendar
 				$('#calendar').fullCalendar({
-					header:{
-						left:'prev,next today',
-						center:'title',
-						right:'month, agendaWeek, agendaDay'
-					},
-					defaultView: 'agendaWeek',
-					lang:'fr',
-					timezone: 'local',
-					editable: false,
-					selectable: true,
-					selectHelper: true,
-					hiddenDays: [0],
-					minTime: '9:00',
-					timeFormat: 'H:mm',
-					nowIndicator: true,
-					handleWindowResize: true,
 					contentHeight: height,
-					startParam: 'fetch_start',
+					defaultView: 'agendaWeek',
 					endParam: 'fetch_end',
-					snapDuration: "01:00",
+					editable: false,
 					eventSources:[
 						{
 							url: 'functions/calendarfeed_cours.php',
@@ -115,7 +99,7 @@ require_once "functions/reservations.php";
 							textColor: 'black',
 							error: function(){
 								console.log('Erreur pendant l\'obtention des réservations');
-							},
+							}
 						},
 						{
 							url: 'functions/calendarfeed_holidays.php',
@@ -125,7 +109,7 @@ require_once "functions/reservations.php";
 							rendering: 'background',
 							error: function(data){
 								console.log(data);
-							},
+							}
 						}
 					],
 					eventRender: function(calEvent, element){
@@ -202,6 +186,16 @@ require_once "functions/reservations.php";
 							})
 						}
 					},
+					handleWindowResize: true,
+					header:{
+						left:'prev,next today',
+						center:'title',
+						right:'month, agendaWeek, agendaDay'
+					},
+					hiddenDays: [0],
+					lang:'fr',
+					minTime: '9:00',
+					nowIndicator: true,
 					select: function(start, end, jsEvent, view){
 						jsEvent.stopImmediatePropagation();
 						console.log(start, end);
@@ -219,13 +213,16 @@ require_once "functions/reservations.php";
 						if(end.diff(start) == 86400000){
 							$(".sub-modal-title").append("<span class='glyphicon glyphicon-calendar'></span> Jour entier");
 							$(".session-date").append("<span>Date</span>"+moment(start).format("ll"));
-							$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session'' id='quick-add-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"'><span class='glyphicon glyphicon-leaf'></span> Ajouter un jour chômé</a>");
+							$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session'' id='quick-add-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='1'><span class='glyphicon glyphicon-leaf'></span> Ajouter un jour chômé</a>");
 						} else if(end.diff(start) < 8640000) {
 							$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un cours");
 							$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("HH:mm"));
+							$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session'' id='quick-add-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='1'><span class='glyphicon glyphicon-leaf'></span> Ajouter un jour chômé</a>");
 						} else {
 							$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un événement");
 							$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("ll[,] HH:mm"));
+							var duration = moment(end).diff(moment(start)) / (3600 * 24 * 1000);
+							$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session'' id='quick-add-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='"+duration+"'><span class='glyphicon glyphicon-leaf'></span> Ajouter une période chômée</a>");
 
 						}
 						$(".sub-modal-footer").append("<a href='cours_add.php' class='btn btn-primary float-right btn-to-session'>Ajouter</a>");
@@ -255,18 +252,32 @@ require_once "functions/reservations.php";
 						// Showing modal once everything is done
 						$(".sub-modal-session").show();
 					},
+					selectable: true,
+					selectHelper: true,
+					snapDuration: "01:00",
+					startParam: 'fetch_start',
+					timeFormat: 'H:mm',
+					timezone: 'local',
 					unselect: function(){
 						$(".sub-modal-session").hide();
 					},
-					unselectCancel: '.btn-to-session'
+					unselectCancel: '.btn-to-session',
+					viewRender: function(){
+						$("#calendar").fullCalendar('refetchEvents');
+					}
 				});
 			}).on('click', '#quick-add-holiday', function(){
 				var date = document.getElementById($(this).attr("id")).dataset.date;
-				$.post("functions/post_holiday.php", {holiday_date : date}).done(function(data){
+				var duration = document.getElementById($(this).attr("id")).dataset.duration;
+				$.when(postHolidays(date, duration)).done(function(data){
 					$(".sub-modal-session").hide();
 					$("#calendar").fullCalendar('refetchEvents');
 				})
 			})
+
+			function postHolidays(date, duration){
+				return $.post("functions/post_holidays.php", {holiday_date : date, duration : duration});
+			}
 		</script>
 	</body>
 </html>
