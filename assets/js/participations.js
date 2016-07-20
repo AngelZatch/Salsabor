@@ -135,14 +135,14 @@ function displaySessions(data, fetched){
 		as_display += "<div class='panel-heading'>";
 		// Container fluid for session name and hour
 		as_display += "<div class='container-fluid'>";
-		as_display += "<p class='session-id col-sm-5'>"+active_sessions[i].title+"</p>";
-		as_display += "<p class='session-date col-sm-5'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+"</p>";
-		as_display += "<p class='col-sm-1 session-option'><span class='glyphicon glyphicon-lock close-session' id='close-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Verrouiller le cours'></span></p>";
-		as_display += "<p class='col-sm-1 session-option'><span class='glyphicon glyphicon-ok-sign validate-session' id='validate-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Valider tous les passages'></span></p>";
+		as_display += "<p class='session-id col-xs-5'>"+active_sessions[i].title+"</p>";
+		as_display += "<p class='session-date col-xs-5'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+"</p>";
+		as_display += "<p class='col-xs-1 session-option'><span class='glyphicon glyphicon-lock close-session' id='close-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Verrouiller le cours'></span></p>";
+		as_display += "<p class='col-xs-1 session-option'><span class='glyphicon glyphicon-ok-sign validate-session' id='validate-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Valider tous les passages'></span></p>";
 		as_display += "</div>";
 		// Tags
 		as_display += "<div class='container-fluid'>";
-		as_display += "<h5 class='col-lg-6'>";
+		as_display += "<h5 class='col-xs-12'>";
 		for(var j = 0; j < active_sessions[i].labels.length; j++){
 			console.log(active_sessions[i].labels[j].entry_id);
 			var label;
@@ -157,12 +157,12 @@ function displaySessions(data, fetched){
 		as_display += "</div>";
 		// Container fluid for session level, teacher...
 		as_display += "<div class='container-fluid'>";
-		as_display += "<p class='col-xs-4 col-sm-2 col-lg-1'><span class='glyphicon glyphicon-user'></span> <span class='user-total-count' id='user-total-count-"+active_sessions[i].id+"'></span></p>";
-		as_display += "<p class='col-xs-4 col-sm-2 col-lg-1'><span class='glyphicon glyphicon-ok'></span> <span class='user-ok-count' id='user-ok-count-"+active_sessions[i].id+"'></span></p>";
-		as_display += "<p class='col-xs-4 col-sm-2 col-lg-1'><span class='glyphicon glyphicon-warning-sign'></span> <span class='user-warning-count' id='user-warning-count-"+active_sessions[i].id+"'></span></p>";
-		as_display += "<p class='col-sm-6 col-lg-3'><span class='glyphicon glyphicon-signal'></span> "+active_sessions[i].level+"</p>";
-		as_display += "<p class='col-sm-6 col-lg-3'><span class='glyphicon glyphicon-pushpin'></span> "+active_sessions[i].room+"</p>";
-		as_display += "<p class='col-sm-6 col-lg-3'><span class='glyphicon glyphicon-blackboard'></span> "+active_sessions[i].teacher+"</p>";
+		as_display += "<p class='col-xs-2 col-sm-2 col-lg-1'><span class='glyphicon glyphicon-user'></span> <span class='user-total-count' id='user-total-count-"+active_sessions[i].id+"'></span></p>";
+		as_display += "<p class='col-xs-2 col-sm-2 col-lg-1'><span class='glyphicon glyphicon-ok'></span> <span class='user-ok-count' id='user-ok-count-"+active_sessions[i].id+"'></span></p>";
+		as_display += "<p class='col-xs-2 col-sm-2 col-lg-1'><span class='glyphicon glyphicon-warning-sign'></span> <span class='user-warning-count' id='user-warning-count-"+active_sessions[i].id+"'></span></p>";
+		as_display += "<p class='col-xs-6 col-lg-3'><span class='glyphicon glyphicon-signal'></span> "+active_sessions[i].level+"</p>";
+		as_display += "<p class='col-xs-6 col-lg-3'><span class='glyphicon glyphicon-pushpin'></span> "+active_sessions[i].room+"</p>";
+		as_display += "<p class='col-xs-6 col-lg-3'><span class='glyphicon glyphicon-blackboard'></span> "+active_sessions[i].teacher+"</p>";
 		as_display += "</div>";
 
 		as_display += "</div>";
@@ -236,7 +236,7 @@ function displayParticipations(session_id){
 		var users = 0, ok = 0, warning = 0;
 		for(var i = 0; i <= records_list.length; i++){
 			if(i == records_list.length){
-				contents += "<li class='panel-item panel-record panel-add-record container-fluid trigger-sub col-sm-6 col-md-4 col-lg-3' id='add-record-"+session_id+"' data-subtype='add-record' data-session='"+session_id+"'>";
+				contents += "<li class='panel-item panel-record panel-add-record container-fluid trigger-sub col-xs-6 col-md-4 col-lg-3' id='add-record-"+session_id+"' data-subtype='add-record' data-session='"+session_id+"'>";
 				contents += "<div class='small-user-pp empty-pp'></div>";
 				contents += "<p class='col-lg-12 panel-item-title bf'>Ajouter un passage manuellement</p>";
 				contents += "</li>";
@@ -262,14 +262,14 @@ function displayParticipations(session_id){
 						break;
 				}
 				users++;
-				contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-sm-6 col-md-4 col-lg-3' id='participation-"+records_list[i].id+"' data-participation='"+records_list[i].id+"'>";
+				contents += "<li class='panel-item panel-record "+record_status+" container-fluid col-xs-6 col-md-4 col-lg-3' id='participation-"+records_list[i].id+"' data-participation='"+records_list[i].id+"'>";
 				if(records_list[i].count > 0){
 					contents += "<a href='user/"+records_list[i].user_id+"/taches' target='_blank'><span class='glyphicon glyphicon-list-alt float-right' title='"+records_list[i].count+" tâche(s) restantes à faire'></span></a>";
 				}
 				contents += "<div class='small-user-pp'><img src='"+records_list[i].photo+"' alt='"+records_list[i].user+"'></div>";
 				contents += "<p class='col-lg-12 panel-item-title bf'><a href='user/"+records_list[i].user_id+"'>"+records_list[i].user+"</a></p>";
-				contents += "<p class='col-lg-6 participation-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
-				contents += "<p class='col-lg-6 participation-details'><span class='glyphicon glyphicon-qrcode'></span> "+records_list[i].card+"</p>";
+				contents += "<p class='col-xs-6 participation-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("HH:mm:ss")+"</p>";
+				contents += "<p class='col-xs-6 participation-details'><span class='glyphicon glyphicon-qrcode'></span> "+records_list[i].card+"</p>";
 				// Indicating the product will soon expire
 				if(moment(records_list[i].product_expiration).isBefore(moment('now').add(records_list[i].days_before_exp, 'days'))){
 					console.log("days");
@@ -381,19 +381,19 @@ function displayIrregularParticipations(participation_id){
 			} else {
 				var card_message = "Passage ajouté manuellement";
 			}
-			contents += "<p class='col-sm-4 participation-details'><span class='glyphicon glyphicon-qrcode'></span> "+card_message+"</p>";
+			contents += "<p class='col-xs-4 participation-details'><span class='glyphicon glyphicon-qrcode'></span> "+card_message+"</p>";
 
 			// Record hour
-			contents += "<p class='col-sm-4 participation-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("DD/MM/YYYY HH:mm:ss")+"</p>";
+			contents += "<p class='col-xs-4 participation-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("DD/MM/YYYY HH:mm:ss")+"</p>";
 
 			// Reader
-			contents += "<p class='col-sm-4 participation-details'><span class='glyphicon glyphicon-pushpin'></span> "+records_list[i].room+"</p>";
+			contents += "<p class='col-xs-4 participation-details'><span class='glyphicon glyphicon-pushpin'></span> "+records_list[i].room+"</p>";
 
 			// Session
 			if(records_list[i].cours_name != null){
-				contents += "<p class='col-sm-6 participation-details srd-session'><span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].cours_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].cours_end).format("HH:mm")+")</p>";
+				contents += "<p class='col-xs-6 participation-details srd-session'><span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].cours_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].cours_end).format("HH:mm")+")</p>";
 			} else {
-				contents += "<p class='col-sm-6 participation-details srd-session'><span class='glyphicon glyphicon-eye-open'></span> Pas de cours</p>";
+				contents += "<p class='col-xs-6 participation-details srd-session'><span class='glyphicon glyphicon-eye-open'></span> Pas de cours</p>";
 			}
 
 			// Indicating the product will soon expire

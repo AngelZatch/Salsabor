@@ -57,6 +57,7 @@ $queryEcheances = $db->prepare("SELECT * FROM produits_echeances
 		</div>
 		<?php include "scripts.php";?>
 		<script src="assets/js/maturities.js"></script>
+		<script src="assets/js/list.min.js"></script>
 		<script>
 			function uploadChanges(token, value){
 				var database = "produits_echeances";

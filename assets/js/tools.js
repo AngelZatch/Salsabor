@@ -550,10 +550,10 @@ $(document).ready(function(){
 			body += "<span class='input-group-btn'><button class='btn btn-success btn-tag-name' type='button'>Valider</button></span>";
 			body += "</div>";
 			$.when(fetchColors()).done(function(data){
-				body += "<div class='row' id='colors'>";
+				body += "<div class='container-fluid' id='colors'>";
 				var colors = JSON.parse(data);
 				for(var i = 0; i < colors.length; i++){
-					body += "<div class='color-cube col-xs-4 col-md-3 col-lg-2' id='color-"+colors[i].color_id+"' style='background-color:"+colors[i].color_value+"' data-target='"+target+"'  data-tagtype='"+tag_type+"'>";
+					body += "<div class='color-cube col-xs-3 col-md-3 col-lg-2' id='color-"+colors[i].color_id+"' style='background-color:"+colors[i].color_value+"' data-target='"+target+"'  data-tagtype='"+tag_type+"'>";
 					if("#"+colors[i].color_value == $("#tag-"+target).css("backgroundColor")){
 						body += "<span class='glyphicon glyphicon-ok color-selected'></span>";
 					}
