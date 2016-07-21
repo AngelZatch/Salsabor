@@ -20,8 +20,15 @@ try{
 		$e['type'] = "holiday";
 		// Paramètre propriétaire de Fullcalendar.js qui sert à délimiter un évènement
 		// à ses heures de début et de fin.
-		$e['allDay'] = true;
+		$time_end = new DateTime($fetch_end);
+		$time_start = new DateTime($fetch_start);
+		$interval = $time_end->diff($time_start);
+		if($interval->days > 6)
+			$e['allDay'] = true;
+		else
+			$e['allDay'] = false;
 
+		//echo $interval->days;
 		array_push($events, $e);
 	}
 
