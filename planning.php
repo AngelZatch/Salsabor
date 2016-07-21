@@ -78,26 +78,11 @@ require_once "functions/reservations.php";
 
 				// Full calendar
 				$('#calendar').fullCalendar({
-					header:{
-						left:'prev,next today',
-						center:'title',
-						right:'month, agendaWeek, agendaDay'
-					},
-					defaultView: 'agendaWeek',
-					lang:'fr',
-					timezone: 'local',
-					editable: false,
-					selectable: true,
-					selectHelper: true,
-					hiddenDays: [0],
-					minTime: '9:00',
-					timeFormat: 'H:mm',
-					nowIndicator: true,
-					handleWindowResize: true,
 					contentHeight: height,
-					startParam: 'fetch_start',
+					defaultView: 'agendaWeek',
 					endParam: 'fetch_end',
-					snapDuration: "01:00",
+					editable: false,
+					eventOrder: "lieu",
 					eventSources:[
 						{
 							url: 'functions/calendarfeed_cours.php',
@@ -115,7 +100,7 @@ require_once "functions/reservations.php";
 							textColor: 'black',
 							error: function(){
 								console.log('Erreur pendant l\'obtention des réservations');
-							},
+							}
 						},
 						{
 							url: 'functions/calendarfeed_holidays.php',
@@ -125,7 +110,7 @@ require_once "functions/reservations.php";
 							rendering: 'background',
 							error: function(data){
 								console.log(data);
-							},
+							}
 						}
 					],
 					eventRender: function(calEvent, element){
@@ -143,18 +128,7 @@ require_once "functions/reservations.php";
 						}  else if(calEvent.type == 'holiday'){
 							element.css('background-color', '#000');
 						} else {
-							element.css("background-color", "#"+calEvent.color);/*
-							switch(calEvent.prestation_id){
-								case '6':
-								case '7':
-								case '8':
-									element.css('background-color', '#2DF588');
-									element.css('border-color', '#28DB7A');
-									break;
-
-								default:
-									break;
-							}*/
+							element.css("background-color", "#"+calEvent.color);
 						}
 					},
 					eventClick: function(calEvent, jsEvent, element){
@@ -202,9 +176,18 @@ require_once "functions/reservations.php";
 							})
 						}
 					},
+					handleWindowResize: true,
+					header:{
+						left:'prev,next today',
+						center:'title',
+						right:'month, agendaWeek, agendaDay'
+					},
+					hiddenDays: [0],
+					lang:'fr',
+					minTime: '9:00',
+					nowIndicator: true,
 					select: function(start, end, jsEvent, view){
 						jsEvent.stopImmediatePropagation();
-						console.log(start, end);
 						$(".sub-modal-session").hide();
 						$("#sub-modal-session").data().target = -1;
 
@@ -215,20 +198,47 @@ require_once "functions/reservations.php";
 						$(".sub-modal-footer").empty();
 						// Color change
 						$(".sub-modal-title").css("color", "000000");
-						// Filling fields
-						if(end.diff(start) == 86400000){
-							$(".sub-modal-title").append("<span class='glyphicon glyphicon-calendar'></span> Jour entier");
-							$(".session-date").append("<span>Date</span>"+moment(start).format("ll"));
-							$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session'' id='quick-add-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"'><span class='glyphicon glyphicon-leaf'></span> Ajouter un jour chômé</a>");
-						} else if(end.diff(start) < 8640000) {
-							$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un cours");
-							$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("HH:mm"));
-						} else {
-							$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un événement");
-							$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("ll[,] HH:mm"));
 
-						}
-						$(".sub-modal-footer").append("<a href='cours_add.php' class='btn btn-primary float-right btn-to-session'>Ajouter</a>");
+						// We get the duration selected by the user
+						var selected_duration = end.diff(start);
+
+						// We check to see if the day selected is already a holiday or not
+						$.when(isHoliday(moment(start).format("YYYY-MM-DD"))).done(function(holiday_check_value){
+							// Filling fields depending on the duration
+							if(selected_duration == 86400000){ // The user has selected a full day
+								$(".sub-modal-title").append("<span class='glyphicon glyphicon-calendar'></span> Jour entier");
+								$(".session-date").append("<span>Date</span>"+moment(start).format("ll"));
+								if(holiday_check_value == -1){
+									$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session' id='quick-add-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='1'><span class='glyphicon glyphicon-leaf'></span> Ajouter un jour chômé</a>");
+								} else {
+									$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session' id='quick-remove-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='1'><span class='glyphicon glyphicon-leaf'></span> Retirer le jour chômé</a>");
+								}
+							} else if(selected_duration < 8640000) { // The user has selected a duration shorter than a day
+								$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un cours");
+								$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("HH:mm"));
+								if(holiday_check_value == -1){
+									$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session' id='quick-add-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='1'><span class='glyphicon glyphicon-leaf'></span> Ajouter un jour chômé</a>");
+								} else {
+									$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session' id='quick-remove-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='1'><span class='glyphicon glyphicon-leaf'></span> Retirer le jour chômé</a>");
+								}
+							} else {
+								// For a duration longer than a day, we can still add holidays, with the duration data
+								$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un événement");
+								// To have a better display, we can check if the user has selected only full days by checking the remainder after a modulo operation. If the remainder is 0, it means the user has selected 2 or more full days, so we can skip on displaying hours.
+								if(selected_duration % 86400000 == 0){
+									$(".session-date").append("<span>Date</span>"+moment(start).format("ll")+" - "+moment(end).format("ll"));
+								} else {
+									$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("ll[,] HH:mm"));
+								}
+								var duration = moment(end).diff(moment(start)) / (3600 * 24 * 1000);
+								if(holiday_check_value == -1){
+									$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session' id='quick-add-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='"+duration+"'><span class='glyphicon glyphicon-leaf'></span> Ajouter une période chômée</a>");
+								} else {
+									$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session' id='quick-remove-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='"+duration+"'><span class='glyphicon glyphicon-leaf'></span> Retirer la période chômée</a>");
+								}
+							}
+							$(".sub-modal-footer").append("<a href='cours_add.php' class='btn btn-primary float-right btn-to-session'>Ajouter</a>");
+						})
 
 						var top = jsEvent.pageY;
 						var left = jsEvent.pageX;
@@ -242,7 +252,6 @@ require_once "functions/reservations.php";
 						if(left > w - modal_w){
 							left -= (modal_w + 20);
 						}
-						console.log(top, left);
 						$(".sub-modal-session").css({
 							top : top+'px',
 							left : left+'px'
@@ -255,18 +264,45 @@ require_once "functions/reservations.php";
 						// Showing modal once everything is done
 						$(".sub-modal-session").show();
 					},
+					selectable: true,
+					selectHelper: true,
+					slotEventOverlap: false,
+					snapDuration: "01:00",
+					startParam: 'fetch_start',
+					timeFormat: 'H:mm',
+					timezone: 'local',
 					unselect: function(){
 						$(".sub-modal-session").hide();
 					},
-					unselectCancel: '.btn-to-session'
+					unselectCancel: '.btn-to-session',
+					viewRender: function(){
+						$("#calendar").fullCalendar('refetchEvents');
+					}
 				});
 			}).on('click', '#quick-add-holiday', function(){
 				var date = document.getElementById($(this).attr("id")).dataset.date;
-				$.post("functions/post_holiday.php", {holiday_date : date}).done(function(data){
+				var duration = document.getElementById($(this).attr("id")).dataset.duration;
+				$.when(postOrDeleteHolidays(date, duration, "post")).done(function(data){
+					console.log(data);
+					$(".sub-modal-session").hide();
+					$("#calendar").fullCalendar('refetchEvents');
+				})
+			}).on('click', '#quick-remove-holiday', function(){
+				var date = document.getElementById($(this).attr("id")).dataset.date;
+				var duration = document.getElementById($(this).attr("id")).dataset.duration;
+				$.when(postOrDeleteHolidays(date, duration, "delete")).done(function(data){
 					$(".sub-modal-session").hide();
 					$("#calendar").fullCalendar('refetchEvents');
 				})
 			})
+
+			function postOrDeleteHolidays(date, duration, postOrDelete){
+				return $.post("functions/post_or_delete_holidays.php", {holiday_date : date, duration : duration, action : postOrDelete});
+			}
+
+			function isHoliday(date){
+				return $.get("functions/check_holidays.php", {check_date : date});
+			}
 		</script>
 	</body>
 </html>
