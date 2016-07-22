@@ -14,6 +14,7 @@ $cours = $db->query("SELECT * FROM cours c
 
 // Array of all the sessions from this parent.
 $all = $db->query("SELECT cours_id FROM cours c WHERE cours_parent_id = $cours[cours_parent_id]")->fetchAll(PDO::FETCH_COLUMN);
+$count = sizeof($all);
 $current = array_search($id, $all);
 $all_js = json_encode($all);
 $next_js = json_encode(array_slice($all, $current));
@@ -24,11 +25,6 @@ if($all[$current] != reset($all)){
 if($all[$current] != end($all)){
 	$next = $all[$current + 1];
 }
-
-$queryParent = $db->prepare("SELECT recurrence, frequence_repetition, parent_end_date FROM cours_parent WHERE parent_id=?");
-$queryParent->bindParam(1, $cours['cours_parent_id'], PDO::PARAM_INT);
-$queryParent->execute();
-$res_recurrence = $queryParent->fetch(PDO::FETCH_ASSOC);
 
 $querySalles = $db->query("SELECT * FROM rooms");
 
@@ -63,7 +59,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					<legend>
 						<span class="glyphicon glyphicon-eye-open"></span> <span class="session-name"><?php echo $cours['cours_intitule'];?></span>
 						<div class="btn-toolbar float-right">
-							<?php if($res_recurrence == '0'){ ?>
+							<?php if($count == '1'){ ?>
 							<input type='submit' name='editOne' role='button' class='btn btn-success' value='ENREGISTRER'>
 							<?php } else { ?>
 							<a href='#save-options' class='btn btn-primary' role='button' data-toggle='collapse' aria-expanded='false' aria-controls='saveOptions'><span class="glyphicon glyphicon-ok"></span> Enregistrer</a>
@@ -89,21 +85,21 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						</div>
 					</div>
 					<div class="container-fluid session-nav">
-						<div class="col-sm-3">
+						<div class="col-xs-4 col-sm-3">
 							<?php if(isset($prev)){ ?>
-							<a href="cours/<?php echo $prev;?>" class="sub-legend"><span class="glyphicon glyphicon-arrow-left"></span> Cours précédent</a>
+							<a href="cours/<?php echo $prev;?>" class="sub-legend prev-session"><span class="glyphicon glyphicon-arrow-left"></span> Cours précédent</a>
 							<?php } else { ?>
-							<p class="sub-legend disabled"><span class="glyphicon glyphicon-arrow-left"></span> - </p>
+							<p class="sub-legend prev-session disabled"><span class="glyphicon glyphicon-arrow-left"></span> - </p>
 							<?php } ?>
 						</div>
-						<div class="col-sm-6">
+						<div class="col-xs-4 col-sm-6">
 							<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
 						</div>
-						<div class="col-sm-3">
+						<div class="col-xs-4 col-sm-3">
 							<?php if(isset($next)){ ?>
-							<a href="cours/<?php echo $next;?>" class="sub-legend float-right">Cours suivant <span class="glyphicon glyphicon-arrow-right"></span></a>
+							<a href="cours/<?php echo $next;?>" class="sub-legend next-session float-right">Cours suivant <span class="glyphicon glyphicon-arrow-right"></span></a>
 							<?php } else { ?>
-							<p class="sub-legend float-right disabled"> - <span class="glyphicon glyphicon-arrow-right"></span></p>
+							<p class="sub-legend next-session float-right disabled"> - <span class="glyphicon glyphicon-arrow-right"></span></p>
 							<?php } ?>
 						</div>
 					</div>
@@ -175,25 +171,51 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							</div>
 						</div>
 					</form>
-					<p class="sub-legend">Participations</p>
+					<p class="sub-legend top-divider">Groupe de récurrence</p>
+					<form name="session_group" id="session_group" role="form" class="form-horizontal">
+						<div class="form-group">
+							<label for="" class="col-lg-3 control-label">Groupe <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Groupe de récurrence auquel appartient le cours."></span></label>
+							<div class="col-lg-9">
+								<p type="text" class="form-control-static" name="cours_parent" id="group-input"><?php echo $cours["cours_parent_id"];?></p>
+							</div>
+						</div>
+						<span class="col-lg-offset-2 col-lg-10 help-block">Modifiez les champs ci-dessous pour ajouter ou retirer des cours. Si vous prolongez la récurrence (en augmentant le nombre ou la date) de nouveaux cours seront créés. Inversement, si vous réduisez la récurrence, des cours existants seront supprimés.</span>
+						<div class="form-group">
+							<label for="" class="col-lg-3 control-label">Nombre de récurrences</label>
+							<div class="col-lg-9">
+								<input type="number" class="form-control" id="steps" name="steps" value="<?php echo $count;?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="recurrence_end" class="col-lg-3 control-label">Fin de récurrence</label>
+							<div class="col-lg-9">
+								<input type="text" class="form-control" name="recurrence_end" id="recurrence_end">
+							</div>
+						</div>
+					</form>
+					<div class="container-fluid">
+						<button class="btn btn-primary col-xs-12 col-sm-offset-6 col-sm-6" id="group-edit">Valider les modifications d'appartenance</button>
+						<!--<button class="btn btn-danger col-xs-6" id="group-split">Dissocier du groupe</button>-->
+					</div>
+					<p class="sub-legend top-divider">Participations de ce cours</p>
 					<div class="panel panel-session" id="session-<?php echo $id;?>">
 						<a class="panel-heading-container" id='ph-session-<?php echo $id;?>' data-session='<?php echo $id;?>' data-trigger='<?php echo $id;?>'>
 							<div class="panel-heading">
 								<div class="container-fluid">
-									<p class="col-md-3">Liste des participants</p>
-									<p class="col-lg-1"><span class="glyphicon glyphicon-user"></span> <span class="user-total-count" id="user-total-count-<?php echo $id;?>"></span></p>
-									<p class="col-lg-1"><span class="glyphicon glyphicon-ok"></span> <span class="user-ok-count" id="user-ok-count-<?php echo $id;?>"></span></p>
-									<p class="col-lg-1"><span class="glyphicon glyphicon-warning-sign"></span> <span class="user-warning-count" id="user-warning-count-<?php echo $id;?>"></span></p>
-									<p class="col-md-1 col-md-offset-5 session-option"><span class="glyphicon glyphicon-ok-sign validate-session" id="validate-session-<?php echo $id;?>" data-session="<?php echo $id;?>" title="Valider tous les passages"></span></p>
+									<p class="col-xs-5 col-md-3">Liste des participants</p>
+									<p class="col-xs-2 col-lg-1"><span class="glyphicon glyphicon-user"></span> <span class="user-total-count" id="user-total-count-<?php echo $id;?>"></span></p>
+									<p class="col-xs-2 col-lg-1"><span class="glyphicon glyphicon-ok"></span> <span class="user-ok-count" id="user-ok-count-<?php echo $id;?>"></span></p>
+									<p class="col-xs-2 col-lg-1"><span class="glyphicon glyphicon-warning-sign"></span> <span class="user-warning-count" id="user-warning-count-<?php echo $id;?>"></span></p>
+									<p class=" col-xs-1 col-md-1 col-md-offset-5 session-option"><span class="glyphicon glyphicon-ok-sign validate-session" id="validate-session-<?php echo $id;?>" data-session="<?php echo $id;?>" title="Valider tous les passages"></span></p>
 								</div>
 							</div>
 						</a>
 						<div class="panel-body collapse" id="body-session-<?php echo $id;?>" data-session="<?php echo $id;?>"></div>
 					</div>
-					<p class="sub-legend">Statistiques</p>
-					<span class="help-block">Nombre de participants à chaque cours</span>
+					<p class="sub-legend top-divider">Statistiques de participations du groupe de récurrence</p>
+					<span class="help-block">Nombre de participants à chaque cours (Groupe de récurrence : <?php echo $cours["cours_parent_id"];?>)</span>
 					<div class="chart" id="session-chart" style="height:250px"></div>
-					<p class="sub-legend">Tâches à faire</p>
+					<p class="sub-legend top-divider">Tâches à faire</p>
 					<div class="tasks-container container-fluid"></div>
 					<div class="sub-container container-fluid">
 						<div class="panel-heading panel-add-record container-fluid">
@@ -231,6 +253,44 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				fetchTasks("SES", <?php echo $id;?>, 0, null, 0);
 
 				var parent_id = <?php echo $cours["cours_parent_id"];?>;
+				window.initial_steps = $("#steps").val();
+
+				$.get("functions/fetch_session_group.php", {group_id : parent_id}).done(function(data){
+					var group_details = JSON.parse(data);
+					$("#recurrence_end").datetimepicker({
+						format : "YYYY-MM-DD",
+						locale: 'fr',
+						defaultDate: group_details.parent_end_date
+					}).on('dp.change', function(e){
+						console.log("changed");
+						if(!$("#steps").is(":focus")){
+							var end_date = $(this).val();
+							var starting_date = moment($("#datepicker-start").val()).format("YYYY-MM-DD");
+							if(moment(end_date).isValid()){
+								var delta = moment(moment(end_date).diff(starting_date));
+								var delta_days = delta / (7 * 24 * 3600 * 1000);
+								$("#steps").val(Math.trunc(delta_days));
+							}
+						}
+					})
+					$("#steps").keyup(function(){
+						var steps = $(this).val();
+						window.delta_steps = steps - initial_steps;
+						var starting_date = moment(group_details.parent_end_date).format("YYYY-MM-DD");
+						var end_date = moment(starting_date).add(delta_steps, 'w').format("YYYY-MM-DD")
+						$("#recurrence_end").val(end_date);
+						if(delta_steps < -1)
+							$("#group-edit").text("Valider les modifications d'appartenance ("+-delta_steps+" cours retirés)");
+						if(delta_steps == -1)
+							$("#group-edit").text("Valider les modifications d'appartenance ("+-delta_steps+" cours retiré)");
+						if(delta_steps == 0)
+							$("#group-edit").text("Valider les modifications d'appartenance");
+						if(delta_steps == 1)
+							$("#group-edit").text("Valider les modifications d'appartenance ("+delta_steps+" cours ajouté)");
+						if(delta_steps > 1)
+							$("#group-edit").text("Valider les modifications d'appartenance ("+delta_steps+" cours ajoutés)");
+					})
+				})
 
 				$.getJSON("functions/fetch_all_sessions_participations.php", {parent_id : parent_id}, function(data){
 					new Morris.Line({
@@ -332,6 +392,29 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						})
 					}
 				}
+			}).on('click', '#group-edit', function(){
+				var group_id = $("#group-input").text();
+				$.post("functions/edit_group.php", {group_id : group_id, delta_steps : delta_steps}).done(function(data){
+					console.log(data);
+					$("#group-edit").text("Valider les modifications d'appartenance");
+					if(delta_steps > 0){
+						if($(".next-session").hasClass("disabled")){
+							$(".next-session").replaceWith("<a href='cours/"+data+"' class='sub-legend next-session float-right'> Cours suivant <span class='glyphicon glyphicon-arrow-right'></span></a>");
+						}
+					}
+					if(delta_steps < 0){
+						var current_session_id = <?php echo $id;?>;
+						if(data == current_session_id){
+							$(".next-session").replaceWith("<p class='sub-legend next-session float-right disabled'> - <span class='glyphicon glyphicon-arrow-right'></span></p>");
+						} else {
+							if(moment($("#datepicker-end").val()).format("YYYY-MM-DD") > moment($("#recurrence_end").val()).format("YYYY-MM-DD")){
+								console.log("cours/"+data);
+								// If the displayed sesssion has been deleted too, we redirect the user to the last session of the group
+								window.top.location = "cours/"+data;
+							}
+						}
+					}
+				});
 			}).on('click', '.panel-add-record', function(){
 				var emptyTask = "<div class='panel task-line task-new panel-new-task'>";
 				emptyTask += "<div class='panel-heading container-fluid'>";

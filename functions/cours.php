@@ -122,4 +122,8 @@ function createSession($db, $parent_id, $session_name, $start, $end, $user_id, $
 	$session_id = $db->lastInsertId();
 	return $session_id;
 }
+
+function updateRecurrenceEndDate($db, $group_id, $new_recurrence_end){
+	$db->query("UPDATE cours_parent SET parent_end_date = '$new_recurrence_end' WHERE parent_id = $group_id");
+}
 ?>

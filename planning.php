@@ -75,6 +75,8 @@ require_once "functions/reservations.php";
 				var docHeight = $(document).height();
 				var xPos = $("#calendar").position();
 				var height = docHeight - xPos.top - 100;
+				if(height < 350)
+					height = docHeight - xPos.top + 40;
 
 				// Full calendar
 				$('#calendar').fullCalendar({
@@ -176,7 +178,6 @@ require_once "functions/reservations.php";
 							})
 						}
 					},
-					handleWindowResize: true,
 					header:{
 						left:'prev,next today',
 						center:'title',

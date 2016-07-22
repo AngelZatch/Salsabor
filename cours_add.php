@@ -152,7 +152,6 @@ if(isset($_POST['add'])){
 				$("#date_fin").datetimepicker({
 					format : "YYYY-MM-DD",
 					locale: 'fr',
-					debug: true
 				}).on('dp.change', function(e){
 					console.log("changed");
 					if(!$("#steps").is(":focus")){
