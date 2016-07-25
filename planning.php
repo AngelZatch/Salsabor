@@ -8,6 +8,9 @@ $db = PDOFactory::getConnection();
 /** Le fichier functions/cours.php contient toutes les fonctions relatives aux cours **/
 require_once "functions/cours.php";
 require_once "functions/reservations.php";
+
+$rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
+					JOIN colors c ON r.room_color = c.color_id")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <html>
 	<head>
@@ -28,6 +31,19 @@ require_once "functions/reservations.php";
 						<a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a>
 					</legend>
 					<span class="help-block">Sur périphériques tactiles, maintenez appuyé pour sélectionner un événement ou une plage horaire.</span>
+					<div class="filters row">
+						<div class="container-fluid col-xs-12 col-sm-4 col-lg-3">
+							<p class="filter-title" data-toggle="collapse" href="#room-filtering" title="Cliquez pour dérouler les salles disponibles">Vos salles <span class="glyphicon glyphicon-menu-down float-right"></span></p>
+							<ul class="collapse" id="room-filtering">
+								<?php foreach($rooms as $room){ ?>
+								<div class="room-filter" id="room-<?php echo $room["room_id"];?>" data-room="<?php echo $room["room_id"];?>" data-filter="1" title="Cliquez pour activer ou désactiver l&apos;affichage d&apos;une salle dans le planning">
+									<div class="cube-filter enabled" style="background-color: #<?php echo $room["color_value"];?>"></div>
+									<p class="filter-name"><?php echo $room["room_name"];?></p>
+								</div>
+								<?php } ?>
+							</ul>
+						</div>
+					</div>
 					<div id="display-planning" style="display:block;">
 						<div id="calendar" class="fc fc-ltr fc-unthemed"></div>
 					</div> <!-- Display en Planning -->
@@ -75,6 +91,8 @@ require_once "functions/reservations.php";
 				var docHeight = $(document).height();
 				var xPos = $("#calendar").position();
 				var height = docHeight - xPos.top - 100;
+				if(height < 350)
+					height = docHeight - xPos.top + 40;
 
 				// Full calendar
 				$('#calendar').fullCalendar({
@@ -87,6 +105,17 @@ require_once "functions/reservations.php";
 						{
 							url: 'functions/calendarfeed_cours.php',
 							type: 'GET',
+							data: function(){
+								var filters = [];
+								$(".room-filter").each(function(){
+									if(document.getElementById($(this).attr("id")).dataset.filter == 1){
+										filters.push(document.getElementById($(this).attr("id")).dataset.room);
+									}
+								})
+								return {
+									filters: filters
+								};
+							},
 							color: '#0FC5F5',
 							textColor:'black',
 							error: function(data){
@@ -114,8 +143,14 @@ require_once "functions/reservations.php";
 						}
 					],
 					eventRender: function(calEvent, element){
-						element.attr('id', calEvent.type+'-'+calEvent.id);
-						element.attr('salle', calEvent.lieu);
+						if(calEvent.type == "cours"){
+							element.attr('id', calEvent.type+'-'+calEvent.id);
+							element.attr('salle', calEvent.lieu);
+							element.css("background-color", "#"+calEvent.color);
+						}
+						if(calEvent.type == "holiday") {
+							element.css('background-color', '#000');
+						}
 						if(calEvent.type == 'reservation'){
 							if (calEvent.priorite == 0){
 								element.css('background-color', '#ebb3f9');
@@ -125,10 +160,6 @@ require_once "functions/reservations.php";
 							} else {
 								element.css('background-color', '#D21CFC');
 							}
-						}  else if(calEvent.type == 'holiday'){
-							element.css('background-color', '#000');
-						} else {
-							element.css("background-color", "#"+calEvent.color);
 						}
 					},
 					eventClick: function(calEvent, jsEvent, element){
@@ -176,7 +207,6 @@ require_once "functions/reservations.php";
 							})
 						}
 					},
-					handleWindowResize: true,
 					header:{
 						left:'prev,next today',
 						center:'title',
@@ -294,6 +324,16 @@ require_once "functions/reservations.php";
 					$(".sub-modal-session").hide();
 					$("#calendar").fullCalendar('refetchEvents');
 				})
+			}).on('click', '.room-filter', function(){
+				var id = $(this).attr("id");
+				if($(this).children(".cube-filter").hasClass("enabled")){
+					document.getElementById(id).dataset.filter = 0;
+					$(this).children(".cube-filter").switchClass("enabled", "disabled");
+				} else {
+					document.getElementById(id).dataset.filter = 1;
+					$(this).children(".cube-filter").switchClass("disabled", "enabled");
+				}
+				$("#calendar").fullCalendar('refetchEvents');
 			})
 
 			function postOrDeleteHolidays(date, duration, postOrDelete){
