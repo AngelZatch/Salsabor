@@ -4,12 +4,14 @@ require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 $fetch_start = $_GET["fetch_start"];
 $fetch_end = $_GET["fetch_end"];
+$filters = $_GET["filters"];
 try{
 	// Fetching sessions
 	$calendar = $db->prepare("SELECT cours_id, cours_intitule, room_id, cours_start, cours_end, color_value FROM cours c
 							JOIN rooms r ON c.cours_salle = r.room_id
 							JOIN colors co ON r.room_color = co.color_id
-							WHERE cours_start > '$fetch_start' AND cours_end < '$fetch_end'");
+							WHERE cours_start > '$fetch_start' AND cours_end < '$fetch_end'
+							AND room_id IN (".implode(",", array_map("intval", $filters)).")");
 	$calendar->execute();
 	$events = array();
 

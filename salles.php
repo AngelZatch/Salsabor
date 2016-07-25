@@ -173,7 +173,7 @@ $db = PDOFactory::getConnection();
 				contents += "<div class='panel-body row'>";
 				contents += "<div class='delete-animation-holder' id='dah-"+room.room_id+"' data-target='"+room.room_id+"'><p class='hold-text'>Suppression...</p><p class='hold-help'>(Relâchez pour annuler)</p></div>";
 				contents += "<div class='panel-title container-fluid'>";
-				contents += "<div class='col-xs-1 room-cube trigger-sub' id='room-color-cube-"+room.room_id+"' data-subtype='room-color' data-target='"+room.room_id+"' style='background-color:#"+room.room_color+"' title='Couleur de la salle. Cliquez pour changer la couleur'></div>";
+				contents += "<div class='col-xs-1 room-rectangle trigger-sub' id='room-color-cube-"+room.room_id+"' data-subtype='room-color' data-target='"+room.room_id+"' style='background-color:#"+room.room_color+"' title='Couleur de la salle. Cliquez pour changer la couleur'></div>";
 				contents += "<p class='col-xs-8 editable' id='room-name-"+room.room_id+"' data-input='text' data-table='rooms' data-column='room_name' data-target='"+room.room_id+"' data-value='value'>"+room.room_name+"</p>";
 				contents += "<p class='col-xs-2'><span class='glyphicon glyphicon-trash "+trash_class+"' id='delete-"+room.room_id+"' data-target='"+room.room_id+"' title='"+trash_title+"'></span></p>";
 				contents += "</div>"; // panel-title
