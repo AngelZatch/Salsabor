@@ -174,14 +174,14 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					<p class="sub-legend top-divider">Groupe de récurrence</p>
 					<form name="session_group" id="session_group" role="form" class="form-horizontal">
 						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Groupe <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Groupe de récurrence auquel appartient le cours."></span></label>
+							<label for="" class="col-lg-3 control-label">Identifiant <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Groupe de récurrence auquel appartient le cours."></span></label>
 							<div class="col-lg-9">
 								<p type="text" class="form-control-static" name="cours_parent" id="group-input"><?php echo $cours["cours_parent_id"];?></p>
 							</div>
 						</div>
 						<span class="col-lg-offset-2 col-lg-10 help-block">Modifiez les champs ci-dessous pour ajouter ou retirer des cours. Si vous prolongez la récurrence (en augmentant le nombre ou la date) de nouveaux cours seront créés. Inversement, si vous réduisez la récurrence, des cours existants seront supprimés.</span>
 						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Nombre de récurrences</label>
+							<label for="" class="col-lg-3 control-label">Nombre de cours</label>
 							<div class="col-lg-9">
 								<input type="number" class="form-control" id="steps" name="steps" value="<?php echo $count;?>">
 							</div>

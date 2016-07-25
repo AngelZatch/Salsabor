@@ -1012,9 +1012,34 @@ div.legend:nth-child(1n+0)
 .login-help
 	text-align: center
 
-.room-cube
+.room-rectangle
 	height: 20px
 	border: 2px solid black
+
+.room-filter
+	cursor: pointer
+	padding: 5px 0 5px 5px
+	&:hover
+		background-color: darken($system-color, 10%)
+		color: white
+
+.cube-filter
+	height: 15px
+	width: 15px
+	margin: 2px
+	@extend .glyphicon-description
+	&.disabled
+		opacity: 0
+		border: 1px solid $system-color
+
+.filter-title
+	@extend .product-title
+	@extend .room-filter
+	padding-bottom: 7px
+	height: 34px
+
+.filter-name
+	margin: 0 !important
 
 .chart
 	background-color: white
