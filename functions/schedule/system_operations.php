@@ -34,17 +34,17 @@ try{
 	}
 
 	/*// Activate available promotions
-	$toActivate = $db->query("SELECT produit_id FROM produits WHERE date_activation <= '$compare_start' AND date_activation != '0000-00-00 00:00:00'");
+	$toActivate = $db->query("SELECT product_id FROM produits WHERE date_activation <= '$compare_start' AND date_activation != '0000-00-00 00:00:00'");
 	while($match = $toActivate->fetch(PDO::FETCH_ASSOC)){
-		updateColumn($db, "produits", "actif", 1, $match["produit_id"]);
-		postNotification($db, "PRO-S", $match["produit_id"], null, $compare_start);
+		updateColumn($db, "produits", "actif", 1, $match["product_id"]);
+		postNotification($db, "PRO-S", $match["product_id"], null, $compare_start);
 	}
 
 	// Or deactivate expired ones
-	$toDeactive = $db->query("SELECT produit_id FROM produits WHERE date_desactivation <= '$compare_start' AND date_desactivation != '0000-00-00 00:00:00'");
+	$toDeactive = $db->query("SELECT product_id FROM produits WHERE date_desactivation <= '$compare_start' AND date_desactivation != '0000-00-00 00:00:00'");
 	while($match = $toDeactive->fetch(PDO::FETCH_ASSOC)){
-		updateColumn($db, "produits", "actif", 0, $match["produit_id"]);
-		postNotification($db, "PRO-E", $match["produit_id"], null, $compare_start);
+		updateColumn($db, "produits", "actif", 0, $match["product_id"]);
+		postNotification($db, "PRO-E", $match["product_id"], null, $compare_start);
 	}*/
 
 	$db->commit();

@@ -5,7 +5,7 @@ $db = PDOFactory::getConnection();
 $prof_id = $_POST["prof_id"];
 
 // Liste des cours
-$stmt = $db->prepare("SELECT * FROM cours WHERE session_teacher=?");
+$stmt = $db->prepare("SELECT * FROM sessions WHERE session_teacher=?");
 $stmt->bindParam(1, $prof_id, PDO::PARAM_INT);
 $stmt->execute();
 $result = array();

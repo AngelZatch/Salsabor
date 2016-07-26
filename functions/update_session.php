@@ -19,7 +19,7 @@ $new_start = DateTime::createFromFormat("d/m/Y H:i:s", $values["session_start"])
 $new_end = DateTime::createFromFormat("d/m/Y H:i:s", $values["session_end"]);
 
 // Old values from the database and the hook
-$hook_times = $db->query("SELECT session_start, session_end FROM cours WHERE session_id = $hook")->fetch(PDO::FETCH_ASSOC);
+$hook_times = $db->query("SELECT session_start, session_end FROM sessions WHERE session_id = $hook")->fetch(PDO::FETCH_ASSOC);
 $old_start = new DateTime($hook_times["session_start"]);
 $old_end = new DateTime($hook_times["session_end"]);
 
@@ -30,7 +30,7 @@ $end_delta = $old_end->diff($new_end);
 // == QUERY ==
 for($i = 0; $i < sizeof($sessions); $i++){
 	// We fetch the times from each session
-	$session_times = $db->query("SELECT session_start, session_end FROM cours WHERE session_id = $sessions[$i]")->fetch(PDO::FETCH_ASSOC);
+	$session_times = $db->query("SELECT session_start, session_end FROM sessions WHERE session_id = $sessions[$i]")->fetch(PDO::FETCH_ASSOC);
 	try{
 		$query = "UPDATE cours SET ";
 		foreach($values as $row => $value){

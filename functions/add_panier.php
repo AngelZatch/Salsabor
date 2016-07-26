@@ -2,7 +2,7 @@
 require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 
-$id_produit = $_POST["produit_id"];
+$id_produit = $_POST["product_id"];
 
 try{
 	$db->beginTransaction();

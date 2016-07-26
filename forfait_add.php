@@ -7,12 +7,9 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
 if(isset($_POST["add"])){
-	$volume_horaire = 0;
-	if($_POST["volume_horaire"] != 0){
-		$tarif_horaire = $_POST["tarif_global"]/$_POST["volume_horaire"];
-		$volume_horaire = $_POST["volume_horaire"];
-	} else {
-		$tarif_horaire = 0;
+	$product_size = 0;
+	if($_POST["product_size"] != 0){
+		$product_size = $_POST["product_size"];
 	}
 	$validite = 7 * $_POST["validite"];
 	$actif = 1;
@@ -24,14 +21,13 @@ if(isset($_POST["add"])){
 
 	try{
 		$db->beginTransaction();
-		$new = $db->prepare("INSERT INTO produits(produit_nom, description, volume_horaire, validite_initiale, tarif_horaire, tarif_global, date_activation ,date_desactivation, actif, echeances_paiement, autorisation_report, est_recharge, est_illimite, est_sans_engagement, est_cours_particulier, est_formation_professionnelle, est_abonnement, est_autre)
-		VALUES(:intitule, :description, :volume_horaire, :validite, :tarif_horaire, :tarif_global, :date_activation, :date_limite_achat, :actif, :echeances, :autorisation_report, :est_recharge, :est_illimite, :est_sans_engagement, :est_cours_particulier, :est_formation_professionnelle, :est_abonnement, :est_autre)");
+		$new = $db->prepare("INSERT INTO produits(product_name, description, product_size, product_validity, product_price, date_activation ,date_desactivation, actif, echeances_paiement, autorisation_report, est_recharge, est_illimite, est_sans_engagement, est_cours_particulier, est_formation_professionnelle, est_abonnement, est_autre)
+		VALUES(:intitule, :description, :product_size, :validite, :product_price, :date_activation, :date_limite_achat, :actif, :echeances, :autorisation_report, :est_recharge, :est_illimite, :est_sans_engagement, :est_cours_particulier, :est_formation_professionnelle, :est_abonnement, :est_autre)");
 		$new->bindParam(':intitule', $_POST["intitule"]);
 		$new->bindParam(':description', $_POST["description"]);
-		$new->bindParam(':volume_horaire', $_POST["volume_horaire"]);
+		$new->bindParam(':product_size', $_POST["product_size"]);
 		$new->bindParam(':validite', $validite);
-		$new->bindParam(':tarif_horaire', $tarif_horaire);
-		$new->bindParam(':tarif_global', $_POST["tarif_global"]);
+		$new->bindParam(':product_price', $_POST["product_price"]);
 		$new->bindParam(':date_activation', $_POST["date_activation"]);
 		$new->bindParam(':date_limite_achat', $_POST["date_limite_achat"]);
 		$new->bindParam(':actif', $actif);
@@ -101,9 +97,9 @@ if(isset($_POST["add"])){
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="volume_horaire" class="col-lg-3 control-label">Volume de cours (en heures)</label>
+							<label for="product_size" class="col-lg-3 control-label">Volume de cours (en heures)</label>
 							<div class="col-lg-9">
-								<input type="number" class="form-control" name="volume_horaire" placeholder="Exemple : 10">
+								<input type="number" class="form-control" name="product_size" placeholder="Exemple : 10">
 							</div>
 						</div>
 						<div class="form-group">
@@ -121,10 +117,10 @@ if(isset($_POST["add"])){
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="tarif_global" class="col-lg-3 control-label">Prix d'achat</label>
+							<label for="product_price" class="col-lg-3 control-label">Prix d'achat</label>
 							<div class="col-lg-9">
 								<div class="input-group">
-									<input type="number" step="any" class="form-control" name="tarif_global">
+									<input type="number" step="any" class="form-control" name="product_price">
 									<span class="input-group-addon">€</span>
 								</div>
 							</div>
@@ -165,9 +161,9 @@ if(isset($_POST["add"])){
 		<script>
 			$("#est_illimite").change(function(){
 				if($(this).val() == '1'){
-					$("#volume_horaire").hide('600');
+					$("#product_size").hide('600');
 				} else {
-					$("#volume_horaire").show('600');
+					$("#product_size").show('600');
 				}
 			});
 		</script>

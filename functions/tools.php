@@ -34,7 +34,7 @@ function computeExpirationDate($db, $date_activation, $validity, $has_holidays){
 	$validity--;
 	$date_expiration = date("Y-m-d 23:59:59", strtotime($date_activation.'+'.$validity.'DAYS'));
 	if($has_holidays){
-		$queryHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee >= ? AND date_chomee <= ?");
+		$queryHoliday = $db->prepare("SELECT * FROM holidays WHERE holiday_date >= ? AND holiday_date <= ?");
 		$queryHoliday->bindParam(1, $date_activation);
 		$queryHoliday->bindParam(2, $date_expiration);
 		$queryHoliday->execute();
@@ -43,7 +43,7 @@ function computeExpirationDate($db, $date_activation, $validity, $has_holidays){
 
 		for($i = 0; $i < $queryHoliday->rowCount(); $i++){
 			$exp_date = date("Y-m-d 23:59:59",strtotime($date_expiration.'+'.$i.'DAYS'));
-			$checkHoliday = $db->prepare("SELECT * FROM jours_chomes WHERE date_chomee=?");
+			$checkHoliday = $db->prepare("SELECT * FROM holidays WHERE holiday_date=?");
 			$checkHoliday->bindParam(1, $exp_date);
 			$checkHoliday->execute();
 			if($checkHoliday->rowCount() != 0){
@@ -64,35 +64,35 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 	if($session_id != null){ // If we could find a session, then we're gonna look for a product.
 		if(preg_match("/jazz/i", $cours_name, $matches) || preg_match("/pilates/i", $cours_name, $matches) || preg_match("/particulier/i", $cours_name, $matches)){ // Search for specific Jazz, Pilates or private sessions
 			/*echo $matches[0];*/
-			$checkSpecific = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
-									JOIN produits p ON pa.id_produit_foreign = p.produit_id
+			$checkSpecific = $db->query("SELECT id_produit_adherent, id_produit_foreign, product_name, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
+									JOIN produits p ON pa.id_produit_foreign = p.product_id
 									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
-									AND produit_nom LIKE '%$matches[0]%'
+									AND product_name LIKE '%$matches[0]%'
 									AND pa.actif != '2'
 									ORDER BY date_achat ASC");
 			if($checkSpecific->rowCount() > 0){
 				$product = $checkSpecific->fetch(PDO::FETCH_ASSOC);
 			}
 		} else { // First, we search for any freebies
-			$checkInvitation = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
-									JOIN produits p ON pa.id_produit_foreign = p.produit_id
+			$checkInvitation = $db->query("SELECT id_produit_adherent, id_produit_foreign, product_name, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
+									JOIN produits p ON pa.id_produit_foreign = p.product_id
 									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
-									AND produit_nom = 'Invitation'
+									AND product_name = 'Invitation'
 									AND pa.actif = '0'
 									ORDER BY date_achat ASC");
 			if($checkInvitation->rowCount() > 0){ // If there are freebies still available, we take the first one.
 				$product = $checkInvitation->fetch(PDO::FETCH_ASSOC);
 			} else { // If no freebies, we look for every currently active products.
-				$checkActive = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
-									JOIN produits p ON pa.id_produit_foreign = p.produit_id
+				$checkActive = $db->query("SELECT id_produit_adherent, id_produit_foreign, product_name, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
+									JOIN produits p ON pa.id_produit_foreign = p.product_id
 									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
-									AND produit_nom != 'Invitation'
-									AND produit_nom NOT LIKE '%jazz%'
-									AND produit_nom NOT LIKE '%pilates%'
-									AND produit_nom NOT LIKE '%particulier%'
+									AND product_name != 'Invitation'
+									AND product_name NOT LIKE '%jazz%'
+									AND product_name NOT LIKE '%pilates%'
+									AND product_name NOT LIKE '%particulier%'
 									AND pa.actif = '1'
 									AND est_abonnement = '0'
 									AND est_cours_particulier = '0'
@@ -100,14 +100,14 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 				if($checkActive->rowCount() > 0){ // If there are active products that are not an annual sub
 					$product = $checkActive->fetch(PDO::FETCH_ASSOC);
 				} else { // We check inactive products now.
-					$checkPending = $db->query("SELECT id_produit_adherent, id_produit_foreign, produit_nom, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
-									JOIN produits p ON pa.id_produit_foreign = p.produit_id
+					$checkPending = $db->query("SELECT id_produit_adherent, id_produit_foreign, product_name, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
+									JOIN produits p ON pa.id_produit_foreign = p.product_id
 									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 									WHERE id_user_foreign='$user_id'
-									AND produit_nom != 'Invitation'
-									AND produit_nom NOT LIKE '%jazz%'
-									AND produit_nom NOT LIKE '%pilates%'
-									AND produit_nom NOT LIKE '%particulier%'
+									AND product_name != 'Invitation'
+									AND product_name NOT LIKE '%jazz%'
+									AND product_name NOT LIKE '%pilates%'
+									AND product_name NOT LIKE '%particulier%'
 									AND pa.actif = '0'
 									AND est_abonnement = '0'
 									AND est_cours_particulier = '0'
@@ -189,8 +189,8 @@ function getCorrectProductFromTags($db, $session_id, $user_id){
 	foreach($tags_session as $tag){
 		if($tag["is_mandatory"] == 1){
 			$query = "SELECT id_produit_foreign FROM produits_adherents pa
-				LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
-				LEFT JOIN assoc_product_tags apt ON p.produit_id = apt.product_id_foreign
+				LEFT JOIN produits p ON pa.id_produit_foreign = p.product_id
+				LEFT JOIN assoc_product_tags apt ON p.product_id = apt.product_id_foreign
 				LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 				WHERE tag_id_foreign = $tag[tag_id_foreign]
 				AND id_user_foreign = $user_id
@@ -219,8 +219,8 @@ function getCorrectProductFromTags($db, $session_id, $user_id){
 		foreach($tags_session as $tag){
 			if($tag["is_mandatory"] == 0){
 				$query = "SELECT id_produit_adherent FROM produits_adherents pa
-				LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
-				LEFT JOIN assoc_product_tags apt ON p.produit_id = apt.product_id_foreign
+				LEFT JOIN produits p ON pa.id_produit_foreign = p.product_id
+				LEFT JOIN assoc_product_tags apt ON p.product_id = apt.product_id_foreign
 				WHERE tag_id_foreign = $tag[tag_id_foreign]";
 				if(sizeof($result) > 1)
 					$query .= " AND product_id_foreign IN (".implode(",", array_map("intval", $result)).")";

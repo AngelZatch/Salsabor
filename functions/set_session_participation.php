@@ -7,7 +7,7 @@ $session_id = $_POST["session_id"];
 
 $assign = $db->query("UPDATE participations SET session_id = '$session_id' WHERE passage_id = '$participation_id'");
 
-$load = $db->query("SELECT session_name, session_start, session_end FROM cours c WHERE session_id = '$session_id'")->fetch(PDO::FETCH_ASSOC);
+$load = $db->query("SELECT session_name, session_start, session_end FROM sessions WHERE session_id = '$session_id'")->fetch(PDO::FETCH_ASSOC);
 
 $s = array();
 $s["cours_name"] = $load["session_name"];

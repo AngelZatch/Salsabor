@@ -10,7 +10,7 @@ checkParent($db, $session_group_id);
 function checkParent($db, $session_group_id){
 	try{
 		$db->beginTransaction();
-		$findParent = $db->prepare('SELECT COUNT(*) FROM cours WHERE session_group=?');
+		$findParent = $db->prepare('SELECT COUNT(*) FROM sessions WHERE session_group=?');
 		$findParent->bindParam(1, $session_group_id, PDO::PARAM_INT);
 		$findParent->execute();
 		if($findParent->fetchColumn() == 0){

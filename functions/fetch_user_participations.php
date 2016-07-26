@@ -9,8 +9,8 @@ $load = $db->query("SELECT *, pr.user_rfid AS pr_rfid FROM participations pr
 					LEFT JOIN rooms r ON re.reader_id = r.room_reader
 					LEFT JOIN users u ON pr.user_id = u.user_id
 					LEFT JOIN produits_adherents pa ON pr.produit_adherent_id = pa.id_produit_adherent
-					LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
-					LEFT JOIN cours c ON pr.session_id = c.session_id
+					LEFT JOIN produits p ON pa.id_produit_foreign = p.product_id
+					LEFT JOIN sessions s ON pr.session_id = s.session_id
 					WHERE pr.user_id = '$user_id'
 					ORDER BY session_start DESC");
 
@@ -43,8 +43,8 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$r["cours_name"] = $details["session_name"];
 	$r["session_start"] = $details["session_start"];
 	$r["session_end"] = $details["session_end"];
-	if($details["produit_nom"] != null){
-		$r["product_name"] = $details["produit_nom"];
+	if($details["product_name"] != null){
+		$r["product_name"] = $details["product_name"];
 		$r["product_expiration"] = max($details["date_expiration"], $details["date_fin_utilisation"], $details["date_prolongee"]);
 		if($details["est_illimite"] == "1"){
 			$r["product_hours"] = 9999;
