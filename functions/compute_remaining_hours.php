@@ -44,15 +44,15 @@ function computeProduct($product_id){
 	$lock_status = ($product_details["lock_status"]==1)?true:false;
 
 	if($product_details["est_abonnement"] == '0'){
-		$sessions = $db->query("SELECT cours_unite, cours_start, cours_end FROM participations pr
-							JOIN cours c ON pr.cours_id = c.cours_id
+		$sessions = $db->query("SELECT cours_unite, session_start, session_end FROM participations pr
+							JOIN cours c ON pr.session_id = c.session_id
 							WHERE produit_adherent_id = '$product_id' AND status = 2
-							ORDER BY cours_start ASC");
+							ORDER BY session_start ASC");
 		foreach($sessions as $session){
 			if(!$computeEnd){
 				// If the product's current hours are max OR there's no set activation date, we compute the activation date. This will only occur one time to ensure the date of activation is always accurate.
 				if(!$lock_dates){
-					$date_activation = date_create($session["cours_start"])->format("Y-m-d H:i:s");
+					$date_activation = date_create($session["session_start"])->format("Y-m-d H:i:s");
 					if($date_activation != null && $date_activation != "0000-00-00 00:00:00"){
 						$computeEnd = true;
 					}
@@ -70,9 +70,9 @@ function computeProduct($product_id){
 		$sessions->execute();
 		foreach($sessions as $session){
 			if(!$lock_dates){
-				if(max($date_expiration,$product_details["date_prolongee"]) >= $session["cours_end"] && $remaining_hours >= 0){
+				if(max($date_expiration,$product_details["date_prolongee"]) >= $session["session_end"] && $remaining_hours >= 0){
 					// If there's no expiration date set for the product or (it is ANTERIOR to the date of the session BUT there's still hours on the product) or (it is POSTERIOR to the date of the session BUT there's no more hours on the product), the expiration date is set to the last session that happened.
-					$date_fin_utilisation = $session["cours_end"];
+					$date_fin_utilisation = $session["session_end"];
 				}
 			}
 			$remaining_hours -= floatval($session["cours_unite"]);

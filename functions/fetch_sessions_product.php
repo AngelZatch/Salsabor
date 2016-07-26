@@ -15,10 +15,10 @@ $product_details = $db->query("SELECT volume_horaire, est_illimite, pa.date_acti
 						WHERE id_produit_adherent = '$product_id'")->fetch(PDO::FETCH_ASSOC);
 
 $participations = $db->query("SELECT * FROM participations pr
-							JOIN cours c ON pr.cours_id = c.cours_id
+							JOIN cours c ON pr.session_id = c.session_id
 							WHERE produit_adherent_id = '$product_id'
 							AND (status = 0 OR status = 2)
-							ORDER BY cours_start ASC");
+							ORDER BY session_start ASC");
 
 $remaining_hours = $product_details["volume_horaire"];
 $date_fin_utilisation = $product_details["produit_validity"];
@@ -27,9 +27,9 @@ $participations_list = array();
 while($participation = $participations->fetch(PDO::FETCH_ASSOC)){
 	$p = array();
 	$p["id"] = $participation["passage_id"];
-	$p["title"] = $participation["cours_intitule"];
-	$p["start"] = $participation["cours_start"];
-	$p["end"] = $participation["cours_end"];
+	$p["title"] = $participation["session_name"];
+	$p["start"] = $participation["session_start"];
+	$p["end"] = $participation["session_end"];
 	$p["duration"] = $participation["cours_unite"];
 
 	if($p["start"] > $product_details["produit_validity"] || $p["start"] < $product_details["produit_adherent_activation"] || ($remaining_hours <= 0 && $product_details["est_illimite"] != "1")){

@@ -4,12 +4,12 @@ $db = PDOFactory::getConnection();
 
 $session_id = $_GET["session_id"];
 
-$session = $db->query("SELECT cours_salle, cours_start
+$session = $db->query("SELECT session_room, session_start
 					FROM cours c
-					WHERE cours_id = '$session_id'")->fetch(PDO::FETCH_ASSOC);
+					WHERE session_id = '$session_id'")->fetch(PDO::FETCH_ASSOC);
 
-$limit_start = date("Y-m-d H:i:s", strtotime($session["cours_start"].'-30MINUTES'));
-$limit_end = date("Y-m-d H:i:s", strtotime($session["cours_start"].'+30MINUTES'));
+$limit_start = date("Y-m-d H:i:s", strtotime($session["session_start"].'-30MINUTES'));
+$limit_end = date("Y-m-d H:i:s", strtotime($session["session_start"].'+30MINUTES'));
 
 $load = $db->query("SELECT * FROM participations pr
 					LEFT JOIN readers re ON pr.room_token = re.reader_id
@@ -17,8 +17,8 @@ $load = $db->query("SELECT * FROM participations pr
 					LEFT JOIN users u ON pr.user_id = u.user_id
 					LEFT JOIN produits_adherents pa ON pr.produit_adherent_id = pa.id_produit_adherent
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
-					LEFT JOIN cours c ON pr.cours_id = c.cours_id
-					WHERE pr.cours_id = '$session_id'
+					LEFT JOIN cours c ON pr.session_id = c.session_id
+					WHERE pr.session_id = '$session_id'
 					ORDER BY u.user_nom ASC");
 
 $notifications_settings = $db->query("SELECT * FROM master_settings WHERE user_id = '0'")->fetch(PDO::FETCH_ASSOC);

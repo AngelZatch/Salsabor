@@ -9,11 +9,11 @@ require_once 'functions/cours.php';
 /** Récupération des valeurs dans la base de données des champs **/
 $id = $_GET['id'];
 $cours = $db->query("SELECT * FROM cours c
-							JOIN users u ON c.prof_principal = u.user_id
-							WHERE cours_id='$id'")->fetch(PDO::FETCH_ASSOC);
+							JOIN users u ON c.session_teacher = u.user_id
+							WHERE session_id='$id'")->fetch(PDO::FETCH_ASSOC);
 
 // Array of all the sessions from this parent.
-$all = $db->query("SELECT cours_id FROM cours c WHERE cours_parent_id = $cours[cours_parent_id]")->fetchAll(PDO::FETCH_COLUMN);
+$all = $db->query("SELECT session_id FROM cours c WHERE session_group = $cours[session_group]")->fetchAll(PDO::FETCH_COLUMN);
 $count = sizeof($all);
 $current = array_search($id, $all);
 $all_js = json_encode($all);
@@ -38,7 +38,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Cours de <?php echo $cours['cours_intitule'];?> (<?php echo date_create($cours['cours_start'])->format('d/m/Y');?> : <?php echo date_create($cours['cours_start'])->format('H:i')?> / <?php echo date_create($cours['cours_end'])->format('H:i');?>) | Salsabor</title>
+		<title>Cours de <?php echo $cours['session_name'];?> (<?php echo date_create($cours['session_start'])->format('d/m/Y');?> : <?php echo date_create($cours['session_start'])->format('H:i')?> / <?php echo date_create($cours['session_end'])->format('H:i');?>) | Salsabor</title>
 		<base href="../">
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
@@ -57,7 +57,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend>
-						<span class="glyphicon glyphicon-eye-open"></span> <span class="session-name"><?php echo $cours['cours_intitule'];?></span>
+						<span class="glyphicon glyphicon-eye-open"></span> <span class="session-name"><?php echo $cours['session_name'];?></span>
 						<div class="btn-toolbar float-right">
 							<?php if($count == '1'){ ?>
 							<input type='submit' name='editOne' role='button' class='btn btn-success' value='ENREGISTRER'>
@@ -108,7 +108,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">Intitulé du cours</label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="cours_intitule" id="session_name_input" value="<?php echo $cours['cours_intitule'];?>">
+								<input type="text" class="form-control" name="session_name" id="session_name_input" value="<?php echo $cours['session_name'];?>">
 							</div>
 						</div>
 						<div class="form-group">
@@ -124,20 +124,20 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 											<li class="completion-option"><a>Ne pas suggérer</a></li>
 										</ul>
 									</div>
-									<input type="text" class="form-control filtered-complete" id="complete-teacher" name="prof_principal" value="<?php echo $cours['user_prenom']." ".$cours['user_nom'];?>">
+									<input type="text" class="form-control filtered-complete" id="complete-teacher" name="session_teacher" value="<?php echo $cours['user_prenom']." ".$cours['user_nom'];?>">
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">Début</label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="cours_start" id="datepicker-start">
+								<input type="text" class="form-control" name="session_start" id="datepicker-start">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">Fin</label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="cours_end" id="datepicker-end">
+								<input type="text" class="form-control" name="session_end" id="datepicker-end">
 							</div>
 						</div>
 						<div class="form-group">
@@ -159,9 +159,9 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">Salle</label>
 							<div class="col-lg-9">
-								<select name="cours_salle" class="form-control">
+								<select name="session_room" class="form-control">
 									<?php while($salles = $querySalles->fetch(PDO::FETCH_ASSOC)){
-	if($cours["cours_salle"] == $salles["room_id"]) {?>
+	if($cours["session_room"] == $salles["room_id"]) {?>
 									<option selected="selected" value="<?php echo $salles["room_id"];?>"><?php echo $salles["room_name"];?></option>
 									<?php } else { ?>
 									<option value="<?php echo $salles["room_id"];?>"><?php echo $salles["room_name"];?></option>
@@ -176,7 +176,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">Identifiant <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Groupe de récurrence auquel appartient le cours."></span></label>
 							<div class="col-lg-9">
-								<p type="text" class="form-control-static" name="cours_parent" id="group-input"><?php echo $cours["cours_parent_id"];?></p>
+								<p type="text" class="form-control-static" name="cours_parent" id="group-input"><?php echo $cours["session_group"];?></p>
 							</div>
 						</div>
 						<span class="col-lg-offset-2 col-lg-10 help-block">Modifiez les champs ci-dessous pour ajouter ou retirer des cours. Si vous prolongez la récurrence (en augmentant le nombre ou la date) de nouveaux cours seront créés. Inversement, si vous réduisez la récurrence, des cours existants seront supprimés.</span>
@@ -213,7 +213,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						<div class="panel-body collapse" id="body-session-<?php echo $id;?>" data-session="<?php echo $id;?>"></div>
 					</div>
 					<p class="sub-legend top-divider">Statistiques de participations du groupe de récurrence</p>
-					<span class="help-block">Nombre de participants à chaque cours (Groupe de récurrence : <?php echo $cours["cours_parent_id"];?>)</span>
+					<span class="help-block">Nombre de participants à chaque cours (Groupe de récurrence : <?php echo $cours["session_group"];?>)</span>
 					<div class="chart" id="session-chart" style="height:250px"></div>
 					<p class="sub-legend top-divider">Tâches à faire</p>
 					<div class="tasks-container container-fluid"></div>
@@ -231,14 +231,14 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 			$(document).ready(function(){
 				$("#datepicker-start").datetimepicker({
 					format: "DD/MM/YYYY HH:mm:00",
-					defaultDate: "<?php echo date_create($cours['cours_start'])->format("m/d/Y H:i");?>",
+					defaultDate: "<?php echo date_create($cours['session_start'])->format("m/d/Y H:i");?>",
 					locale: "fr",
 					sideBySide: true,
 					stepping: 30
 				});
 				$("#datepicker-end").datetimepicker({
 					format: "DD/MM/YYYY HH:mm:00",
-					defaultDate: "<?php echo date_create($cours['cours_end'])->format("m/d/Y H:i");?>",
+					defaultDate: "<?php echo date_create($cours['session_end'])->format("m/d/Y H:i");?>",
 					locale: "fr",
 					sideBySide: true,
 					stepping: 30
@@ -252,10 +252,10 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 
 				fetchTasks("SES", <?php echo $id;?>, 0, null, 0);
 
-				var parent_id = <?php echo $cours["cours_parent_id"];?>;
+				var session_group_id = <?php echo $cours["session_group"];?>;
 				window.initial_steps = $("#steps").val();
 
-				$.get("functions/fetch_session_group.php", {group_id : parent_id}).done(function(data){
+				$.get("functions/fetch_session_group.php", {group_id : session_group_id}).done(function(data){
 					var group_details = JSON.parse(data);
 					$("#recurrence_end").datetimepicker({
 						format : "YYYY-MM-DD",
@@ -292,7 +292,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					})
 				})
 
-				$.getJSON("functions/fetch_all_sessions_participations.php", {parent_id : parent_id}, function(data){
+				$.getJSON("functions/fetch_all_sessions_participations.php", {session_group_id : session_group_id}, function(data){
 					new Morris.Line({
 						// ID of the element in which to draw the chart.
 						element: 'session-chart',
@@ -365,7 +365,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				})
 			}).on('click', '.btn-delete', function(){
 				var id = $(this).attr("id"), entry_id = <?php echo $id;?>;
-				var parent_id = <?php echo $cours['cours_parent_id']?>;
+				var session_group_id = <?php echo $cours['session_group']?>;
 				switch(id){
 					case "delete-one":
 						var sessions = [entry_id];
@@ -385,7 +385,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					} else {
 						console.log("checking parent");
 						$.when(deleteEntry("cours", sessions[i])).done(function(){
-							$.get("functions/check_session_parent.php", {parent_id : parent_id}).done(function(data){
+							$.get("functions/check_session_parent.php", {session_group_id : session_group_id}).done(function(data){
 								//console.log(data);
 								window.top.location = "planning";
 							})

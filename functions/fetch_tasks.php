@@ -98,13 +98,13 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			break;
 
 		case "SES":
-			$sub_query = $db->query("SELECT cours_intitule, cours_start, cours_end, room_name FROM cours s JOIN rooms r ON s.cours_salle = r.room_id WHERE cours_id = '$t[target]'")->fetch(PDO::FETCH_ASSOC);
+			$sub_query = $db->query("SELECT session_name, session_start, session_end, room_name FROM cours s JOIN rooms r ON s.session_room = r.room_id WHERE session_id = '$t[target]'")->fetch(PDO::FETCH_ASSOC);
 			$t["photo"] = "assets/images/sticker_promo.png";
 			$t["link"] = "cours/".$t["target"];
-			$date_start = date_create($sub_query["cours_start"])->format("d/m/Y");
-			$hour_start = date_create($sub_query["cours_start"])->format("H:i:s");
-			$hour_end = date_create($sub_query["cours_end"])->format("H:i:s");
-			$t["target_phrase"] = "Cours de ".$sub_query["cours_intitule"]." du ".$date_start." de ".$hour_start." à ".$hour_end." en ".$sub_query["room_name"];
+			$date_start = date_create($sub_query["session_start"])->format("d/m/Y");
+			$hour_start = date_create($sub_query["session_start"])->format("H:i:s");
+			$hour_end = date_create($sub_query["session_end"])->format("H:i:s");
+			$t["target_phrase"] = "Cours de ".$sub_query["session_name"]." du ".$date_start." de ".$hour_start." à ".$hour_end." en ".$sub_query["room_name"];
 			break;
 
 		default:

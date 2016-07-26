@@ -6,12 +6,12 @@ function addCours(){
 	$db = PDOFactory::getConnection();
 
 	$session_name = $_POST['intitule'];
-	$user_id = solveAdherentToId($_POST["prof_principal"]);
+	$user_id = solveAdherentToId($_POST["session_teacher"]);
 	$room_id = $_POST['lieu'];
 
 	// Times
-	$start = $_POST["cours_start"];
-	$end = $_POST["cours_end"];
+	$start = $_POST["session_start"];
+	$end = $_POST["session_end"];
 	$weekday = date('N', strtotime($start));
 
 	// Computing duration of the session(s)
@@ -21,10 +21,10 @@ function addCours(){
 		try{
 			$db->beginTransaction();
 			/** Inserting parent **/
-			$parent_id = insertParent($db, $session_name, $weekday, $start, $end, $user_id, $room_id, $session_duration, 0, 0, 0, 2);
+			$session_group_id = insertParent($db, $session_name, $weekday, $start, $end, $user_id, $room_id, $session_duration, 0, 0, 0, 2);
 
 			/** Inserting lone child **/
-			$session_id = createSession($db, $parent_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
+			$session_id = createSession($db, $session_group_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
 
 			$db->commit();
 			header("Location: cours/$session_id");
@@ -44,14 +44,14 @@ function addCours(){
 			$db->beginTransaction();
 
 			/** Inserting parent **/
-			$parent_id = insertParent($db, $session_name, $weekday, $start, $recurrence_stop, $user_id, $room_id, $session_duration, 0, $recurrence, $frequency, 2);
+			$session_group_id = insertParent($db, $session_name, $weekday, $start, $recurrence_stop, $user_id, $room_id, $session_duration, 0, $recurrence, $frequency, 2);
 
 			for($i = 1; $i < $recurrence_steps; $i++){
 				// Inserting session
 				if($i == 1)
-					$first_session_id = createSession($db, $parent_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
+					$first_session_id = createSession($db, $session_group_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
 				else
-					createSession($db, $parent_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
+					createSession($db, $session_group_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
 
 				// Changing dates for next one
 				$start_date = strtotime($start.'+'.$frequency.'DAYS');
@@ -84,16 +84,16 @@ function insertParent($db, $session_name, $weekday, $start, $end, $user_id, $roo
 	$end_hour = $end_hour->format("H:i:s");
 
 	// Insert into parent
-	$insertCours = $db->prepare('INSERT INTO cours_parent(parent_intitule, weekday, parent_start_date, parent_end_date, parent_start_time, parent_end_time, parent_prof_principal, parent_salle, parent_unite, parent_cout_horaire, recurrence, frequence_repetition, priorite)
-			VALUES(:intitule, :weekday, :date_debut, :date_fin, :heure_debut, :heure_fin, :prof_principal, :lieu, :unite, :cout_horaire, :recurrence, :frequence_repetition, :priorite)');
+	$insertCours = $db->prepare('INSERT INTO session_groups(parent_intitule, weekday, parent_start_date, parent_end_date, parent_start_time, parent_end_time, group_teacher, parent_salle, parent_unite, parent_cout_horaire, recurrence, frequence_repetition, priorite)
+			VALUES(:intitule, :weekday, :date_debut, :date_fin, :heure_debut, :heure_fin, :session_teacher, :session_room, :unite, :cout_horaire, :recurrence, :frequence_repetition, :priorite)');
 	$insertCours->bindParam(':intitule', $session_name);
 	$insertCours->bindParam(':weekday', $weekday);
 	$insertCours->bindParam(':date_debut', $start_date);
 	$insertCours->bindParam(':date_fin', $end_date);
 	$insertCours->bindParam(':heure_debut', $start_hour);
 	$insertCours->bindParam(':heure_fin', $end_hour);
-	$insertCours->bindParam(':prof_principal', $user_id);
-	$insertCours->bindParam(':lieu', $room_id);
+	$insertCours->bindParam(':session_teacher', $user_id);
+	$insertCours->bindParam(':session_room', $room_id);
 	$insertCours->bindParam(':unite', $session_duration);
 	$insertCours->bindParam(':cout_horaire', $hour_fee);
 	$insertCours->bindParam(':recurrence', $recurrence);
@@ -101,19 +101,19 @@ function insertParent($db, $session_name, $weekday, $start, $end, $user_id, $roo
 	$insertCours->bindParam(':priorite', $priorite);
 
 	$insertCours->execute();
-	$parent_id = $db->lastInsertId();
-	return $parent_id;
+	$session_group_id = $db->lastInsertId();
+	return $session_group_id;
 }
 
-function createSession($db, $parent_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, $hour_fee, $priorite){
-	$insertCours = $db->prepare('INSERT INTO cours(cours_parent_id, cours_intitule, cours_start, cours_end, prof_principal, cours_salle, cours_unite, cours_prix, priorite)
-			VALUES(:cours_parent_id, :intitule, :cours_start, :cours_end, :prof_principal, :lieu, :unite, :cout_horaire, :priorite)');
-	$insertCours->bindParam(':cours_parent_id', $parent_id);
+function createSession($db, $session_group_id, $session_name, $start, $end, $teacher_id, $room_id, $session_duration, $hour_fee, $priorite){
+	$insertCours = $db->prepare('INSERT INTO cours(session_group, session_name, session_start, session_end, session_teacher, session_room, cours_unite, cours_prix, priorite)
+			VALUES(:session_group, :intitule, :session_start, :session_end, :session_teacher, :session_room, :unite, :cout_horaire, :priorite)');
+	$insertCours->bindParam(':session_group', $session_group_id);
 	$insertCours->bindParam(':intitule', $session_name);
-	$insertCours->bindParam(':cours_start', $start);
-	$insertCours->bindParam(':cours_end', $end);
-	$insertCours->bindParam(':prof_principal', $user_id);
-	$insertCours->bindParam(':lieu', $room_id);
+	$insertCours->bindParam(':session_start', $start);
+	$insertCours->bindParam(':session_end', $end);
+	$insertCours->bindParam(':session_teacher', $teacher_id);
+	$insertCours->bindParam(':session_room', $room_id);
 	$insertCours->bindParam(':unite', $session_duration);
 	$insertCours->bindParam(':cout_horaire', $hour_fee);
 	$insertCours->bindParam(':priorite', $priorite);
@@ -124,6 +124,6 @@ function createSession($db, $parent_id, $session_name, $start, $end, $user_id, $
 }
 
 function updateRecurrenceEndDate($db, $group_id, $new_recurrence_end){
-	$db->query("UPDATE cours_parent SET parent_end_date = '$new_recurrence_end' WHERE parent_id = $group_id");
+	$db->query("UPDATE session_groups SET parent_end_date = '$new_recurrence_end' WHERE session_group_id = $group_id");
 }
 ?>

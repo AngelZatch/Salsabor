@@ -18,7 +18,7 @@ $primary_key = $db->query("SHOW INDEX FROM $table_name WHERE Key_name = 'PRIMARY
 $query = "UPDATE $table_name SET ";
 foreach($values as $row => $value){
 	// Have to solve users to their ID if needed here.
-	if($row == "prof_principal"){
+	if($row == "session_teacher"){
 		$value = solveAdherentToId($value);
 	}
 	$value = htmlspecialchars($value);
