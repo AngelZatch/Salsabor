@@ -231,7 +231,7 @@ function invitation(){
 			$new->bindParam(':arep', $arep);
 			$new->execute();
 
-			/*$passage = $db->prepare("INSERT INTO cours_participants(cours_id_foreign, eleve_id_foreign, produit_adherent_id) VALUES(:cours, :eleve, :transaction)");
+			/*$passage = $db->prepare("INSERT INTO cours_participants(session_id_foreign, eleve_id_foreign, produit_adherent_id) VALUES(:cours, :eleve, :transaction)");
 			$passage->bindParam(':cours', $_POST["id-cours"]);
 			$passage->bindParam(':eleve', $adherent["user_id"]);
 			$passage->bindParam(':transaction', $transaction);

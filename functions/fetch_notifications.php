@@ -78,13 +78,13 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 
 		case "SES": // Notification when a session has been opened by the system
 			$sub_query = $db->query("SELECT * FROM cours c
-									JOIN rooms r ON c.cours_salle = r.room_id
-									JOIN users u ON c.prof_principal = u.user_id
-									WHERE cours_id='$n[target]'")->fetch(PDO::FETCH_ASSOC);
-			$n["cours_id"] = $sub_query["cours_id"];
-			$n["cours_name"] = $sub_query["cours_intitule"];
+									JOIN rooms r ON c.session_room = r.room_id
+									JOIN users u ON c.session_teacher = u.user_id
+									WHERE session_id='$n[target]'")->fetch(PDO::FETCH_ASSOC);
+			$n["session_id"] = $sub_query["session_id"];
+			$n["cours_name"] = $sub_query["session_name"];
 			$n["salle"] = $sub_query["room_name"];
-			$n["cours_start"] = $sub_query["cours_start"];
+			$n["session_start"] = $sub_query["session_start"];
 			$n["user"] = $sub_query["user_prenom"]." ".$sub_query["user_nom"];
 			$n["photo"] = $sub_query["photo"];
 			$n["cours_status"] = $sub_query["ouvert"];

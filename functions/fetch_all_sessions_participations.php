@@ -2,19 +2,19 @@
 include "db_connect.php";
 $db = PDOFactory::getConnection();
 
-$parent_id = $_GET["parent_id"];
+$session_group_id = $_GET["session_group_id"];
 
-$feed = $db->prepare("SELECT s.cours_id, cours_start, COUNT(passage_id) AS crowd FROM cours s
-					LEFT JOIN participations pr ON pr.cours_id = s.cours_id
-					WHERE cours_parent_id = ?
-					GROUP BY s.cours_id");
-$feed->bindParam(1, $parent_id, PDO::PARAM_INT);
+$feed = $db->prepare("SELECT s.session_id, session_start, COUNT(passage_id) AS crowd FROM cours s
+					LEFT JOIN participations pr ON pr.session_id = s.session_id
+					WHERE session_group = ?
+					GROUP BY s.session_id");
+$feed->bindParam(1, $session_group_id, PDO::PARAM_INT);
 $feed->execute();
 
 $stats = array();
 
 while($row = $feed->fetch(PDO::FETCH_ASSOC)){
-	$date = new DateTime($row["cours_start"]);
+	$date = new DateTime($row["session_start"]);
 	$date = $date->format("Y-m-d");
 	$s = array(
 		"date" => $date,

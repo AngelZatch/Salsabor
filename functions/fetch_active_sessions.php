@@ -6,30 +6,27 @@ $compare_start = date("Y-m-d H:i:s");
 $compare_end = date("Y-m-d H:i:s", strtotime($compare_start.'+90MINUTES'));
 if(!isset($_GET["fetched"])){
 	$load = $db->query("SELECT * FROM cours
-								JOIN rooms r ON cours_salle = r.room_id
-								JOIN users ON prof_principal=users.user_id
-								JOIN niveau ON cours_niveau=niveau.niveau_id
+								JOIN rooms r ON session_room = r.room_id
+								JOIN users ON session_teacher=users.user_id
 								WHERE ouvert != 0
-								ORDER BY cours_start ASC, cours_id ASC");
+								ORDER BY session_start ASC, session_id ASC");
 } else {
 	$fetched = $_GET["fetched"];
 	$load = $db->query("SELECT * FROM cours c
-								JOIN rooms r ON c.cours_salle = r.room_id
-								LEFT JOIN users u ON c.prof_principal=u.user_id
-								JOIN niveau l ON c.cours_niveau=l.niveau_id
-								WHERE ouvert != 0 AND cours_id NOT IN ('".implode($fetched, "','")."')
-								ORDER BY cours_start ASC, cours_id ASC");
+								JOIN rooms r ON c.session_room = r.room_id
+								LEFT JOIN users u ON c.session_teacher=u.user_id
+								WHERE ouvert != 0 AND session_id NOT IN ('".implode($fetched, "','")."')
+								ORDER BY session_start ASC, session_id ASC");
 }
 
 $sessionsList = array();
 while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$s = array();
-	$s["id"] = $details["cours_id"];
-	$s["title"] = $details["cours_intitule"];
-	$s["start"] = $details["cours_start"];
-	$s["end"] = $details["cours_end"];
+	$s["id"] = $details["session_id"];
+	$s["title"] = $details["session_name"];
+	$s["start"] = $details["session_start"];
+	$s["end"] = $details["session_end"];
 	$s["duration"] = $details["cours_unite"];
-	$s["level"] = $details["niveau_name"];
 	$s["room"] = $details["room_name"];
 	$s["teacher"] = $details["user_prenom"]." ".$details["user_nom"];
 	// Tags

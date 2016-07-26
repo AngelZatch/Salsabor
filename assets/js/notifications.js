@@ -154,12 +154,12 @@ function renderNotification(notification, half){
 
 		case "SES":
 			if(notification.cours_status == 1){
-				notif_link = "passages#ph-session-"+notification.cours_id;
+				notif_link = "passages#ph-session-"+notification.session_id;
 			} else {
-				notif_link = "cours/"+notification.cours_id;
+				notif_link = "cours/"+notification.session_id;
 			}
 			notif_image = notification.photo;
-			notif_message = "Le cours de <strong>"+notification.cours_name+"</strong> tenu par "+notification.user+" et commençant à "+moment(notification.cours_start).format("HH:mm")+" en "+notification.salle+" est désormais <strong>ouvert aux participations</strong>.";
+			notif_message = "Le cours de <strong>"+notification.cours_name+"</strong> tenu par "+notification.user+" et commençant à "+moment(notification.session_start).format("HH:mm")+" en "+notification.salle+" est désormais <strong>ouvert aux participations</strong>.";
 			notif_icon = "glyphicon-map-marker";
 			break;
 

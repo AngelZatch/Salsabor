@@ -123,11 +123,11 @@ function displaySessions(data, fetched){
 	var as_display = "";
 	$(".active-sessions-container").append(as_display);
 	for(var i = 0; i < active_sessions.length; i++){
-		var cours_start = moment(active_sessions[i].start);
-		/*if(cours_start > moment().format("DD/MM/YYYY HH:mm")){
-				var relative_time = cours_start.toNow();
+		var session_start = moment(active_sessions[i].start);
+		/*if(session_start > moment().format("DD/MM/YYYY HH:mm")){
+				var relative_time = session_start.toNow();
 			} else {
-				var relative_time = cours_start.fromNow();
+				var relative_time = session_start.fromNow();
 			}*/
 		as_display += "<div class='panel panel-session' id='session-"+active_sessions[i].id+"'>";
 		// Panel heading
@@ -136,7 +136,7 @@ function displaySessions(data, fetched){
 		// Container fluid for session name and hour
 		as_display += "<div class='container-fluid'>";
 		as_display += "<p class='session-id col-xs-5'>"+active_sessions[i].title+"</p>";
-		as_display += "<p class='session-date col-xs-5'><span class='glyphicon glyphicon-time'></span> Le "+cours_start.format("DD/MM")+" de "+cours_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+"</p>";
+		as_display += "<p class='session-date col-xs-5'><span class='glyphicon glyphicon-time'></span> Le "+session_start.format("DD/MM")+" de "+session_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+"</p>";
 		as_display += "<p class='col-xs-1 session-option'><span class='glyphicon glyphicon-lock close-session' id='close-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Verrouiller le cours'></span></p>";
 		as_display += "<p class='col-xs-1 session-option'><span class='glyphicon glyphicon-ok-sign validate-session' id='validate-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Valider tous les passages'></span></p>";
 		as_display += "</div>";
@@ -160,7 +160,6 @@ function displaySessions(data, fetched){
 		as_display += "<p class='col-xs-2 col-sm-2 col-lg-1'><span class='glyphicon glyphicon-user'></span> <span class='user-total-count' id='user-total-count-"+active_sessions[i].id+"'></span></p>";
 		as_display += "<p class='col-xs-2 col-sm-2 col-lg-1'><span class='glyphicon glyphicon-ok'></span> <span class='user-ok-count' id='user-ok-count-"+active_sessions[i].id+"'></span></p>";
 		as_display += "<p class='col-xs-2 col-sm-2 col-lg-1'><span class='glyphicon glyphicon-warning-sign'></span> <span class='user-warning-count' id='user-warning-count-"+active_sessions[i].id+"'></span></p>";
-		as_display += "<p class='col-xs-6 col-lg-3'><span class='glyphicon glyphicon-signal'></span> "+active_sessions[i].level+"</p>";
 		as_display += "<p class='col-xs-6 col-lg-3'><span class='glyphicon glyphicon-pushpin'></span> "+active_sessions[i].room+"</p>";
 		as_display += "<p class='col-xs-6 col-lg-3'><span class='glyphicon glyphicon-blackboard'></span> "+active_sessions[i].teacher+"</p>";
 		as_display += "</div>";
@@ -205,7 +204,6 @@ function displayTargetSessions(data){
 			body += "<p class='smp-title'>"+sessions_list[i].title+"</p>";
 			body += "<div class='row'>";
 			body += "<p class='col-xs-6'><span class='glyphicon glyphicon-time'></span> "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
-			body += "<p class='col-xs-6'><span class='glyphicon glyphicon-signal'></span> "+sessions_list[i].level+"</p>";
 			body += "<p class='col-xs-6'><span class='glyphicon glyphicon-pushpin'></span> "+sessions_list[i].room+"</p>";
 			body += "<p class='col-xs-6'><span class='glyphicon glyphicon-blackboard'></span> "+sessions_list[i].teacher+"</p>";
 			body += "</div>";
@@ -391,7 +389,7 @@ function displayIrregularParticipations(participation_id){
 
 			// Session
 			if(records_list[i].cours_name != null){
-				contents += "<p class='col-xs-6 participation-details srd-session'><span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].cours_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].cours_end).format("HH:mm")+")</p>";
+				contents += "<p class='col-xs-6 participation-details srd-session'><span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].session_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].session_end).format("HH:mm")+")</p>";
 			} else {
 				contents += "<p class='col-xs-6 participation-details srd-session'><span class='glyphicon glyphicon-eye-open'></span> Pas de cours</p>";
 			}
@@ -492,7 +490,7 @@ function displayIrregularUserParticipations(user_id){
 			contents += "<p class='panel-item-title personal-participation-title col-lg-8 bf'>";
 			// Session
 			if(records_list[i].cours_name != null){
-				contents += "<span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].cours_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].cours_end).format("HH:mm")+")";
+				contents += "<span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].session_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].session_end).format("HH:mm")+")";
 			} else {
 				contents += "<span class='glyphicon glyphicon-eye-open'></span> Pas de cours associé";
 			}
@@ -576,7 +574,7 @@ function displayUserParticipations(user_id){
 			contents += "<p class='panel-item-title personal-participation-title col-xs-8 bf'>";
 			// Session
 			if(records_list[i].cours_name != null){
-				contents += "<span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].cours_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].cours_end).format("HH:mm")+")";
+				contents += "<span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].session_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].session_end).format("HH:mm")+")";
 			} else {
 				contents += "<span class='glyphicon glyphicon-eye-open'></span> Pas de cours associé";
 			}
@@ -750,11 +748,11 @@ function changeSessionRecord(participation_id, target_session_id){
 			var session_data = JSON.parse(session);
 			console.log(top.location.pathname);
 			if(top.location.pathname === '/Salsabor/regularisation/participations'){
-				$("#participation-"+participation_id).find($("p.srd-session")).html("<span class='glyphicon glyphicon-eye-open'></span> "+session_data.cours_name+" ("+moment(session_data.cours_start).format("DD/MM/YYYY HH:mm")+" - "+moment(session_data.cours_end).format("HH:mm")+")");
+				$("#participation-"+participation_id).find($("p.srd-session")).html("<span class='glyphicon glyphicon-eye-open'></span> "+session_data.cours_name+" ("+moment(session_data.session_start).format("DD/MM/YYYY HH:mm")+" - "+moment(session_data.session_end).format("HH:mm")+")");
 			} else if(top.location.pathname === '/Salsabor/participations') {
 				$("#participation-"+participation_id).remove();
 			} else {
-				$("#participation-"+participation_id).find($(".panel-item-title")).html("<span class='glyphicon glyphicon-eye-open'></span> "+session_data.cours_name+" ("+moment(session_data.cours_start).format("DD/MM/YYYY HH:mm")+" - "+moment(session_data.cours_end).format("HH:mm")+") - Passage n°"+participation_id);
+				$("#participation-"+participation_id).find($(".panel-item-title")).html("<span class='glyphicon glyphicon-eye-open'></span> "+session_data.cours_name+" ("+moment(session_data.session_start).format("DD/MM/YYYY HH:mm")+" - "+moment(session_data.session_end).format("HH:mm")+") - Passage n°"+participation_id);
 			}
 		})
 	}

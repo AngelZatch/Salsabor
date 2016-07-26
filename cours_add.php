@@ -7,10 +7,10 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 require_once "functions/cours.php";
 
-$cours_name = $db->query('SELECT DISTINCT cours_intitule FROM cours');
+$cours_name = $db->query('SELECT DISTINCT session_name FROM cours');
 $arr_cours_name = array();
 while($row_cours_name = $cours_name->fetch(PDO::FETCH_ASSOC)){
-	array_push($arr_cours_name, trim(preg_replace('/[0-9]+/', '', $row_cours_name['cours_intitule'])));
+	array_push($arr_cours_name, trim(preg_replace('/[0-9]+/', '', $row_cours_name['session_name'])));
 }
 
 $lieux = $db->query('SELECT * FROM rooms');
@@ -57,20 +57,20 @@ if(isset($_POST['add'])){
 											<li class="completion-option"><a>Ne pas suggérer</a></li>
 										</ul>
 									</div>
-									<input type="text" class="form-control filtered-complete" id="complete-teacher" name="prof_principal">
+									<input type="text" class="form-control filtered-complete" id="complete-teacher" name="session_teacher">
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">Début</label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="cours_start" id="datepicker-start">
+								<input type="text" class="form-control" name="session_start" id="datepicker-start">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">Fin</label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="cours_end" id="datepicker-end">
+								<input type="text" class="form-control" name="session_end" id="datepicker-end">
 							</div>
 						</div>
 						<div class="form-group">

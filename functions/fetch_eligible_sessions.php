@@ -10,20 +10,18 @@ $participation = $db->query("SELECT * FROM participations WHERE passage_id = '$p
 $compare_start = date("Y-m-d H:i:s", strtotime($participation["passage_date"].'-90MINUTES'));
 $compare_end = date("Y-m-d H:i:s", strtotime($participation["passage_date"].'+90MINUTES'));
 $sessions = $db->query("SELECT * FROM cours c
-						JOIN rooms r ON c.cours_salle = r.room_id
-						JOIN users ON prof_principal=users.user_id
-						JOIN niveau ON cours_niveau=niveau.niveau_id
-						WHERE cours_start BETWEEN '$compare_start' AND '$compare_end'");
+						JOIN rooms r ON c.session_room = r.room_id
+						JOIN users ON session_teacher=users.user_id
+						WHERE session_start BETWEEN '$compare_start' AND '$compare_end'");
 
 $session_list = array();
 while($details = $sessions->fetch(PDO::FETCH_ASSOC)){
 	$s = array();
-	$s["id"] = $details["cours_id"];
-	$s["title"] = $details["cours_intitule"];
-	$s["start"] = $details["cours_start"];
-	$s["end"] = $details["cours_end"];
+	$s["id"] = $details["session_id"];
+	$s["title"] = $details["session_name"];
+	$s["start"] = $details["session_start"];
+	$s["end"] = $details["session_end"];
 	$s["duration"] = $details["cours_unite"];
-	$s["level"] = $details["niveau_name"];
 	$s["room"] = $details["room_name"];
 	$s["teacher"] = $details["user_prenom"]." ".$details["user_nom"];
 	array_push($session_list, $s);

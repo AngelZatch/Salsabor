@@ -8,20 +8,18 @@ $passage = $db->query("SELECT passage_date FROM participations WHERE passage_id=
 $start = date("Y-m-d H:i:s", strtotime($passage["passage_date"].'-80MINUTES'));
 $end = date("Y-m-d H:i:s", strtotime($passage["passage_date"].'+80MINUTES'));
 $queryFeed = $db->prepare("SELECT * FROM cours
-						JOIN niveau ON cours_niveau=niveau.niveau_id
-						JOIN rooms r ON cours.cours_salle = r.room_id
-						JOIN users ON prof_principal=users.user_id
-						WHERE cours_start>='$start' AND cours_end <='$end'");
+						JOIN rooms r ON cours.session_room = r.room_id
+						JOIN users ON session_teacher=users.user_id
+						WHERE session_start>='$start' AND session_end <='$end'");
 $queryFeed->bindValue(1, $id);
 $queryFeed->execute();
 $cours = array();
 while($feed = $queryFeed->fetch(PDO::FETCH_ASSOC)){
 	$f = array();
-	$f["id"] = $feed["cours_id"];
-	$f["nom"] = $feed["cours_intitule"];
-	$f["niveau"] = $feed["niveau_name"];
+	$f["id"] = $feed["session_id"];
+	$f["nom"] = $feed["session_name"];
 	$f["salle"] = $feed["room_name"];
-	$f["heure"] = date_create($feed["cours_start"])->format("H:i")."-".date_create($feed["cours_end"])->format("H:i");
+	$f["heure"] = date_create($feed["session_start"])->format("H:i")."-".date_create($feed["session_end"])->format("H:i");
 	$f["prof"] = $feed["user_prenom"]." ".$feed["user_nom"];
 	array_push($cours, $f);
 }
