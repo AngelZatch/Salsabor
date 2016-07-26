@@ -8,7 +8,7 @@ $db = PDOFactory::getConnection();
 
 $queryIrregulars = $db->query("SELECT * FROM participations pr
 								JOIN users u ON pr.user_id = u.user_id
-								JOIN cours c ON pr.session_id = c.session_id
+								JOIN sessions s ON pr.session_id = s.session_id
 								WHERE produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0
 								ORDER BY user_nom, session_start ASC");
 ?>

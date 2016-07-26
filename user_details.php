@@ -29,7 +29,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 // If the user is a teacher
 /*if($is_teacher == 1){
 	// On obtient l'historique de ses cours
-	$queryHistoryDonnes = $db->prepare('SELECT * FROM cours JOIN niveau ON cours_niveau=niveau.niveau_id JOIN rooms r ON session_room = r.room_id WHERE session_teacher=? OR prof_remplacant=? ORDER BY session_start ASC');
+	$queryHistoryDonnes = $db->prepare('SELECT * FROM sessions s JOIN rooms r ON s.session_room = r.room_id WHERE session_teacher=? ORDER BY session_start ASC');
 	$queryHistoryDonnes->bindValue(1, $data);
 	$queryHistoryDonnes->bindValue(2, $data);
 	$queryHistoryDonnes->execute();
@@ -273,13 +273,13 @@ if(isset($_POST["edit"])){
 				$("[name='forfaits-actifs']").blur(function(){
 					var clicked = $(this);
 					var eleve_id = <?php echo $data;?>;
-					var produit_id = clicked.val();
+					var product_id = clicked.val();
 					var session_id = clicked.prev().val();
-					$.post("functions/link_forfait.php", {eleve_id : eleve_id, session_id : session_id, produit_id : produit_id}).done(function(data){
+					$.post("functions/link_forfait.php", {eleve_id : eleve_id, session_id : session_id, product_id : product_id}).done(function(data){
 						showSuccessNotif(data);
 						clicked.parents("tr.warning").removeClass('warning');
 						clicked.hide();
-						clicked.parent().html(produit_id);
+						clicked.parent().html(product_id);
 					});
 				});
 			})

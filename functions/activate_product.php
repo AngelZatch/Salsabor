@@ -8,8 +8,8 @@ $db = PDOFactory::getConnection();
 $product_id = $_POST["product_id"];
 
 /** Check if the product has already been activated before **/
-$details = $db->query("SELECT pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif, date_expiration, date_fin_utilisation, validite_initiale, volume_cours, est_abonnement FROM produits_adherents pa
-						JOIN produits p ON pa.id_produit_foreign = p.produit_id
+$details = $db->query("SELECT pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif, date_expiration, date_fin_utilisation, product_validity, volume_cours, est_abonnement FROM produits_adherents pa
+						JOIN produits p ON pa.id_produit_foreign = p.product_id
 						WHERE id_produit_adherent = '$product_id'")->fetch(PDO::FETCH_ASSOC);
 
 if($details["produit_adherent_activation"] != "0000-00-00 00:00:00" && $details["produit_adherent_activation"] != NULL && $details["produit_adherent_actif"] == "0"){
@@ -26,7 +26,7 @@ if($details["produit_adherent_activation"] != "0000-00-00 00:00:00" && $details[
 	} else {
 		$has_holiday = false;
 	}
-	$new_exp_date = date_create(computeExpirationDate($db, $date_activation, $details["validite_initiale"], $has_holiday))->format("Y-m-d H:i:s");
+	$new_exp_date = date_create(computeExpirationDate($db, $date_activation, $details["product_validity"], $has_holiday))->format("Y-m-d H:i:s");
 }
 
 if($new_exp_date < date_create("now")->format("Y-m-d")){

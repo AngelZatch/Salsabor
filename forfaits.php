@@ -24,9 +24,9 @@ $produits = $db->query("SELECT * FROM produits");
 						<a href="forfait_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait</a>
 					</legend>
 					<?php while($produit = $produits->fetch(PDO::FETCH_ASSOC)){
-	$validite_semaines = $produit["validite_initiale"] / 7;
+	$validite_semaines = $produit["product_validity"] / 7;
 	if($validite_semaines < 1){
-		$validite = $produit["validite_initiale"]." jour(s)";
+		$validite = $produit["product_validity"]." jour(s)";
 	} else {
 		$validite = $validite_semaines." semaine(s)";
 	}
@@ -34,12 +34,12 @@ $produits = $db->query("SELECT * FROM produits");
 					<div class="col-xs-6 col-md-4 panel-product-container">
 						<div class="panel panel-product">
 							<div class="panel-body">
-								<p class="product-title"><?php echo $produit["produit_nom"];?></p>
+								<p class="product-title"><?php echo $produit["product_name"];?></p>
 								<?php $labels = $db->prepare("SELECT * FROM assoc_product_tags apt
 						JOIN tags_session ts ON apt.tag_id_foreign = ts.rank_id
 						WHERE product_id_foreign = ?
 						ORDER BY tag_color DESC");
-	$labels->bindParam(1, $produit["produit_id"], PDO::PARAM_INT);
+	$labels->bindParam(1, $produit["product_id"], PDO::PARAM_INT);
 	$labels->execute(); ?>
 								<p>Valable <?php echo $validite;?></p>
 								<div class="tags-display">
@@ -60,8 +60,8 @@ $produits = $db->query("SELECT * FROM produits");
 								<?php } else { ?>
 								<p class="product-description purchase-sub">Pas de description</p>
 								<?php } ?>
-								<p class="product-price"><?php echo $produit["tarif_global"];?> €</p>
-								<a href="forfait/<?php echo $produit["produit_id"];?>" class="btn btn-default btn-block"><span class="glyphicon glyphicon-search"></span> Détails...</a>
+								<p class="product-price"><?php echo $produit["product_price"];?> €</p>
+								<a href="forfait/<?php echo $produit["product_id"];?>" class="btn btn-default btn-block"><span class="glyphicon glyphicon-search"></span> Détails...</a>
 							</div>
 						</div>
 					</div>

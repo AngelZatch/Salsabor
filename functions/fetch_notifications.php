@@ -39,9 +39,9 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	switch($n["type"]){
 		case "PRD": // We have to get the details of the product then
 			$sub_query = $db->query("SELECT * FROM produits_adherents pa
-									JOIN produits p ON pa.id_produit_foreign = p.produit_id
+									JOIN produits p ON pa.id_produit_foreign = p.product_id
 									JOIN users u ON pa.id_user_foreign = u.user_id WHERE id_produit_adherent = '$n[target]'")->fetch(PDO::FETCH_ASSOC);
-			$n["product_name"] = $sub_query["produit_nom"];
+			$n["product_name"] = $sub_query["product_name"];
 			$n["product_validity"] = max($sub_query["date_expiration"], $sub_query["date_prolongee"]);
 			if(isset($sub_query["date_fin_utilisation"]) && $sub_query["date_fin_utilisation"] != "0000-00-00 00:00:00"){
 				$n["product_usage"] = $sub_query["date_fin_utilisation"];
@@ -77,9 +77,9 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			break;
 
 		case "SES": // Notification when a session has been opened by the system
-			$sub_query = $db->query("SELECT * FROM cours c
-									JOIN rooms r ON c.session_room = r.room_id
-									JOIN users u ON c.session_teacher = u.user_id
+			$sub_query = $db->query("SELECT * FROM sessions s
+									JOIN rooms r ON s.session_room = r.room_id
+									JOIN users u ON s.session_teacher = u.user_id
 									WHERE session_id='$n[target]'")->fetch(PDO::FETCH_ASSOC);
 			$n["session_id"] = $sub_query["session_id"];
 			$n["cours_name"] = $sub_query["session_name"];
@@ -87,7 +87,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			$n["session_start"] = $sub_query["session_start"];
 			$n["user"] = $sub_query["user_prenom"]." ".$sub_query["user_nom"];
 			$n["photo"] = $sub_query["photo"];
-			$n["cours_status"] = $sub_query["ouvert"];
+			$n["cours_status"] = $sub_query["session_opened"];
 			break;
 
 		case "TAS": // Notifications for tasks
@@ -156,9 +156,9 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 
 		case "PRO": // Promotions
 			$sub_query = $db->query("SELECT * FROM produits p
-									WHERE produit_id = '$n[target]'")->fetch(PDO::FETCH_ASSOC);
-			$n["product_id"] = $sub_query["produit_id"];
-			$n["product_name"] = $sub_query["produit_nom"];
+									WHERE product_id = '$n[target]'")->fetch(PDO::FETCH_ASSOC);
+			$n["product_id"] = $sub_query["product_id"];
+			$n["product_name"] = $sub_query["product_name"];
 			$n["date_activation"] = $sub_query["date_activation"];
 			$n["date_desactivation"] = $sub_query["date_desactivation"];
 	}

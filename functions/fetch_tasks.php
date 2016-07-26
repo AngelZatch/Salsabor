@@ -80,12 +80,12 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			break;
 
 		case "PRD":
-			$sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo, produit_nom FROM users u JOIN produits_adherents pa ON pa.id_user_foreign = u.user_id JOIN produits p ON p.produit_id = pa.id_produit_foreign WHERE user_id IN (SELECT id_user_foreign FROM produits_adherents WHERE id_produit_adherent ='$t[target]')")->fetch(PDO::FETCH_ASSOC);
+			$sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo, product_name FROM users u JOIN produits_adherents pa ON pa.id_user_foreign = u.user_id JOIN produits p ON p.product_id = pa.id_produit_foreign WHERE user_id IN (SELECT id_user_foreign FROM produits_adherents WHERE id_produit_adherent ='$t[target]')")->fetch(PDO::FETCH_ASSOC);
 			$t["user_id"] = $sub_query["user_id"];
 			$t["link"] = "user/".$t["user_id"]."/abonnements";
 			$t["user"] = $sub_query["user"];
 			$t["photo"] = $sub_query["photo"];
-			$t["target_phrase"] = $sub_query["produit_nom"]." de ".$t["user"];
+			$t["target_phrase"] = $sub_query["product_name"]." de ".$t["user"];
 			break;
 
 		case "TRA":
@@ -98,7 +98,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			break;
 
 		case "SES":
-			$sub_query = $db->query("SELECT session_name, session_start, session_end, room_name FROM cours s JOIN rooms r ON s.session_room = r.room_id WHERE session_id = '$t[target]'")->fetch(PDO::FETCH_ASSOC);
+			$sub_query = $db->query("SELECT session_name, session_start, session_end, room_name FROM sessions s JOIN rooms r ON s.session_room = r.room_id WHERE session_id = '$t[target]'")->fetch(PDO::FETCH_ASSOC);
 			$t["photo"] = "assets/images/sticker_promo.png";
 			$t["link"] = "cours/".$t["target"];
 			$date_start = date_create($sub_query["session_start"])->format("d/m/Y");

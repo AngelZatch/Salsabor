@@ -8,12 +8,12 @@ $db = PDOFactory::getConnection();
 require_once 'functions/cours.php';
 /** Récupération des valeurs dans la base de données des champs **/
 $id = $_GET['id'];
-$cours = $db->query("SELECT * FROM cours c
-							JOIN users u ON c.session_teacher = u.user_id
+$cours = $db->query("SELECT * FROM sessions s
+							JOIN users u ON s.session_teacher = u.user_id
 							WHERE session_id='$id'")->fetch(PDO::FETCH_ASSOC);
 
 // Array of all the sessions from this parent.
-$all = $db->query("SELECT session_id FROM cours c WHERE session_group = $cours[session_group]")->fetchAll(PDO::FETCH_COLUMN);
+$all = $db->query("SELECT session_id FROM sessions WHERE session_group = $cours[session_group]")->fetchAll(PDO::FETCH_COLUMN);
 $count = sizeof($all);
 $current = array_search($id, $all);
 $all_js = json_encode($all);
@@ -93,7 +93,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<?php } ?>
 						</div>
 						<div class="col-xs-4 col-sm-6">
-							<p id="last-edit"><?php if($cours['derniere_modification'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['derniere_modification'])->format('d/m/Y')." à ".date_create($cours['derniere_modification'])->format('H:i');?></p>
+							<p id="last-edit"><?php if($cours['last_edit_date'] != '0000-00-00 00:00:00') echo "Dernière modification le ".date_create($cours['last_edit_date'])->format('d/m/Y')." à ".date_create($cours['last_edit_date'])->format('H:i');?></p>
 						</div>
 						<div class="col-xs-4 col-sm-3">
 							<?php if(isset($next)){ ?>

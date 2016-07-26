@@ -7,8 +7,8 @@ $fetch_end = $_GET["fetch_end"];
 $filters = $_GET["filters"];
 try{
 	// Fetching sessions
-	$calendar = $db->prepare("SELECT session_id, session_name, room_id, session_start, session_end, color_value FROM cours c
-							JOIN rooms r ON c.session_room = r.room_id
+	$calendar = $db->prepare("SELECT session_id, session_name, room_id, session_start, session_end, color_value FROM sessions s
+							JOIN rooms r ON s.session_room = r.room_id
 							JOIN colors co ON r.room_color = co.color_id
 							WHERE session_start > '$fetch_start' AND session_end < '$fetch_end'
 							AND room_id IN (".implode(",", array_map("intval", $filters)).")");

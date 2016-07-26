@@ -5,17 +5,17 @@ $db = PDOFactory::getConnection();
 $compare_start = date("Y-m-d H:i:s");
 $compare_end = date("Y-m-d H:i:s", strtotime($compare_start.'+90MINUTES'));
 if(!isset($_GET["fetched"])){
-	$load = $db->query("SELECT * FROM cours
-								JOIN rooms r ON session_room = r.room_id
-								JOIN users ON session_teacher=users.user_id
-								WHERE ouvert != 0
+	$load = $db->query("SELECT * FROM sessions s
+								JOIN rooms r ON s.session_room = r.room_id
+								JOIN users u ON s.session_teacher = u.user_id
+								WHERE session_opened != 0
 								ORDER BY session_start ASC, session_id ASC");
 } else {
 	$fetched = $_GET["fetched"];
-	$load = $db->query("SELECT * FROM cours c
-								JOIN rooms r ON c.session_room = r.room_id
-								LEFT JOIN users u ON c.session_teacher=u.user_id
-								WHERE ouvert != 0 AND session_id NOT IN ('".implode($fetched, "','")."')
+	$load = $db->query("SELECT * FROM sessions s
+								JOIN rooms r ON s.session_room = r.room_id
+								LEFT JOIN users u ON s.session_teacher = u.user_id
+								WHERE session_opened != 0 AND session_id NOT IN ('".implode($fetched, "','")."')
 								ORDER BY session_start ASC, session_id ASC");
 }
 
@@ -26,7 +26,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$s["title"] = $details["session_name"];
 	$s["start"] = $details["session_start"];
 	$s["end"] = $details["session_end"];
-	$s["duration"] = $details["cours_unite"];
+	$s["duration"] = $details["session_duration"];
 	$s["room"] = $details["room_name"];
 	$s["teacher"] = $details["user_prenom"]." ".$details["user_nom"];
 	// Tags

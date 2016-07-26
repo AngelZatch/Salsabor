@@ -28,9 +28,9 @@ function prepareParticipation($db, $user_tag, $reader_token){
 		// If the tag is not for associating, we search a product that could be used for this session.
 		// First, we get the name of the session and the ID of the user.
 		// For the session, we have to find it based on the time of the record and the position.
-		$session_id = $db->query("SELECT session_id FROM cours c
-								JOIN rooms r ON c.session_room = r.room_id
-								WHERE ouvert = '1' AND room_reader = '$reader_token'")->fetch(PDO::FETCH_COLUMN);
+		$session_id = $db->query("SELECT session_id FROM sessions s
+								JOIN rooms r ON s.session_room = r.room_id
+								WHERE session_opened = '1' AND room_reader = '$reader_token'")->fetch(PDO::FETCH_COLUMN);
 		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$user_tag'")->fetch(PDO::FETCH_COLUMN);
 
 		addParticipationBeta($db, $today, $session_id, $user_id, $reader_token, $user_tag);

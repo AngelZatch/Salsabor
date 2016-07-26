@@ -9,7 +9,7 @@ $db = PDOFactory::getConnection();
 $data = $_GET["id"];
 
 // Product details
-$queryProduit = $db->prepare("SELECT * FROM produits WHERE produit_id=?");
+$queryProduit = $db->prepare("SELECT * FROM produits WHERE product_id=?");
 $queryProduit->bindParam(1, $data, PDO::PARAM_INT);
 $queryProduit->execute();
 $produit = $queryProduit->fetch(PDO::FETCH_ASSOC);
@@ -23,11 +23,6 @@ $labels->bindParam(1, $data, PDO::PARAM_INT);
 $labels->execute();
 
 if(isset($_POST["edit"])){
-	if(isset($_POST["volume_horaire"])){
-		$tarif_horaire = $_POST["tarif_global"]/$_POST["volume_horaire"];
-	} else {
-		$tarif_horaire = 0;
-	}
 	if($_POST["validite_jour"] == "1"){
 		$validite = $_POST["validite"];
 	} else {
@@ -37,22 +32,20 @@ if(isset($_POST["edit"])){
 
 	try{
 		$db->beginTransaction();
-		$edit = $db->prepare("UPDATE produits SET produit_nom = :intitule,
+		$edit = $db->prepare("UPDATE produits SET product_name = :intitule,
 												description = :description,
-												volume_horaire = :volume_horaire,
-												validite_initiale = :validite,
-												tarif_horaire = :tarif_horaire,
-												tarif_global = :tarif_global,
+												product_size = :product_size,
+												product_validity = :validite,
+												product_price = :product_price,
 												actif = :actif,
 												echeances_paiement = :echeances,
 												autorisation_report = :autorisation_report,
-												WHERE produit_id = :id");
+												WHERE product_id = :id");
 		$edit->bindParam(':intitule', $_POST["intitule"]);
 		$edit->bindParam(':description', $_POST["description"]);
-		$edit->bindParam(':volume_horaire', $_POST["volume_horaire"]);
+		$edit->bindParam(':product_size', $_POST["product_size"]);
 		$edit->bindParam(':validite', $validite);
-		$edit->bindParam(':tarif_horaire', $tarif_horaire);
-		$edit->bindParam(':tarif_global', $_POST["tarif_global"]);
+		$edit->bindParam(':product_price', $_POST["product_price"]);
 		$edit->bindParam(':actif', $actif);
 		$edit->bindParam(':echeances', $_POST["echeances"]);
 		$edit->bindParam(':autorisation_report', $_POST["arep"]);
@@ -68,7 +61,7 @@ if(isset($_POST["edit"])){
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Détails du forfait <?php echo $produit["produit_nom"];?> | Salsabor</title>
+		<title>Détails du forfait <?php echo $produit["product_name"];?> | Salsabor</title>
 		<base href="../">
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
@@ -81,13 +74,13 @@ if(isset($_POST["edit"])){
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<form action="" class="form-horizontal" method="post">
-						<legend><span class="glyphicon glyphicon-credit-card"></span> <?php echo $produit["produit_nom"];?>
+						<legend><span class="glyphicon glyphicon-credit-card"></span> <?php echo $produit["product_name"];?>
 							<input type="submit" name="edit" role="button" class="btn btn-primary hidden-xs" value="Enregistrer">
 						</legend>
 						<div class="form-group">
 							<label for="intitule" class="control-label col-lg-3">Intitulé</label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="intitule" value="<?php echo $produit["produit_nom"];?>" placeholder="Nom du produit">
+								<input type="text" class="form-control" name="intitule" value="<?php echo $produit["product_name"];?>" placeholder="Nom du produit">
 							</div>
 						</div>
 						<div class="form-group">
@@ -114,15 +107,15 @@ if(isset($_POST["edit"])){
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="volume_horaire" class="col-lg-3 control-label">Volume de cours (en heures)</label>
+							<label for="product_size" class="col-lg-3 control-label">Volume de cours (en heures)</label>
 							<div class="col-lg-9">
-								<input type="number" class="form-control" name="volume_horaire" value="<?php echo $produit["volume_horaire"];?>" placeholder="Exemple : 10">
+								<input type="number" class="form-control" name="product_size" value="<?php echo $produit["product_size"];?>" placeholder="Exemple : 10">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="validite" class="col-lg-3 control-label">Durée de validité</label>
 							<div class="col-lg-9">
-								<input type="number" class="form-control" name="validite" value="<?php echo $produit["validite_initiale"];?>" placeholder="Exemple : 48">
+								<input type="number" class="form-control" name="validite" value="<?php echo $produit["product_validity"];?>" placeholder="Exemple : 48">
 								<label for="est_recharge" class="control-label">Jours</label>
 								<input name="validite_jour" id="validite_jour" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1"><span class="label-tip">Si décoché, la durée sera calculée en semaines.</span>
 							</div>
@@ -134,10 +127,10 @@ if(isset($_POST["edit"])){
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="tarif_global" class="col-lg-3 control-label">Prix d'achat</label>
+							<label for="product_price" class="col-lg-3 control-label">Prix d'achat</label>
 							<div class="col-lg-9">
 								<div class="input-group">
-									<input type="number" step="any" class="form-control" name="tarif_global" id="product-price" value="<?php echo $produit["tarif_global"];?>">
+									<input type="number" step="any" class="form-control" name="product_price" id="product-price" value="<?php echo $produit["product_price"];?>">
 									<span class="input-group-addon">€</span>
 								</div>
 							</div>

@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $date = $_POST["date_debut"];
 
-$search = $db->prepare('SELECT * FROM jours_chomes WHERE date_chomee=?');
+$search = $db->prepare('SELECT * FROM holidays WHERE holiday_date=?');
 $search->bindParam(1, $date);
 $search->execute();
 echo $search->rowCount();
