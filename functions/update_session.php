@@ -15,13 +15,13 @@ $hook = $_POST["hook"];
 
 // == GET THE DELTA ==
 // New values from the serialized array
-$new_start = DateTime::createFromFormat("d/m/Y H:i:s", $values["cours_start"]);
-$new_end = DateTime::createFromFormat("d/m/Y H:i:s", $values["cours_end"]);
+$new_start = DateTime::createFromFormat("d/m/Y H:i:s", $values["session_start"]);
+$new_end = DateTime::createFromFormat("d/m/Y H:i:s", $values["session_end"]);
 
 // Old values from the database and the hook
-$hook_times = $db->query("SELECT cours_start, cours_end FROM cours WHERE cours_id = $hook")->fetch(PDO::FETCH_ASSOC);
-$old_start = new DateTime($hook_times["cours_start"]);
-$old_end = new DateTime($hook_times["cours_end"]);
+$hook_times = $db->query("SELECT session_start, session_end FROM cours WHERE session_id = $hook")->fetch(PDO::FETCH_ASSOC);
+$old_start = new DateTime($hook_times["session_start"]);
+$old_end = new DateTime($hook_times["session_end"]);
 
 // We calculate the delta
 $start_delta = $old_start->diff($new_start);
@@ -30,17 +30,17 @@ $end_delta = $old_end->diff($new_end);
 // == QUERY ==
 for($i = 0; $i < sizeof($sessions); $i++){
 	// We fetch the times from each session
-	$session_times = $db->query("SELECT cours_start, cours_end FROM cours WHERE cours_id = $sessions[$i]")->fetch(PDO::FETCH_ASSOC);
+	$session_times = $db->query("SELECT session_start, session_end FROM cours WHERE session_id = $sessions[$i]")->fetch(PDO::FETCH_ASSOC);
 	try{
 		$query = "UPDATE cours SET ";
 		foreach($values as $row => $value){
 			// If we have to get a name
-			if($row == "prof_principal")
+			if($row == "session_teacher")
 				$value = solveAdherentToId($value);
 
 			// We apply the delta
-			if($row == "cours_start"){
-				$value = new DateTime($session_times["cours_start"]);
+			if($row == "session_start"){
+				$value = new DateTime($session_times["session_start"]);
 				if($new_start < $value){
 					$value->sub(new DateInterval("P".$start_delta->format("%d")."DT".$start_delta->format("%h")."H".$start_delta->format("%i")."M"));
 				} else {
@@ -49,8 +49,8 @@ for($i = 0; $i < sizeof($sessions); $i++){
 				$value = $value->format("Y-m-d H:i:s");
 			}
 
-			if($row == "cours_end"){
-				$value = new DateTime($session_times["cours_end"]);
+			if($row == "session_end"){
+				$value = new DateTime($session_times["session_end"]);
 				if($new_end < $value){
 				$value->sub(new DateInterval("P".$end_delta->format("%d")."DT".$end_delta->format("%h")."H".$end_delta->format("%i")."M"));
 				} else {
@@ -64,7 +64,7 @@ for($i = 0; $i < sizeof($sessions); $i++){
 				$query .= ", ";
 			}
 		}
-		$query .= " WHERE cours_id = '$sessions[$i]'";
+		$query .= " WHERE session_id = '$sessions[$i]'";
 		echo $query."\n";
 		$db->beginTransaction();
 		$update = $db->query($query);

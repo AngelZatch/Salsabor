@@ -8,9 +8,9 @@ $db = PDOFactory::getConnection();
 
 $queryIrregulars = $db->query("SELECT * FROM participations pr
 								JOIN users u ON pr.user_id = u.user_id
-								JOIN cours c ON pr.cours_id = c.cours_id
+								JOIN cours c ON pr.session_id = c.session_id
 								WHERE produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0
-								ORDER BY user_nom, cours_start ASC");
+								ORDER BY user_nom, session_start ASC");
 ?>
 <html>
 	<head>
@@ -40,7 +40,7 @@ $queryIrregulars = $db->query("SELECT * FROM participations pr
 								}
 							?>
 							<li class="irregular-participation" id="participation-<?php echo $irregulars["passage_id"];?>" data-argument="<?php echo $irregulars["passage_id"];?>">
-								<p><?php echo $irregulars["user_prenom"]." ".$irregulars["user_nom"];?> au cours de <?php echo $irregulars["cours_intitule"];?> du <?php echo date_create($irregulars["cours_start"])->format("d/m/Y\ \à\ H:i");?></p>
+								<p><?php echo $irregulars["user_prenom"]." ".$irregulars["user_nom"];?> au cours de <?php echo $irregulars["session_name"];?> du <?php echo date_create($irregulars["session_start"])->format("d/m/Y\ \à\ H:i");?></p>
 							</li>
 							<?php $currentUser = $irregulars["user_nom"];
 							} ?>

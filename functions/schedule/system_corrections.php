@@ -39,13 +39,13 @@ while($record = $records->fetch(PDO::FETCH_GROUP)){
 $loss = $db->query("DELETE FROM participations WHERE user_id IS NULL AND user_rfid IS NULL");
 
 // Find all duplicates
-$duplicates = $db->query("SELECT *, count(*) AS duplicates FROM participations GROUP BY cours_id, user_id HAVING duplicates > 1");
+$duplicates = $db->query("SELECT *, count(*) AS duplicates FROM participations GROUP BY session_id, user_id HAVING duplicates > 1");
 while($duplicate = $duplicates->fetch(PDO::FETCH_ASSOC)){
 	$delete = $db->query("DELETE FROM participations WHERE passage_id = '$duplicate[passage_id]'");
 }
 
 // Delete "lost" records
-$delete = $db->query("DELETE FROM participations WHERE cours_id IS NULL AND produit_adherent_id IS NULL AND passage_date < '$limit'");
+$delete = $db->query("DELETE FROM participations WHERE session_id IS NULL AND produit_adherent_id IS NULL AND passage_date < '$limit'");
 
 //Delete tasks with no target
 $delete_tasks = $db->query("DELETE FROM tasks WHERE task_target = ''");

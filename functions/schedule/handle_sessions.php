@@ -15,22 +15,22 @@ $compare_close = date("Y-m-d H:i:s", strtotime($compare_start.'+30MINUTES'));
 try{
 	$db->beginTransaction();
 	// Opens to records session that will begin in the next 90 minutes.
-	$sessions = $db->query("SELECT cours_id, ouvert FROM cours WHERE cours_start <= '$compare_end' AND cours_start >= '$compare_start'");
-	/*$update = $db->prepare("UPDATE cours SET ouvert=1 WHERE cours_start<=? AND cours_start>=?");
+	$sessions = $db->query("SELECT session_id, ouvert FROM cours WHERE session_start <= '$compare_end' AND session_start >= '$compare_start'");
+	/*$update = $db->prepare("UPDATE cours SET ouvert=1 WHERE session_start<=? AND session_start>=?");
 	$update->bindParam(1, $compare_end);
 	$update->bindParam(2, $compare_start);
 	$update->execute();*/
 	while($session = $sessions->fetch(PDO::FETCH_ASSOC)){
-		$session_id = $session["cours_id"];
+		$session_id = $session["session_id"];
 		if($session["ouvert"] == 0){
-			$open = $db->query("UPDATE cours SET ouvert = 1 WHERE cours_id='$session_id'");
+			$open = $db->query("UPDATE cours SET ouvert = 1 WHERE session_id='$session_id'");
 			$token = "SES";
 			postNotification($db, $token, $session_id, null, $compare_start);
 		}
 	}
 
 	// Leaves the sesssions open but doesn't accept records anymore for sessions that will end in the next 30 minutes.
-	$partial_close = $db->query("UPDATE cours SET ouvert = 2 WHERE cours_end <= '$compare_close' AND ouvert = 1");
+	$partial_close = $db->query("UPDATE cours SET ouvert = 2 WHERE session_end <= '$compare_close' AND ouvert = 1");
 	$db->commit();
 } catch(PDOException $e){
 	$db->rollBack();

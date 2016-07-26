@@ -125,7 +125,7 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 			$product = NULL;
 			$status = "3";
 		}
-		$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, cours_id, produit_adherent_id, status)
+		$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, session_id, produit_adherent_id, status)
 					VALUES('$tag', '$user_id', '$ip', '$today', '$session_id', '$product_id', '$status')");
 		echo "$";
 	} else {
@@ -158,7 +158,7 @@ function addParticipationBeta($db, $today, $session_id, $user_id, $reader_token,
 				$status = 0;
 			else
 				$status = 3;
-			$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, cours_id, produit_adherent_id, status)
+			$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, session_id, produit_adherent_id, status)
 						VALUES('$user_tag', '$user_id', '$reader_token', '$today', '$session_id', '$product_id', $status)");
 			echo "$";
 		} else {

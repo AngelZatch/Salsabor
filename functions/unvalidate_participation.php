@@ -13,9 +13,9 @@ if(isset($_POST["user_id"])){
 	$user_id = $_POST["user_id"];
 }
 if(!isset($_POST["user_id"]) || !isset($_POST["session_id"])){
-	$record_detais = $db->query("SELECT user_id, cours_id, produit_adherent_id FROM participations WHERE passage_id = '$participation_id'")->fetch(PDO::FETCH_ASSOC);
+	$record_detais = $db->query("SELECT user_id, session_id, produit_adherent_id FROM participations WHERE passage_id = '$participation_id'")->fetch(PDO::FETCH_ASSOC);
 	$user_id = $record_detais["user_id"];
-	$session_id = $record_detais["cours_id"];
+	$session_id = $record_detais["session_id"];
 	$product_id = $record_detais["produit_adherent_id"];
 }
 

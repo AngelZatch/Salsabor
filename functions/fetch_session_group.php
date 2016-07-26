@@ -8,7 +8,7 @@ if(isset($_GET["group_id"])){
 }
 
 function fetchGroupDetails($db, $group_id){
-	$stmt = $db->prepare("SELECT * FROM cours_parent WHERE parent_id = ?");
+	$stmt = $db->prepare("SELECT * FROM session_groups WHERE session_group_id = ?");
 	$stmt->bindParam(1, $group_id, PDO::PARAM_INT);
 	$stmt->execute();
 

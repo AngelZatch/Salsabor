@@ -15,7 +15,7 @@ try{
 	// Mise à jour de tous les prix de tous les cours non payés affectés par le changement
 	// Selection de tous les cours affectés par le changement du tarif
 	$queryTarif = $db->query("SELECT * FROM tarifs_professeurs WHERE tarif_professeur_id='$update_id'")->fetch(PDO::FETCH_ASSOC);
-	$queryCours = $db->prepare("SELECT * FROM cours WHERE prof_principal=? AND cours_type=? AND paiement_effectue=0");
+	$queryCours = $db->prepare("SELECT * FROM cours WHERE session_teacher=? AND cours_type=? AND paiement_effectue=0");
 	$queryCours->bindParam(1, $queryTarif["prof_id_foreign"]);
 	$queryCours->bindParam(2, $queryTarif["type_prestation"]);
 	$queryCours->execute();
@@ -25,7 +25,7 @@ try{
 		/* CAS 1 : tarif par personne */
 		if($queryTarif["ratio_multiplicatif"] == 'personne'){
 			// Compte de tous les participants n'ayant pas utilisé d'invitation
-			/*$queryParticipants = $db->query("SELECT * FROM cours_participants JOIN produits_adherents ON produit_adherent_id=produits_adherents.id_transaction JOIN produits ON id_produit=produits.produit_id WHERE cours_id_foreign='$cours[cours_id]' AND produit_nom != 'Invitation'")->rowCount();*/
+			/*$queryParticipants = $db->query("SELECT * FROM cours_participants JOIN produits_adherents ON produit_adherent_id=produits_adherents.id_transaction JOIN produits ON id_produit=produits.produit_id WHERE session_id_foreign='$cours[session_id]' AND produit_nom != 'Invitation'")->rowCount();*/
 			$value = $queryParticipants * $_POST["tarif"];
 		} else if($queryTarif["ratio_multiplicatif"] == "heure"){
 			// Calcul basé sur le nombre d'heures
@@ -35,7 +35,7 @@ try{
 			$value = $_POST["tarif"];
 		}
 		// Application du nouveau prix
-		$db->query("UPDATE cours SET cours_prix='$value' WHERE cours_id='$cours[cours_id]'");
+		$db->query("UPDATE cours SET cours_prix='$value' WHERE session_id='$cours[session_id]'");
 		$test++;
 	}
 

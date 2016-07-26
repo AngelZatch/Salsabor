@@ -13,7 +13,7 @@ $load = $db->query("SELECT *, pr.user_rfid AS pr_rfid FROM participations pr
 					LEFT JOIN users u ON pr.user_id = u.user_id
 					LEFT JOIN produits_adherents pa ON pr.produit_adherent_id = pa.id_produit_adherent
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.produit_id
-					LEFT JOIN cours c ON pr.cours_id = c.cours_id
+					LEFT JOIN cours c ON pr.session_id = c.session_id
 					WHERE (pr.status = 0 OR pr.status = 3 OR (pr.status = 2 AND (produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0)))
 					AND passage_id < '$participation_id'
 					ORDER BY pr.passage_id DESC
@@ -29,8 +29,8 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$duplicates = $db->query("SELECT passage_id FROM participations
 							WHERE user_rfid = '$details[user_rfid]'
 							AND room_token = '$details[room_token]'
-							AND CASE WHEN cours_id IS NOT NULL
-								THEN cours_id = '$details[cours_id]'
+							AND CASE WHEN session_id IS NOT NULL
+								THEN session_id = '$details[session_id]'
 							END
 							AND passage_date BETWEEN '$lower_limit' AND '$upper_limit'
 							AND passage_id != '$details[passage_id]'
@@ -46,10 +46,10 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$r["date"] = $details["passage_date"];
 	$r["status"] = $details["status"];
 	$r["room"] = $details["room_name"];
-	$r["cours_id"] = $details["cours_id"];
-	$r["cours_name"] = $details["cours_intitule"];
-	$r["cours_start"] = $details["cours_start"];
-	$r["cours_end"] = $details["cours_end"];
+	$r["session_id"] = $details["session_id"];
+	$r["cours_name"] = $details["session_name"];
+	$r["session_start"] = $details["session_start"];
+	$r["session_end"] = $details["session_end"];
 	if($details["produit_nom"] != null){
 		$r["product_name"] = $details["produit_nom"];
 		$r["product_expiration"] = max($details["date_expiration"], $details["date_fin_utilisation"], $details["date_prolongee"]);
