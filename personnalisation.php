@@ -16,7 +16,7 @@ while($adherents = $queryAdherentsNom->fetch(PDO::FETCH_ASSOC)){
 }
 
 $articlePanier = $_GET["element"];
-$detailsArticle = $db->query("SELECT * FROM produits WHERE produit_id=$articlePanier");
+$detailsArticle = $db->query("SELECT * FROM produits WHERE product_id=$articlePanier");
 $article = $detailsArticle->fetch(PDO::FETCH_ASSOC);
 $date_now = date_create("now")->format("Y-m-d");
 
@@ -41,18 +41,18 @@ $indicePanier = $_GET["order"];
 							<span class="glyphicon glyphicon-erase"></span> Etape 2/3 : Personnalisation des produits
 						</div>
 					</div>
-					<p class="produit-title"><?php echo $article["produit_nom"];?></p>
+					<p class="produit-title"><?php echo $article["product_name"];?></p>
 					<span role="button" class="input-group-btn">
 						<a href="#produit-details" class="btn btn-default btn-block" data-toggle="collapse" aria-expanded="false"><span class="glyphicon glyphicon-search"></span> Détails...</a>
 					</span>
 					<div id="produit-details" class="collapse">
 						<div id="produit-content" class="well">
-							<?php if($article["produit_nom"]=="Invitation"){?>
-							<p>Cette invitation est à usage unique. Si elle n'est pas liée à un cours, sa période de validité est alors de <?php echo $article["validite_initiale"];?> jours.</p>
+							<?php if($article["product_name"]=="Invitation"){?>
+							<p>Cette invitation est à usage unique. Si elle n'est pas liée à un cours, sa période de validité est alors de <?php echo $article["product_validity"];?> jours.</p>
 							<?php } else { ?>
-							<p>Cet abonnement est valable pendant <?php echo $article["validite_initiale"]/7;?> semaines.</p>
+							<p>Cet abonnement est valable pendant <?php echo $article["product_validity"]/7;?> semaines.</p>
 							<?php } ?>
-							<p>Il donne accès à <?php echo $article["volume_horaire"];?> heures de cours pendant toute sa durée d'activation.</p>
+							<p>Il donne accès à <?php echo $article["product_size"];?> heures de cours pendant toute sa durée d'activation.</p>
 							<p>L'extension de durée (AREP) n'est pas autorisée.</p>
 						</div>
 					</div>
@@ -67,7 +67,7 @@ $indicePanier = $_GET["order"];
 								<div class="form-group">
 									<label for="date_activation">Date d'activation <span class="label-tip">Par défaut : activation au premier passage</span></label>
 									<div class="input-group input-group-lg">
-										<?php if(stristr($article["produit_nom"], "adhésion")){ ?>
+										<?php if(stristr($article["product_name"], "adhésion")){ ?>
 										<input type="date" name="date_activation" id="date_activation" class="form-control" value="<?php echo $date_now;?>">
 										<?php } else { ?>
 										<input type="date" name="date_activation" id="date_activation" class="form-control">
@@ -110,7 +110,7 @@ $indicePanier = $_GET["order"];
 							<label for="prix_achat">Montant</label>
 							<div class="input-group">
 								<span class="input-group-addon">€</span>
-								<input type="number" step="any" name="prix_achat" id="prix-calcul" class="form-control prix-display" value="<?php echo $article["tarif_global"];?>">
+								<input type="number" step="any" name="prix_achat" id="prix-calcul" class="form-control prix-display" value="<?php echo $article["product_price"];?>">
 							</div>
 						</div>
 						<div class="next-options">
@@ -125,12 +125,12 @@ $indicePanier = $_GET["order"];
 				/** Panier individuel **/
 				window.miniCart = {
 					id_produit : "<?php echo $articlePanier;?>",
-					nom_produit : "<?php echo $article["produit_nom"];?>",
+					nom_produit : "<?php echo $article["product_name"];?>",
 					ordre_panier : "<?php echo $indicePanier;?>",
 					id_beneficiaire : null,
 					nom_beneficiaire : null,
 					date_activation : null,
-					prix : "<?php echo $article["tarif_global"];?>",
+					prix : "<?php echo $article["product_price"];?>",
 					reduction : null,
 					prix_final : null
 				};
@@ -172,7 +172,7 @@ $indicePanier = $_GET["order"];
 					}
 					var reductionEuros = $("[name='promotion-e']").val();
 					var reductionPourcent = $("[name='promotion-p']").val();
-					var prixInitial = <?php echo $article["tarif_global"];?>;
+					var prixInitial = <?php echo $article["product_price"];?>;
 					var prixReduit = prixInitial;
 					if($("#promotion-euros").prop("checked")){
 						prixReduit = prixInitial - reductionEuros;

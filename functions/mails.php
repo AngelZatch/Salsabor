@@ -4,7 +4,7 @@ function nearExpiration($db, $product_id){
 							IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
 							) AS produit_validity FROM produits_adherents pa
 								JOIN users u ON pa.id_user_foreign = u.user_id
-								JOIN produits p ON pa.id_produit_foreign = p.produit_id
+								JOIN produits p ON pa.id_produit_foreign = p.product_id
 								WHERE id_produit_adherent='$product_id'")->fetch(PDO::FETCH_ASSOC);
 	$to = "pinbouen.andreas@gmail.com";
 	setlocale(LC_ALL, 'fr_FRA');
@@ -16,16 +16,16 @@ function nearExpiration($db, $product_id){
 	}
 
 	// Subject of the mail
-	$subject = "Salsabor. Votre ".$product_details["produit_nom"]." arrive bientôt à expiration";
+	$subject = "Salsabor. Votre ".$product_details["product_name"]." arrive bientôt à expiration";
 
 	// Mail contents
 	$message = "<html>
 					<head></head>
 					<body>
 						<p style='font-weight: 600; font-size:24px; color:#A80139'>Bonjour ".ucfirst(strtolower($product_details["user_prenom"])).",<p>
-						Votre ".$product_details["produit_nom"]." arrive bientôt à expiration. Vous pouvez consulter les détails ci-dessous :
+						Votre ".$product_details["product_name"]." arrive bientôt à expiration. Vous pouvez consulter les détails ci-dessous :
 						<ul>
-							<li><span style='color: #A80139'>Produit</span> : ".$product_details["produit_nom"]."</li>
+							<li><span style='color: #A80139'>Produit</span> : ".$product_details["product_name"]."</li>
 							<li><span style='color: #A80139'>Date d'expiration</span> : ".utf8_encode(strftime("%d %B %Y", strtotime($product_details["produit_validity"])))."</li>";
 	if($product_details["est_illimite"] == '0' && $product_details["est_abonnement"] == '0'){
 		if($product_details["volume_cours"] == '1'){

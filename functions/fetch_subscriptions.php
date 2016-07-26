@@ -9,7 +9,7 @@ $load = $db->query("SELECT *, pa.actif AS produit_adherent_actif, pa.date_activa
 						IF (date_fin_utilisation IS NOT NULL, date_fin_utilisation, date_expiration)
 						) AS produit_validity
 					FROM produits_adherents pa
-					JOIN produits p ON pa.id_produit_foreign = p.produit_id
+					JOIN produits p ON pa.id_produit_foreign = p.product_id
 					JOIN users u ON pa.id_user_foreign = u.user_id
 						WHERE id_transaction_foreign = '$transaction'
 						ORDER BY prix_achat DESC");
@@ -19,10 +19,10 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$p = array();
 	$p["id"] = $details["id_produit_adherent"];
 	$p["recipient"] = $details["id_user_foreign"];
-	$p["product"] = $details["produit_nom"];
+	$p["product"] = $details["product_name"];
 	$p["activation"] = $details["produit_adherent_activation"];
 	$p["validity"] = $details["produit_validity"];
-	$p["hours"] = $details["volume_horaire"];
+	$p["hours"] = $details["product_size"];
 	$p["remaining_hours"] = $details["volume_cours"];
 	$p["price"] = $details["prix_achat"];
 	$p["illimited"] = $details["est_illimite"];

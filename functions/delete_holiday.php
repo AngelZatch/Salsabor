@@ -6,19 +6,19 @@ $db = PDOFactory::getConnection();
 $forfaits = $db->query("SELECT * FROM produits_adherents")->fetchAll(PDO::FETCH_ASSOC);
 $updated = array();
 
-$queryHoliday = $db->prepare("SELECT date_chomee FROM jours_chomes WHERE jour_chome_id=?");
+$queryHoliday = $db->prepare("SELECT holiday_date FROM holidays WHERE holiday_id=?");
 $queryHoliday->bindParam(1, $_POST["delete_id"]);
 $queryHoliday->execute();
 $holiday = $queryHoliday->fetch(PDO::FETCH_ASSOC);
 
 try{
 	$db->beginTransaction();
-	$delete = $db->prepare('DELETE FROM jours_chomes WHERE jour_chome_id=?');
+	$delete = $db->prepare('DELETE FROM holidays WHERE holiday_id=?');
 	$delete->bindParam(1, $_POST["delete_id"], PDO::PARAM_INT);
 	$delete->execute();
 
 	foreach ($forfaits as $row => $forfait){
-		if($forfait["date_activation"] <= $holiday["date_chomee"] && $forfait["date_expiration"] >= $holiday["date_chomee"]){
+		if($forfait["date_activation"] <= $holiday["holiday_date"] && $forfait["date_expiration"] >= $holiday["holiday_date"]){
 			$u = array();
 			$new_exp_date = date("Y-m-d 00:00:00",strtotime($forfait["date_expiration"].'-1DAYS'));
 			$u["id"] = $forfait["id_transaction_foreign"];

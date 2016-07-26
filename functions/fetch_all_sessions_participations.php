@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $session_group_id = $_GET["session_group_id"];
 
-$feed = $db->prepare("SELECT s.session_id, session_start, COUNT(passage_id) AS crowd FROM cours s
+$feed = $db->prepare("SELECT s.session_id, session_start, COUNT(passage_id) AS crowd FROM sessions s
 					LEFT JOIN participations pr ON pr.session_id = s.session_id
 					WHERE session_group = ?
 					GROUP BY s.session_id");

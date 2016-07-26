@@ -76,14 +76,14 @@ if(isset($_GET["user"])){
 						<div class="col-xs-6 col-md-4 panel-product-container">
 							<div class="panel panel-product">
 								<div class="panel-body">
-									<p class="product-title"><?php echo $produits["produit_nom"];?></p>
+									<p class="product-title"><?php echo $produits["product_name"];?></p>
 									<?php $labels = $db->prepare("SELECT * FROM assoc_product_tags apt
 						JOIN tags_session ts ON apt.tag_id_foreign = ts.rank_id
 						WHERE product_id_foreign = ?
 						ORDER BY tag_color DESC");
-							$labels->bindParam(1, $produits["produit_id"], PDO::PARAM_INT);
+							$labels->bindParam(1, $produits["product_id"], PDO::PARAM_INT);
 							$labels->execute(); ?>
-									<p>Valable <?php echo $produits["validite_initiale"]/7;?> semaines</p>
+									<p>Valable <?php echo $produits["product_validity"]/7;?> semaines</p>
 									<div class="tags-display">
 										<h5>
 											<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){
@@ -102,8 +102,8 @@ if(isset($_GET["user"])){
 									<?php } else { ?>
 									<p class="product-description purchase-sub">Pas de description</p>
 									<?php } ?>
-									<p class="product-price"><?php echo $produits["tarif_global"];?> €</p>
-									<input type="hidden" value="<?php echo $produits["produit_id"];?>">
+									<p class="product-price"><?php echo $produits["product_price"];?> €</p>
+									<input type="hidden" value="<?php echo $produits["product_id"];?>">
 									<a href="#" class="btn btn-primary btn-block" role="button" name="add-shopping">Ajouter au panier</a>
 								</div>
 							</div>
@@ -134,10 +134,10 @@ if(isset($_GET["user"])){
 						var globalCartNames = JSON.parse(sessionStorage.getItem("panier-noms"));
 						composeURL(globalCart[0]);
 					}
-					var produit_id = $(this).parents("div").children("input").val();
-					var produit_nom = $(this).parents("div").children(".product-title").html();
-					globalCart.push(produit_id);
-					globalCartNames.push(produit_nom);
+					var product_id = $(this).parents("div").children("input").val();
+					var product_name = $(this).parents("div").children(".product-title").html();
+					globalCart.push(product_id);
+					globalCartNames.push(product_name);
 					sessionStorage.setItem("panier", JSON.stringify(globalCart));
 					sessionStorage.setItem("panier-noms", JSON.stringify(globalCartNames));
 					composeURL(globalCart[0]);

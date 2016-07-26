@@ -53,14 +53,14 @@ $sum = $db->query("SELECT SUM(prix_total) FROM transactions
 								<th>Revenu</th>
 							</thead>
 							<tbody>
-								<?php $unlimited = $db->query("SELECT produit_id, produit_nom, tarif_global, volume_horaire, est_illimite FROM produits WHERE est_illimite = 1 OR est_recharge = 1");
+								<?php $unlimited = $db->query("SELECT product_id, product_name, product_price, product_size, est_illimite FROM produits WHERE est_illimite = 1 OR est_recharge = 1");
 
 								while($product = $unlimited->fetch(PDO::FETCH_ASSOC)){
 									$query = "SELECT prix_achat, date_achat, COUNT(pr.passage_id) AS count_participations, prix_achat/COUNT(pr.passage_id) AS mean_value FROM produits_adherents pa
 													LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 													LEFT JOIN participations pr ON pr.produit_adherent_id = pa.id_produit_adherent
-													WHERE id_produit_foreign = $product[produit_id]";
-									if($product["produit_id"] == 15)
+													WHERE id_produit_foreign = $product[product_id]";
+									if($product["product_id"] == 15)
 										$query .= " AND prix_achat > 0.00";
 									$query .= " GROUP BY produit_adherent_id";
 									$mean = $db->query($query);
@@ -80,14 +80,14 @@ $sum = $db->query("SELECT SUM(prix_total) FROM transactions
 										$mean_selling_price = $total_selling_price / 1;
 									}
 									echo "<tr>";
-									echo "<td>".$product["produit_nom"]."</td>";
-									echo "<td>".number_format($product["tarif_global"])." €</td>";
+									echo "<td>".$product["product_name"]."</td>";
+									echo "<td>".number_format($product["product_price"])." €</td>";
 									echo "<td>".$count."</td>";
 									echo "<td>".number_format($mean_selling_price, 2)." €</td>";
 									echo "<td>".$total_participations."</td>";
 									if($is_full_pass == 0){
-										if($product["volume_horaire"] > 0){
-											$price = $mean_selling_price * $total_participations / $product["volume_horaire"];
+										if($product["product_size"] > 0){
+											$price = $mean_selling_price * $total_participations / $product["product_size"];
 											echo "<td>".number_format($price, 2)." €</td>";
 										} else {
 											echo "<td> -- € </td>";

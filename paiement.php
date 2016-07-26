@@ -116,7 +116,7 @@ if(isset($_POST["submit"])){
 					console.log(sessionStorage.getItem("cart-"+i));
 					recap += "<tr>";
 					recap += "<td>";
-					recap += "<input type='hidden' value='"+miniCart["id_produit"]+"' name='produit_id-"+i+"'>"+miniCart["nom_produit"];
+					recap += "<input type='hidden' value='"+miniCart["id_produit"]+"' name='product_id-"+i+"'>"+miniCart["nom_produit"];
 					recap += "</td>";
 					recap += "<td>";
 					recap += "<input type='hidden' value='"+miniCart["id_beneficiaire"]+"' name='beneficiaire-"+i+"'>"+miniCart["nom_beneficiaire"];

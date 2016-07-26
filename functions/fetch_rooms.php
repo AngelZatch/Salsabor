@@ -24,7 +24,7 @@ while($room = $load->fetch(PDO::FETCH_ASSOC)){
 		$r["room_location"] = $room["room_location"];
 		$r["room_name"] = $room["room_name"];
 		$r["reader_token"] = $room["reader_token"];
-		$availability = $db->query("SELECT *, COUNT(*) AS count FROM cours WHERE session_room = $r[room_id] AND ((session_start >= '$now' AND session_start <= '$later')
+		$availability = $db->query("SELECT *, COUNT(*) AS count FROM sessions WHERE session_room = $r[room_id] AND ((session_start >= '$now' AND session_start <= '$later')
 	OR (session_start <= '$now' AND session_end >= '$now'))")->fetch(PDO::FETCH_ASSOC);
 		if($availability["count"] != 0){
 			if($availability["session_start"] < $now){

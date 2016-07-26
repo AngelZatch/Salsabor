@@ -7,9 +7,9 @@ $passage = $db->query("SELECT passage_date FROM participations WHERE passage_id=
 /* Pour trouver les cours potentiels pouvant correspondre à ce passage, on cherche tous les cours ayant commencé au plus tôt 60 minutes avant le passage et qui commenceront au plus tard 60 minutes après */
 $start = date("Y-m-d H:i:s", strtotime($passage["passage_date"].'-80MINUTES'));
 $end = date("Y-m-d H:i:s", strtotime($passage["passage_date"].'+80MINUTES'));
-$queryFeed = $db->prepare("SELECT * FROM cours
-						JOIN rooms r ON cours.session_room = r.room_id
-						JOIN users ON session_teacher=users.user_id
+$queryFeed = $db->prepare("SELECT * FROM sessions s
+						JOIN rooms r ON s.session_room = r.room_id
+						JOIN users u ON s.session_teacher = u.user_id
 						WHERE session_start>='$start' AND session_end <='$end'");
 $queryFeed->bindValue(1, $id);
 $queryFeed->execute();

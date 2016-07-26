@@ -9,9 +9,9 @@ $participation = $db->query("SELECT * FROM participations WHERE passage_id = '$p
 
 $compare_start = date("Y-m-d H:i:s", strtotime($participation["passage_date"].'-90MINUTES'));
 $compare_end = date("Y-m-d H:i:s", strtotime($participation["passage_date"].'+90MINUTES'));
-$sessions = $db->query("SELECT * FROM cours c
-						JOIN rooms r ON c.session_room = r.room_id
-						JOIN users ON session_teacher=users.user_id
+$sessions = $db->query("SELECT * FROM sessions s
+						JOIN rooms r ON s.session_room = r.room_id
+						JOIN users u ON s.session_teacher = u.user_id
 						WHERE session_start BETWEEN '$compare_start' AND '$compare_end'");
 
 $session_list = array();
@@ -21,7 +21,7 @@ while($details = $sessions->fetch(PDO::FETCH_ASSOC)){
 	$s["title"] = $details["session_name"];
 	$s["start"] = $details["session_start"];
 	$s["end"] = $details["session_end"];
-	$s["duration"] = $details["cours_unite"];
+	$s["duration"] = $details["session_duration"];
 	$s["room"] = $details["room_name"];
 	$s["teacher"] = $details["user_prenom"]." ".$details["user_nom"];
 	array_push($session_list, $s);

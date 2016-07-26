@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $check_date = $_GET["check_date"];
 
-$value = $db->query("SELECT jour_chome_id FROM jours_chomes WHERE date_chomee = '$check_date'");
+$value = $db->query("SELECT holiday_id FROM holidays WHERE holiday_date = '$check_date'");
 
 $holiday_id = $value->fetch(PDO::FETCH_COLUMN);
 

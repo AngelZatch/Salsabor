@@ -19,7 +19,7 @@ if($delta_steps > 0){ // Add sessions to the group
 	$hour_fee = $group_details["parent_cout_horaire"];
 
 	// To avoid having wrong dates, we get the date of the last session of the group
-	$last_session_date = $db->query("SELECT session_start, session_end FROM cours WHERE session_group = $group_id ORDER BY session_id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+	$last_session_date = $db->query("SELECT session_start, session_end FROM sessions WHERE session_group = $group_id ORDER BY session_id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
 
 	for($i = 1; $i <= $delta_steps; $i++){
 		// We get the new dates of the sessions
@@ -43,12 +43,12 @@ if($delta_steps > 0){ // Add sessions to the group
 }
 if($delta_steps < 0){ // Remove sessions from the group
 	$limit = -1 * $delta_steps;
-	$sessions_to_delete = $db->query("SELECT session_id FROM cours WHERE session_group = $group_id ORDER BY session_id DESC LIMIT $limit")->fetchAll(PDO::FETCH_COLUMN);
+	$sessions_to_delete = $db->query("SELECT session_id FROM sessions WHERE session_group = $group_id ORDER BY session_id DESC LIMIT $limit")->fetchAll(PDO::FETCH_COLUMN);
 
 	foreach($sessions_to_delete as $session_id){
-		$db->query("DELETE FROM cours WHERE session_id = $session_id");
+		$db->query("DELETE FROM sessions WHERE session_id = $session_id");
 	}
-	$last_session = $db->query("SELECT session_end, session_id FROM cours WHERE session_group = $group_id ORDER BY session_id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+	$last_session = $db->query("SELECT session_end, session_id FROM sessions WHERE session_group = $group_id ORDER BY session_id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
 	$end_date = new DateTime($last_session["session_end"]);
 	$new_recurrence_end = $end_date->format("Y-m-d");
 	updateRecurrenceEndDate($db, $group_id, $new_recurrence_end);

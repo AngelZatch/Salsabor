@@ -90,7 +90,7 @@ $(document).ready(function(){
 (0 : closed, 1 : opened and available for automatic records, 2 : opened but closed to automatic records)**/
 	e.stopPropagation();
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
-	$.when(updateColumn("cours", "ouvert", 0, session_id)).done(function(){
+	$.when(updateColumn("cours", "session_opened", 0, session_id)).done(function(){
 		$("#session-"+session_id).remove();
 		// We remove the recently closed session from the list to be refreshed.
 		switch(window.openedSessions.length){

@@ -21,7 +21,7 @@ $details["count"] = $db->query("SELECT * FROM tasks
 $queryForfaits = $db->prepare('SELECT *, pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif
 								FROM produits_adherents pa
 								JOIN users u ON id_user_foreign=u.user_id
-								JOIN produits p ON id_produit_foreign=p.produit_id
+								JOIN produits p ON id_produit_foreign=p.product_id
 								LEFT OUTER JOIN transactions t
 									ON id_transaction_foreign=t.id_transaction
 									AND t.id_transaction IS NOT NULL
@@ -85,7 +85,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		}
 	}?>
 							<li class="purchase-item panel-item <?php echo $item_class;?> container-fluid" id="purchase-item-<?php echo $forfaits["id_produit_adherent"];?>" data-toggle='modal' data-target='#product-modal' data-argument="<?php echo $forfaits["id_produit_adherent"];?>">
-								<p class="col-lg-12 panel-item-title bf"><?php echo $forfaits["produit_nom"];?></p>
+								<p class="col-lg-12 panel-item-title bf"><?php echo $forfaits["product_name"];?></p>
 								<p class="col-lg-3">Acheté le <?php echo $date_achat;?></p>
 								<p class="col-lg-5 purchase-product-validity">
 									<?php if($forfaits["produit_adherent_actif"] == '0'){

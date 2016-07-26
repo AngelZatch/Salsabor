@@ -19,7 +19,7 @@ $updated = array();
 try{
 	$db->beginTransaction();
 	for($i = 0; $i < $periode; $i++){
-		$new = $db->prepare('INSERT INTO jours_chomes(date_chomee) VALUES(:date)');
+		$new = $db->prepare('INSERT INTO holidays(holiday_date) VALUES(:date)');
 		$new->bindParam(':date', $start);
 		$new->execute();
 		// Détermination de l'impact sur les forfaits en cours

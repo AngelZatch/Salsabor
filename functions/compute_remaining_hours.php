@@ -19,9 +19,9 @@ if(isset($_POST["product_id"])){
 
 function computeProduct($product_id){
 	$db = PDOFactory::getConnection();
-	$product_details = $db->query("SELECT volume_horaire, est_illimite, est_abonnement, pa.date_activation AS produit_adherent_activation, validite_initiale, pa.actif AS produit_adherent_actif, date_achat, date_expiration, date_prolongee, date_fin_utilisation, lock_status, lock_dates FROM produits_adherents pa
+	$product_details = $db->query("SELECT product_size, est_illimite, est_abonnement, pa.date_activation AS produit_adherent_activation, product_validity, pa.actif AS produit_adherent_actif, date_achat, date_expiration, date_prolongee, date_fin_utilisation, lock_status, lock_dates FROM produits_adherents pa
 						JOIN produits p
-							ON pa.id_produit_foreign = p.produit_id
+							ON pa.id_produit_foreign = p.product_id
 						LEFT JOIN transactions t
 							ON pa.id_transaction_foreign = t.id_transaction
 						WHERE id_produit_adherent = '$product_id'")->fetch(PDO::FETCH_ASSOC);
@@ -32,7 +32,7 @@ function computeProduct($product_id){
 	$hour_limit = $master_settings["hours_before_exp"];
 	$expiration_limit = date("Y-m-d", strtotime($today.'+'.$master_settings["days_before_exp"].'DAYS'));
 
-	$remaining_hours = $product_details["volume_horaire"];
+	$remaining_hours = $product_details["product_size"];
 	$v = array();
 	$computeEnd = false;
 	$status = $product_details["produit_adherent_actif"];
@@ -44,8 +44,8 @@ function computeProduct($product_id){
 	$lock_status = ($product_details["lock_status"]==1)?true:false;
 
 	if($product_details["est_abonnement"] == '0'){
-		$sessions = $db->query("SELECT cours_unite, session_start, session_end FROM participations pr
-							JOIN cours c ON pr.session_id = c.session_id
+		$sessions = $db->query("SELECT session_duration, session_start, session_end FROM participations pr
+							JOIN sessions s ON pr.session_id = s.session_id
 							WHERE produit_adherent_id = '$product_id' AND status = 2
 							ORDER BY session_start ASC");
 		foreach($sessions as $session){
@@ -65,7 +65,7 @@ function computeProduct($product_id){
 			} else {
 				$has_holiday = false;
 			}
-			$date_expiration = date_create(computeExpirationDate($db, $date_activation, $product_details["validite_initiale"], $has_holiday))->format("Y-m-d H:i:s");
+			$date_expiration = date_create(computeExpirationDate($db, $date_activation, $product_details["product_validity"], $has_holiday))->format("Y-m-d H:i:s");
 		}
 		$sessions->execute();
 		foreach($sessions as $session){
@@ -75,7 +75,7 @@ function computeProduct($product_id){
 					$date_fin_utilisation = $session["session_end"];
 				}
 			}
-			$remaining_hours -= floatval($session["cours_unite"]);
+			$remaining_hours -= floatval($session["session_duration"]);
 		}
 		// We update the number of hours
 		if($remaining_hours <= 0){ // If the number of remaining hours is negative
@@ -126,7 +126,7 @@ function computeProduct($product_id){
 				}
 				$v["hours"] = 1 * $remaining_hours;
 			}
-		} else if($remaining_hours == $product_details["volume_horaire"]){
+		} else if($remaining_hours == $product_details["product_size"]){
 			if(!$lock_status){
 				$status = '0';
 			}

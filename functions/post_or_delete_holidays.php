@@ -12,9 +12,9 @@ for($i = 0; $i < $duration; $i++){
 	try{
 		// Depending of the action, the query changes to insert or delete holidays
 		if($action == "post")
-			$query = "INSERT INTO jours_chomes(date_chomee) VALUES(?)";
+			$query = "INSERT INTO holidays(holiday_date) VALUES(?)";
 		else
-			$query = "DELETE FROM jours_chomes WHERE date_chomee = ?";
+			$query = "DELETE FROM holidays WHERE holiday_date = ?";
 
 		$stmt = $db->prepare($query);
 		$stmt->bindParam(1, $insert_date, PDO::PARAM_STR);
