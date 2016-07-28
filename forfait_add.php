@@ -107,7 +107,7 @@ if(isset($_POST["add"])){
 							<div class="col-lg-9">
 								<input type="number" class="form-control" name="validite" placeholder="Exemple : 48">
 								<label for="est_recharge" class="control-label">Jours</label>
-								<input name="validite_jour" id="validite_jour" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1"><span class="label-tip">Si décoché, la durée sera calculée en semaines.</span>
+								<input name="validite_jour" id="validite_jour" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1"><span class="help-block">Si décoché, la durée sera calculée en semaines.</span>
 							</div>
 						</div>
 						<div class="form-group">
@@ -132,7 +132,7 @@ if(isset($_POST["add"])){
 							</div>
 						</div>
 						<p class="sub-legend">Période de vente</p>
-						<span class="label-tip">Dans le cas d'une offre promotionnelle limitée dans le temps</span>
+						<p class="help-block">Dans le cas d'une offre promotionnelle limitée dans le temps</p>
 						<div class="form-group">
 							<label for="date_activation" class="col-lg-3 control-label">Ouverture à l'achat</label>
 							<div class="col-lg-9">

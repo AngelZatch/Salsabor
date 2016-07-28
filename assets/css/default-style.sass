@@ -112,6 +112,9 @@ legend
 .not-allowed
 	cursor: not-allowed
 
+.nav-tabs
+	margin-bottom: 10px !important
+
 /** LABELS **/
 .user-labels
 	padding-bottom: 10px
@@ -242,6 +245,8 @@ a
 		color: white
 
 .main-section
+	font-weight: 800
+	text-transform: uppercase
 	cursor: default
 	color: black
 	&:hover
@@ -303,6 +308,7 @@ a
 
 .notification-icon
 	color: white !important
+	font-size: 19px
 	cursor: pointer
 	&:hover
 		color: $salsabor-yellow !important
@@ -351,6 +357,8 @@ a
 
 .jumbotron-home
 	border-radius: 0
+	text-align: center
+	background-color: white
 
 #jumbotron-btns
 	a
@@ -376,7 +384,37 @@ a
 		background-repeat: no-repeat
 		background-position: center
 
+.quick-access
+	margin: 20px 15% -20px
+	overflow: hidden
+	@media all and (max-width: $break-large)
+		margin-left: 5%
+		margin-right: 5%
+	li
+		width: 20%
+		font-size: 2em
+		float: left
+
+.quick-access-list
+	padding-left: 0
+	list-style: none
+
+.glyphicon-text
+	font-size: 0.6em
+	display: block
+	text-align: center
+	word-wrap: break-word
+	@media all and (max-width: $break-large)
+		display: none
+
 /** BUTTONS **/
+.btn-primary
+	background-color: $salsabor-yellow !important
+	border-color: darken($salsabor-yellow, 5%) !important
+	color: black !important
+	&:hover
+		background-color: darken($salsabor-yellow, 5%) !important
+
 .btn-danger
 	span
 		color: white
@@ -399,6 +437,8 @@ a
 
 .link-glyphicon
 	color: black
+	&:hover
+		text-decoration: none !important
 
 .glyphicon-button
 	cursor: pointer
@@ -1043,3 +1083,8 @@ div.legend:nth-child(1n+0)
 
 .chart
 	background-color: white
+
+.price-display
+	font-size: 25px
+	color: $salsabor-red
+	height: inherit

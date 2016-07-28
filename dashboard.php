@@ -93,13 +93,26 @@ $welcome = $time_message[$rand];
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main-home">
 					<div class="jumbotron jumbotron-home">
 						<h1><?php echo $welcome;?></h1>
-						<p>Bienvenue sur Salsabor Gestion ! Que souhaitez-vous faire ?</p>
-						<p id="jumbotron-btns">
-							<a class="btn btn-primary btn-lg" href="inscription"><span class="glyphicon glyphicon-user"></span> Inscription</a>
-							<a class="btn btn-primary btn-lg" href="vente"><span class="glyphicon glyphicon-th"></span> Vente</a>
-							<a href="participations" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-map-marker"></span> Passages</a>
-							<a href="echeances" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-repeat"></span> &Eacute;chéances</a>
-						</p>
+						<p>Bienvenue sur Salsabor Gestion ! Cliquez sur les icônes pour un accès rapide !</p>
+						<div class="quick-access">
+							<ul class="quick-access-list">
+								<li>
+									<a href="inscription" class="link-glyphicon">
+										<span class="glyphicon glyphicon-user glyphicon-button-alt"></span>
+										<span class="glyphicon-text">Inscription</span>
+									</a>
+								</li>
+								<li>
+									<a href="vente" class="link-glyphicon">
+										<span class="glyphicon glyphicon-th"></span>
+										<span class="glyphicon-text">Vente</span>
+									</a>
+								</li>
+								<li><a href="participations" class="link-glyphicon"><span class="glyphicon glyphicon-map-marker"></span><span class="glyphicon-text">Participations</span></a></li>
+								<li><a href="echeances" class="link-glyphicon"><span class="glyphicon glyphicon-repeat"></span><span class="glyphicon-text">&Eacute;chéances</span></a></li>
+								<li><a href="planning" class="link-glyphicon"><span class="glyphicon glyphicon-time"></span><span class="glyphicon-text">Planning</span></a></li>
+							</ul>
+						</div>
 					</div>
 					<p class="alert alert-warning">Suite à une erreur de développement, <strong>les codes d'un grand nombre d'utilisateurs ont été perdus</strong>. Gardez leurs cartes pour que les codes puissent être récupérés.</p>
 					<div class="col-lg-6 dashboard-zones clearfix container-fluid">

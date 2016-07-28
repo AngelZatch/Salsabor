@@ -31,8 +31,8 @@ try{
 		$delete->execute();
 	}
 	$res = array(
-	"success" => "Inscription réalisée",
-	"id" => $db->lastInsertId()
+		"success" => "Inscription réalisée",
+		"id" => $db->lastInsertId()
 	);
 	$db->commit();
 	echo json_encode($res);

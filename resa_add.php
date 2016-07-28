@@ -91,7 +91,7 @@ if(isset($_POST['addResa'])){
 							<label for="priorite" class="col-lg-3 control-label">Réservation payée</label>
 							<div class="col-lg-9">
 								<input name="priorite" id="priorite" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
-								<span class="label-tip">Une réservation payée ne peut plus être supprimée au profit d'un cours.</span>
+								<p class="help-block">Une réservation payée ne peut plus être supprimée au profit d'un cours.</p>
 							</div>
 						</div>
 						<div class="form-group" id="prix_reservation">

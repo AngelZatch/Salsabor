@@ -170,7 +170,9 @@ function refreshTask(task){
 function displayTasks(data, task_token, user_id, attached_id, limit, filter){
 	var tasks = JSON.parse(data);
 	if(tasks.length == 0){
-		$(".tasks-container").empty();
+		if($(".tasks-container").hasClass("dashboard-task-container")){
+			$(".tasks-container").empty();
+		}
 		$(".dashboard-task-container").css("background-image", "url(assets/images/logotype-white.png)");
 		$(".dashboard-task-container").css("opacity", "0.2");
 	} else {

@@ -28,9 +28,12 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-time"></span> Planning
-						<a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un cours</a>
+						<div class="btn-toolbar float-right">
+							<a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-eye-open"></span> Ajouter un cours</a>
+							<a href="event/new" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-calendar"></span> Ajouter un événement</a>
+						</div>
 					</legend>
-					<span class="help-block">Sur périphériques tactiles, maintenez appuyé pour sélectionner un événement ou une plage horaire.</span>
+					<p class="help-block">Sur périphériques tactiles, maintenez appuyé pour sélectionner un événement ou une plage horaire.</p>
 					<div class="filters row">
 						<div class="container-fluid col-xs-12 col-sm-4 col-lg-3">
 							<p class="filter-title" data-toggle="collapse" href="#room-filtering" title="Cliquez pour dérouler les salles disponibles">Vos salles <span class="glyphicon glyphicon-menu-down float-right"></span></p>
@@ -140,12 +143,20 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 							error: function(data){
 								console.log(data);
 							}
+						},
+						{
+							url: "functions/calendarfeed_events.php",
+							type: "GET",
+							textColor: "black",
+							error: function(data){
+								console.log(data);
+							}
 						}
 					],
 					eventRender: function(calEvent, element){
+						element.attr("id", calEvent.type+"-"+calEvent.id);
 						if(calEvent.type == "cours"){
-							element.attr('id', calEvent.type+'-'+calEvent.id);
-							element.attr('salle', calEvent.lieu);
+							element.attr('room', calEvent.lieu);
 							element.css("background-color", "#"+calEvent.color);
 						}
 						if(calEvent.type == "holiday") {
@@ -161,6 +172,9 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 								element.css('background-color', '#D21CFC');
 							}
 						}
+						if(calEvent.type == "event"){
+							element.css("background-color", "#"+calEvent.color);
+						}
 					},
 					eventClick: function(calEvent, jsEvent, element){
 						var target = $(this).attr("id").match(/\d+/);
@@ -169,25 +183,41 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 							$("#sub-modal-session").data().target = -1;
 						} else {
 							$("#sub-modal-session").data().target = target[0];
-							$.get("functions/fetch_session_details.php", {session_id : target[0]}).done(function(data){
-								var session = JSON.parse(data);
-								// Emptying fields
-								$(".sub-modal-title").empty();
-								$(".session-date").empty();
-								$(".session-room").empty();
-								$(".session-participations").empty();
-								$(".sub-modal-footer").empty();
-								// Color change
-								$(".sub-modal-title").css("color", session.color);
-								// Filling fields
-								$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> "+session.title);
-								$(".session-date").append("<span>Date</span>"+moment(session.start).format("ll[,] HH:mm")+" - "+moment(session.end).format("HH:mm"));
-								$(".session-room").append("<span>Lieu</span>"+session.room);
-								$(".session-participations").append("<span>Participants</span>"+session.participations_count);
-								$(".sub-modal-footer").append("<a href='cours/"+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
-								// Showing modal once everything is done
-								$(".sub-modal-session").show();
-							})
+							// Emptying fields
+							$(".sub-modal-title").empty();
+							for(var i = 0; i < $(".session-modal-details").length; i++){
+								$(".session-modal-details:eq("+i+")").empty();
+							}
+							$(".sub-modal-footer").empty();
+							if(calEvent.type == "cours"){
+								$.get("functions/fetch_session_details.php", {session_id : target[0]}).done(function(data){
+									var session = JSON.parse(data);
+									// Color change
+									$(".sub-modal-title").css("color", session.color);
+									// Filling fields
+									$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> "+session.title);
+									$(".session-modal-details:eq(0)").append("<span>Date</span>"+moment(session.start).format("ll[,] HH:mm")+" - "+moment(session.end).format("HH:mm"));
+									$(".session-modal-details:eq(1)").append("<span>Lieu</span>"+session.room);
+									$(".session-modal-details:eq(2)").append("<span>Professeur</span>"+session.teacher);
+									$(".session-modal-details:eq(3)").append("<span>Participants</span>"+session.participations_count);
+									$(".sub-modal-footer").append("<a href='cours/"+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
+								})
+							}
+							if(calEvent.type == "event"){
+								$.get("functions/fetch_event_details.php", {event_id : target[0]}).done(function(data){
+									var event = JSON.parse(data);
+									// Color change
+									$(".sub-modal-title").css("color", calEvent.color);
+									// Filling fields
+									$(".sub-modal-title").append("<span class='glyphicon glyphicon-calendar'></span> "+calEvent.title);
+									$(".session-modal-details:eq(0)").append("<span>Date</span>"+moment(calEvent.start).format("ll[,] HH:mm")+" - "+moment(calEvent.end).format("ll[,] HH:mm"));
+									$(".session-modal-details:eq(1)").append("<span>Organisateur</span>"+event.handler);
+									$(".session-modal-details:eq(2)").append("<span>Adresse</span>"+event.address);
+									$(".sub-modal-footer").append("<a href='event/"+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
+								})
+							}
+							// Showing modal once everything is done
+							$(".sub-modal-session").show();
 							var top = jsEvent.pageY;
 							var left = jsEvent.pageX;
 							var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -222,9 +252,9 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 						$("#sub-modal-session").data().target = -1;
 
 						$(".sub-modal-title").empty();
-						$(".session-date").empty();
-						$(".session-room").empty();
-						$(".session-participations").empty();
+						for(var i = 0; i < $(".session-modal-details").length; i++){
+							$(".session-modal-details:eq("+i+")").empty();
+						}
 						$(".sub-modal-footer").empty();
 						// Color change
 						$(".sub-modal-title").css("color", "000000");
@@ -234,40 +264,41 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 
 						// We check to see if the day selected is already a holiday or not
 						$.when(isHoliday(moment(start).format("YYYY-MM-DD"))).done(function(holiday_check_value){
+							var duration = 1, holiday_message = "", holiday_button_id = "";
 							// Filling fields depending on the duration
 							if(selected_duration == 86400000){ // The user has selected a full day
 								$(".sub-modal-title").append("<span class='glyphicon glyphicon-calendar'></span> Jour entier");
-								$(".session-date").append("<span>Date</span>"+moment(start).format("ll"));
-								if(holiday_check_value == -1){
-									$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session' id='quick-add-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='1'><span class='glyphicon glyphicon-leaf'></span> Ajouter un jour chômé</a>");
-								} else {
-									$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session' id='quick-remove-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='1'><span class='glyphicon glyphicon-leaf'></span> Retirer le jour chômé</a>");
-								}
+								$(".session-modal-details:eq(0)").append("<span>Date</span>"+moment(start).format("ll"));
 							} else if(selected_duration < 8640000) { // The user has selected a duration shorter than a day
-								$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un cours");
-								$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("HH:mm"));
-								if(holiday_check_value == -1){
-									$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session' id='quick-add-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='1'><span class='glyphicon glyphicon-leaf'></span> Ajouter un jour chômé</a>");
-								} else {
-									$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session' id='quick-remove-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='1'><span class='glyphicon glyphicon-leaf'></span> Retirer le jour chômé</a>");
-								}
+								$(".sub-modal-title").append("<span class='glyphicon glyphicon-calendar'></span> Evenement");
+								$(".session-modal-details:eq(0)").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("HH:mm"));
 							} else {
 								// For a duration longer than a day, we can still add holidays, with the duration data
-								$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> Ajouter un événement");
+								$(".sub-modal-title").append("<span class='glyphicon glyphicon-calendar'></span> Evenement");
 								// To have a better display, we can check if the user has selected only full days by checking the remainder after a modulo operation. If the remainder is 0, it means the user has selected 2 or more full days, so we can skip on displaying hours.
 								if(selected_duration % 86400000 == 0){
-									$(".session-date").append("<span>Date</span>"+moment(start).format("ll")+" - "+moment(end).format("ll"));
+									$(".session-modal-details:eq(0)").append("<span>Date</span>"+moment(start).format("ll")+" - "+moment(end).format("ll"));
 								} else {
-									$(".session-date").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("ll[,] HH:mm"));
+									$(".session-modal-details:eq(0)").append("<span>Date</span>"+moment(start).format("ll[,] HH:mm")+" - "+moment(end).format("ll[,] HH:mm"));
 								}
-								var duration = moment(end).diff(moment(start)) / (3600 * 24 * 1000);
-								if(holiday_check_value == -1){
-									$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session' id='quick-add-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='"+duration+"'><span class='glyphicon glyphicon-leaf'></span> Ajouter une période chômée</a>");
-								} else {
-									$(".sub-modal-footer").append("<button class='btn btn-default btn-to-session' id='quick-remove-holiday' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='"+duration+"'><span class='glyphicon glyphicon-leaf'></span> Retirer la période chômée</a>");
-								}
+								duration = moment(end).diff(moment(start)) / (3600 * 24 * 1000);
 							}
-							$(".sub-modal-footer").append("<a href='cours_add.php' class='btn btn-primary float-right btn-to-session'>Ajouter</a>");
+							if(holiday_check_value == -1){
+								holiday_message = "Ajouter";
+								holiday_button_id = "quick-add-holiday";
+							} else {
+								holiday_message = "Retirer";
+								holiday_button_id = "quick-remove-holiday";
+							}
+							var sub_modal_buttons = "";
+							sub_modal_buttons += "<div class='btn-group btn-group-justified' role='group'>";
+							sub_modal_buttons += "<div class='btn-group' role='group'>";
+							sub_modal_buttons += "<button class='btn btn-default btn-to-session' id='"+holiday_button_id+"' title='"+holiday_message+" une période chômée' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='"+duration+"'><span class='glyphicon glyphicon-leaf'></span> "+holiday_message+"</button>";
+							sub_modal_buttons += "</div>";
+							sub_modal_buttons += "<a href='event/new' class='btn btn-primary btn-to-session' title='Ajouter un événement'><span class='glyphicon glyphicon-calendar'></span> Ajouter</a>";
+							sub_modal_buttons += "<a href='cours_add.php' class='btn btn-primary btn-to-session' title='Ajouter un cours'><span class='glyphicon glyphicon-eye-open'></span> Ajouter</a>";
+							sub_modal_buttons += "</div>";
+							$(".sub-modal-footer").append(sub_modal_buttons);
 						})
 
 						var top = jsEvent.pageY;

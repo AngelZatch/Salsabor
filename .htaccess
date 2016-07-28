@@ -1,6 +1,7 @@
 Options -MultiViews
 RewriteEngine On
 DirectoryIndex dashboard.php
+#Header set Access-Control-Allow-Origin "http://salsabor.fr"
 
 RewriteRule ^dashboard$ dashboard.php
 RewriteRule ^inscription$ inscription.php
@@ -19,8 +20,6 @@ RewriteRule ^echeances$ echeances.php
 RewriteRule ^transactions$ transactions.php
 RewriteRule ^notifications$ notifications.php
 RewriteRule ^notifications/settings$ notifications_settings.php
-RewriteRule ^taches/([A-Za-z]+)$ tasks.php?display=$1 [NC]
-RewriteRule ^tags/([A-Za-z]+)$ tags.php?type=$1 [NC]
 RewriteRule ^portal$ portal.php
 RewriteRule ^link$ link.php
 RewriteRule ^signup$ signup.php
@@ -29,6 +28,7 @@ RewriteRule ^autorisations$ permissions.php
 RewriteRule ^maintenance$ maintenance.php
 RewriteRule ^my/profile$ my_profile.php
 RewriteRule ^my/products$ my_products.php
+RewriteRule ^event/new$ event_add.php
 
 #User Details
 RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]
@@ -40,6 +40,9 @@ RewriteRule ^user/([0-9-]+)/taches user_tasks.php?id=$1 [NC,L]
 
 RewriteRule ^forfait/([A-Za-z0-9-]+)$ product_details.php?id=$1
 RewriteRule ^cours/([A-Za-z0-9-]+)$ session_details.php?id=$1
+RewriteRule ^event/([A-Za-z0-9-]+)$ event_details.php?id=$1
+RewriteRule ^taches/([A-Za-z]+)$ tasks.php?display=$1 [NC]
+RewriteRule ^tags/([A-Za-z]+)$ tags.php?type=$1 [NC]
 
 #Maintenance ON
 #RewriteCond %{REQUEST_URI} !/maintenance.php$
