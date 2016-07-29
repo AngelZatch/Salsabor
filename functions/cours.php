@@ -106,7 +106,7 @@ function insertParent($db, $session_name, $weekday, $start, $end, $user_id, $roo
 }
 
 function createSession($db, $session_group_id, $session_name, $start, $end, $teacher_id, $room_id, $session_duration, $hour_fee, $priorite){
-	$insertCours = $db->prepare('INSERT INTO cours(session_group, session_name, session_start, session_end, session_teacher, session_room, session_duration, session_price, priorite)
+	$insertCours = $db->prepare('INSERT INTO sessions(session_group, session_name, session_start, session_end, session_teacher, session_room, session_duration, session_price, priorite)
 			VALUES(:session_group, :intitule, :session_start, :session_end, :session_teacher, :session_room, :unite, :cout_horaire, :priorite)');
 	$insertCours->bindParam(':session_group', $session_group_id);
 	$insertCours->bindParam(':intitule', $session_name);

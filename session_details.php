@@ -26,6 +26,13 @@ if($all[$current] != end($all)){
 	$next = $all[$current + 1];
 }
 
+$on_going = false;
+$now = new DateTime();
+$session_start = new DateTime($cours["session_start"]);
+$session_end = new DateTime($cours["session_end"]);
+if($session_start <= $now && $session_end > $now)
+	$on_going = true;
+
 $querySalles = $db->query("SELECT * FROM rooms");
 
 $labels = $db->query("SELECT * FROM assoc_session_tags us
@@ -41,6 +48,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 		<title>Cours de <?php echo $cours['session_name'];?> (<?php echo date_create($cours['session_start'])->format('d/m/Y');?> : <?php echo date_create($cours['session_start'])->format('H:i')?> / <?php echo date_create($cours['session_end'])->format('H:i');?>) | Salsabor</title>
 		<base href="../">
 		<?php include "styles.php";?>
+		<link rel="stylesheet" href="assets/css/jquery.shining.min.css">
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
 		<script src="assets/js/participations.js"></script>
@@ -49,6 +57,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 		<script src="assets/js/sessions.js"></script>
 		<script src="assets/js/raphael-min.js"></script>
 		<script src="assets/js/morris.min.js"></script>
+		<script src="assets/js/jquery.shining.min.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -58,6 +67,17 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend>
 						<span class="glyphicon glyphicon-eye-open"></span> <span class="session-name"><?php echo $cours['session_name'];?></span>
+						<?php if($cours["session_opened"] == 1){
+								if($on_going){ ?>
+						<div class="label label-active label-ongoing" title="Le cours se déroule actuellement">
+							<span class="label-active-text">En cours</span>
+						</div>
+						<?php } else { ?>
+						<div class="label label-active label-soon" title="Le cours est actuellement ouvert">
+							<span class="label-active-text">Ouvert</span>
+						</div>
+						<?php }
+						} ?>
 						<div class="btn-toolbar float-right">
 							<?php if($count == '1'){ ?>
 							<input type='submit' name='editOne' role='button' class='btn btn-success' value='Enregistrer les modifications'>
@@ -145,11 +165,11 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<div class="col-lg-9">
 								<h4>
 									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){
-	if($label["is_mandatory"] == 1){
-		$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
-	} else {
-		$label_name = $label["rank_name"];
-	}?>
+		if($label["is_mandatory"] == 1){
+			$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
+		} else {
+			$label_name = $label["rank_name"];
+		}?>
 									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="session-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='session' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label_name;?></span>
 									<?php } ?>
 									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='session-tags' data-targettype='session' title="Ajouter une étiquette">+</span>
@@ -161,12 +181,12 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<div class="col-lg-9">
 								<select name="session_room" class="form-control">
 									<?php while($salles = $querySalles->fetch(PDO::FETCH_ASSOC)){
-	if($cours["session_room"] == $salles["room_id"]) {?>
+		if($cours["session_room"] == $salles["room_id"]) {?>
 									<option selected="selected" value="<?php echo $salles["room_id"];?>"><?php echo $salles["room_name"];?></option>
 									<?php } else { ?>
 									<option value="<?php echo $salles["room_id"];?>"><?php echo $salles["room_name"];?></option>
 									<?php }
-} ?>
+	} ?>
 								</select>
 							</div>
 						</div>
@@ -206,7 +226,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 									<p class="col-xs-2 col-lg-1"><span class="glyphicon glyphicon-user"></span> <span class="user-total-count" id="user-total-count-<?php echo $id;?>"></span></p>
 									<p class="col-xs-2 col-lg-1"><span class="glyphicon glyphicon-ok"></span> <span class="user-ok-count" id="user-ok-count-<?php echo $id;?>"></span></p>
 									<p class="col-xs-2 col-lg-1"><span class="glyphicon glyphicon-warning-sign"></span> <span class="user-warning-count" id="user-warning-count-<?php echo $id;?>"></span></p>
-									<p class=" col-xs-1 col-md-1 col-md-offset-5 session-option"><span class="glyphicon glyphicon-ok-sign validate-session" id="validate-session-<?php echo $id;?>" data-session="<?php echo $id;?>" title="Valider tous les passages"></span></p>
+									<span class="glyphicon glyphicon-ok-sign col-xs-1 col-md-1 col-md-offset-5 glyphicon-button-alt glyphicon-button-big validate-session" id="validate-session-<?php echo $id;?>" data-session="<?php echo $id;?>" title="Valider tous les passages"></span>
 								</div>
 							</div>
 						</a>
@@ -229,6 +249,11 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 		<?php include "inserts/sub_modal_product.php";?>
 		<script>
 			$(document).ready(function(){
+				setInterval(function () {
+					$('.label-active-text').shineText({
+						speed: 30
+					});
+				}, 4000);
 				$("#datepicker-start").datetimepicker({
 					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: "<?php echo date_create($cours['session_start'])->format("m/d/Y H:i");?>",

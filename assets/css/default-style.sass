@@ -126,6 +126,25 @@ legend
 	&:hover
 		background-color: lighten($salsabor-red, 10%)
 
+.label-active
+	font-size: 0.65em
+	margin-bottom: 5px
+	padding-top: 0
+	padding-bottom: 0
+	cursor: default
+
+.label-soon
+	background-color: $salsabor-yellow
+	color: darken($salsabor-yellow, 20%)
+
+.label-ongoing
+	background-color: $success-color
+	color: darken($success-color, 20%)
+
+.shine
+	text-shadow 0px 0px 18px #fff
+	color: white
+
 .label-display-only
 	&:not(:first-child)
 		margin: 5px
@@ -451,6 +470,7 @@ a
 
 .glyphicon-button-big
 	font-size: 18px
+	margin-top: 10px
 
 .glyphicon-button-disabled
 	color: $system-color
