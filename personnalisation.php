@@ -65,7 +65,7 @@ $indicePanier = $_GET["order"];
 						<div class="row">
 							<div class="col-lg-6">
 								<div class="form-group">
-									<label for="date_activation">Date d'activation <span class="label-tip">Par défaut : activation au premier passage</span></label>
+									<label for="date_activation">Date d'activation</label>
 									<div class="input-group input-group-lg">
 										<?php if(stristr($article["product_name"], "adhésion")){ ?>
 										<input type="date" name="date_activation" id="date_activation" class="form-control" value="<?php echo $date_now;?>">
@@ -74,6 +74,7 @@ $indicePanier = $_GET["order"];
 										<?php } ?>
 										<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" date-today="true">Insérer aujourd'hui</a></span>
 									</div>
+									<p class="help-block">Par défaut : activation au premier passage</p>
 								</div>
 							</div>
 							<div class="col-lg-6">
@@ -110,7 +111,7 @@ $indicePanier = $_GET["order"];
 							<label for="prix_achat">Montant</label>
 							<div class="input-group">
 								<span class="input-group-addon">€</span>
-								<input type="number" step="any" name="prix_achat" id="prix-calcul" class="form-control prix-display" value="<?php echo $article["product_price"];?>">
+								<input type="number" step="any" name="prix_achat" id="prix-calcul" class="form-control price-display" value="<?php echo $article["product_price"];?>">
 							</div>
 						</div>
 						<div class="next-options">

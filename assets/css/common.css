@@ -13,10 +13,6 @@
 	text-align: right;
 }
 
-.nav-tabs{
-	margin-bottom: 10px !important;
-}
-
 .navbar-brand{
 	color: #FFF;
 	font-weight: 800;
@@ -25,45 +21,21 @@
 	padding-bottom: 3px;
 }
 
-.sidebar{
+/*.sidebar{
 	display: none;
 }
 @media(min-width:768px){
 	.sidebar{
 		z-index: 100;
 	}
-}
+}*/
 
 .span-mandatory {
 	color: red;
 }
 
-.lightbox-form {
-	padding: 15px !important;
-}
-
-.btn-primary{
-	background-color: #FAB913 !important;
-	border-color: #E5A910 !important;
-	color: #000 !important;
-}
-
-.btn-primary:hover{
-	background-color: #E5A910 !important;
-}
-
 .nav-tabs>li>a{
 	color: #81002B;
-}
-
-#tri-cours{
-	float: right;
-}
-
-#tri-cours>li>a{
-	border-radius: 35px;
-	line-height: 30px;
-	padding: 0 15px;
 }
 
 .nav-pills > li{
@@ -80,47 +52,6 @@
 
 .nav-pills > li > a {
 	color: #FAB913;
-}
-
-.main.large {
-	width: 95.833333335%;
-	margin-left: 4.1666666667%;
-}
-
-#close {
-	border-radius: 2px;
-	right: 25px;
-	top: 2px;
-	z-index: 2;
-	position: absolute;
-	cursor: pointer;
-}
-
-#open {
-	border-radius: 2px;
-	right: 15px;
-	top: 2px;
-	z-index: 2;
-	position: absolute;
-	cursor: pointer;
-}
-
-#close:before, #close:after{
-	content: " ";
-	position: absolute;
-	border: 10px solid white;
-	border-top-color: transparent;
-	border-left-color: transparent;
-	border-bottom-color: transparent;
-}
-
-#open:before, #open:after{
-	content: " ";
-	position: absolute;
-	border: 10px solid white;
-	border-top-color: transparent;
-	border-right-color: transparent;
-	border-bottom-color: transparent;
 }
 
 /** To be in front of the lightboxes **/
@@ -145,18 +76,8 @@
 	height: inherit;
 }
 
-.prix-display{
-	font-size: 25px;
-	color: #a9023a;
-	height: inherit;
-}
-
 .confirm-add {
 	text-transform: uppercase;
-}
-
-.row-custom {
-	margin-right: 0 !important;
 }
 
 .error-alert {
@@ -167,14 +88,6 @@
 	cursor: pointer !important;
 }
 
-.btn-cours{
-	background-color: #0FC5F5;
-}
-
-.btn-resa{
-	background-color: #D21CFC;
-}
-
 .payment-done{
 	color: green;
 }
@@ -183,52 +96,12 @@
 	color: red;
 }
 
-#top-page-buttons {
-	margin-top: 10px;
-}
-
-.sort-icon {
-	float: right;
-	cursor: pointer;
-}
-
 #display-planning {
 	margin-top: 10px;
 }
 
-#solo-form {
-	margin-top: 10px !important;
-}
-
-#picture-container {
-	height: 350px;
-}
-
 .content-right {
 	float: right;
-}
-.btn-big {
-	height: 300px !important;
-	width: 300px !important;
-	font-size: 15px;
-}
-
-.details-list {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
-	display: flex;
-	border-top: 1px solid #C4C4C4;
-	padding: 10px;
-}
-
-.details-list.last{
-	padding-bottom: 3px;
-	border-bottom: 1px solid #C4C4C4;
-}
-
-.list-name {
-	color: #949494;
 }
 
 .alert-custom {
@@ -239,60 +112,12 @@
 	width: 30%;
 	text-align: center;
 }
-.notification-icon {
-	font-size: 19px;
-}
-
 .error-messages {
 	color: red !important;
 }
 
-.list-item-option {
-	float: right;
-	color: #CBC9CA;
-	cursor: pointer;
-	padding: 0 10px;
-}
-
-.list-item-option:hover{
-	color: black;
-	text-decoration: none;
-}
-
-.list-item-option-success {
-	color: green;
-}
-
-.cours-title {
-	font-weight: 800;
-	font-size: 20px;
-}
-
-.cours-hours {
-	font-variant: small-caps;
-}
-
-#cours-people {
-	font-size: 13px;
-}
-
-#current-time {
-	font-size: 15px;
-	padding: 10px;
-	color: white;
-	font-weight: 700;
-	position: fixed;
-	z-index: 1000;
-}
-
 .main-section {
-	font-weight: 800;
-	text-transform: uppercase;
 	font-family: 'globersemibold_free';
-}
-
-.jumbotron {
-	text-align: center;
 }
 
 .search-form {
@@ -303,52 +128,12 @@
 	color: #BBB !important;
 }
 
-.glypicon-danger {
-	font-weight: 800;
-	color: #a94442 !important;
-}
-
-.glyphicon-pending {
-	color: #f0ad4e !important;
-}
-
 .glyphicon-success {
 	color: #5cb85c !important;
 }
 
-.glyphicon-danger {
-	color: #d9534f !important;
-}
-
 .glyphicon-sort {
 	cursor: pointer;
-}
-
-.label-tip {
-	color: grey;
-	font-size: 11px;
-}
-
-.thumbnail-title {
-	font-size: 18px;
-	font-weight: 800;
-	text-align: center;
-}
-
-.shopping-section {
-	z-index: 100;
-	min-height: 100%;
-	height: inherit;
-	padding-top: 50px;
-}
-
-.produit-title {
-	font-size: 26px;
-	font-weight: 800;
-	text-align: center;
-}
-#right-bordered {
-	border-right: 1px solid black;
 }
 
 #shopping-cart-price {
@@ -377,22 +162,6 @@
 }
 
 .span-btn {
-	cursor: pointer;
-}
-
-.section-title {
-	font-size: 18px;
-}
-
-.small-link {
-	font-size: 14px;
-}
-
-#popoverPassages, #popoverForfaits {
-	max-height: 300px;
-}
-
-.panel-target, .panel-bundle-target{
 	cursor: pointer;
 }
 

@@ -7,13 +7,20 @@
 	</head>
 	<body>
 		<div class="main-maintenance">
+			<img src="assets/images/logotype-white.png" alt="">
 			<p class="maintenance-brand">Salsabor</p>
 		</div>
 		<div class="col-lg-12 social-space">
-			<div class="col-lg-6 col-lg-offset-3">
-				<p>Désolé, l'application est actuellement en maintenance !</p>
+			<div class="col-lg-8 col-lg-offset-2">
+				<p>L'application est en maintenance. On revient vite !</p>
+				<p class="help-block">Vous voulez plus d'infos ? <a href="mailto:pinbouen.andreas@mail.com">Envoyez un mail</a></p>
 			</div>
 		</div>
+		<style>
+			.help-block{
+				font-size: 0.85em !important;
+			}
+		</style>
 	</body>
 </html>
 

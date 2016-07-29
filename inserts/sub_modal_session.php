@@ -4,9 +4,10 @@
 	<p class="sub-modal-title"></p>
 	</div>
 	<div class="sub-modal-body container-fluid">
-		<p class="session-modal-details session-date"></p>
-		<p class="session-modal-details session-room"></p>
-		<p class="session-modal-details session-participations"></p>
+		<p class="session-modal-details"></p>
+		<p class="session-modal-details"></p>
+		<p class="session-modal-details"></p>
+		<p class="session-modal-details"></p>
 	</div>
 	<div class="sub-modal-footer">
 	</div>

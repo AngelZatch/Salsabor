@@ -8,22 +8,22 @@ $db = PDOFactory::getConnection();
 parse_str($_POST["values"], $values);
 
 // The table and entry of it we'll update
-$table_name = htmlspecialchars($_POST["table_name"]);
-$entry_id = htmlspecialchars($_POST["entry_id"]);
+$table_name = htmlspecialchars($_POST["table"]);
+$entry_id = htmlspecialchars($_POST["target_id"]);
 
 // We get the name of the primary key
 $primary_key = $db->query("SHOW INDEX FROM $table_name WHERE Key_name = 'PRIMARY'")->fetch(PDO::FETCH_ASSOC);
 
 // Construction of the query
 $query = "UPDATE $table_name SET ";
-foreach($values as $row => $value){
+foreach($values as $column => $value){
 	// Have to solve users to their ID if needed here.
-	if($row == "session_teacher"){
+	if($column == "session_teacher" || $column == "event_handler"){
 		$value = solveAdherentToId($value);
 	}
 	$value = htmlspecialchars($value);
-	$query .= "$row = '$value'";
-	if($row !== end(array_keys($values))){
+	$query .= "$column = '$value'";
+	if($column !== end(array_keys($values))){
 		$query .= ", ";
 	}
 }

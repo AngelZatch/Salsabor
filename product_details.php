@@ -117,7 +117,7 @@ if(isset($_POST["edit"])){
 							<div class="col-lg-9">
 								<input type="number" class="form-control" name="validite" value="<?php echo $produit["product_validity"];?>" placeholder="Exemple : 48">
 								<label for="est_recharge" class="control-label">Jours</label>
-								<input name="validite_jour" id="validite_jour" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1"><span class="label-tip">Si décoché, la durée sera calculée en semaines.</span>
+								<input name="validite_jour" id="validite_jour" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1"><p class="help-block">Si décoché, la durée sera calculée en semaines.</p>
 							</div>
 						</div>
 						<div class="form-group">

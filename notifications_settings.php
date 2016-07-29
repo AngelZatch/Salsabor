@@ -28,54 +28,54 @@ $notifications = $db->query("SELECT * FROM master_settings WHERE user_id = '0'")
 					<form action="" class="form-horizontal" name="master_values" id="master_values">
 						<div class="form-group">
 							<label for="" class="control-label col-sm-4">Jours avant l'expiration des forfaits</label>
-							<div class="col-sm-2">
-								<div class="input-group">
+							<div class="col-sm-8">
+								<div class="input-group col-xs-4 col-sm-2">
 									<input type="number" class="form-control" name="days_before_exp" value="<?php echo $notifications["days_before_exp"];?>">
 									<span class="input-group-addon">jours</span>
 								</div>
+								<p class="help-block">Le système enverra une notification à l'utilisateur lorsque son forfait sera proche de l'expiration par ce nombre de jours.</p>
 							</div>
-							<span class="label-tip">Le système enverra une notification à l'utilisateur lorsque son forfait sera proche de l'expiration par ce nombre de jours.</span>
 						</div>
 						<div class="form-group">
 							<label for="" class="control-label col-sm-4">Volume restant</label>
-							<div class="col-sm-2">
-								<div class="input-group">
+							<div class="col-sm-8">
+								<div class="input-group col-xs-4 col-sm-2">
 									<input type="number" class="form-control" name="hours_before_exp" value="<?php echo $notifications["hours_before_exp"];?>">
 									<span class="input-group-addon">heures</span>
 								</div>
+								<p class="help-block">L'utilisateur sera notifié de l'expiration prochaine de son forfait lorsqu'il ne lui restera plus que quelques heures de disponibles, réglable ici.</p>
 							</div>
-							<span class="label-tip">L'utilisateur sera notifié de l'expiration prochaine de son forfait lorsqu'il ne lui restera plus que quelques heures de disponibles, réglable ici.</span>
 						</div>
 						<div class="form-group">
 							<label for="" class="control-label col-sm-4">Approche d'échéance</label>
-							<div class="col-sm-2">
-								<div class="input-group">
+							<div class="col-sm-8">
+								<div class="input-group col-xs-4 col-sm-2">
 									<input type="number" class="form-control" name="days_before_maturity" value="<?php echo $notifications["days_before_maturity"];?>">
 									<span class="input-group-addon">jours</span>
 								</div>
+								<p class="help-block">Rappelle l'utilisateur qu'une échéance de transaction arrive prochainement.</p>
 							</div>
-							<span class="label-tip">Rappelle l'utilisateur qu'une échéance de transaction arrive prochainement.</span>
 						</div>
 						<div class="form-group">
 							<label for="" class="control-label col-sm-4">Retard d'échéance</label>
-							<div class="col-sm-2">
-								<div class="input-group">
+							<div class="col-sm-8">
+								<div class="input-group col-xs-4 col-sm-2">
 									<input type="number" class="form-control" name="days_after_maturity" value="<?php echo $notifications["days_after_maturity"];?>">
 									<span class="input-group-addon">jours</span>
 								</div>
+								<p class="help-block">Rappelle l'utilisateur qu'une échéance de transaction est en retard.</p>
 							</div>
-							<span class="label-tip">Rappelle l'utilisateur qu'une échéance de transaction est en retard.</span>
 						</div>
 						<p class="sub-legend">Notifications exclusives à l'équipe de gestion</p>
 						<div class="form-group">
 							<label for="" class="control-label col-sm-4">Délai après expiration</label>
-							<div class="col-sm-2">
-								<div class="input-group">
+							<div class="col-sm-8">
+								<div class="input-group col-xs-4 col-sm-2">
 									<input type="number" class="form-control" name="days_after_exp" value="<?php echo $notifications["days_after_exp"];?>">
 									<span class="input-group-addon">jours</span>
 								</div>
+								<p class="help-block">Cette notification n'affectera pas l'utilisateur. Elle sert à l'équipe de gestion pour les produits ayant expiré récemment</p>
 							</div>
-							<span class="label-tip">Cette notification n'affectera pas l'utilisateur. Elle sert à l'équipe de gestion pour les produits ayant expiré récemment</span>
 						</div>
 					</form>
 				</div>
