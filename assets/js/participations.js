@@ -90,7 +90,7 @@ $(document).ready(function(){
 (0 : closed, 1 : opened and available for automatic records, 2 : opened but closed to automatic records)**/
 	e.stopPropagation();
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
-	$.when(updateColumn("cours", "session_opened", 0, session_id)).done(function(){
+	$.when(updateColumn("sessions", "session_opened", 0, session_id)).done(function(){
 		$("#session-"+session_id).remove();
 		// We remove the recently closed session from the list to be refreshed.
 		switch(window.openedSessions.length){
@@ -131,14 +131,15 @@ function displaySessions(data, fetched){
 			}*/
 		as_display += "<div class='panel panel-session' id='session-"+active_sessions[i].id+"'>";
 		// Panel heading
-		as_display += "<a class='panel-heading-container' id='ph-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' data-trigger='"+active_sessions[i].id+"'>";
+		as_display += "<div class='panel-heading-container' id='ph-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' data-trigger='"+active_sessions[i].id+"'>";
 		as_display += "<div class='panel-heading'>";
 		// Container fluid for session name and hour
 		as_display += "<div class='container-fluid'>";
 		as_display += "<p class='session-id col-xs-5'>"+active_sessions[i].title+"</p>";
-		as_display += "<p class='session-date col-xs-5'><span class='glyphicon glyphicon-time'></span> Le "+session_start.format("DD/MM")+" de "+session_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+"</p>";
-		as_display += "<p class='col-xs-1 session-option'><span class='glyphicon glyphicon-lock close-session' id='close-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Verrouiller le cours'></span></p>";
-		as_display += "<p class='col-xs-1 session-option'><span class='glyphicon glyphicon-ok-sign validate-session' id='validate-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Valider tous les passages'></span></p>";
+		as_display += "<p class='session-date col-xs-4'><span class='glyphicon glyphicon-time'></span> Le "+session_start.format("DD/MM")+" de "+session_start.format("HH:mm")+" à "+moment(active_sessions[i].end).format("HH:mm")+"</p>";
+		as_display += "<a href='cours/"+active_sessions[i].id+"' class='link-glyphicon session-option'><span class='glyphicon glyphicon-share-alt col-xs-1 glyphicon-button-alt glyphicon-button-big' title='Aller à la page du cours'></span></a>";
+		as_display += "<span class='glyphicon glyphicon-ban-circle col-xs-1 session-option close-session glyphicon-button-alt glyphicon-button-big' id='close-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Fermer le cours'></span>";
+		as_display += "<span class='glyphicon glyphicon-ok-sign col-xs-1 session-option validate-session glyphicon-button-alt glyphicon-button-big' id='validate-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"' title='Valider tous les passages'></span></p>";
 		as_display += "</div>";
 		// Tags
 		as_display += "<div class='container-fluid'>";
@@ -165,7 +166,7 @@ function displaySessions(data, fetched){
 		as_display += "</div>";
 
 		as_display += "</div>";
-		as_display += "</a>";
+		as_display += "</div>";
 		// Panel body
 		as_display += "<div class='panel-body collapse' id='body-session-"+active_sessions[i].id+"' data-session='"+active_sessions[i].id+"'>";
 		as_display += "</div></div>";
