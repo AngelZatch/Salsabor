@@ -1438,23 +1438,24 @@ p.legend, div.legend:nth-child(1n+0) {
 
 /* line 973, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .main-maintenance {
-  margin-top: 150px; }
+  margin-top: 80px;
+  text-align: center; }
+  /* line 976, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  .main-maintenance img {
+    width: 20%; }
 
-/* line 976, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 979, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .maintenance-brand {
   font-size: 100px;
-  text-align: center;
   font-family: 'globersemibold_free';
   font-weight: 800;
   margin-bottom: 15px;
   color: #A80139; }
 
-/* line 984, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 986, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .social-space {
   align-content: center;
-  text-align: center;
-  margin-top: 20px;
-  padding: 50px 0; }
+  text-align: center; }
   /* line 989, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .social-space div > p {
     font-size: 32px; }
