@@ -301,7 +301,7 @@ if(isset($_POST['addSell'])){
 							<label for="date_inscription" class="col-sm-3 control-label">Date d'inscription</label>
 							<div class="col-sm-9">
 								<input type="date" name="date_inscription" id="date_inscription" class="form-control mandatory" value="<?php echo $now;?>">
-								<span class="label-tip">Par défaut, aujourd'hui</span>
+								<p class="help-block">Par défaut, aujourd'hui</p>
 							</div>
 						</div>
 						<div class="form-group">
@@ -317,7 +317,7 @@ if(isset($_POST['addSell'])){
 							<label for="rib" class="col-sm-3 control-label">Informations bancaires</label>
 							<div class="col-sm-9">
 								<input type="text" name="rib" class="form-control">
-								<span class="label-tip">Pour un professeur, un staff ou un prestataire</span>
+								<p class="help-block">Pour un professeur, un staff ou un prestataire</p>
 							</div>
 						</div>
 						<div class="form-group">
@@ -328,7 +328,7 @@ if(isset($_POST['addSell'])){
 									<option value="<?php echo $sources["source_id"];?>"><?php echo $sources["source"];?></option>
 									<?php } ?>
 								</select>
-								<span class="label-tip">Sélectionnez la source la plus influente</span>
+								<p class="help-block">Sélectionnez la source la plus influente</p>
 							</div>
 						</div>
 						<div class="col-xs-6">

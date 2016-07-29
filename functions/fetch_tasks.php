@@ -107,6 +107,15 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			$t["target_phrase"] = "Cours de ".$sub_query["session_name"]." du ".$date_start." de ".$hour_start." à ".$hour_end." en ".$sub_query["room_name"];
 			break;
 
+		case "EVT":
+			$sub_query = $db->query("SELECT event_name, event_start, event_end FROM events WHERE event_id = '$t[target]'")->fetch(PDO::FETCH_ASSOC);
+			$event_start = date_create($sub_query["event_start"])->format("d/m/Y");
+			$event_end = date_create($sub_query["event_end"])->format("d/m/Y");
+			$t["photo"] = "assets/images/sticker_promo.png"; // TEMPORARY
+			$t["link"] = "event/".$t["target"];
+			$t["target_phrase"] = $sub_query["event_name"]." du ".$event_start." au ".$event_end;
+			break;
+
 		default:
 			break;
 	}

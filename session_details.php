@@ -60,7 +60,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						<span class="glyphicon glyphicon-eye-open"></span> <span class="session-name"><?php echo $cours['session_name'];?></span>
 						<div class="btn-toolbar float-right">
 							<?php if($count == '1'){ ?>
-							<input type='submit' name='editOne' role='button' class='btn btn-success' value='ENREGISTRER'>
+							<input type='submit' name='editOne' role='button' class='btn btn-success' value='Enregistrer les modifications'>
 							<?php } else { ?>
 							<a href='#save-options' class='btn btn-primary' role='button' data-toggle='collapse' aria-expanded='false' aria-controls='saveOptions'><span class="glyphicon glyphicon-ok"></span> Enregistrer</a>
 							<?php } ?>
@@ -129,13 +129,13 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Début</label>
+							<label for="session_start" class="col-lg-3 control-label">Début</label>
 							<div class="col-lg-9">
 								<input type="text" class="form-control" name="session_start" id="datepicker-start">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Fin</label>
+							<label for="session_end" class="col-lg-3 control-label">Fin</label>
 							<div class="col-lg-9">
 								<input type="text" class="form-control" name="session_end" id="datepicker-end">
 							</div>
@@ -382,11 +382,11 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				for(var i = 0; i < sessions.length; i++){
 					if(i < sessions.length - 1){
 						deleteEntry("cours", sessions[i]);
+						deleteTasksByTarget("SES", sessions[i]);
 					} else {
 						console.log("checking parent");
-						$.when(deleteEntry("cours", sessions[i])).done(function(){
+						$.when(deleteEntry("cours", sessions[i]), deleteTasksByTarget("SES", sessions[i])).done(function(){
 							$.get("functions/check_session_parent.php", {session_group_id : session_group_id}).done(function(data){
-								//console.log(data);
 								window.top.location = "planning";
 							})
 						})

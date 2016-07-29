@@ -185,8 +185,8 @@ if(isset($_POST['imagebase64'])){
 
 			});
 			$(document).on('click', '.save-settings', function(){
-				var form = $(".form-horizontal"), table_name = "users", entry_id = <?php echo $user_id;?>;
-				$.post("functions/update_entry.php", {values : form.serialize(), table_name : table_name, entry_id : entry_id}).done(function(){
+				var values = $(".form-horizontal").serialize(), table = "users", entry_id = <?php echo $user_id;?>;
+				$.when(updateEntry(table, values, entry_id)).done(function(){
 					$(".save-settings").switchClass("btn-primary", "btn-success");
 					$(".save-settings").blur();
 					$(".save-settings").text("Modifications enregistrées");

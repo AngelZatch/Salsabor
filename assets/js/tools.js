@@ -57,10 +57,6 @@ $(document).ready(function(){
 		refreshUserBanner(user_id[0]);
 	}
 
-	// Démarre l'horloge
-	tickClock();
-	setInterval(tickClock, 1000);
-
 	// Construit le tableau d'inputs obligatoires par formulaire
 	var mandatories = [];
 	$(".mandatory").each(function(){
@@ -730,7 +726,7 @@ function addAdherent(){
 	});
 }
 
-// Vérifie l'existence de jours chômés à l'ajout d'un évènement
+// Checks if holiday exists when attempting to create events on calendar
 function checkHoliday(){
 	var date_debut = $('#date_debut').val();
 	$.post("functions/check_holiday.php", {date_debut : date_debut}).done(function(data){
@@ -747,17 +743,6 @@ function checkHoliday(){
 	});
 }
 
-// Afficher et met à jour l'horloge
-function tickClock(){
-	var now = moment().locale('fr').format("DD MMMM YYYY HH:mm:ss");
-	$("#current-time").html(now);
-	$(".panel").each(function(){
-		$(this).find(".cours-count").html($(this).find(".list-group-item").length);
-		$(this).find(".cours-count-checked").html($(this).find(".list-group-item-success").length);
-	})
-}
-
-// Affiche en direct le nombre d'éléments dans le panier
 function notifPanier(){
 	if(sessionStorage.getItem("panier") != null){
 		var cartSize = JSON.parse(sessionStorage.getItem("panier"));
@@ -772,7 +757,6 @@ function notifPanier(){
 	}
 }
 
-// Remplit le popover de l'icône panier dans la navigation
 function fillShoppingCart(){
 	$(".table-panier").empty();
 	if(sessionStorage.getItem("panier") != null){
@@ -802,7 +786,7 @@ function removeCartElement(key){
 	notifPanier();
 }
 
-// Compose les URL lors de l'achat
+// Prepares the URL when purchasing items
 function composeURL(token){
 	var url = "personnalisation.php?element=";
 	url += token;
@@ -811,8 +795,19 @@ function composeURL(token){
 	$("[name='previous']").attr('href', url);
 }
 
+// Adds a row
+function addEntry(table, values){
+	return $.post("functions/add_entry.php", {table : table, values : values});
+}
+
+// Updates a single column in a row of a table
 function updateColumn(table, column, value, target){
 	return $.post("functions/update_column.php", {table : table, column : column, value : value, target_id : target});
+}
+
+// Updates a whole row
+function updateEntry(table, values, target){
+	return $.post("functions/update_entry.php", {table : table, target_id : target, values : values});
 }
 
 function refreshUserBanner(user_id){
@@ -832,6 +827,11 @@ function refreshUserBanner(user_id){
 // Deletes an entry in a table of the database
 function deleteEntry(table, entry_id){
 	return $.post("functions/delete_entry.php", {table : table, entry_id : entry_id});
+}
+
+// Deletes tasks by the target, not the ID (used to eliminate orphan tasks)
+function deleteTasksByTarget(token, target_id){
+	return $.post("functions/delete_tasks_by_target.php", {token : token, target_id : target_id});
 }
 
 function postNotification(token, target, recipient){

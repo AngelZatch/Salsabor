@@ -31,7 +31,7 @@ $produits = $db->query("SELECT * FROM produits");
 		$validite = $validite_semaines." semaine(s)";
 	}
 					?>
-					<div class="col-xs-6 col-md-4 panel-product-container">
+					<div class="col-xs-12 col-md-4 col-lg-3 panel-product-container">
 						<div class="panel panel-product">
 							<div class="panel-body">
 								<p class="product-title"><?php echo $produit["product_name"];?></p>
