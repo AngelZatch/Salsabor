@@ -47,11 +47,14 @@ function addCours(){
 			$session_group_id = insertParent($db, $session_name, $weekday, $start, $recurrence_stop, $user_id, $room_id, $session_duration, 0, $recurrence, $frequency, 2);
 
 			for($i = 1; $i < $recurrence_steps; $i++){
-				// Inserting session
-				if($i == 1)
-					$first_session_id = createSession($db, $session_group_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
-				else
-					createSession($db, $session_group_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
+				// Before inserting a session, we check if the target day is a holiday.
+				if(isHoliday($db, $start) !== true){
+					// Inserting session
+					if($i == 1)
+						$first_session_id = createSession($db, $session_group_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
+					else
+						createSession($db, $session_group_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
+				}
 
 				// Changing dates for next one
 				$start_date = strtotime($start.'+'.$frequency.'DAYS');

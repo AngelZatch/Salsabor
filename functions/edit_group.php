@@ -21,6 +21,9 @@ if($delta_steps > 0){ // Add sessions to the group
 	// To avoid having wrong dates, we get the date of the last session of the group
 	$last_session_date = $db->query("SELECT session_start, session_end FROM sessions WHERE session_group = $group_id ORDER BY session_id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
 
+	// As the next session can fall on a holiday, we have to keep track of that. As soon as the first session is added to the database, this flag will become true.
+	$next_session_added = false;
+
 	for($i = 1; $i <= $delta_steps; $i++){
 		// We get the new dates of the sessions
 		$days_added = $i * 7;
@@ -28,12 +31,17 @@ if($delta_steps > 0){ // Add sessions to the group
 		$end_date = strtotime($last_session_date["session_end"].'+'.$days_added.'DAYS');
 		$start = date("Y-m-d H:i:s", $start_date);
 		$end = date("Y-m-d H:i:s", $end_date);
-		if($i == 1){
-			$next_session = createSession($db, $group_id, $session_name, $start, $end, $teacher_id, $room_id, $session_duration, $hour_fee, 2);
-			echo $next_session;
-		} else {
-			createSession($db, $group_id, $session_name, $start, $end, $teacher_id, $room_id, $session_duration, $hour_fee, 2);
+
+		if(isHoliday($db, $start) !== true){
+			if(!$next_session_added){
+				$next_session = createSession($db, $group_id, $session_name, $start, $end, $teacher_id, $room_id, $session_duration, $hour_fee, 2);
+				$next_session_added = true;
+				echo $next_session;
+			} else {
+				createSession($db, $group_id, $session_name, $start, $end, $teacher_id, $room_id, $session_duration, $hour_fee, 2);
+			}
 		}
+
 		if($i == $delta_steps){
 			// Once all the sessions have been applied, we update the date of the end of recurrence to the group
 			$new_recurrence_end = date("Y-m-d", $end_date);

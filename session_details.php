@@ -199,7 +199,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 								<p type="text" class="form-control-static" name="cours_parent" id="group-input"><?php echo $cours["session_group"];?></p>
 							</div>
 						</div>
-						<span class="col-lg-offset-2 col-lg-10 help-block">Modifiez les champs ci-dessous pour ajouter ou retirer des cours. Si vous prolongez la récurrence (en augmentant le nombre ou la date) de nouveaux cours seront créés. Inversement, si vous réduisez la récurrence, des cours existants seront supprimés.</span>
+						<span class="col-lg-offset-2 col-lg-10 help-block">Modifiez les champs ci-dessous pour ajouter ou retirer des cours. Si vous prolongez la récurrence (en augmentant le nombre ou la date) de nouveaux cours seront créés. Inversement, si vous réduisez la récurrence, des cours existants seront supprimés. Pensez à vérifier les jours chômés avant de valider vos modifications.</span>
 						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">Nombre de cours</label>
 							<div class="col-lg-9">
@@ -283,7 +283,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				$.get("functions/fetch_session_group.php", {group_id : session_group_id}).done(function(data){
 					var group_details = JSON.parse(data);
 					$("#recurrence_end").datetimepicker({
-						format : "YYYY-MM-DD",
+						format : "DD/MM/YYYY",
 						locale: 'fr',
 						defaultDate: group_details.parent_end_date
 					}).on('dp.change', function(e){
