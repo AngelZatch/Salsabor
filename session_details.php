@@ -68,7 +68,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					<legend>
 						<span class="glyphicon glyphicon-eye-open"></span> <span class="session-name"><?php echo $cours['session_name'];?></span>
 						<?php if($cours["session_opened"] == 1){
-								if($on_going){ ?>
+	if($on_going){ ?>
 						<div class="label label-active label-ongoing" title="Le cours se déroule actuellement">
 							<span class="label-active-text">En cours</span>
 						</div>
@@ -77,7 +77,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<span class="label-active-text">Ouvert</span>
 						</div>
 						<?php }
-						} ?>
+} ?>
 						<div class="btn-toolbar float-right">
 							<?php if($count == '1'){ ?>
 							<input type='submit' name='editOne' role='button' class='btn btn-success' value='Enregistrer les modifications'>
@@ -165,11 +165,11 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<div class="col-lg-9">
 								<h4>
 									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){
-		if($label["is_mandatory"] == 1){
-			$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
-		} else {
-			$label_name = $label["rank_name"];
-		}?>
+	if($label["is_mandatory"] == 1){
+		$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
+	} else {
+		$label_name = $label["rank_name"];
+	}?>
 									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="session-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='session' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label_name;?></span>
 									<?php } ?>
 									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='session-tags' data-targettype='session' title="Ajouter une étiquette">+</span>
@@ -181,12 +181,12 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<div class="col-lg-9">
 								<select name="session_room" class="form-control">
 									<?php while($salles = $querySalles->fetch(PDO::FETCH_ASSOC)){
-		if($cours["session_room"] == $salles["room_id"]) {?>
+	if($cours["session_room"] == $salles["room_id"]) {?>
 									<option selected="selected" value="<?php echo $salles["room_id"];?>"><?php echo $salles["room_name"];?></option>
 									<?php } else { ?>
 									<option value="<?php echo $salles["room_id"];?>"><?php echo $salles["room_name"];?></option>
 									<?php }
-	} ?>
+} ?>
 								</select>
 							</div>
 						</div>
@@ -406,12 +406,12 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				}
 				for(var i = 0; i < sessions.length; i++){
 					if(i < sessions.length - 1){
-						deleteEntry("cours", sessions[i]);
+						deleteEntry("sessions", sessions[i]);
 						deleteTasksByTarget("SES", sessions[i]);
 					} else {
 						console.log("checking parent");
-						$.when(deleteEntry("cours", sessions[i]), deleteTasksByTarget("SES", sessions[i])).done(function(){
-							$.get("functions/check_session_parent.php", {session_group_id : session_group_id}).done(function(data){
+						$.when(deleteEntry("sessions", sessions[i]), deleteTasksByTarget("SES", sessions[i])).done(function(data){
+							$.get("functions/check_session_parent.php", {session_group_id : session_group_id}).done(function(){
 								window.top.location = "planning";
 							})
 						})
