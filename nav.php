@@ -2,7 +2,7 @@
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
-$locationsNotif = $db->query("SELECT * FROM reservations WHERE paiement_effectue=0 AND priorite=1")->rowCount();
+$locationsNotif = $db->query("SELECT * FROM reservations WHERE booking_paid=0 AND priorite=1")->rowCount();
 ?>
 
 <div class="visible-xs-block">

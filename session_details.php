@@ -366,7 +366,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							*/
 							/*console.log(copy_initial_tags);
 							console.log(copy_def_tags);*/
-							// WARNING : The code below, though very effective, is borderline intended by the developers of jQuery. If something breaks when uploading to a newer version of jQuery (> 2.1.4), please see here first.
+							// WARNING : The code below, though very effective, is borderline intended by the developers of jQuery. If something breaks when updating to a newer version of jQuery (> 2.1.4), please see here first.
 							var to_be_detached = $(copy_initial_tags).not(copy_def_tags).get();
 							var to_be_attached = $(copy_def_tags).not(copy_initial_tags).get();
 							for(var j = 0; j < to_be_detached.length; j++){

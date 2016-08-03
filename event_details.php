@@ -9,7 +9,7 @@ require_once "functions/cours.php";
 
 $event_id = $_GET["id"];
 $event = $db->query("SELECT * FROM events e
-					JOIN users u ON e.event_handler = u.user_id
+					LEFT JOIN users u ON e.event_handler = u.user_id
 					WHERE event_id = '$event_id'")->fetch(PDO::FETCH_ASSOC);
 
 $user_labels = $db->query("SELECT * FROM tags_user");
@@ -34,7 +34,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					<legend>
 						<span class="glyphicon glyphicon-calendar"></span> <?php echo $event["event_name"];?>
 						<div class="btn-toolbar float-right">
-							<button class="btn btn-success btn-edit" id="submit-button">Enregistrer les modifications</button>
+							<button class="btn btn-success btn-edit" id="submit-button"><span class="glyphicon glyphicon-ok"></span> Enregistrer les modifications</button>
 							<button class="btn btn-danger btn-delete"><span class="glyphicon glyphicon-trash"></span> Supprimer</button>
 						</div>
 					</legend>
@@ -107,14 +107,14 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 		<script>
 			$(document).ready(function(){
 				$("#datepicker-start").datetimepicker({
-					format: "YYYY-MM-DD HH:mm:00",
+					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: "<?php echo date_create($event['event_start'])->format("m/d/Y H:i");?>",
 					locale: "fr",
 					sideBySide: true,
 					stepping: 30
 				});
 				$("#datepicker-end").datetimepicker({
-					format: "YYYY-MM-DD HH:mm:00",
+					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: "<?php echo date_create($event['event_end'])->format("m/d/Y H:i");?>",
 					locale: "fr",
 					sideBySide: true,
