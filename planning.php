@@ -128,6 +128,17 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 						{
 							url: 'functions/calendarfeed_bookings.php',
 							type: 'GET',
+							data: function(){
+								var filters = [];
+								$(".room-filter").each(function(){
+									if(document.getElementById($(this).attr("id")).dataset.filter == 1){
+										filters.push(document.getElementById($(this).attr("id")).dataset.room);
+									}
+								})
+								return {
+									filters: filters
+								};
+							},
 							textColor: 'black',
 							error: function(data){
 								console.log(data);
@@ -156,16 +167,19 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 						if(calEvent.type == "cours"){
 							element.attr('room', calEvent.lieu);
 						}
+						if(calEvent.type == "holiday") {
+							element.css('background-color', '#000');
+						} else {
+							element.css("background-color", "#"+calEvent.color);
+						}
 						if(calEvent.type == 'reservation'){
 							if (calEvent.priorite == 0){
 								element.css('font-style', 'italic');
 								element.css('border', 'dashed 2px');
 							}
-						}
-						if(calEvent.type == "holiday") {
-							element.css('background-color', '#000');
-						} else {
-							element.css("background-color", "#"+calEvent.color);
+							element.css("border", "solid 2px");
+							element.css("border-color", "#"+calEvent.color);
+							element.css('background-color', '#fff');
 						}
 					},
 					eventClick: function(calEvent, jsEvent, element){
@@ -216,6 +230,7 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 									$(".sub-modal-title").append("<span class='glyphicon glyphicon-bookmark'></span> "+calEvent.title);
 									$(".session-modal-details:eq(0)").append("<span>Date</span>"+moment(calEvent.start).format("ll[,] HH:mm")+" - "+moment(calEvent.end).format("HH:mm"));
 									$(".session-modal-details:eq(1)").append("<span>Réservation par</span>"+booking.holder);
+									$(".session-modal-details:eq(2)").append("<span>Salle</span>"+booking.room);
 									$(".sub-modal-footer").append("<a href='reservation/"+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
 								})
 							}
