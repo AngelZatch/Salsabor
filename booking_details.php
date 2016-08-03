@@ -173,7 +173,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				});
 			}).on('click', '.btn-delete', function(){
 				var booking_id = <?php echo $booking_id;?>;
-				$.when(deleteEntry("reservations", booking_id), deletetasksByTarget("BKN", booking_id)).done(function(){
+				$.when(deleteEntry("reservations", booking_id), deleteTasksByTarget("BKN", booking_id)).done(function(){
 					window.top.location = "planning";
 				})
 			})
