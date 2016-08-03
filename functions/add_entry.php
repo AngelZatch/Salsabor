@@ -19,10 +19,16 @@ foreach($values as $column => $value){
 }
 $query .= " VALUES(";
 foreach($values as $column => $value){
-	if($column == "session_teacher" || $column == "event_handler"){
+	if($column == "session_teacher" || $column == "event_handler" || $column == "booking_holder"){
 		$value = solveAdherentToId($value);
 	}
-	$value = htmlspecialchars($value);
+	if(preg_match("/(start|end|date)/i", $column)){
+		// In the database, all dates contain one of these 3 words. We can then test against them to find dates and format them correctly.
+		$value_date = DateTime::createFromFormat("d/m/Y H:i:s", $value);
+		$value = $value_date->format("Y-m-d H:i:s");
+	} else {
+		$value = htmlspecialchars($value);
+	}
 	$query .= "'$value'";
 	if($column !== end(array_keys($values))){
 		$query .= ", ";

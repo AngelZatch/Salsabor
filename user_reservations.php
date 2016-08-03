@@ -19,10 +19,10 @@ $details["count"] = $db->query("SELECT * FROM tasks
 
 // On obtient l'historique de ses réservations
 $queryResa = $db->prepare('SELECT * FROM reservations b
-							JOIN users u ON b.reservation_personne = u.user_id
+							JOIN users u ON b.booking_holder = u.user_id
 							JOIN prestations p ON b.type_prestation = p.prestations_id
-							JOIN rooms r ON b.reservation_salle = r.room_id
-							WHERE reservation_personne=?');
+							JOIN rooms r ON b.booking_room = r.room_id
+							WHERE booking_holder=?');
 $queryResa->bindValue(1, $data);
 $queryResa->execute();
 
@@ -71,10 +71,10 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 							<tbody>
 								<?php while($reservations = $queryResa->fetch(PDO::FETCH_ASSOC)){ ?>
 								<tr>
-									<td>Le <?php echo date_create($reservations["reservation_start"])->format('d/m/Y \d\e H\hi');?> à <?php echo date_create($reservations["reservation_end"])->format('H\hi');?></td>
+									<td>Le <?php echo date_create($reservations["booking_start"])->format('d/m/Y \d\e H\hi');?> à <?php echo date_create($reservations["booking_end"])->format('H\hi');?></td>
 									<td><?php echo $reservations["salle_name"];?></td>
 									<td><?php echo $reservations["prestations_name"];?></td>
-									<td><?php echo $reservations["reservation_prix"];?> €</td>
+									<td><?php echo $reservations["booking_price"];?> €</td>
 								</tr>
 								<?php } ?>
 							</tbody>

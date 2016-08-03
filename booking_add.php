@@ -5,16 +5,15 @@ if(!isset($_SESSION["username"])){
 }
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
-require_once "functions/cours.php";
 
-$lieux = $db->query('SELECT * FROM rooms');
+$rooms_query = $db->query('SELECT * FROM rooms');
 
 $user_labels = $db->query("SELECT * FROM tags_user");
 ?>
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Ajouter un événement | Salsabor</title>
+		<title>Ajouter une réservation | Salsabor</title>
 		<base href="../">
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
@@ -27,18 +26,12 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
-					<legend><span class="glyphicon glyphicon-plus"></span> Ajouter un événement
+					<legend><span class="glyphicon glyphicon-bookmark"></span> Ajouter une réservation
 						<button class="btn btn-primary btn-add">Ajouter</button>
 					</legend>
-					<form method="post" role="form" class="form-horizontal" id="event-add-form">
+					<form method="post" role="form" class="form-horizontal" id="booking-add-form">
 						<div class="form-group">
-							<label for="event_name" class="col-lg-3 control-label">Titre de l'événement</label>
-							<div class="col-lg-9">
-								<input type="text" class="form-control mandatory" name="event_name" placeholder="Titre de l'événement">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="event_handler" class="col-lg-3 control-label">Gérant principal <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Vous pouvez régler les noms qui vous seront suggérés avec le sélecteur 'Suggérer parmi...'"></span></label>
+							<label for="event_handler" class="col-lg-3 control-label">Réservation pour <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Vous pouvez régler les noms qui vous seront suggérés avec le sélecteur 'Suggérer parmi...'"></span></label>
 							<div class="col-lg-9">
 								<div class="input-group">
 									<div class="input-group-btn">
@@ -50,32 +43,30 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 											<li class="completion-option"><a>Ne pas suggérer</a></li>
 										</ul>
 									</div>
-									<input type="text" class="form-control filtered-complete" id="complete-teacher" name="event_handler">
+									<input type="text" class="form-control filtered-complete" id="complete-teacher" name="booking_holder">
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="event_start" class="col-lg-3 control-label">Début</label>
+							<label for="booking_start" class="col-lg-3 control-label">Début</label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="event_start" id="datepicker-start">
+								<input type="text" class="form-control" name="booking_start" id="datepicker-start">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="event_end" class="col-lg-3 control-label">Fin</label>
+							<label for="booking_end" class="col-lg-3 control-label">Fin</label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="event_end" id="datepicker-end">
+								<input type="text" class="form-control" name="booking_end" id="datepicker-end">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Adresse</label>
+							<label for="booking_room" class="col-lg-3 control-label">Lieu</label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="event_address">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Description</label>
-							<div class="col-lg-9">
-								<textarea name="event_description" class="form-control" id="" cols="30" rows="10"></textarea>
+								<select name="booking_room" class="form-control mandatory" id="booking-room" onChange="checkCalendar(false, false)">
+									<?php while($rooms_details = $rooms_query->fetch(PDO::FETCH_ASSOC)){ ?>
+									<option value="<?php echo $rooms_details['room_id'];?>"><?php echo $rooms_details['room_name'];?></option>
+									<?php } ?>
+								</select>
 							</div>
 						</div>
 						<div class="align-right">
@@ -124,9 +115,9 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				sessionStorage.removeItem('end');
 				sessionStorage.removeItem('start');
 			}).on('click', '.btn-add', function(){
-				var table = "events", values = $("#event-add-form").serialize();
+				var table = "reservations", values = $("#booking-add-form").serialize();
 				$.when(addEntry(table, values)).done(function(data){
-					window.location.href = "event/"+data;
+					window.location.href = "reservation/"+data;
 				})
 			})
 		</script>

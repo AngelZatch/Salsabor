@@ -19,7 +19,7 @@ try{
 			"address" => $event["event_address"],
 			"start" => $event["event_start"],
 			"end" => $event["event_end"],
-			"color" => "ffae35",
+			"color" => "CE7F77",
 			"type" => "event",
 			"allDay" => false
 		);

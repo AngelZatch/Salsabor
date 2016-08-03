@@ -32,7 +32,7 @@ for($i = 0; $i < sizeof($sessions); $i++){
 	// We fetch the times from each session
 	$session_times = $db->query("SELECT session_start, session_end FROM sessions WHERE session_id = $sessions[$i]")->fetch(PDO::FETCH_ASSOC);
 	try{
-		$query = "UPDATE cours SET ";
+		$query = "UPDATE sessions SET ";
 		foreach($values as $row => $value){
 			// If we have to get a name
 			if($row == "session_teacher")
