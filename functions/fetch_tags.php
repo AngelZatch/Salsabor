@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $type = $_GET["type"];
 
-$stmt = $db->query("SELECT * FROM tags_$type");
+$stmt = $db->query("SELECT * FROM tags_$type ORDER BY tag_color DESC, rank_name ASC");
 
 $tags = array();
 while($tag = $stmt->fetch(PDO::FETCH_ASSOC)){

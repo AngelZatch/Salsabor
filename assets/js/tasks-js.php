@@ -313,6 +313,14 @@ function renderTask(task, half){
 		case "SES":
 			linkTitle += "Aller au cours";
 
+		case "EVT":
+			linkTitle += "Aller à l'événement";
+			break;
+
+		case "BKN":
+			linkTitle += "Aller à la réservation";
+			break;
+
 		default:
 			break;
 	}

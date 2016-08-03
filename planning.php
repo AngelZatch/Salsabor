@@ -29,6 +29,7 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-time"></span> Planning
 						<div class="btn-toolbar float-right">
+							<a href="reservation/new" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-bookmark"></span> Ajouter une réservation</a>
 							<a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-eye-open"></span> Ajouter un cours</a>
 							<a href="event/new" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-calendar"></span> Ajouter un événement</a>
 						</div>
@@ -36,7 +37,7 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 					<p class="help-block">Sur périphériques tactiles, maintenez appuyé pour sélectionner un événement ou une plage horaire.</p>
 					<div class="filters row">
 						<div class="container-fluid col-xs-12 col-sm-4 col-lg-3">
-							<p class="filter-title" data-toggle="collapse" href="#room-filtering" title="Cliquez pour dérouler les salles disponibles">Vos salles <span class="glyphicon glyphicon-menu-down float-right"></span></p>
+							<p class="filter-title" data-toggle="collapse" href="#room-filtering" title="Cliquez pour dérouler les salles disponibles">Salles <span class="glyphicon glyphicon-menu-down float-right"></span></p>
 							<ul class="collapse" id="room-filtering">
 								<?php foreach($rooms as $room){ ?>
 								<div class="room-filter" id="room-<?php echo $room["room_id"];?>" data-room="<?php echo $room["room_id"];?>" data-filter="1" title="Cliquez pour activer ou désactiver l&apos;affichage d&apos;une salle dans le planning">
@@ -119,25 +120,33 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 									filters: filters
 								};
 							},
-							color: '#0FC5F5',
 							textColor:'black',
 							error: function(data){
 								console.log(data);
 							}
 						},
 						{
-							url: 'functions/calendarfeed_resa.php',
+							url: 'functions/calendarfeed_bookings.php',
 							type: 'GET',
-							color: '#D21CFC',
+							data: function(){
+								var filters = [];
+								$(".room-filter").each(function(){
+									if(document.getElementById($(this).attr("id")).dataset.filter == 1){
+										filters.push(document.getElementById($(this).attr("id")).dataset.room);
+									}
+								})
+								return {
+									filters: filters
+								};
+							},
 							textColor: 'black',
-							error: function(){
-								console.log('Erreur pendant l\'obtention des réservations');
+							error: function(data){
+								console.log(data);
 							}
 						},
 						{
 							url: 'functions/calendarfeed_holidays.php',
 							type: 'GET',
-							color: '#C4C4C4',
 							textColor: 'black',
 							rendering: 'background',
 							error: function(data){
@@ -157,23 +166,20 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 						element.attr("id", calEvent.type+"-"+calEvent.id);
 						if(calEvent.type == "cours"){
 							element.attr('room', calEvent.lieu);
-							element.css("background-color", "#"+calEvent.color);
 						}
 						if(calEvent.type == "holiday") {
 							element.css('background-color', '#000');
+						} else {
+							element.css("background-color", "#"+calEvent.color);
 						}
 						if(calEvent.type == 'reservation'){
 							if (calEvent.priorite == 0){
-								element.css('background-color', '#ebb3f9');
 								element.css('font-style', 'italic');
-								element.css('color', '#555');
 								element.css('border', 'dashed 2px');
-							} else {
-								element.css('background-color', '#D21CFC');
 							}
-						}
-						if(calEvent.type == "event"){
-							element.css("background-color", "#"+calEvent.color);
+							element.css("border", "solid 2px");
+							element.css("border-color", "#"+calEvent.color);
+							element.css('background-color', '#fff');
 						}
 					},
 					eventClick: function(calEvent, jsEvent, element){
@@ -216,6 +222,18 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 									$(".sub-modal-footer").append("<a href='event/"+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
 								})
 							}
+							if(calEvent.type == "reservation"){
+								$.get("functions/fetch_booking_details.php", {booking_id : target[0]}).done(function(data){
+									var booking = JSON.parse(data);
+									// Color change
+									$(".sub-modal-title").css("color", calEvent.color);
+									$(".sub-modal-title").append("<span class='glyphicon glyphicon-bookmark'></span> "+calEvent.title);
+									$(".session-modal-details:eq(0)").append("<span>Date</span>"+moment(calEvent.start).format("ll[,] HH:mm")+" - "+moment(calEvent.end).format("HH:mm"));
+									$(".session-modal-details:eq(1)").append("<span>Réservation par</span>"+booking.holder);
+									$(".session-modal-details:eq(2)").append("<span>Salle</span>"+booking.room);
+									$(".sub-modal-footer").append("<a href='reservation/"+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
+								})
+							}
 							// Showing modal once everything is done
 							$(".sub-modal-session").show();
 							var top = jsEvent.pageY;
@@ -242,7 +260,6 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 						center:'title',
 						right:'month, agendaWeek, agendaDay'
 					},
-					hiddenDays: [0],
 					lang:'fr',
 					minTime: '9:00',
 					nowIndicator: true,
@@ -264,7 +281,7 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 
 						// We check to see if the day selected is already a holiday or not
 						$.when(isHoliday(moment(start).format("YYYY-MM-DD"))).done(function(holiday_check_value){
-							var duration = 1, holiday_message = "", holiday_button_id = "";
+							var duration = 1, holiday_message = "", holiday_button_id = "", holiday_glyphicon = "";
 							// Filling fields depending on the duration
 							if(selected_duration == 86400000){ // The user has selected a full day
 								$(".sub-modal-title").append("<span class='glyphicon glyphicon-calendar'></span> Jour entier");
@@ -286,17 +303,20 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 							if(holiday_check_value == -1){
 								holiday_message = "Ajouter";
 								holiday_button_id = "quick-add-holiday";
+								holiday_glyphicon = "plus";
 							} else {
 								holiday_message = "Retirer";
 								holiday_button_id = "quick-remove-holiday";
+								holiday_glyphicon = "minus";
 							}
 							var sub_modal_buttons = "";
 							sub_modal_buttons += "<div class='btn-group btn-group-justified' role='group'>";
 							sub_modal_buttons += "<div class='btn-group' role='group'>";
-							sub_modal_buttons += "<button class='btn btn-default btn-to-session' id='"+holiday_button_id+"' title='"+holiday_message+" une période chômée' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='"+duration+"'><span class='glyphicon glyphicon-leaf'></span> "+holiday_message+"</button>";
+							sub_modal_buttons += "<button class='btn btn-default btn-to-session' id='"+holiday_button_id+"' title='"+holiday_message+" une période chômée' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='"+duration+"'><span class='glyphicon glyphicon-"+holiday_glyphicon+"'></span> <span class='glyphicon glyphicon-leaf'></span></button>";
 							sub_modal_buttons += "</div>";
-							sub_modal_buttons += "<a href='event/new' class='btn btn-primary btn-to-session' title='Ajouter un événement'><span class='glyphicon glyphicon-calendar'></span> Ajouter</a>";
-							sub_modal_buttons += "<a href='cours_add.php' class='btn btn-primary btn-to-session' title='Ajouter un cours'><span class='glyphicon glyphicon-eye-open'></span> Ajouter</a>";
+							sub_modal_buttons += "<a href='event/new' class='btn btn-primary btn-to-session' title='Ajouter un événement'><span class='glyphicon glyphicon-plus'></span> <span class='glyphicon glyphicon-calendar'></span></a>";
+							sub_modal_buttons += "<a href='cours_add.php' class='btn btn-primary btn-to-session' title='Ajouter un cours'><span class='glyphicon glyphicon-plus'></span> <span class='glyphicon glyphicon-eye-open'></span></a>";
+							sub_modal_buttons += "<a href='reservation/new' class='btn btn-primary btn-to-session' title='Ajouter une réservation'><span class='glyphicon glyphicon-plus'></span> <span class='glyphicon glyphicon-bookmark'></span></a>";
 							sub_modal_buttons += "</div>";
 							$(".sub-modal-footer").append(sub_modal_buttons);
 						})

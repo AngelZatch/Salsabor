@@ -291,4 +291,15 @@ function addEntry($db, $table, $column, $value){
 	$stmt->execute();
 	return $db->lastInsertId();
 }
+
+function isHoliday($db, $target_date){
+	// We format the date to the MySQL format
+	$target_date = DateTime::createFromFormat("Y-m-d H:i:s", $target_date);
+	$target_date = $target_date->format("Y-m-d");
+	$holiday_count = $db->query("SELECT * FROM holidays WHERE holiday_date = '$target_date'")->rowCount();
+	if($holiday_count > 0)
+		return true;
+	else
+		return false;
+}
 ?>
