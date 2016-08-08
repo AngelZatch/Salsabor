@@ -1,4 +1,4 @@
-<?php if(preg_match("/historique/",$_SERVER["REQUEST_URI"],$matches) || preg_match("/participations/",$_SERVER["REQUEST_URI"],$matches) || preg_match("/cours/",$_SERVER["REQUEST_URI"],$matches) || preg_match("/taches/",$_SERVER["REQUEST_URI"],$matches)){
+<?php if(preg_match("/historique/",$_SERVER["REQUEST_URI"],$matches) || preg_match("/participations/",$_SERVER["REQUEST_URI"],$matches) || preg_match("/cours/",$_SERVER["REQUEST_URI"],$matches) || preg_match("/taches/",$_SERVER["REQUEST_URI"],$matches) || preg_match("/achats/",$_SERVER["REQUEST_URI"],$matches) || preg_match("/echeances/",$_SERVER["REQUEST_URI"],$matches)){
 	$lg_width = "3";
 	$xs_width = "5";
 } else {

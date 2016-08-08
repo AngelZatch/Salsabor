@@ -36,7 +36,8 @@ MATURITIES
 For maturities, we will take all maturities which are still not paid and are coming in the next z days or have passed their date since z' days.
 */
 $maturities = $db->query("SELECT * FROM produits_echeances
-						WHERE (echeance_effectuee = 0 AND date_echeance <= '$maturity_limit') OR (echeance_effectuee = 2 AND date_echeance >= '$maturity_over')");
+						WHERE date_paiement IS NULL
+						AND (date_echeance <= '$maturity_limit' OR date_echeance >= '$maturity_over')");
 while($maturity = $maturities->fetch(PDO::FETCH_ASSOC)){
 	$token = "MAT-";
 	if($maturity["date_echeance"] <= $maturity_limit){

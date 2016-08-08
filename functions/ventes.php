@@ -149,17 +149,28 @@ function vente(){
 
 		// Création de toutes les échéances associées à la transaction
 		for($k = 1; $k <= $echeances; $k++){
-			if($_POST["statut-echeance-".$k] == '1'){$date_paiement = $date_achat;}
+			if($_POST["statut-echeance-".$k] == '1')
+				$date_paiement = $date_achat;
 
-			$new_echeance = $db->prepare("INSERT INTO produits_echeances(reference_achat, date_echeance, montant, payeur_echeance, methode_paiement, echeance_effectuee, date_paiement)
-			VALUES(:transaction, :date_echeance, :prix, :payeur, :methode, :echeance_effectuee, :date_paiement)");
+			if(strstr($_POST["moyen-paiement-".$k], "Carte bancaire") !== false){
+				$bank_date = $date_paiement;
+				$bank_status = 1;
+			} else{
+				$bank_date = NULL;
+				$bank_status = 0;
+			}
+
+			$new_echeance = $db->prepare("INSERT INTO produits_echeances(reference_achat, date_echeance, montant, payeur_echeance, methode_paiement, echeance_effectuee, date_paiement, statut_banque, date_encaissement)
+			VALUES(:transaction, :date_echeance, :prix, :payeur, :methode, :echeance_effectuee, :date_paiement, :statut_banque, :date_encaissement)");
 			$new_echeance->bindParam(':transaction', $transaction);
 			$new_echeance->bindParam(':date_echeance', $_POST["date-echeance-".$k]);
 			$new_echeance->bindParam(':prix', $_POST["montant-echeance-".$k]);
 			$new_echeance->bindParam(':payeur', $_POST["titulaire-paiement-".$k]);
 			$new_echeance->bindParam(':methode', $_POST["moyen-paiement-".$k]);
 			$new_echeance->bindParam(':echeance_effectuee', $_POST["statut-echeance-".$k]);
-			$new_echeance->bindParam('date_paiement', $date_achat);
+			$new_echeance->bindParam(':date_paiement', $date_paiement);
+			$new_echeance->bindParam(':statut_banque', $bank_status);
+			$new_echeance->bindParam(':date_encaissement', $bank_date);
 			$new_echeance->execute();
 
 			//Echeances - Contenu du tableau

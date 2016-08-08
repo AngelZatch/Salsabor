@@ -357,7 +357,9 @@ $(document).ready(function(){
 					locale: "fr"
 				};
 			}
-			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal").css({
+				top : tpos.top+136+'px',
+				left: toffset.left+'px'});
 			$(".sub-modal-body").html(body);
 			break;
 
@@ -489,15 +491,22 @@ $(document).ready(function(){
 			$(".sub-modal").css({top : tpos.top-45+'px'});
 			break;
 
-		case 'reception-maturity':
+		case 'receive-maturity':
 			var maturity_id = target.dataset.maturity;
+			var method = $("#maturity-"+maturity_id+"-method>span").first().text();
 			title = "Réception de l'échéance";
-			body += "<input type='text' class='form-control datepicker'/>";
+			body += "<input type='text' class='form-control datepicker reception-date'/>";
 			body += "<label class='control-label'>Méthode de paiement</label>";
-			body += "<input type='text' class='form-control reception-method'></input>";
+			body += "<input type='text' class='form-control reception-method' value='"+method+"'></input>";
 			footer += "<button class='btn btn-success receive-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
-			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal").css({top : toffset.top+'px'});
+			$(".sub-modal").css({left : toffset.left-200+'px'});
 			$(".sub-modal-body").html(body);
+			var options = {
+				format: "DD/MM/YYYY",
+				inline: true,
+				locale: "fr"
+			};
 			break;
 
 		case 'bank-maturity':
@@ -509,7 +518,6 @@ $(document).ready(function(){
 			$(".sub-modal-body").html(body);
 			var options = {
 				format: "DD/MM/YYYY",
-				inline: true,
 				locale: "fr"
 			};
 			break;

@@ -37,6 +37,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<link rel="stylesheet" href="assets/css/bootstrap-slider.min.css">
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
+		<script src="assets/js/maturities.js"></script>
 		<script src="assets/js/bootstrap-slider.min.js"></script>
 	</head>
 	<body>
@@ -64,13 +65,11 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 						<?php while($achats = $queryAchats->fetch(PDO::FETCH_ASSOC)){
 	$productQty = $db->query("SELECT id_produit_adherent FROM produits_adherents WHERE id_transaction_foreign='$achats[id_transaction]'")->rowCount();?>
 						<div class="panel panel-purchase" id="purchase-<?php echo $achats["id_transaction"];?>">
-							<a class="panel-heading-container" onClick="fetchPurchase('<?php echo $achats["id_transaction"];?>')">
+							<a class="panel-heading-container" onClick="displayPurchase('<?php echo $achats["id_transaction"];?>')">
 								<div class="panel-heading container-fluid">
 									<p class="purchase-id col-lg-5">Transaction <?php echo $achats["id_transaction"];?></p>
 									<p class="col-lg-3">Contient <?php echo $productQty;?> produit(s)</p>
 									<p class="purchase-sub col-lg-4">Effectuée le <?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <?php echo $achats["prix_total"];?> €</p>
-									<!--<button class="btn btn-default fetch-purchase" onClick="fetchPurchase('<?php echo $achats["id_transaction"];?>')">Détails</button>-->
-									<!--<a href="purchase_details.php?id=<?php echo $achats["id_transaction"];?>&status=<?php echo $status;?>" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Détails...</a>-->
 								</div>
 							</a>
 							<div class="panel-body collapse" id="body-purchase-<?php echo $achats["id_transaction"];?>">
@@ -82,46 +81,6 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 			</div>
 		</div>
 		<?php include "inserts/modal_product.php";?>
-		<?php include "inserts/modal_maturity.php";?>
-		<script>
-			/** Check reception and banking of maturities **/
-			function checkReception(maturity_id){
-				//console.log(maturity_id);
-				$.post("functions/check_maturity.php", {maturity_id : maturity_id}).done(function(data){
-					/*console.log(data);*/
-					$("#date-reception-"+maturity_id).text(moment(data).format("DD/MM/YYYY"));
-					$("#icon-reception-"+maturity_id).addClass("icon-success");
-					document.getElementById("icon-reception-"+maturity_id).onclick = function(){ uncheckReception(maturity_id); };
-				})
-			}
-			function uncheckReception(maturity_id){
-				//console.log(maturity_id);
-				$.post("functions/uncheck_maturity.php", {maturity_id : maturity_id}).done(function(data){
-					if(data == '2'){
-						$("#date-reception-"+maturity_id).text("En retard");
-					} else {
-						$("#date-reception-"+maturity_id).text("En attente");
-					}
-					$("#icon-reception-"+maturity_id).removeClass("icon-success");
-					document.getElementById("icon-reception-"+maturity_id).onclick = function(){ checkReception(maturity_id); };
-				})
-			}
-			function checkBank(maturity_id){
-				/*console.log(maturity_id);*/
-				$.post("functions/check_bank.php", {maturity_id : maturity_id}).done(function(data){
-					$("#date-bank-"+maturity_id).text(moment(data).format("DD/MM/YYYY"));
-					$("#icon-bank-"+maturity_id).addClass("icon-success");
-					document.getElementById("icon-bank-"+maturity_id).onclick = function(){ uncheckBank(maturity_id); };
-				})
-			}
-			function uncheckBank(maturity_id){
-				/*console.log(maturity_id);*/
-				$.post("functions/uncheck_bank.php", {maturity_id : maturity_id}).done(function(data){
-					$("#date-bank-"+maturity_id).text("En attente");
-					$("#icon-bank-"+maturity_id).removeClass("icon-success");
-					document.getElementById("icon-bank-"+maturity_id).onclick = function(){ checkBank(maturity_id); };
-				})
-			}
-		</script>
+		<?php include "inserts/sub_modal_product.php";?>
 	</body>
 </html>

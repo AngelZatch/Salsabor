@@ -20,7 +20,6 @@ $details["count"] = $db->query("SELECT * FROM tasks
 // On obtient l'historique de ses réservations
 $queryResa = $db->prepare('SELECT * FROM reservations b
 							JOIN users u ON b.booking_holder = u.user_id
-							JOIN prestations p ON b.type_prestation = p.prestations_id
 							JOIN rooms r ON b.booking_room = r.room_id
 							WHERE booking_holder=?');
 $queryResa->bindValue(1, $data);

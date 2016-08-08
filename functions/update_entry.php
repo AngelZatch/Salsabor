@@ -23,12 +23,19 @@ foreach($values as $column => $value){
 	}
 	if(preg_match("/(start|end|date)/i", $column)){
 		// In the database, all dates contain one of these 3 words. We can then test against them to find dates and format them correctly.
-		$value_date = DateTime::createFromFormat("d/m/Y H:i:s", $value);
-		$value = $value_date->format("Y-m-d H:i:s");
+		if($value != null){
+			$value_date = DateTime::createFromFormat("d/m/Y H:i:s", $value);
+			$value = $value_date->format("Y-m-d H:i:s");
+		} else {
+			$value = NULL;
+		}
 	} else {
 		$value = htmlspecialchars($value);
 	}
-	$query .= "$column = '$value'";
+	if($value != NULL)
+		$query .= "$column = '$value'";
+	else
+		$query .= "$column = NULL";
 	if($column !== end(array_keys($values))){
 		$query .= ", ";
 	}
@@ -39,7 +46,7 @@ $query .= " WHERE $primary_key[Column_name] = '$entry_id'";
 try{
 	$db->beginTransaction();
 	$update = $db->query($query);
-	/*echo $query;*/
+	echo $query;
 	$db->commit();
 } catch(PDOException $e){
 	$db->rollBack();

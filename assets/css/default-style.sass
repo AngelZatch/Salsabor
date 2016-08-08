@@ -43,6 +43,9 @@ body
 a
 	color: $salsabor-red
 
+.disabled
+	cursor: not-allowed !important
+
 .link-alt
 	color: inherit
 	text-decoration: none
@@ -528,7 +531,7 @@ a
 	padding: 0 0 20px 30px
 
 .maturity-item
-	cursor: pointer
+	cursor: default
 
 .item-pending
 	background-color: $warning-color
@@ -687,6 +690,7 @@ h2.modal-body-title.first
 
 /** SUB MODAL **/
 .sub-modal
+	z-index: 1051
 	position: absolute
 	left: 464px
 	background-color: white

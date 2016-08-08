@@ -30,7 +30,6 @@
 						<div class="modal-actions"></div>
 					</div>
 				</div>
-				<?php include "sub_modal_product.php";?>
 			</div>
 		</div>
 	</div>
