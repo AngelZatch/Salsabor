@@ -7,10 +7,10 @@ require_once "../compute_remaining_hours.php";*/
 $db = PDOFactory::getConnection();
 
 /** This file just does the daily system_operations:
-- Set maturities as late
 - Set products as expired
 - Show/Hide promotions
 - Watch for active/inactive users
+- Clean obsolete notifications
 It's executed once per day, at night because some operations (like computing all active products) might take some time.
 cron line : cron : * 1 * * * php -f /opt/lampp/htdocs/Salsabor/functions/schedule/system_operations.php
 (will be executed daily at 1am)
@@ -21,11 +21,6 @@ $activationLimit = date("Y-m-d H:i:s", strtotime($compare_start.'-1YEAR'));
 
 try{
 	$db->beginTransaction();
-
-	// Late maturities
-	$update = $db->prepare("UPDATE produits_echeances SET echeance_effectuee=2 WHERE date_echeance<=? AND echeance_effectuee=0");
-	$update->bindParam(1, $compare_start);
-	$update->execute();
 
 	// Compute all active products. As compute generates notifications, this will also take care of all the notifications for the products.
 	$products = $db->query("SELECT id_produit_adherent FROM produits_adherents WHERE actif = 1");

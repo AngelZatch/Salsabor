@@ -21,21 +21,35 @@ if($day >= 1 && $day <= 8){
 	$month+=1;
 }
 $time = new DateTime($year.'-'.$month.'-'.$maturityDay);
-$maturityTime = $time->format('Y-m-d');
-
-$queryEcheances = $db->prepare("SELECT * FROM produits_echeances
-										JOIN produits_adherents ON reference_achat=produits_adherents.id_transaction_foreign
-										JOIN produits ON id_produit_foreign=produits.product_id
-										JOIN users ON id_user_foreign=users.user_id
-										WHERE (date_echeance<='$maturityTime' AND statut_banque = 0)
-										GROUP BY produits_echeances_id
-										ORDER BY date_echeance DESC");
 ?>
 <html>
 	<head>
 		<meta charset="UTF-8">
 		<title>Echeances | Salsabor</title>
 		<?php include "styles.php";?>
+		<?php include "scripts.php";?>
+		<script src="assets/js/maturities.js"></script>
+		<script src="assets/js/list.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$.get("functions/fetch_current_maturities.php").done(function(data){
+					var maturities = JSON.parse(data);
+					var display = displayMaturities(maturities);
+					$(".maturities-list").append(display);
+					$(".maturities-total-count").text($(".maturity-item").length);
+					var total_price = 0;
+					for(var i = 0; i < maturities.length; i++){
+						total_price += parseFloat(maturities[i].price);
+					}
+					$(".total-value").text(total_price.toFixed(2));
+				})
+
+				setInterval(keepCounts, 5000);
+				function keepCounts(){
+					$(".maturities-received-count").text($(".status-partial-success").length + $(".status-success").length);
+				}
+			})
+		</script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -44,31 +58,21 @@ $queryEcheances = $db->prepare("SELECT * FROM produits_echeances
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-repeat"></span> Echéances</legend>
-					<p class="sub-legend" style="font-size:15px; padding-top:8px; font-style:italic;">Encaissement prévu le <?php echo $time->format('d/m/Y');?></p>
-					<div class="input-group input-group-lg search-form">
-						<span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
-						<input type="text" id="search" class="form-control" placeholder="Tapez pour rechercher...">
-					</div>
-					<div id="maturities-list">
-						<?php include "inserts/echeancier.php";?>
+					<div class="panel panel-purchase  maturities-container" id="maturities-list">
+						<div class="panel-heading container-fluid">
+							<p class="col-xs-5 col-md-4">Encaissement prévu le <?php echo $time->format('d/m/Y');?></p>
+							<p class="col-xs-2 col-md-1"><span class="glyphicon glyphicon-repeat"></span> <span class="maturities-total-count">0</span></p>
+							<p class="col-xs-2 col-md-1"><span class="glyphicon glyphicon-ok"></span> <span class="maturities-received-count">0</span></p>
+							<p class="col-xs-3 col-md-2"><span class="glyphicon glyphicon-piggy-bank"></span> <span class="total-value">0</span> €</p>
+							<span class="glyphicon glyphicon-download-alt col-xs-2 col-md-1 col-md-offset-3 glyphicon-button glyphicon-button-alt glyphicon-button-big bank-all" title="Marquer toutes les échéances comme encaissées"></span>
+						</div>
+						<div class="panel-body row">
+							<ul class="purchase-inside-list maturities-list"></ul>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<?php include "scripts.php";?>
-		<script src="assets/js/maturities.js"></script>
-		<script src="assets/js/list.min.js"></script>
-		<script>
-			function uploadChanges(token, value){
-				var database = "produits_echeances";
-				$.post("functions/update_field.php", {database: database, token : token, value : value}).done(function(data){
-					showSuccessNotif(data);
-				});
-			}
-			var options = {
-				valueNames: ['date', 'forfait-name', 'user-name', 'montant', 'status', 'bank']
-			};
-			var maturitiesList = new List('maturities-list', options);
-		</script>
+		<?php include "inserts/sub_modal_product.php";?>
 	</body>
 </html>

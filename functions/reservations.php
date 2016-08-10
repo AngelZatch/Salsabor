@@ -4,20 +4,11 @@ include "librairies/fpdf/fpdf.php";
 include "librairies/fpdi/fpdi.php";
 require_once "tools.php";
 
-function addResa(){
+function outputBookingInvoice(){
 	$db = PDOFactory::getConnection();
 
-	$data = explode(' ', $_POST["identite_nom"]);
-	$prenom = $data[0];
-	$nom = '';
-	for($i = 1; $i < count($data); $i++){
-		$nom .= $data[$i];
-		if($i != count($data)){
-			$nom .= " ";
-		}
-	}
+	$user = $_POST["identite_nom"];
 
-	$prestation = $_POST['prestation'];
 	$date_debut = $_POST['date_debut']." ".$_POST['heure_debut'];
 	$date_fin = $_POST['date_debut']." ".$_POST['heure_fin'];
 	$lieu = $_POST['lieu'];
@@ -73,44 +64,7 @@ function addResa(){
 		$linePrix = iconv('UTF-8', 'windows-1252', $linePrix);
 		$pdf->Write(0, $linePrix);
 	}
-
-	try{
-		$db->beginTransaction();
-		$insertResa = $db->prepare('INSERT INTO reservations(reservation_personne, type_prestation, reservation_start, reservation_end, reservation_salle, reservation_unite, reservation_prix, priorite, paiement_effectue)
-		VALUES(:reservation_personne, :type_prestation, :reservation_start, :reservation_end, :lieu, :unite, :prix, :priorite, :paiement_effectue)');
-		$insertResa->bindParam(':reservation_personne', $adherent['user_id']);
-		$insertResa->bindParam(':type_prestation', $prestation);
-		$insertResa->bindParam(':reservation_start', $date_debut);
-		$insertResa->bindParam(':reservation_end', $date_fin);
-		$insertResa->bindParam(':lieu', $lieu);
-		$insertResa->bindParam(':unite', $unite);
-		$insertResa->bindParam(':prix', $prix);
-		$insertResa->bindParam(':priorite', $priorite);
-		$insertResa->bindParam(':paiement_effectue', $paiement);
-		$insertResa->execute();
-
-		$db->commit();
-		// On génère le PDF "facture" une fois que la transaction est terminée
-		$pdf->Output();
-		/**** /PDF ****/
-	} catch(PDOException $e){
-		$db->rollBack();
-		var_dump($e->getMessage());
-	}
-}
-
-function deleteResa(){
-	$index = $_POST['id'];
-	$db = PDOFactory::getConnection();
-	try{
-		$db->beginTransaction();
-		$delete = $db->prepare('DELETE FROM reservations WHERE reservation_id=?');
-		$delete->bindValue(1, $index, PDO::PARAM_INT);
-		$delete->execute();
-		$db->commit();
-	} catch(PDOException $e){
-		$db->rollBack();
-		var_dump($e->getMessage());
-	}
-	header('Location: planning.php');
+	// On génère le PDF "facture" une fois que la transaction est terminée
+	$pdf->Output();
+	/**** /PDF ****/
 }

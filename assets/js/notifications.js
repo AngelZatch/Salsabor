@@ -32,7 +32,7 @@ $(document).on('click', '.trigger-nav', function(e){
 		} else {
 			$("#notification-"+notification_id).addClass("notif-old");
 			var span = $("#notification-"+notification_id).find("span.glyphicon-button");
-			span.replaceWith("<span class='glyphicon glyphicon-ok-sign col-sm-1 glyphicon-button toggle-read' title='Marquer comme non lue'></span>");
+			span.replaceWith("<span class='glyphicon glyphicon-remove col-sm-1 glyphicon-button toggle-read' title='Marquer comme non lue'></span>");
 			$(".badge-notifications").html(parseInt($("#badge-notifications").html())-1);
 			if(top.location.pathname === "/Salsabor/dashboard"){
 				$("#notification-"+notification_id).fadeOut('normal', function(){
@@ -217,7 +217,7 @@ function renderNotification(notification, half){
 	if(notification.status == 1){
 		contents += "<span class='glyphicon glyphicon-ok-circle col-xs-1 glyphicon-button toggle-read' title='Marquer comme lue'></span>";
 	} else {
-		contents += "<span class='glyphicon glyphicon-ok-sign col-xs-1 glyphicon-button toggle-read' title='Marquer comme non lue'></span>";
+		contents += "<span class='glyphicon glyphicon-remove col-xs-1 glyphicon-button toggle-read' title='Marquer comme non lue'></span>";
 	}
 	contents += "<p class='notif-hour col-xs-10'><span class='glyphicon "+notif_icon+"'></span> ";
 	contents += ""+moment(notification.date).fromNow()+"</p>";

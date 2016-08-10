@@ -89,15 +89,15 @@ session_start();
 	$.when(updateColumn(table_name, flag, value, target_id)).done(function(){
 		$("#task-"+target_id).removeClass("task-new");
 		$("#task-"+target_id).removeClass("task-old");
-		$("#toggle-task-"+target_id).removeClass("glyphicon-ok-circle");
-		$("#toggle-task-"+target_id).removeClass("glyphicon-ok-sign");
+		$("#toggle-task-"+target_id).removeClass("glyphicon-ok");
+		$("#toggle-task-"+target_id).removeClass("glyphicon-remove");
 		if(value == 1){
 			$("#task-"+target_id).addClass("task-old");
-			$("#toggle-task-"+target_id).addClass("glyphicon-ok-circle");
+			$("#toggle-task-"+target_id).addClass("glyphicon-remove");
 			$("#toggle-task-"+target_id).attr("title", "Marquer comme non traitée");
 		} else {
 			$("#task-"+target_id).addClass("task-new");
-			$("#toggle-task-"+target_id).addClass("glyphicon-ok-sign");
+			$("#toggle-task-"+target_id).addClass("glyphicon-ok");
 			$("#toggle-task-"+target_id).attr("title", "Marquer comme traitée");
 		}
 		if(top.location.pathname === "/Salsabor/dashboard"){
@@ -333,9 +333,9 @@ function renderTask(task, half){
 		contents += "<span class='col-xs-1'></span>";
 	}
 	if(task.status == 1){
-		contents += "<span class='glyphicon glyphicon-ok-circle col-xs-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme non traitée'></span>";
+		contents += "<span class='glyphicon glyphicon-remove col-xs-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme non traitée'></span>";
 	} else {
-		contents += "<span class='glyphicon glyphicon-ok-sign col-xs-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme traitée'></span>";
+		contents += "<span class='glyphicon glyphicon-ok col-xs-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme traitée'></span>";
 	}
 	contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button-alt glyphicon-button-big trigger-sub' id='delete-task-"+task.id+"' data-subtype='delete-task' data-target='"+task.id+"' title='Supprimer la tache'></span></p>";
 	contents += "<p class='task-target col-xs-10 col-sm-12'><span class='glyphicon glyphicon-play'></span> <strong>"+task.target_phrase+"</strong></p>";
