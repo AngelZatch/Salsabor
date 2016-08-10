@@ -182,65 +182,99 @@ function getCorrectProductFromTags($db, $session_id, $user_id){
 								WHERE session_id_foreign = $session_id
 								ORDER BY is_mandatory DESC")->fetchAll(PDO::FETCH_ASSOC);
 
-	// Step one : cross array with all mandatory tags to get only subs that fit the mandatory tags.
-	// Create an array that takes all the mandatory_result arrays and intersect then later.
-	$mandatory_arrays = [];
-	$i = 0;
+	// First, we'll list the mandatory tags of the session
+	$mandatory_tags = []; $supplementary_tags = [];
 	foreach($tags_session as $tag){
 		if($tag["is_mandatory"] == 1){
-			$query = "SELECT id_produit_foreign FROM produits_adherents pa
+			array_push($mandatory_tags, $tag["tag_id_foreign"]);
+		} else {
+			array_push($supplementary_tags, $tag["tag_id_foreign"]);
+		}
+	}
+/*	echo "<br>-- MANDATORY TAGS OF SESSION $session_id --</br>";
+	print_r($mandatory_tags);
+
+	echo "<br>-- SUPPLEMENTARY TAGS OF SESSION $session_id --<br>";
+	print_r($supplementary_tags);*/
+
+	// Then, we'll get all the products that have mandatory tags compatible with the session.
+	$compatible_subscriptions = [];
+	$i = 0;
+	foreach($mandatory_tags as $tag){
+		$query = "SELECT id_produit_foreign FROM produits_adherents pa
 				LEFT JOIN produits p ON pa.id_produit_foreign = p.product_id
 				LEFT JOIN assoc_product_tags apt ON p.product_id = apt.product_id_foreign
 				LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
-				WHERE tag_id_foreign = $tag[tag_id_foreign]
+				WHERE tag_id_foreign = $tag
 				AND id_user_foreign = $user_id
 				AND pa.actif != 2
 				ORDER BY date_achat DESC";
-			$mandatory_arrays[$i] = $db->query($query)->fetchAll(PDO::FETCH_COLUMN);
+		// If a subscription has mandatory tags that are NOT in the list of the session, they are not added to the list of compatible subscriptions.
+		$pre_compatible_fetch = $db->query($query);
+		while($pre_compatible_subs = $pre_compatible_fetch->fetch(PDO::FETCH_COLUMN)){
+			$comparison = "SELECT tag_id_foreign FROM assoc_product_tags apt
+							JOIN tags_session ts ON apt.tag_id_foreign = ts.rank_id
+							WHERE product_id_foreign = $pre_compatible_subs
+							AND is_mandatory = 1";
+			$mandatory_tags_session = $db->query($comparison)->fetchAll(PDO::FETCH_COLUMN);
+			/*echo "<br>-- MANDATORY TAGS OF SUBSCRIPTION $pre_compatible_subs --<br>";
+			print_r($mandatory_tags_session);
+			echo "<br>-- INTERSECT MANDATORY TAGS OF SUBSCRIPTION AND MANDATORY TAGS OF SESSION --<br>";*/
+			$intersect = array_diff($mandatory_tags_session, $mandatory_tags);
+			/*print_r($intersect);*/
+			if(sizeof($intersect) > 0){
+				/*echo "INTERSECT IS NOT NULL. SUBSCRIPTION HAS EXCLUSIVE MANDATORY TAGS AND WILL BE IGNORED.<br>";*/
+			} else {
+				/*echo "INTERSECT IS NULL. SUBSCRIPTION DOESN'T HAS EXCLUSIVE MANDATORY TAGS AND WILL THEREFORE BE ADDED TO THE LIST OF COMPATIBLE SUBSCRIPTIONS<br>";*/
+				array_push($compatible_subscriptions, $pre_compatible_subs);
+			}
 		}
-		$i++;
 	}
-	echo "result<br>";
-	if(sizeof($mandatory_arrays) > 1)
-		$result = call_user_func_array("array_intersect", $mandatory_arrays);
-	else
-		$result = $mandatory_arrays[0];
+	$compatible_subscriptions = array_unique($compatible_subscriptions);
+	/*echo "<br>-- COMPATIBLE SUBSCRIPTIONS --<br>";
+	print_r($compatible_subscriptions);
+	echo "-- /COMPATIBLE SUBSCRIPTIONS --<br>";*/
 
-	// Step two : take the product_id with the highest number of fitting tags.
-	if(sizeof($result) == 1){ // If there's only one product that can fit.
+	// Step two : take the subscription with the highest number of fitting tags.
+	if(sizeof($compatible_subscriptions) == 1){ // If there's only one product that can fit.
 		$query = "SELECT id_produit_adherent FROM produits_adherents pa
-				WHERE id_produit_foreign = $result[0]
+				WHERE id_produit_foreign = $compatible_subscriptions[0]
+				AND pa.actif != 2
 				AND id_user_foreign = $user_id";
 		$product_id = $db->query($query)->fetch(PDO::FETCH_COLUMN);
+		/*echo "<br>-- PRODUCT --<br>";*/
 		return $product_id;
-	} else if(sizeof($result) > 1){ // If there are more than 1 product fitting, we test non-mandatory tags
-		$supplementary_arrays = [];
-		$i = 0;
-		foreach($tags_session as $tag){
-			if($tag["is_mandatory"] == 0){
-				$query = "SELECT id_produit_adherent FROM produits_adherents pa
+	} else if(sizeof($compatible_subscriptions) > 1){ // If there are more than 1 product fitting, we test non-mandatory tags
+		$supplementary_array = [];
+		foreach($supplementary_tags as $tag){
+			$query = "SELECT id_produit_adherent FROM produits_adherents pa
 				LEFT JOIN produits p ON pa.id_produit_foreign = p.product_id
 				LEFT JOIN assoc_product_tags apt ON p.product_id = apt.product_id_foreign
-				WHERE tag_id_foreign = $tag[tag_id_foreign]";
-				if(sizeof($result) > 1)
-					$query .= " AND product_id_foreign IN (".implode(",", array_map("intval", $result)).")";
-				else
-					$query .= " AND product_id_foreign = $result[0]";
-				$query .= " AND id_user_foreign = $user_id ORDER BY pa.actif DESC";
-				$supplementary_arrays[$i] = $db->query($query)->fetchAll(PDO::FETCH_COLUMN);
-			}
-			$i++;
+				WHERE tag_id_foreign = $tag
+				AND pa.actif != 2
+				AND product_id_foreign IN (".implode(",", $compatible_subscriptions).")
+				AND id_user_foreign = $user_id
+				ORDER BY pa.actif DESC, id_produit_adherent DESC";
+			$compatible_supplementary = $db->query($query)->fetchAll(PDO::FETCH_COLUMN);
+			array_push($supplementary_array, $compatible_supplementary);
 		}
+		/*print_r($supplementary_array);*/
 
-		if(sizeof($supplementary_arrays) > 0){
+		if(sizeof($supplementary_array) > 0){
 			// Merge all arrays and count values
-			$eligible_products = array_count_values(call_user_func_array("array_merge", $supplementary_arrays));
+			$eligible_products = array_count_values(call_user_func_array("array_merge", $supplementary_array));
+			/*print_r($eligible_products);*/
+			arsort($eligible_products, SORT_NUMERIC);
+			/*print_r($eligible_products);*/
 			$product_id = array_keys($eligible_products)[0]; // Product that fits
+			/*echo "<br>-- PRODUCT --<br>";*/
 			return $product_id;
 		} else {
-			return $result[0];
+			/*echo "<br>-- PRODUCT --<br>";*/
+			return $supplementary_array[0];
 		}
 	} else {
+		/*echo "NOTHING";*/
 		return null;
 	}
 }
