@@ -2,6 +2,7 @@
 session_start();
 require_once 'functions/db_connect.php';
 include "functions/mails.php";
+include "functions/tools.php";
 $db = PDOFactory::getConnection();
 ?>
 <html>
@@ -27,7 +28,8 @@ $db = PDOFactory::getConnection();
 					?>
 					<pre>
 						<?php
-	echo $start_date = $start_date->format("Y-m-d");
+$return = getCorrectProductFromTags($db, 2916, 10599);
+echo $return;
 
 						?>
 					</pre>
