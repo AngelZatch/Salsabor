@@ -24,14 +24,12 @@ if($delta_steps > 0){ // Add sessions to the group
 	// As the next session can fall on a holiday, we have to keep track of that. As soon as the first session is added to the database, this flag will become true.
 	$next_session_added = false;
 
-	for($i = 1; $i <= $delta_steps; $i++){
-		// We get the new dates of the sessions
-		$days_added = $i * 7;
-		$start_date = strtotime($last_session_date["session_start"].'+'.$days_added.'DAYS');
-		$end_date = strtotime($last_session_date["session_end"].'+'.$days_added.'DAYS');
-		$start = date("Y-m-d H:i:s", $start_date);
-		$end = date("Y-m-d H:i:s", $end_date);
+	$start_date = strtotime($last_session_date["session_start"].'+7DAYS');
+	$end_date = strtotime($last_session_date["session_end"].'+7DAYS');
+	$start = date("Y-m-d H:i:s", $start_date);
+	$end = date("Y-m-d H:i:s", $end_date);
 
+	for($i = 1; $i <= $delta_steps; $i++){
 		if(isHoliday($db, $start) !== true){
 			if(!$next_session_added){
 				$next_session = createSession($db, $group_id, $session_name, $start, $end, $teacher_id, $room_id, $session_duration, $hour_fee, 2);
@@ -40,7 +38,16 @@ if($delta_steps > 0){ // Add sessions to the group
 			} else {
 				createSession($db, $group_id, $session_name, $start, $end, $teacher_id, $room_id, $session_duration, $hour_fee, 2);
 			}
+		} else {
+			// As we're adding the exact number of steps, holidays are "skipped", meaning the current number goes backwards now to be cancelled by the next iteration.
+			$i--;
 		}
+
+		// We get the new dates of the sessions
+		$start_date = strtotime($start.'+7DAYS');
+		$end_date = strtotime($end.'+7DAYS');
+		$start = date("Y-m-d H:i:s", $start_date);
+		$end = date("Y-m-d H:i:s", $end_date);
 
 		if($i == $delta_steps){
 			// Once all the sessions have been applied, we update the date of the end of recurrence to the group
