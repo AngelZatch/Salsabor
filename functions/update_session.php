@@ -20,12 +20,24 @@ $new_end = DateTime::createFromFormat("d/m/Y H:i:s", $values["session_end"]);
 
 // Old values from the database and the hook
 $hook_times = $db->query("SELECT session_start, session_end FROM sessions WHERE session_id = $hook")->fetch(PDO::FETCH_ASSOC);
-$old_start = new DateTime($hook_times["session_start"]);
-$old_end = new DateTime($hook_times["session_end"]);
+$hook_start = DateTime::createFromFormat("Y-m-d H:i:s", $hook_times["session_start"]);
+$hook_end = DateTime::createFromFormat("Y-m-d H:i:s", $hook_times["session_end"]);
 
 // We calculate the delta
-$start_delta = $old_start->diff($new_start);
-$end_delta = $old_end->diff($new_end);
+$start_delta = $hook_start->diff($new_start);
+$end_delta = $hook_end->diff($new_end);
+
+if($new_start < $hook_start){
+	$token_start = "sub";
+} else {
+	$token_start = "add";
+}
+
+if($new_end < $hook_end){
+	$token_end = "sub";
+} else {
+	$token_end = "add";
+}
 
 // == QUERY ==
 for($i = 0; $i < sizeof($sessions); $i++){
@@ -40,23 +52,23 @@ for($i = 0; $i < sizeof($sessions); $i++){
 
 			// We apply the delta
 			if($row == "session_start"){
-				$value = new DateTime($session_times["session_start"]);
-				if($new_start < $value){
-					$value->sub(new DateInterval("P".$start_delta->format("%d")."DT".$start_delta->format("%h")."H".$start_delta->format("%i")."M"));
+				$session_start = DateTime::createFromFormat("Y-m-d H:i:s", $session_times["session_start"]);
+				if($token_start == "sub"){
+					$session_start->sub(new DateInterval("P".$start_delta->format("%d")."DT".$start_delta->format("%h")."H".$start_delta->format("%i")."M"));
 				} else {
-					$value->add(new DateInterval("P".$start_delta->format("%d")."DT".$start_delta->format("%h")."H".$start_delta->format("%i")."M"));
+					$session_start->add(new DateInterval("P".$start_delta->format("%d")."DT".$start_delta->format("%h")."H".$start_delta->format("%i")."M"));
 				}
-				$value = $value->format("Y-m-d H:i:s");
+				$value = $session_start->format("Y-m-d H:i:s");
 			}
 
 			if($row == "session_end"){
-				$value = new DateTime($session_times["session_end"]);
-				if($new_end < $value){
-				$value->sub(new DateInterval("P".$end_delta->format("%d")."DT".$end_delta->format("%h")."H".$end_delta->format("%i")."M"));
+				$session_end = DateTime::createFromFormat("Y-m-d H:i:s", $session_times["session_end"]);
+				if($token_end == "sub"){
+				$session_end->sub(new DateInterval("P".$end_delta->format("%d")."DT".$end_delta->format("%h")."H".$end_delta->format("%i")."M"));
 				} else {
-				$value->add(new DateInterval("P".$end_delta->format("%d")."DT".$end_delta->format("%h")."H".$end_delta->format("%i")."M"));
+				$session_end->add(new DateInterval("P".$end_delta->format("%d")."DT".$end_delta->format("%h")."H".$end_delta->format("%i")."M"));
 				}
-				$value = $value->format("Y-m-d H:i:s");
+				$value = $session_end->format("Y-m-d H:i:s");
 			}
 
 			$query .= "$row = '$value'";

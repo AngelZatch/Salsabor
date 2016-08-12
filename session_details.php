@@ -349,6 +349,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					definitive_tags.push($(this).text());
 				})
 				$.post("functions/update_session.php", {sessions : sessions, values : form.serialize(), hook : entry_id}).done(function(data){
+					/*console.log(data);*/
 					// Attach & detach tags to other sessions
 					for(var i = 0; i < sessions.length; i++){
 						if(sessions[i] != entry_id){
