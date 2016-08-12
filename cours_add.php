@@ -57,7 +57,7 @@ if(isset($_POST['add'])){
 											<li class="completion-option"><a>Ne pas suggérer</a></li>
 										</ul>
 									</div>
-									<input type="text" class="form-control filtered-complete" id="complete-teacher" name="session_teacher">
+									<input type="text" class="form-control mandatory filtered-complete" id="complete-teacher" name="session_teacher">
 								</div>
 							</div>
 						</div>
@@ -84,7 +84,7 @@ if(isset($_POST['add'])){
 							<div class="form-group">
 								<label for="" class="col-lg-3 control-label">Nombre de récurrences</label>
 								<div class="col-lg-9">
-									<input type="number" class="form-control" id="steps" name="steps">
+									<input type="number" class="form-control" id="steps" name="steps" value="1">
 								</div>
 							</div>
 							<div class="form-group">
@@ -97,15 +97,12 @@ if(isset($_POST['add'])){
 						<div class="form-group">
 							<label for="lieu" class="col-lg-3 control-label">Lieu</label>
 							<div class="col-lg-9">
-								<select name="lieu" class="form-control mandatory" id="lieu" onChange="checkCalendar(false, false)">
+								<select name="lieu" class="form-control" id="lieu">
 									<?php while($row_lieux = $lieux->fetch(PDO::FETCH_ASSOC)){ ?>
 									<option value="<?php echo $row_lieux['room_id'];?>"><?php echo $row_lieux['room_name'];?></option>
 									<?php } ?>
 								</select>
 							</div>
-						</div>
-						<div class="align-right">
-							<p id="error_message"></p>
 						</div>
 					</div>
 				</form>
@@ -122,46 +119,41 @@ if(isset($_POST['add'])){
 		<script>
 			$(document).ready(function(){
 				var start = sessionStorage.getItem('start');
-				var default_start, default_end;
 				if(start != null){
-					var format_start = new Date(start).toISOString();
-					var end = sessionStorage.getItem('end');
-					var format_end = new Date(end).toISOString();
-					var default_start = moment(format_start).format('YYYY-MM-DD HH:mm:ss');
-					var default_end = moment(format_end).format('YYYY-MM-DD HH:mm:ss');
+					var default_start = moment(start);
+					var default_end = moment(sessionStorage.getItem('end'));
 				} else {
-					var format_start = new Date().toISOString();
-					var default_start = moment(format_start).startOf('hour').add(1, 'h').format('YYYY-MM-DD HH:mm:ss');
-					var default_end = moment(format_start).startOf('hour').add(2, 'h').format('YYYY-MM-DD HH:mm:ss');
+					var default_start = moment().startOf('hour').add(1, 'h');
+					var default_end = moment().startOf('hour').add(2, 'h');
 				}
-				var start_day = moment(format_start).format('YYYY-MM-DD');
 				$("#datepicker-start").datetimepicker({
-					format: "YYYY-MM-DD HH:mm:00",
+					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: default_start,
 					locale: "fr",
 					sideBySide: true,
 					stepping: 30
 				});
 				$("#datepicker-end").datetimepicker({
-					format: "YYYY-MM-DD HH:mm:00",
+					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: default_end,
 					locale: "fr",
 					sideBySide: true,
 					stepping: 30
 				});
+				window.initial_steps = $("#steps").val();
 				$("#date_fin").datetimepicker({
-					format : "YYYY-MM-DD",
+					format : "DD/MM/YYYY",
+					defaultDate: default_start,
 					locale: 'fr',
 				}).on('dp.change', function(e){
-					console.log("changed");
 					if(!$("#steps").is(":focus")){
-						var end_date = $(this).val();
-						var starting_date = moment($("#datepicker-start").val()).format("YYYY-MM-DD");
-						if(moment(end_date).isValid()){
-							var delta = moment(moment(end_date).diff(starting_date));
-							var delta_days = delta / (7 * 24 * 3600 * 1000);
-							$("#steps").val(Math.trunc(delta_days));
-						}
+						var end_date = moment($(this).val(), "DD/MM/YYYY");
+						var starting_date = moment($("#datepicker-start").val(), "DD/MM/YYYY");
+						$.get("functions/fetch_available_timeslots.php", {compute : "steps", current_recurrence_end : starting_date.format("YYYY-MM-DD"), new_recurrence_end : moment(end_date).format("YYYY-MM-DD")}).done(function(computed_delta_steps){
+							window.delta_steps = parseInt(computed_delta_steps);
+							new_steps = parseInt(initial_steps) + window.delta_steps;
+							$("#steps").val(new_steps);
+						})
 					}
 				})
 				var coursNameTags = JSON.parse('<?php echo json_encode($arr_cours_name);?>');
@@ -177,9 +169,10 @@ if(isset($_POST['add'])){
 			});
 			$("#steps").keyup(function(){
 				var steps = $(this).val();
-				var starting_date = moment($("#datepicker-start").val()).format("YYYY-MM-DD");
-				var end_date = moment(starting_date).add(steps, 'w').format("YYYY-MM-DD")
-				$("#date_fin").val(end_date);
+				var starting_date = moment($("#datepicker-start").val(), "DD/MM/YYYY");
+				$.get("functions/fetch_available_timeslots.php", {compute: "date", current_recurrence_end : starting_date.format("YYYY-MM-DD"), delta_steps : steps}).done(function(computed_end_date){
+					$("#date_fin").val(moment(computed_end_date, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY"));
+				});
 			})
 		</script>
 	</body>

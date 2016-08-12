@@ -1,17 +1,28 @@
 <?php
 require_once "db_connect.php";
 require_once "tools.php";
+require_once "add_entry.php";
 /** ADD COURS **/
 function addCours(){
 	$db = PDOFactory::getConnection();
 
 	$session_name = $_POST['intitule'];
 	$user_id = solveAdherentToId($_POST["session_teacher"]);
+	if($user_id == null){
+		preg_match("/(\S*)(\s(.*))/", $_POST["session_teacher"], $matches);
+		$user_details = array(
+			"user_prenom" => $matches[1],
+			"user_nom" => $matches[3]
+		);
+		$user_id = addEntry($db, "users", $user_details);
+	}
 	$room_id = $_POST['lieu'];
 
 	// Times
-	$start = $_POST["session_start"];
-	$end = $_POST["session_end"];
+	$start = DateTime::createFromFormat("d/m/Y H:i:s", $_POST["session_start"]);
+	$start = $start->format("Y-m-d H:i:s");
+	$end = DateTime::createFromFormat("d/m/Y H:i:s", $_POST["session_end"]);
+	$end = $end->format("Y-m-d H:i:s");
 	$weekday = date('N', strtotime($start));
 
 	// Computing duration of the session(s)
@@ -33,20 +44,22 @@ function addCours(){
 			var_dump($e->getMessage());
 		}
 	} else { // Recurrence
-		$recurrence = $_POST['recurrence'];
+		$recurrence = 1;
 		$frequency = 7; // By default, weekly recurrence
 		$recurrence_steps = $_POST["steps"];
 		// Computing end date and hour
 		$end_hour = new DateTime($end);
 		$end_hour = $end_hour->format("H:i:s");
-		$recurrence_stop = $_POST['date_fin']." ".$end_hour;
+		$recurrence_stop = DateTime::createFromFormat("d/m/Y", $_POST["date_fin"]);
+		$recurrence_stop = $recurrence_stop->format("Y-m-d");
+		$recurrence_stop .= " ".$end_hour;
 		try{
 			$db->beginTransaction();
 
 			/** Inserting parent **/
 			$session_group_id = insertParent($db, $session_name, $weekday, $start, $recurrence_stop, $user_id, $room_id, $session_duration, 0, $recurrence, $frequency, 2);
 
-			for($i = 1; $i < $recurrence_steps; $i++){
+			for($i = 1; $i <= $recurrence_steps; $i++){
 				// Before inserting a session, we check if the target day is a holiday.
 				if(isHoliday($db, $start) !== true){
 					// Inserting session
@@ -54,6 +67,8 @@ function addCours(){
 						$first_session_id = createSession($db, $session_group_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
 					else
 						createSession($db, $session_group_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
+				} else {
+					$i--;
 				}
 
 				// Changing dates for next one

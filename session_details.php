@@ -259,14 +259,14 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					defaultDate: "<?php echo date_create($cours['session_start'])->format("m/d/Y H:i");?>",
 					locale: "fr",
 					sideBySide: true,
-					stepping: 30
+					stepping: 15
 				});
 				$("#datepicker-end").datetimepicker({
 					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: "<?php echo date_create($cours['session_end'])->format("m/d/Y H:i");?>",
 					locale: "fr",
 					sideBySide: true,
-					stepping: 30
+					stepping: 15
 				});
 				window.openedSessions = [<?php echo $id;?>];
 				initial_tags = [];
@@ -287,33 +287,24 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						locale: 'fr',
 						defaultDate: group_details.parent_end_date
 					}).on('dp.change', function(e){
-						console.log("changed");
 						if(!$("#steps").is(":focus")){
-							var end_date = $(this).val();
-							var starting_date = moment($("#datepicker-start").val()).format("YYYY-MM-DD");
-							if(moment(end_date).isValid()){
-								var delta = moment(moment(end_date).diff(starting_date));
-								var delta_days = delta / (7 * 24 * 3600 * 1000);
-								$("#steps").val(Math.trunc(delta_days));
-							}
+							var end_date = moment($(this).val(), "DD/MM/YYYY");
+							var starting_date = moment(group_details.parent_start_date);
+							$.get("functions/fetch_available_timeslots.php", {compute : "steps", current_recurrence_end : group_details.parent_end_date, new_recurrence_end : moment(end_date).format("YYYY-MM-DD")}).done(function(computed_delta_steps){
+								window.delta_steps = parseInt(computed_delta_steps);
+								new_steps = parseInt(initial_steps) + window.delta_steps;
+								$("#steps").val(new_steps);
+								changeGroupButtonMessage(window.delta_steps);
+							})
 						}
 					})
 					$("#steps").keyup(function(){
 						var steps = $(this).val();
 						window.delta_steps = steps - initial_steps;
-						var starting_date = moment(group_details.parent_end_date).format("YYYY-MM-DD");
-						var end_date = moment(starting_date).add(delta_steps, 'w').format("YYYY-MM-DD")
-						$("#recurrence_end").val(end_date);
-						if(delta_steps < -1)
-							$("#group-edit").text("Valider les modifications d'appartenance ("+-delta_steps+" cours retirés)");
-						if(delta_steps == -1)
-							$("#group-edit").text("Valider les modifications d'appartenance ("+-delta_steps+" cours retiré)");
-						if(delta_steps == 0)
-							$("#group-edit").text("Valider les modifications d'appartenance");
-						if(delta_steps == 1)
-							$("#group-edit").text("Valider les modifications d'appartenance ("+delta_steps+" cours ajouté)");
-						if(delta_steps > 1)
-							$("#group-edit").text("Valider les modifications d'appartenance ("+delta_steps+" cours ajoutés)");
+						$.get("functions/fetch_available_timeslots.php", {compute: "date", current_recurrence_end : group_details.parent_end_date, delta_steps : window.delta_steps}).done(function(computed_end_date){
+							$("#recurrence_end").val(moment(computed_end_date, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY"));
+							changeGroupButtonMessage(delta_steps);
+						});
 					})
 				})
 
@@ -334,6 +325,9 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						lineColors: ['#A80139']
 					});
 				});
+
+				// Redirect to week of the session if going back to planning
+				$("a[href=planning]").attr("href", "planning?default-date=<?php echo date_create($cours['session_start'])->format("Y-m-d");?>");
 			}).on('click', '.btn-edit', function(){
 				var id = $(this).attr("id");
 				var form = $("#session_details"), entry_id = <?php echo $id;?>;
@@ -387,6 +381,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					$(".session-name").text($("#session_name_input").val());
 					// Update the last edition date
 					$("#last-edit").text("Dernière modification le "+moment().format("DD/MM/YYYY [à] H:mm"));
+					window.top.location = "planning?default-date="+moment($("#datepicker-start").val(), "DD/MM/YYYY HH:mm:ss").format("YYYY-MM-DD");
 				})
 			}).on('click', '.btn-delete', function(){
 				var id = $(this).attr("id"), entry_id = <?php echo $id;?>;
@@ -412,13 +407,14 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						console.log("checking parent");
 						$.when(deleteEntry("sessions", sessions[i]), deleteTasksByTarget("SES", sessions[i])).done(function(data){
 							$.get("functions/check_session_parent.php", {session_group_id : session_group_id}).done(function(){
-								window.top.location = "planning";
+								window.top.location = "planning?default-date="+moment($("#datepicker-start").val(), "DD/MM/YYYY HH:mm:ss").format("YYYY-MM-DD");
 							})
 						})
 					}
 				}
 			}).on('click', '#group-edit', function(){
 				var group_id = $("#group-input").text();
+				$("#group-edit").text("Modifications en cours, veuilez patienter...");
 				$.post("functions/edit_group.php", {group_id : group_id, delta_steps : delta_steps}).done(function(data){
 					console.log(data);
 					$("#group-edit").text("Valider les modifications d'appartenance");
@@ -473,6 +469,19 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					$('#paiement-sub').val(0);
 				}
 			});
+
+			function changeGroupButtonMessage(delta_steps){
+				if(delta_steps < -1)
+					$("#group-edit").text("Valider les modifications d'appartenance ("+-delta_steps+" cours retirés)");
+				if(delta_steps == -1)
+					$("#group-edit").text("Valider les modifications d'appartenance ("+-delta_steps+" cours retiré)");
+				if(delta_steps == 0)
+					$("#group-edit").text("Valider les modifications d'appartenance");
+				if(delta_steps == 1)
+					$("#group-edit").text("Valider les modifications d'appartenance ("+delta_steps+" cours ajouté)");
+				if(delta_steps > 1)
+					$("#group-edit").text("Valider les modifications d'appartenance ("+delta_steps+" cours ajoutés)");
+			}
 		</script>
 	</body>
 </html>
