@@ -29,6 +29,8 @@ function addEntry($db, $table_name, Array $values){
 		if(preg_match("/(start|end|date)/i", $column)){
 			// In the database, all dates contain one of these 3 words. We can then test against them to find dates and format them correctly.
 			$value_date = DateTime::createFromFormat("d/m/Y H:i:s", $value);
+			/*if($value_date == false)
+				return $column;*/
 			$value = $value_date->format("Y-m-d H:i:s");
 		} else {
 			$value = htmlspecialchars($value);

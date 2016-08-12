@@ -4,201 +4,64 @@ if(!isset($_SESSION["username"])){
 	header('location: portal');
 }
 require_once 'functions/db_connect.php';
+include "functions/add_entry.php";
 $db = PDOFactory::getConnection();
 
-$valueTeacher = 0;
-$valueEleve = 0;
-$valueStaff = 0;
-$backLink = "";
 $titleText = "Réaliser une inscription";
 
 $now = date_create('now')->format('Y-m-d');
 
 $connaissances = $db->query("SELECT * FROM sources_connaissance");
 
-if(isset($_POST['addAdherent'])){
-	// Upload de l'image
-
-	// Champs par défaut
-	$actif = 1;
-	$acces_web = 1;
+if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
+	// Formatting sign_in_date
+	$sign_up_date = DateTime::createFromFormat("d/m/Y", $_POST["date_inscription"]);
+	$sign_up_date = $sign_up_date->format("d/m/Y H:i:s");
+	$user_details = array(
+		"user_prenom" => $_POST["user_prenom"],
+		"user_nom" => $_POST["user_nom"],
+		"user_rfid" => $_POST["user_rfid"],
+		"date_inscription" => $sign_up_date,
+		"rue" => $_POST["rue"],
+		"code_postal" => $_POST["code_postal"],
+		"ville" => $_POST["ville"],
+		"mail" => $_POST["mail"],
+		"telephone" => $_POST["telephone"],
+		"tel_secondaire" => $_POST["tel_secondaire"],
+		"commentaires" => $_POST["commentaires"],
+		"source_connaissance" => $_POST["sources_connaissance"],
+		"user_rib" => $_POST["user_rib"],
+		"commentaires" => $_POST["commentaires"]
+	);
+	// If there's a set birthdate
+	if($_POST["date_naissance"] != null){
+		$birthdate = DateTime::createFromFormat("d/m/Y", $_POST["date_naissance"]);
+		$birthdate = $birthdate->format("Y-m-d");
+		// Add to array
+		$user_details["date_naissance"] = $birthdate;
+	}
+	// If there's a picture to upload
 	if($_FILES["profile-picture"]["name"]){
 		$target_dir = "assets/pictures/";
 		$target_file = $target_dir.basename($_FILES["profile-picture"]["name"]);
 		$picture = $target_dir.$data.".".pathinfo($_FILES["profile-picture"]["name"], PATHINFO_EXTENSION);
 		move_uploaded_file($_FILES["profile-picture"]["tmp_name"], $picture);
-		try{
-			$db->beginTransaction();
-			$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
-												date_inscription, rue, code_postal, ville, mail,
-												telephone, tel_secondaire, photo, source_connaissance,
-												acces_web, user_rib, actif, commentaires)
-										VALUES(:prenom, :nom, :rfid, :date_naissance,
-												:date_inscription, :rue, :code_postal, :ville, :mail,
-												:telephone, :tel_secondaire, :photo, :sources_connaissance,
-												:acces_web, :user_rib, :actif, :commentaires)');
-			$new->bindParam(':prenom', $_POST['identite_prenom']);
-			$new->bindParam(':nom', $_POST['identite_nom']);
-			$new->bindParam(':rfid', $_POST["rfid"]);
-			$new->bindParam(':date_naissance', $_POST['date_naissance']);
-			$new->bindParam(':date_inscription', $_POST['date_inscription']);
-			$new->bindParam(':rue', $_POST['rue']);
-			$new->bindParam(':code_postal', $_POST['code_postal']);
-			$new->bindParam(':ville', $_POST['ville']);
-			$new->bindParam(':mail', $_POST['mail']);
-			$new->bindParam(':telephone', $_POST['telephone']);
-			$new->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
-			$new->bindParam(':photo', $picture);
-			$new->bindParam(':sources_connaissance', $_POST["sources_connaissance"]);
-			$new->bindParam(':acces_web', $acces_web);
-			$new->bindParam(':user_rib', $_POST["user_rib"]);
-			$new->bindParam(':actif', $actif);
-			$new->bindParam(':commentaires', $_POST["commentaires"]);
-			$new->execute();
-			if(isset($_POST["rfid"])){
-				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid=? AND status=1');
-				$delete->bindParam(1, $_POST["rfid"]);
-				$delete->execute();
-			}
-			$db->commit();
-			header('Location: dashboard');
-		} catch(PDOException $e){
-			$db->rollBack();
-			echo $e->getMessage();
-		}
-	} else {
-		try{
-			$db->beginTransaction();
-			$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
-												date_inscription, rue, code_postal, ville, mail,
-												telephone, tel_secondaire, source_connaissance,
-												acces_web, user_rib, actif, commentaires)
-										VALUES(:prenom, :nom, :rfid, :date_naissance,
-												:date_inscription, :rue, :code_postal, :ville, :mail,
-												:telephone, :tel_secondaire, :sources_connaissance,
-												:acces_web, :user_rib, :actif, :commentaires)');
-			$new->bindParam(':prenom', $_POST['identite_prenom']);
-			$new->bindParam(':nom', $_POST['identite_nom']);
-			$new->bindParam(':rfid', $_POST["rfid"]);
-			$new->bindParam(':date_naissance', $_POST['date_naissance']);
-			$new->bindParam(':date_inscription', $_POST['date_inscription']);
-			$new->bindParam(':rue', $_POST['rue']);
-			$new->bindParam(':code_postal', $_POST['code_postal']);
-			$new->bindParam(':ville', $_POST['ville']);
-			$new->bindParam(':mail', $_POST['mail']);
-			$new->bindParam(':telephone', $_POST['telephone']);
-			$new->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
-			$new->bindParam(':sources_connaissance', $_POST["sources_connaissance"]);
-			$new->bindParam(':acces_web', $acces_web);
-			$new->bindParam(':actif', $actif);
-			$new->bindParam(':commentaires', $_POST["commentaires"]);
-			$new->execute();
-			if(isset($_POST["rfid"])){
-				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid=? AND status=1');
-				$delete->bindParam(1, $_POST["rfid"]);
-				$delete->execute();
-			}
-			$db->commit();
-			header('Location: dashboard');
-		} catch(PDOException $e){
-			$db->rollBack();
-			echo $e->getMessage();
-		}
+		// Add to array
+		$user_details["picture"] = $picture;
 	}
-}
 
-if(isset($_POST['addSell'])){
-	// Upload de l'image
-
-	// Champs par défaut
-	$actif = 1;
-	$acces_web = 1;
-	if($_FILES["profile-picture"]["name"]){
-		$target_dir = "assets/pictures/";
-		$target_file = $target_dir.basename($_FILES["profile-picture"]["name"]);
-		$picture = $target_dir.$data.".".pathinfo($_FILES["profile-picture"]["name"], PATHINFO_EXTENSION);
-		move_uploaded_file($_FILES["profile-picture"]["tmp_name"], $picture);
-		try{
-			$db->beginTransaction();
-			$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
-												date_inscription, rue, code_postal, ville, mail,
-												telephone, tel_secondaire, photo, source_connaissance,
-												acces_web, actif, commentaires)
-										VALUES(:prenom, :nom, :rfid, :date_naissance,
-												:date_inscription, :rue, :code_postal, :ville, :mail,
-												:telephone, :tel_secondaire, :photo, :sources_connaissance,
-												:acces_web, :user_rib, :actif, :commentaires)');
-			$new->bindParam(':prenom', $_POST['identite_prenom']);
-			$new->bindParam(':nom', $_POST['identite_nom']);
-			$new->bindParam(':rfid', $_POST["rfid"]);
-			$new->bindParam(':date_naissance', $_POST['date_naissance']);
-			$new->bindParam(':date_inscription', $_POST['date_inscription']);
-			$new->bindParam(':rue', $_POST['rue']);
-			$new->bindParam(':code_postal', $_POST['code_postal']);
-			$new->bindParam(':ville', $_POST['ville']);
-			$new->bindParam(':mail', $_POST['mail']);
-			$new->bindParam(':telephone', $_POST['telephone']);
-			$new->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
-			$new->bindParam(':photo', $picture);
-			$new->bindParam(':sources_connaissance', $_POST["sources_connaissance"]);
-			$new->bindParam(':acces_web', $acces_web);
-			$new->bindParam(':user_rib', $_POST["user_rib"]);
-			$new->bindParam(':actif', $actif);
-			$new->bindParam(':commentaires', $_POST["commentaires"]);
-			$new->execute();
-			if(isset($_POST["rfid"])){
-				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid=? AND status=1');
-				$delete->bindParam(1, $_POST["rfid"]);
-				$delete->execute();
-			}
-			$id = $db->lastInsertId();
-			$db->commit();
-			header('Location: catalogue.php?user='.$id.'');
-		} catch(PDOException $e){
-			$db->rollBack();
-			echo $e->getMessage();
-		}
-	} else {
-		try{
-			$db->beginTransaction();
-			$new = $db->prepare('INSERT INTO users(user_prenom, user_nom, user_rfid, date_naissance,
-												date_inscription, rue, code_postal, ville, mail,
-												telephone, tel_secondaire, source_connaissance,
-												acces_web, user_rib, actif, commentaires)
-										VALUES(:prenom, :nom, :rfid, :date_naissance,
-												:date_inscription, :rue, :code_postal, :ville, :mail,
-												:telephone, :tel_secondaire, :sources_connaissance,
-												:acces_web, :user_rib, :actif, :commentaires)');
-			$new->bindParam(':prenom', $_POST['identite_prenom']);
-			$new->bindParam(':nom', $_POST['identite_nom']);
-			$new->bindParam(':rfid', $_POST["rfid"]);
-			$new->bindParam(':date_naissance', $_POST['date_naissance']);
-			$new->bindParam(':date_inscription', $_POST['date_inscription']);
-			$new->bindParam(':rue', $_POST['rue']);
-			$new->bindParam(':code_postal', $_POST['code_postal']);
-			$new->bindParam(':ville', $_POST['ville']);
-			$new->bindParam(':mail', $_POST['mail']);
-			$new->bindParam(':telephone', $_POST['telephone']);
-			$new->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
-			$new->bindParam(':sources_connaissance', $_POST["sources_connaissance"]);
-			$new->bindParam(':acces_web', $acces_web);
-			$new->bindParam(':user_rib', $_POST["user_rib"]);
-			$new->bindParam(':actif', $actif);
-			$new->bindParam(':commentaires', $_POST["commentaires"]);
-			$new->execute();
-			$id = $db->lastInsertId();
-			if(isset($_POST["rfid"])){
-				$delete = $db->prepare('DELETE FROM participations WHERE user_rfid=? AND status=1');
-				$delete->bindParam(1, $_POST["rfid"]);
-				$delete->execute();
-			}
-			$db->commit();
-			header('Location: catalogue.php?user='.$id.'');
-		} catch(PDOException $e){
-			$db->rollBack();
-			echo $e->getMessage();
-		}
+	// Once everythin's set, we create the new user
+	$user_id = addEntry($db, "users", $user_details);
+	if(isset($_POST["user_rfid"])){
+		$delete = $db->prepare('DELETE FROM participations WHERE user_rfid=? AND status=1');
+		$delete->bindParam(1, $_POST["user_rfid"]);
+		$delete->execute();
 	}
+
+	if(isset($_POST["add-user-sell"]))
+		header('Location: catalogue.php?user='.$user_id);
+	else
+		header('Location: dashboard');
 }
 ?>
 <html>
@@ -217,18 +80,18 @@ if(isset($_POST['addSell'])){
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-pencil"></span> <?php echo $titleText;?></legend>
-					<form action="" method="post" class="form-horizontal" role="form" id="add_adherent" enctype="multipart/form-data">
+					<form action="" method="post" class="form-horizontal" role="form" id="user-add" enctype="multipart/form-data">
 						<p class="sub-legend">Informations personnelles</p>
 						<div class="form-group">
-							<label for="identite_prenom" class="col-sm-3 control-label">Prénom</label>
+							<label for="user_prenom" class="col-sm-3 control-label">Prénom</label>
 							<div class="col-sm-9">
-								<input type="text" name="identite_prenom" id="identite_prenom" class="form-control mandatory" placeholder="Prénom">
+								<input type="text" name="user_prenom" id="user_prenom" class="form-control mandatory" placeholder="Prénom">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="identite_nom" class="col-sm-3 control-label">Nom</label>
+							<label for="user_nom" class="col-sm-3 control-label">Nom</label>
 							<div class="col-sm-9">
-								<input type="text" name="identite_nom" id="identite_nom" class="form-control mandatory" placeholder="Nom de famille">
+								<input type="text" name="user_nom" id="user_nom" class="form-control mandatory" placeholder="Nom de famille">
 							</div>
 						</div>
 						<div class="form-group">
@@ -279,7 +142,7 @@ if(isset($_POST['addSell'])){
 						<div class="form-group">
 							<label for="date_naissance" class="col-sm-3 control-label">Date de naissance</label>
 							<div class="col-sm-9">
-								<input type="date" name="date_naissance" id="date_naissance" class="form-control">
+								<input type="text" name="date_naissance" id="birthdate" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
@@ -300,23 +163,23 @@ if(isset($_POST['addSell'])){
 						<div class="form-group">
 							<label for="date_inscription" class="col-sm-3 control-label">Date d'inscription</label>
 							<div class="col-sm-9">
-								<input type="date" name="date_inscription" id="date_inscription" class="form-control mandatory" value="<?php echo $now;?>">
+								<input type="text" name="date_inscription" id="date-inscription" class="form-control">
 								<p class="help-block">Par défaut, aujourd'hui</p>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="rfid" class="col-sm-3 control-label">Code carte</label>
+							<label for="user_rfid" class="col-sm-3 control-label">Code carte</label>
 							<div class="col-sm-9">
 								<div class="input-group">
-									<input type="text" name="rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
+									<input type="text" name="user_rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
 									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
 								</div>
 							</div>
 						</div>
 						<div class="form-group" id="rib-data" style="display:none;">
-							<label for="rib" class="col-sm-3 control-label">Informations bancaires</label>
+							<label for="user_rib" class="col-sm-3 control-label">Informations bancaires</label>
 							<div class="col-sm-9">
-								<input type="text" name="rib" class="form-control">
+								<input type="text" name="user_rib" class="form-control">
 								<p class="help-block">Pour un professeur, un staff ou un prestataire</p>
 							</div>
 						</div>
@@ -332,16 +195,27 @@ if(isset($_POST['addSell'])){
 							</div>
 						</div>
 						<div class="col-xs-6">
-							<input type="submit" name="addAdherent" role="button" class="btn btn-primary submit-button btn-block" value="Enregistrer" disabled>
+							<input type="submit" name="add-user" role="button" class="btn btn-primary submit-button btn-block" value="Enregistrer" disabled>
 						</div>
 						<div class="col-xs-6">
-							<input type="submit" name="addSell" role="button" class="btn btn-primary submit-button btn-block" value="Enregistrer et acheter" disabled>
+							<input type="submit" name="add-user-sell" role="button" class="btn btn-primary submit-button btn-block" value="Enregistrer et acheter" disabled>
 						</div>
 					</form>
 				</div>
 			</div>
 		</div>
 		<script>
+			$(document).ready(function(){
+				$("#birthdate").datetimepicker({
+					format: "DD/MM/YYYY",
+					locale: "fr",
+				});
+				$("#date-inscription").datetimepicker({
+					format: "DD/MM/YYYY",
+					locale: "fr",
+					defaultDate: moment()
+				});
+			})
 			$("#avatar").fileinput({
 				overwriteInitial: true,
 				maxFileSize: 3000,
@@ -373,7 +247,7 @@ if(isset($_POST['addSell'])){
 			function fetchRFID(){
 				$.post('functions/fetch_rfid.php').done(function(data){
 					if(data != ""){
-						$("[name='rfid']").val(data);
+						$("[name='user_rfid']").val(data);
 						clearInterval(wait);
 						$("[name='fetch-rfid']").html("Lancer la détection");
 						listening = false;
