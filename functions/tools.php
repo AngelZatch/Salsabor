@@ -7,7 +7,10 @@ function solveAdherentToId($name){
 	$stmt->bindParam(1, htmlspecialchars($name), PDO::PARAM_STR);
 	$stmt->execute();
 	$res = $stmt->fetch(PDO::FETCH_ASSOC);
-	return $res["user_id"];
+	if($res["user_id"] != null)
+		return $res["user_id"];
+	else
+		return null;
 }
 
 function getLieu($id){
@@ -317,13 +320,6 @@ function updateColumn($db, $table, $column, $value, $target_id){
 	} catch(PDOException $e){
 		echo $e->getMessage();
 	}
-}
-
-function addEntry($db, $table, $column, $value){
-	$stmt = $db->prepare("INSERT INTO $table($column) VALUES(?)");
-	$stmt->bindParam(1, $value);
-	$stmt->execute();
-	return $db->lastInsertId();
 }
 
 function isHoliday($db, $target_date){

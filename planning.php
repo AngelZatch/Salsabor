@@ -83,15 +83,7 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 			}
 		</style>
 		<script>
-			$(document).ready(function ($) {
-				// delegate calls to data-toggle="lightbox"
-				$(document).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
-					event.preventDefault();
-					return $(this).ekkoLightbox({
-						onNavigate: false
-					});
-				});
-
+			$(document).ready(function() {
 				var docHeight = $(document).height();
 				var xPos = $("#calendar").position();
 				var height = docHeight - xPos.top - 100;
@@ -102,6 +94,7 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 				$('#calendar').fullCalendar({
 					contentHeight: height,
 					defaultView: 'agendaWeek',
+					defaultDate: getUrlParameter('default-date'),
 					endParam: 'fetch_end',
 					editable: false,
 					eventOrder: "lieu",

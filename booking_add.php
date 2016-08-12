@@ -102,14 +102,14 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					defaultDate: default_start,
 					locale: "fr",
 					sideBySide: true,
-					stepping: 30
+					stepping: 15
 				});
 				$("#datepicker-end").datetimepicker({
 					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: default_end,
 					locale: "fr",
 					sideBySide: true,
-					stepping: 30
+					stepping: 15
 				});
 
 				sessionStorage.removeItem('end');
