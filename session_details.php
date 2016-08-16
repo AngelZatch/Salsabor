@@ -80,7 +80,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 } ?>
 						<div class="btn-toolbar float-right">
 							<?php if($count == '1'){ ?>
-							<input type='submit' name='editOne' role='button' class='btn btn-success' value='Enregistrer les modifications'>
+							<input type='submit' name='edit-one' id='edit-one' role='button' class='btn btn-success btn-edit' value='Enregistrer les modifications'>
 							<?php } else { ?>
 							<a href='#save-options' class='btn btn-primary' role='button' data-toggle='collapse' aria-expanded='false' aria-controls='saveOptions'><span class="glyphicon glyphicon-ok"></span> Enregistrer</a>
 							<?php } ?>
@@ -88,6 +88,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<input type="hidden" name="id" value="<?php echo $id;?>">
 						</div>
 					</legend>
+					<?php if($count == "1"){ ?>
 					<div class="collapse" id="save-options">
 						<div class="well">
 							<span>Enregistrer...</span>
@@ -96,6 +97,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<button class="btn btn-primary btn-edit" id="edit-all">Toute la série</button>
 						</div>
 					</div>
+					<?php } ?>
 					<div class="collapse" id="delete-options">
 						<div class="well">
 							<span>Supprimer...</span>
@@ -260,7 +262,12 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					locale: "fr",
 					sideBySide: true,
 					stepping: 15
-				});
+				}).on('dp.change', function(e){
+					var delta = e.date.diff(e.oldDate, 'minutes');
+					var end_value = moment($("#datepicker-end").val(), "DD/MM/YYYY HH:mm:ss");
+					var new_end_value = end_value.add(delta, 'minutes');
+					$("#datepicker-end").val(new_end_value.format("DD/MM/YYYY HH:mm:ss"));
+				})
 				$("#datepicker-end").datetimepicker({
 					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: "<?php echo date_create($cours['session_end'])->format("m/d/Y H:i");?>",
@@ -280,6 +287,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				var session_group_id = <?php echo $cours["session_group"];?>;
 				window.initial_steps = $("#steps").val();
 
+				window.initial_form = $("#session_details").serialize();
 				$.get("functions/fetch_session_group.php", {group_id : session_group_id}).done(function(data){
 					var group_details = JSON.parse(data);
 					$("#recurrence_end").datetimepicker({
@@ -383,6 +391,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					// Update the last edition date
 					$("#last-edit").text("Dernière modification le "+moment().format("DD/MM/YYYY [à] H:mm"));
 					window.top.location = "planning?default-date="+moment($("#datepicker-start").val(), "DD/MM/YYYY HH:mm:ss").format("YYYY-MM-DD");
+					window.initial_form = $("#session_details").serialize();
 				})
 			}).on('click', '.btn-delete', function(){
 				var id = $(this).attr("id"), entry_id = <?php echo $id;?>;
@@ -460,6 +469,12 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				emptyTask += "</div>";
 				$(".tasks-container").append(emptyTask);
 				// When validating a new task, we delete the new template one and reload the correct one. Easy!
+			})
+			$(window).on('beforeunload', function(){
+				var current_form = $("#session_details").serialize();
+				console.log(window.initial_form, current_form);
+				if(current_form !== window.initial_form)
+					return "Vous avez des modifications non enregistrées, êtes-vous sûr de vouloir quitter la page ?";
 			})
 
 			$('#paiement').change(function(){

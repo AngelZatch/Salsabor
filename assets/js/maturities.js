@@ -31,7 +31,7 @@ function feedbackBankMaturity(maturity_id, bank_date){
 function displayMaturities(maturities){
 	var totalPrice = 0, contents = "";
 	for(var i = 0; i < maturities.length; i++){
-		var item_status = "", reception_date = "", bank_date = "", method = maturities[i].method;
+		var item_status = "", reception_date = "", bank_date = "", deadline_class = "", method = maturities[i].method;
 		if(moment(maturities[i].date) < moment()){
 			item_status = "status-over";
 		}
@@ -73,7 +73,10 @@ function displayMaturities(maturities){
 		contents += "</div>"
 		contents += "<div class='container-fluid'>";
 		contents += "<p class='col-xs-3'>"+maturities[i].payer+"</p>";
-		contents += "<p class='col-xs-2'><span class='glyphicon glyphicon-time' title='Date de réception limite'></span> <span class='deadline-maturity-span' id='deadline-maturity-span-"+maturities[i].id+"'>"+moment(maturities[i].date).format("DD/MM/YYYY")+"</span></p>";
+		if(moment(maturities[i].date) < moment()){
+			deadline_class = "deadline-expired";
+		}
+		contents += "<p class='col-xs-2'><span class='deadline-maturity-span deadline-span "+deadline_class+"' id='deadline-maturity-span-"+maturities[i].id+"'> <span class='glyphicon glyphicon-time' title='Date de réception limite'></span> "+moment(maturities[i].date).format("DD/MM/YYYY")+"</span></p>";
 		contents += "<p class='col-lg-2'><span class='glyphicon glyphicon-ok' title='Date de réception'></span> <span class='reception-span' id='reception-span-"+maturities[i].id+"'>"+reception_date+"</span></p>";
 		contents += "<p class='col-lg-2'><span class='glyphicon glyphicon-download-alt' title='Date d&apos;encaissement'></span> <span class='bank-span' id='bank-span-"+maturities[i].id+"'>"+bank_date+"</span></p>";
 		contents += "</div></li>";

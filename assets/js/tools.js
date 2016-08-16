@@ -271,6 +271,10 @@ $(document).ready(function(){
 		}
 	}
 	$(".editing").focus();
+	$(".editing").keypress(function(e){
+		if(e.keyCode === 13)
+			$(".editing").blur();
+	})
 	$(".editing").blur(function(e){
 		e.stopPropagation();
 		var editedValue = $(this).val(), replacementValue = "";
