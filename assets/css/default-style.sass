@@ -985,14 +985,18 @@ div.legend:nth-child(1n+0)
 
 .deadline-span
 	padding: 4px 0 4px 10px
-	&:hover
-		text-decoration: underline
+	&:not(.deadline-maturity-span)
+		&:hover
+			text-decoration: underline
 	&.deadline-near
 		background-color: $warning-color
 	&.deadline-expired
 		background-color: $danger-color
 		color: white
 		font-weight: 700
+
+.deadline-maturity-span
+	padding-right: 10px
 
 .main-maintenance
 	margin-top: 80px

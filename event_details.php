@@ -111,14 +111,19 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					defaultDate: "<?php echo date_create($event['event_start'])->format("m/d/Y H:i");?>",
 					locale: "fr",
 					sideBySide: true,
-					stepping: 30
-				});
+					stepping: 15
+				}).on('dp.change', function(e){
+					var delta = e.date.diff(e.oldDate, 'minutes');
+					var end_value = moment($("#datepicker-end").val(), "DD/MM/YYYY HH:mm:ss");
+					var new_end_value = end_value.add(delta, 'minutes');
+					$("#datepicker-end").val(new_end_value.format("DD/MM/YYYY HH:mm:ss"));
+				})
 				$("#datepicker-end").datetimepicker({
 					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: "<?php echo date_create($event['event_end'])->format("m/d/Y H:i");?>",
 					locale: "fr",
 					sideBySide: true,
-					stepping: 30
+					stepping: 15
 				});
 
 				fetchTasks("EVT", <?php echo $event_id;?>, 0, null, 0);
