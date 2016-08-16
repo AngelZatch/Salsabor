@@ -112,7 +112,12 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					locale: "fr",
 					sideBySide: true,
 					stepping: 15
-				});
+				}).on('dp.change', function(e){
+					var delta = e.date.diff(e.oldDate, 'minutes');
+					var end_value = moment($("#datepicker-end").val(), "DD/MM/YYYY HH:mm:ss");
+					var new_end_value = end_value.add(delta, 'minutes');
+					$("#datepicker-end").val(new_end_value.format("DD/MM/YYYY HH:mm:ss"));
+				})
 				$("#datepicker-end").datetimepicker({
 					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: default_end,

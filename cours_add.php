@@ -131,14 +131,19 @@ if(isset($_POST['add'])){
 					defaultDate: default_start,
 					locale: "fr",
 					sideBySide: true,
-					stepping: 30
-				});
+					stepping: 15,
+				}).on('dp.change', function(e){
+					var delta = e.date.diff(e.oldDate, 'minutes');
+					var end_value = moment($("#datepicker-end").val(), "DD/MM/YYYY HH:mm:ss");
+					var new_end_value = end_value.add(delta, 'minutes');
+					$("#datepicker-end").val(new_end_value.format("DD/MM/YYYY HH:mm:ss"));
+				})
 				$("#datepicker-end").datetimepicker({
 					format: "DD/MM/YYYY HH:mm:00",
 					defaultDate: default_end,
 					locale: "fr",
 					sideBySide: true,
-					stepping: 30
+					stepping: 15
 				});
 				window.initial_steps = $("#steps").val();
 				$("#date_fin").datetimepicker({
@@ -157,7 +162,7 @@ if(isset($_POST['add'])){
 					}
 				})
 				var coursNameTags = JSON.parse('<?php echo json_encode($arr_cours_name);?>');
-				$('#cours_tags').autocomplete({
+				$('#session_name_input').autocomplete({
 					source: coursNameTags
 				});
 
