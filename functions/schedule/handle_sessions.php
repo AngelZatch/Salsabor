@@ -23,14 +23,14 @@ try{
 	while($session = $sessions->fetch(PDO::FETCH_ASSOC)){
 		$session_id = $session["session_id"];
 		if($session["session_opened"] == 0){
-			$open = $db->query("UPDATE cours SET session_opened = 1 WHERE session_id='$session_id'");
+			$open = $db->query("UPDATE sessions SET session_opened = 1 WHERE session_id='$session_id'");
 			$token = "SES";
 			postNotification($db, $token, $session_id, null, $compare_start);
 		}
 	}
 
 	// Leaves the sesssions open but doesn't accept records anymore for sessions that will end in the next 30 minutes.
-	$partial_close = $db->query("UPDATE cours SET session_opened = 2 WHERE session_end <= '$compare_close' AND session_opened = 1");
+	$partial_close = $db->query("UPDATE sessions SET session_opened = 2 WHERE session_end <= '$compare_close' AND session_opened = 1");
 	$db->commit();
 } catch(PDOException $e){
 	$db->rollBack();
