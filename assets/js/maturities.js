@@ -11,6 +11,9 @@ function feedbackBankMaturity(maturity_id, bank_date){
 		$("#maturity-"+maturity_id).removeClass("status-partial-success");
 		$("#maturity-"+maturity_id).addClass("status-success");
 
+		if(moment($("#deadline-maturity-span-"+maturity_id).text(), "DD/MM/YYYY") < moment())
+			$("#deadline-maturity-span-"+maturity_id).removeClass("deadline-expired");
+
 		// The maturity has been banked, it cannot be marked at "not received"
 		$("#receive-"+maturity_id).addClass("disabled");
 	} else {
@@ -23,7 +26,9 @@ function feedbackBankMaturity(maturity_id, bank_date){
 		$("#maturity-"+maturity_id).removeClass("status-success");
 		$("#maturity-"+maturity_id).addClass("status-partial-success");
 
-		// The maturity has been banked, it cannot be marked at "not received"
+		$("#deadline-maturity-span-"+maturity_id).addClass("deadline-expired");
+
+		// The maturity has been unbanked, it can again be marked at "not received"
 		$("#receive-"+maturity_id).removeClass("disabled");
 	}
 }
@@ -46,7 +51,9 @@ function displayMaturities(maturities){
 
 		contents += "<li class='purchase-item panel-item maturity-item "+item_status+" container-fluid' id='maturity-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"'>";
 		contents += "<div class='container-fluid'>";
-		contents += "<p class='col-xs-10 panel-item-title bf' id='maturity-"+maturities[i].id+"-method'><span>"+maturities[i].method+"</span> pour <span>"+maturities[i].price+"</span> €</p>";
+		contents += "<p class='col-xs-9 panel-item-title bf' id='maturity-"+maturities[i].id+"-method'><span>"+maturities[i].method+"</span> pour <span>"+maturities[i].price+"</span> €</p>";
+
+		contents += "<p class='col-xs-1'><a href='user/"+maturities[i].transaction_user+"/achats#purchase-"+maturities[i].transaction_id+"' class='link-glyphicon'><span class='glyphicon glyphicon-share-alt glyphicon-button-alt' title='Aller à la transaction'></span></a></p>";
 
 		// Validate reception button
 		if(reception_date != ""){
@@ -73,7 +80,7 @@ function displayMaturities(maturities){
 		contents += "</div>"
 		contents += "<div class='container-fluid'>";
 		contents += "<p class='col-xs-3'>"+maturities[i].payer+"</p>";
-		if(moment(maturities[i].date) < moment()){
+		if(moment(maturities[i].date) < moment() && bank_date == ""){
 			deadline_class = "deadline-expired";
 		}
 		contents += "<p class='col-xs-2'><span class='deadline-maturity-span deadline-span "+deadline_class+"' id='deadline-maturity-span-"+maturities[i].id+"'> <span class='glyphicon glyphicon-time' title='Date de réception limite'></span> "+moment(maturities[i].date).format("DD/MM/YYYY")+"</span></p>";
