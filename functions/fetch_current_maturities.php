@@ -27,6 +27,7 @@ $maturityTime = $time->format('Y-m-d');
 $today = $date->format("Y-m-d");
 
 $load = $db->query("SELECT * FROM produits_echeances pe
+						JOIN transactions t ON pe.reference_achat = t.id_transaction
 						WHERE ((date_echeance <= '$maturityTime' AND date_echeance > '$today' AND methode_paiement != 'Carte bancaire')
 						OR (date_echeance <= '$today' AND date_encaissement IS NULL))
 						ORDER BY date_echeance DESC");
@@ -35,6 +36,8 @@ $maturities = array();
 while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$m = array(
 		"id" => $details["produits_echeances_id"],
+		"transaction_id" => $details["reference_achat"],
+		"transaction_user" => $details["payeur_transaction"],
 		"payer" => $details["payeur_echeance"],
 		"date" => $details["date_echeance"],
 		"price" => $details["montant"],
