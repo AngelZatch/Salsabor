@@ -1,7 +1,7 @@
 <?php
 require_once "/opt/lampp/htdocs/Salsabor/functions/db_connect.php";
 require_once "/opt/lampp/htdocs/Salsabor/functions/tools.php";
-$db = PDOFactory::getConnection();
+$db = PDOFactory::getAltConnection();
 
 /* This file has to open sessions
 cron : * / 5 10-23 * * * php -f /opt/lampp/htdocs/Salsabor/functions/schedule/handle_sessions.php
