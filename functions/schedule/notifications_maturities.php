@@ -1,7 +1,7 @@
 <?php
 /** This file has to be executed daily and will create notifications for the team.
 
-cron line : 0 10 * * * php -f /opt/lampp/htdocs/Salsabor/functions/schedule/notifications_maturities.php
+cron line : 0 10 * * * /opt/lampp/bin/php /opt/lampp/htdocs/Salsabor/functions/schedule/notifications_maturities.php
 (will be executed at 10am every day)
 
 Notifications can target a transaction, a maturity, a mail
