@@ -6,7 +6,7 @@ $db = PDOFactory::getConnection();
 /** Daily, this file will try to fix all the errors the system might have done.
 - Records with RFID but no user.
 Tihs file will be executed at night, before the system operations so errors have a limited impact.
-cron line : cron : 30 0 * * * php -f /opt/lampp/htdocs/Salsabor/functions/schedule/system_operations.php
+cron line : cron : 30 0 * * * /opt/lampp/bin/php /opt/lampp/htdocs/Salsabor/functions/schedule/system_operations.php
 (will be executed daily at 12:30am)
 **/
 

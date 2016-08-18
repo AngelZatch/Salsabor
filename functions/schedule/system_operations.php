@@ -12,7 +12,7 @@ $db = PDOFactory::getConnection();
 - Watch for active/inactive users
 - Clean obsolete notifications
 It's executed once per day, at night because some operations (like computing all active products) might take some time.
-cron line : cron : * 1 * * * php -f /opt/lampp/htdocs/Salsabor/functions/schedule/system_operations.php
+cron line : cron : * 1 * * * /opt/lampp/bin/php /opt/lampp/htdocs/Salsabor/functions/schedule/system_operations.php
 (will be executed daily at 1am)
 **/
 

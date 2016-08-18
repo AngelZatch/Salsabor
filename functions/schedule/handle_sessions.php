@@ -1,10 +1,10 @@
 <?php
 require_once "/opt/lampp/htdocs/Salsabor/functions/db_connect.php";
 require_once "/opt/lampp/htdocs/Salsabor/functions/tools.php";
-$db = PDOFactory::getAltConnection();
+$db = PDOFactory::getConnection();
 
 /* This file has to open sessions
-cron : * / 5 10-23 * * * php -f /opt/lampp/htdocs/Salsabor/functions/schedule/handle_sessions.php
+cron : * / 5 10-23 * * * /opt/lampp/bin/php /opt/lampp/htdocs/Salsabor/functions/schedule/handle_sessions.php
 (will be executed every 5 minutes between 10am and 11pm everyday)
 */
 
