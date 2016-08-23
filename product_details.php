@@ -32,29 +32,31 @@ if(isset($_POST["edit"])){
 
 	try{
 		$db->beginTransaction();
-		$edit = $db->prepare("UPDATE produits SET product_name = :intitule,
+		$edit = $db->prepare("UPDATE produits SET product_name = :product_name,
 												description = :description,
 												product_size = :product_size,
 												product_validity = :validite,
 												product_price = :product_price,
 												actif = :actif,
 												echeances_paiement = :echeances,
-												autorisation_report = :autorisation_report,
-												WHERE product_id = :id");
-		$edit->bindParam(':intitule', $_POST["intitule"]);
-		$edit->bindParam(':description', $_POST["description"]);
-		$edit->bindParam(':product_size', $_POST["product_size"]);
-		$edit->bindParam(':validite', $validite);
-		$edit->bindParam(':product_price', $_POST["product_price"]);
-		$edit->bindParam(':actif', $actif);
+												autorisation_report = :autorisation_report
+												WHERE product_id = :product_id");
+		$edit->bindParam(':product_name', $_POST["product_name"], PDO::PARAM_STR);
+		$edit->bindParam(':description', $_POST["description"], PDO::PARAM_STR);
+		$edit->bindParam(':product_size', $_POST["product_size"], PDO::PARAM_INT);
+		$edit->bindParam(':validite', $validite, PDO::PARAM_INT);
+		$edit->bindParam(':product_price', $_POST["product_price"], PDO::PARAM_INT);
+		$edit->bindParam(':actif', $actif, PDO::PARAM_INT);
 		$edit->bindParam(':echeances', $_POST["echeances"]);
-		$edit->bindParam(':autorisation_report', $_POST["arep"]);
-		$edit->bindParam(':id', $data);
+		$edit->bindParam(':autorisation_report', $_POST["arep"], PDO::PARAM_INT);
+		$edit->bindParam(':product_id', $_GET["id"], PDO::PARAM_INT);
 		$edit->execute();
 		$db->commit();
+		header('Location: ../forfaits');
 	}catch (PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());
+		/*var_dump($edit->debugDumpParams());*/
 	}
 }
 ?>
@@ -73,14 +75,14 @@ if(isset($_POST["edit"])){
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
-					<form action="" class="form-horizontal" method="post">
+					<form action="" class="form-horizontal" id="form-product" method="post">
 						<legend><span class="glyphicon glyphicon-credit-card"></span> <?php echo $produit["product_name"];?>
 							<input type="submit" name="edit" role="button" class="btn btn-primary hidden-xs" value="Enregistrer">
 						</legend>
 						<div class="form-group">
-							<label for="intitule" class="control-label col-lg-3">Intitulé</label>
+							<label for="product_name" class="control-label col-lg-3">Intitulé</label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="intitule" value="<?php echo $produit["product_name"];?>" placeholder="Nom du produit">
+								<input type="text" class="form-control" name="product_name" value="<?php echo $produit["product_name"];?>" placeholder="Nom du produit">
 							</div>
 						</div>
 						<div class="form-group">
@@ -103,7 +105,7 @@ if(isset($_POST["edit"])){
 						<div class="form-group">
 							<label for="description" class="col-lg-3 control-label">Description</label>
 							<div class="col-lg-9">
-								<textarea rows="5" class="form-control" name="description" value="<?php echo $produit["description"];?>" placeholder=""></textarea>
+								<textarea rows="5" class="form-control" name="description" placeholder="Décrivez rapidement le produit en 100 caractères maximum (facultatif)"><?php echo $produit["description"];?></textarea>
 							</div>
 						</div>
 						<div class="form-group">
