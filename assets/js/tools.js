@@ -620,6 +620,12 @@ $(document).ready(function(){
 		console.log("Historique");
 		$(".sub-modal").css({left: 74+'%'});
 	}
+	if($(".modal").length > 0){
+		var sub_modal_classes = "col-xs-5 col-md-4 col-lg-3";
+	} else {
+		var sub_modal_classes = "col-xs-5 col-md-6 col-lg-3";
+	}
+	$(".sub-modal").addClass(sub_modal_classes);
 	$(".sub-modal").show(0);
 }).on('change', '.mandatory-tag-check', function(){
 	var target = document.getElementById($(this).attr("id")).dataset.target;
