@@ -575,7 +575,7 @@ $(document).ready(function(){
 					} else {
 						is_mandatory = 0;
 					}
-					body += "<input name='is_mandatory' class='mandatory-tag-check' id='is_mandatory-"+target+"' data-target='"+target+"' value='"+is_mandatory+"'> Obligatoire <span class='glyphicon glyphicon-question-sign' id='mandatory-tooltip' data-toggle='tooltip' title='Une étiquette obligatoire devra impérativement figurer sur le produit pour qu&apos;il soit compatible'></span>";
+					body += "<input name='is_mandatory' class='mandatory-tag-check' id='is_mandatory-"+target+"' data-target='"+target+"' value='"+is_mandatory+"'> Obligatoire <span class='glyphicon glyphicon-question-sign' id='mandatory-tooltip' data-toggle='tooltip' title='Restreint la compatibilité produit/cours aux étiquettes obligatoires sélectionnées. Si un produit doit être compatible avec une couleur entière, n&apos;ajoutez pas d&apos;étiquette.'></span>";
 				}
 				$(".sub-modal-body").html(body);
 				$("#is_mandatory-"+target).checkboxX({
