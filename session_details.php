@@ -88,7 +88,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<input type="hidden" name="id" value="<?php echo $id;?>">
 						</div>
 					</legend>
-					<?php if($count == "1"){ ?>
+					<?php if($count != "1"){ ?>
 					<div class="collapse" id="save-options">
 						<div class="well">
 							<span>Enregistrer...</span>
