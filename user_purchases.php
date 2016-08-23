@@ -65,13 +65,12 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 						<?php while($achats = $queryAchats->fetch(PDO::FETCH_ASSOC)){
 	$productQty = $db->query("SELECT id_produit_adherent FROM produits_adherents WHERE id_transaction_foreign='$achats[id_transaction]'")->rowCount();?>
 						<div class="panel panel-purchase" id="purchase-<?php echo $achats["id_transaction"];?>">
-							<a class="panel-heading-container" onClick="displayPurchase('<?php echo $achats["id_transaction"];?>')">
-								<div class="panel-heading container-fluid">
-									<p class="purchase-id col-lg-5">Transaction <?php echo $achats["id_transaction"];?></p>
-									<p class="col-lg-3">Contient <?php echo $productQty;?> produit(s)</p>
-									<p class="purchase-sub col-lg-4">Effectuée le <?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <?php echo $achats["prix_total"];?> €</p>
-								</div>
-							</a>
+							<div class="panel-heading container-fluid" onClick="displayPurchase('<?php echo $achats["id_transaction"];?>')">
+								<p class="purchase-id col-lg-5">Transaction <?php echo $achats["id_transaction"];?></p>
+								<p class="col-lg-3">Contient <?php echo $productQty;?> produit(s)</p>
+								<p class="purchase-sub col-lg-3">Effectuée le <?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <?php echo $achats["prix_total"];?> €</p>
+								<span class="glyphicon glyphicon-file glyphicon-button glyphicon-button-alt glyphicon-button-big create-invoice" id="create-invoice-<?php echo $achats["id_transaction"];?>" data-transaction="<?php echo $achats["id_transaction"];?>" title="Générer la facture"></span>
+							</div>
 							<div class="panel-body collapse" id="body-purchase-<?php echo $achats["id_transaction"];?>">
 							</div>
 						</div>
@@ -82,5 +81,12 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		</div>
 		<?php include "inserts/modal_product.php";?>
 		<?php include "inserts/sub_modal_product.php";?>
+		<script>
+			$(".create-invoice").click(function(e){
+				e.stopPropagation();
+				var transaction_id = document.getElementById($(this).attr("id")).dataset.transaction;
+				window.open("create_invoice.php?transaction="+transaction_id, "_blank", "location=yes,height=570,width=520,scrollbars=yes,status=yes");
+			})
+		</script>
 	</body>
 </html>
