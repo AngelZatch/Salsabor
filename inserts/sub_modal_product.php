@@ -5,7 +5,7 @@
 	$lg_width = "7";
 	$xs_width = "5";
 }?>
-<div class="col-xs-<?php echo $xs_width;?> col-lg-<?php echo $lg_width;?> sub-modal">
+<div class="sub-modal">
 	<div class="sub-modal-header">
 		<button type="button" class="close sub-modal-close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<p class="sub-modal-title"></p>
