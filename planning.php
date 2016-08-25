@@ -53,13 +53,6 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 					</div> <!-- Display en Planning -->
 				</div> <!-- col-sm-offset-3 col-lg-10 col-lg-offset-2 main -->
 				<?php include "inserts/sub_modal_session.php";?>
-				<div id="reservation-options" class="popover popover-default">
-					<div class="arrow"></div>
-					<p style="font-weight:700;" id="popover-reservation-title"></p>
-					<p id="popover-reservation-type"></p>
-					<p id="popover-reservation-hours"></p>
-					<a class="btn btn-default col-sm-12"><span class="glyphicon glyphicon-edit"></span> Détails >></a>
-				</div>
 			</div>
 		</div>
 		<style>
@@ -195,10 +188,20 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 									$(".sub-modal-title").css("color", session.color);
 									// Filling fields
 									$(".sub-modal-title").append("<span class='glyphicon glyphicon-eye-open'></span> "+session.title);
-									$(".session-modal-details:eq(0)").append("<span>Date</span>"+moment(session.start).format("ll[,] HH:mm")+" - "+moment(session.end).format("HH:mm"));
-									$(".session-modal-details:eq(1)").append("<span>Lieu</span>"+session.room);
-									$(".session-modal-details:eq(2)").append("<span>Professeur</span>"+session.teacher);
-									$(".session-modal-details:eq(3)").append("<span>Participants</span>"+session.participations_count);
+									var labels = "<h5>";
+									for(var i = 0; i < session.tags.length; i++){
+										labels += "<span class='label label-salsabor label-in-modal' style='background-color:"+session.tags[i].tag_color+"'>";
+										if(session.tags[i].is_mandatory != 0){
+											labels += "<span class='glyphicon glyphicon-star'></span> ";
+										}
+										labels += session.tags[i].rank_name+"</span>";
+									}
+									labels += "</h5>";
+									$(".session-modal-details:eq(0)").append(labels);
+									$(".session-modal-details:eq(1)").append("<span>Date</span>"+moment(session.start).format("ll[,] HH:mm")+" - "+moment(session.end).format("HH:mm"));
+									$(".session-modal-details:eq(2)").append("<span>Lieu</span>"+session.room);
+									$(".session-modal-details:eq(3)").append("<span>Professeur</span>"+session.teacher);
+									$(".session-modal-details:eq(4)").append("<span>Participants</span>"+session.participations_count);
 									$(".sub-modal-footer").append("<a href='cours/"+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
 								})
 							}
