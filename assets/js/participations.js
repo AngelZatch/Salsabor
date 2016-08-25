@@ -538,7 +538,7 @@ function displayUserParticipations(user_id){
 	$.get("functions/fetch_user_participations.php", {user_id : user_id}).done(function(data){
 		var records_list = JSON.parse(data);
 		$(".participations-list").empty();
-		var users = 0, ok = 0, warning = 0;
+		var users = 0, ok = 0, warning = 0, pending = 0;
 		var contents = "";
 		for(var i = 0; i < records_list.length; i++){
 			var record_status;
@@ -549,6 +549,7 @@ function displayUserParticipations(user_id){
 						warning++;
 					} else {
 						record_status = "status-pre-success";
+						pending++;
 					}
 					break;
 
@@ -617,6 +618,7 @@ function displayUserParticipations(user_id){
 		$(".participations-list").append(contents);
 		$("#total-count").text(users);
 		$("#valid-count").text(ok);
+		$("#pending-count").text(pending);
 		$("#over-count").text(warning);
 	})
 }
