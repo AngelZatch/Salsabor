@@ -27,7 +27,7 @@ $(document).on('click', '.trigger-nav', function(e){
 		if(value == 1){
 			$("#notification-"+notification_id).addClass("notif-new");
 			var span = $("#notification-"+notification_id).find("span.glyphicon-button");
-			span.replaceWith("<span class='glyphicon glyphicon-ok-circle col-sm-1 glyphicon-button toggle-read' title='Marquer comme lue'></span>");
+			span.replaceWith("<span class='glyphicon glyphicon-ok col-sm-1 glyphicon-button toggle-read' title='Marquer comme lue'></span>");
 			$(".badge-notifications").html(parseInt($("#badge-notifications").html())+1);
 		} else {
 			$("#notification-"+notification_id).addClass("notif-old");
@@ -215,7 +215,7 @@ function renderNotification(notification, half){
 	contents += "<div class='row'>";
 	contents += "<p class='col-xs-11'>"+notif_message+"</p>";
 	if(notification.status == 1){
-		contents += "<span class='glyphicon glyphicon-ok-circle col-xs-1 glyphicon-button toggle-read' title='Marquer comme lue'></span>";
+		contents += "<span class='glyphicon glyphicon-ok col-xs-1 glyphicon-button toggle-read' title='Marquer comme lue'></span>";
 	} else {
 		contents += "<span class='glyphicon glyphicon-remove col-xs-1 glyphicon-button toggle-read' title='Marquer comme non lue'></span>";
 	}
