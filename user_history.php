@@ -58,9 +58,10 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 						<?php } ?>
 					</ul>
 					<div class="container-fluid">
-						<p class="col-xs-4"><span class="participation-count" id="total-count"></span> Participations</p>
-						<p class="col-xs-4"><span class="participation-count" id="valid-count"></span> Participations valides</p>
-						<p class="col-xs-4"><span class="participation-count" id="over-count"></span> Participations hors forfait</p>
+						<p class="col-xs-3 participation-type" id="type-total"><span class="participation-count" id="total-count"></span> Participations</p>
+						<p class="col-xs-3 participation-type" id="type-valid"><span class="participation-count" id="valid-count"></span> Participations valides</p>
+						<p class="col-xs-3 participation-type" id="type-pending"><span class="participation-count" id="pending-count"></span> Participations en attente</p>
+						<p class="col-xs-3 participation-type" id="type-over"><span class="participation-count" id="over-count"></span> Participations irrégulières</p>
 					</div>
 					<div class="container-fluid participations-list-container">
 						<!--<button class='btn btn-default btn-modal btn-link-all' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Associer toutes les participations irrégulières</button>-->
@@ -71,5 +72,25 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
+		<script>
+			$(".participation-type").click(function(){
+				var id = $(this).attr("id");
+				if(id == "type-total"){
+					$(".panel-record").show();
+				} else {
+					$(".panel-record").hide();
+					if(id == "type-valid"){
+						$(".status-success").show();
+					}
+					if(id == "type-pending"){
+						$(".status-pre-success").show();
+					}
+					if(id == "type-over"){
+						$(".status-partial-success").show();
+						$(".status-over").show();
+					}
+				}
+			})
+		</script>
 	</body>
 </html>

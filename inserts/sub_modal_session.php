@@ -8,6 +8,7 @@
 		<p class="session-modal-details"></p>
 		<p class="session-modal-details"></p>
 		<p class="session-modal-details"></p>
+		<p class="session-modal-details"></p>
 	</div>
 	<div class="sub-modal-footer">
 	</div>

@@ -128,6 +128,9 @@ legend
 	background-color: $salsabor-red
 	&:hover
 		background-color: lighten($salsabor-red, 10%)
+	&.label-in-modal
+		cursor: default
+		margin-right: 5px
 
 .label-active
 	font-size: 0.65em
@@ -378,9 +381,12 @@ a
 	padding: 0
 
 .jumbotron-home
-	border-radius: 0
+	border-radius: 0 !important
 	text-align: center
 	background-color: white
+
+.admin-buttons
+	margin-bottom: 10px
 
 #jumbotron-btns
 	a
@@ -656,6 +662,14 @@ a
 	font-weight: 600
 	color: $system-color
 	text-decoration: underline
+
+.participation-type
+	cursor: pointer
+	padding: 5px
+	border-radius: 4px
+	text-align: center
+	&:hover
+		background-color: darken($body-color, 5%)
 
 .participation-count
 	font-weight: 700

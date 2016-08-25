@@ -10,21 +10,24 @@ function vente(){
 	// Get payer's ID
 	$payer_id = solveAdherentToId($_POST["payeur"]);
 
-	// Génération d'un identifiant unique désignant la transaction
+	// Generate unique transaction reference
 	$transaction = generateReference();
 
-	// Date de l'achat
+	// Purchase date
 	$date_achat = $_POST["date_achat"];
 
-	// Obtention du nombre d'échéances pour la transaction
+	// Get number of maturities
 	$echeances = $_POST["echeances"];
 
-	// Prix total à payer
+	// Total price
 	$prix_restant = $_POST["prix_total"];
+
+	// User details
+	$user_details = $db->query("SELECT *, CONCAT (user_prenom, ' ', user_nom) AS user_identity FROM users WHERE user_id = $payer_id")->fetch(PDO::FETCH_ASSOC);
 
 	try{
 		$db->beginTransaction();
-		// Création de la transaction
+		// Creating transaction
 		$new_transaction = $db->prepare("INSERT INTO transactions(id_transaction, payeur_transaction, date_achat, prix_total) VALUES(:transaction, :payeur, :date_achat, :prix_total)");
 		$new_transaction->bindParam(':transaction', $transaction);
 		$new_transaction->bindParam(':payeur', $payer_id);
@@ -32,18 +35,17 @@ function vente(){
 		$new_transaction->bindParam(':prix_total', $prix_restant);
 		$new_transaction->execute();
 
-		// Création de tous les produits associés à la transaction
-		// LES ETAPES SUIVANTES SONT REPETEES POUR CHAQUE PRODUIT
+		// Adding products
 		$l = 0;
 		for($l; $l < $_POST["nombre_produits"]; $l++){
-			// Retrouver le produit à partir de son id
+			// Find product from ID
 			$queryProduit = $db->prepare("SELECT * FROM produits WHERE product_id=?");
 			$nomProduit = $_POST["product_id-".$l];
 			$queryProduit->bindParam(1, $nomProduit);
 			$queryProduit->execute();
 			$produit = $queryProduit->fetch(PDO::FETCH_ASSOC);
 
-			// Si le forfait a une date d'activation
+			// If the product has an activation date
 			if($_POST["activation-".$l] != "0"){
 				$actif = 1;
 				$date_expiration = date("Y-m-d 00:00:00",strtotime($_POST["activation-".$l].'+'.$produit["product_validity"].'DAYS'));
@@ -69,7 +71,7 @@ function vente(){
 				$actif = 0;
 			}
 
-			// Réception de l'id du bénéficiaire envoyé par le formulaire
+			// Getting user of product
 			$beneficiaire = $_POST["beneficiaire-".$l];
 
 			$new = $db->prepare("INSERT INTO produits_adherents(id_transaction_foreign, id_user_foreign, id_produit_foreign, date_activation, date_expiration, volume_cours, prix_achat, actif, arep)
@@ -86,68 +88,7 @@ function vente(){
 			$new->execute();
 		}
 
-		/**** PDF ****/
-		/*$pdf = new FPDI();
-		$pdf->AddPage();
-		$pdf->SetSourceFile("librairies/Salsabor-vente-facture.pdf");
-		$tplIdx = $pdf->importPage(1);
-		$pdf->useTemplate($tplIdx, 0, 0, 210);
-		// Référence
-		$pdf->SetFont('Arial', 'B', 18);
-		$pdf->setXY(120, 38.5);
-		$pdf->Write(0, $transaction);
-		// Phrase de début
-		$pdf->SetFont('Arial', '', 11);
-		$pdf->setXY(21, 49);
-		$infos = $prenom." ".$nom;
-		$infos = iconv('UTF-8', 'windows-1252', $infos);
-		$pdf->Write(0, $infos);
-		//Informations
-		$pdf->setXY(10, 74);
-		$infos = $adherent["user_prenom"]." ".$adherent["user_nom"]."\n".$adherent["rue"]." - ".$adherent["code_postal"]." ".$adherent["ville"]."\n".$adherent["mail"]."\nTél : ".$adherent["telephone"];
-		$infos = iconv('UTF-8', 'windows-1252', $infos);
-		$pdf->MultiCell(0, 7, $infos);
-		// Vente
-		$pdf->setXY(10, 117);
-		if($_POST["date_activation"] != ''){
-			$infos = "Forfait ".$produit["product_name"]."\nValide du ".date_create($_POST["date_activation"])->format("d/m/Y")." au ".date_create($new_exp_date)->format("d/m/Y");
-		} else {
-			$infos = "Activation au premier passage";
-		}
-		$infos = iconv('UTF-8', 'windows-1252', $infos);
-		$pdf->MultiCell(0, 7, $infos);
-		// Prix
-		$pdf->setXY(10, 135);
-		$pdf->setFont('Arial', 'B', 18);
-		$pdf->SetTextColor(169, 2, 58);
-		$infos = $_POST["prix_achat"]. "€ TTC";
-		$infos = iconv('UTF-8', 'windows-1252', $infos);
-		$pdf->Write(0, $infos);
-		// Echeances - En-tête
-		$pdf->SetTextColor(0, 0, 0);
-		$pdf->setFont('Arial', '', 10);
-		$pdf->Rect(10, 139, 35, 10);
-		$pdf->setXY(10, 144);
-		$infos = "Numéro d'écheance";
-		$infos = iconv('UTF-8', 'windows-1252', $infos);
-		$pdf->Write(0, $infos);
-		$pdf->Rect(45, 139, 50, 10);
-		$pdf->setXY(45, 144);
-		$infos = "Date d'encaissement";
-		$infos = iconv('UTF-8', 'windows-1252', $infos);
-		$pdf->Write(0, $infos);
-		$pdf->Rect(95, 139, 20, 10);
-		$pdf->setXY(95, 144);
-		$infos = "Montant";
-		$infos = iconv('UTF-8', 'windows-1252', $infos);
-		$pdf->Write(0, $infos);
-		$pdf->Rect(115, 139, 85, 10);
-		$pdf->setXY(115, 144);
-		$infos = "Méthode de paiement";
-		$infos = iconv('UTF-8', 'windows-1252', $infos);
-		$pdf->Write(0, $infos);*/
-
-		// Création de toutes les échéances associées à la transaction
+		// Maturities
 		for($k = 1; $k <= $echeances; $k++){
 			if($_POST["statut-echeance-".$k] == '1')
 				$date_paiement = $date_achat;
@@ -172,37 +113,12 @@ function vente(){
 			$new_echeance->bindParam(':statut_banque', $bank_status);
 			$new_echeance->bindParam(':date_encaissement', $bank_date);
 			$new_echeance->execute();
-
-			//Echeances - Contenu du tableau
-			/*			$pdf->Rect(10, 149 + (8*$k), 35, 8);
-			$pdf->setXY(10, 152 + (8*$k));
-			$infos = "Echéance ".($k+1);
-			$infos = iconv('UTF-8', 'windows-1252', $infos);
-			$pdf->Write(0, $infos);
-			$pdf->Rect(45, 149 + (8*$k), 50, 8);
-			$pdf->setXY(45, 152 + (8*$k));
-			$infos = $_POST["date-echeance-".$k];
-			$infos = iconv('UTF-8', 'windows-1252', $infos);
-			$pdf->Write(0, $infos);
-			$pdf->Rect(95, 149 + (8*$k), 20, 8);
-			$pdf->setXY(95, 152 + (8*$k));
-			$infos = $_POST["montant-echeance-".$k];
-			$infos = iconv('UTF-8', 'windows-1252', $infos);
-			$pdf->Write(0, $infos);
-			$pdf->Rect(115, 149 + (8*$k), 85, 8);
-			$pdf->setXY(115, 152 + (8*$k));
-			$infos = $_POST["moyen-paiement-".$k];
-			$infos = iconv('UTF-8', 'windows-1252', $infos);
-			$pdf->Write(0, $infos);*/
 		}
 
 		$activateUser = $db->query("UPDATE users SET actif = '1', date_last='$date_achat' WHERE user_id='$payer_id'");
 
 		$db->commit();
-
-		//		$pdf->Output();
-		/**** /PDF ****/
-		header('Location: merci.php');
+		header("Location: end_transaction.php?transaction=$transaction");
 	}catch(PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());
