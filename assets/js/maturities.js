@@ -1,42 +1,45 @@
-// bank_date is a moment() This function is only the visual feedback, since a maturity can be banked from different hooks.
-function feedbackBankMaturity(maturity_id, bank_date){
-	var icon = $("#bank-"+maturity_id);
-	if(icon.hasClass("glyphicon-download-alt")){ // If the maturity was not banked
-		icon.addClass("glyphicon-export");
-		icon.removeClass("glyphicon-download-alt");
-		icon.attr("title", "Décaisser l'échéance");
+function updateMaturityState(maturity_id){
+	/*
+	- over : not received, not banked, deadline is before today
+	- pre-success : not received, not banked, deadline is after today
+	- partial-success : received, not banked, deadline doesn't matter
+	- success : received, banked, deadline doesn't matter
+	*/
+	var maturity_line = $("#maturity-"+maturity_id);
+	var deadline_span = $("#deadline-"+maturity_id);
+	var reception_span = $("#reception-span-"+maturity_id);
+	var bank_span = $("#bank-span-"+maturity_id);
 
-		$("#bank-span-"+maturity_id).text(bank_date.format("DD/MM/YYYY"));
+	maturity_line.removeClass("status-pre-success");
+	maturity_line.removeClass("status-success");
+	maturity_line.removeClass("status-partial-success");
+	maturity_line.removeClass("status-over");
 
-		$("#maturity-"+maturity_id).removeClass("status-partial-success");
-		$("#maturity-"+maturity_id).addClass("status-success");
-
-		if(moment($("#deadline-maturity-span-"+maturity_id).text(), "DD/MM/YYYY") < moment())
-			$("#deadline-maturity-span-"+maturity_id).removeClass("deadline-expired");
-
-		// The maturity has been banked, it cannot be marked at "not received"
-		$("#receive-"+maturity_id).addClass("disabled");
+	if(reception_span.text() != ""){
+		maturity_line.addClass("status-partial-success");
+	}
+	if(bank_span.text() != ""){
+		// Clean previous if, for credit cards.
+		maturity_line.removeClass("status-partial-success");
+		maturity_line.addClass("status-success");
+	}
+	if(bank_span.text() == "" && reception_span.text() == ""){
+		if(moment(deadline_span.text(), "DD/MM/YYYY") < moment()){
+			deadline_span.addClass("deadline-expired");
+			maturity_line.addClass("status-over");
+		} else {
+			deadline_span.removeClass("deadline-expired");
+			maturity_line.addClass("status-pre-success");
+		}
 	} else {
-		icon.addClass("glyphicon-download-alt");
-		icon.removeClass("glyphicon-export");
-		icon.attr("title", "Encaisser l'échéance");
-
-		$("#bank-span-"+maturity_id).text("");
-
-		$("#maturity-"+maturity_id).removeClass("status-success");
-		$("#maturity-"+maturity_id).addClass("status-partial-success");
-
-		$("#deadline-maturity-span-"+maturity_id).addClass("deadline-expired");
-
-		// The maturity has been unbanked, it can again be marked at "not received"
-		$("#receive-"+maturity_id).removeClass("disabled");
+		deadline_span.removeClass("deadline-expired");
 	}
 }
 
 function displayMaturities(maturities){
 	var totalPrice = 0, contents = "";
 	for(var i = 0; i < maturities.length; i++){
-		var item_status = "", reception_date = "", bank_date = "", deadline_class = "", method = maturities[i].method;
+		var item_status = "status-pre-success", reception_date = "", bank_date = "", deadline_class = "", method = maturities[i].method;
 		if(moment(maturities[i].date) < moment()){
 			item_status = "status-over";
 		}
@@ -51,41 +54,33 @@ function displayMaturities(maturities){
 
 		contents += "<li class='purchase-item panel-item maturity-item "+item_status+" container-fluid' id='maturity-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"'>";
 		contents += "<div class='container-fluid'>";
-		contents += "<p class='col-xs-9 panel-item-title bf' id='maturity-"+maturities[i].id+"-method'><span>"+maturities[i].method+"</span> pour <span>"+maturities[i].price+"</span> €</p>";
+		contents += "<p class='col-xs-10 panel-item-title bf' id='maturity-"+maturities[i].id+"-method'><span>"+maturities[i].method+"</span> pour <span>"+maturities[i].price+"</span> €</p>";
 
-		contents += "<p class='col-xs-1'><a href='user/"+maturities[i].transaction_user+"/achats#purchase-"+maturities[i].transaction_id+"' class='link-glyphicon'><span class='glyphicon glyphicon-share-alt glyphicon-button-alt' title='Aller à la transaction'></span></a></p>";
+		var redirection_link = "user/"+maturities[i].transaction_user+"/achats";
 
-		// Validate reception button
-		if(reception_date != ""){
-			if(bank_date != ""){
-				contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-remove glyphicon-button glyphicon-button-alt receive-maturity disabled' data-subtype='receive-maturity' id='receive-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Annuler la réception'></span></p>";
-			} else {
-				contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-remove glyphicon-button glyphicon-button-alt receive-maturity' data-subtype='receive-maturity' id='receive-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Annuler la réception'></span></p>";
-			}
+		if(top.location.pathname != "/Salsabor/"+redirection_link){
+			contents += "<p class='col-xs-1'><a href='user/"+maturities[i].transaction_user+"/achats#purchase-"+maturities[i].transaction_id+"' class='link-glyphicon'><span class='glyphicon glyphicon-share-alt glyphicon-button-alt' title='Aller à la transaction'></span></a></p>";
 		} else {
-			contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-ok glyphicon-button glyphicon-button-alt trigger-sub' data-subtype='receive-maturity' id='receive-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Valider la réception'></span></p>";
+			contents += "<p class='col-xs-1'></p>";
 		}
 
-		if(bank_date != "")
-			contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-export glyphicon-button glyphicon-button-alt bank-maturity' id='bank-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Décaisser l&apos;échéance'></span></p>";
-		else
-			contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-download-alt glyphicon-button glyphicon-button-alt bank-maturity' id='bank-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Encaisser l&apos;échéance'></span></p>";
-
-
-		/*if(reception_date != "" || bank_date != "")
-			contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt delete-maturity disabled' id='delete-maturity-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Vous ne pouvez pas supprimer une échéance déjà reçue ou encaissée'></span></p>";
-		else
-			contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt delete-maturity' id='delete-maturity-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Supprimer l&apos;échéance'></span></p>";*/
+		contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt bank-maturity' id ='delete-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Supprimer l&apos;échéance'></span></p>";
 
 		contents += "</div>"
 		contents += "<div class='container-fluid'>";
 		contents += "<p class='col-xs-3'>"+maturities[i].payer+"</p>";
+
+		// Deadline
 		if(moment(maturities[i].date) < moment() && bank_date == ""){
 			deadline_class = "deadline-expired";
 		}
-		contents += "<p class='col-xs-2'><span class='deadline-maturity-span deadline-span "+deadline_class+"' id='deadline-maturity-span-"+maturities[i].id+"'> <span class='glyphicon glyphicon-time' title='Date de réception limite'></span> "+moment(maturities[i].date).format("DD/MM/YYYY")+"</span></p>";
-		contents += "<p class='col-lg-2'><span class='glyphicon glyphicon-ok' title='Date de réception'></span> <span class='reception-span' id='reception-span-"+maturities[i].id+"'>"+reception_date+"</span></p>";
-		contents += "<p class='col-lg-2'><span class='glyphicon glyphicon-download-alt' title='Date d&apos;encaissement'></span> <span class='bank-span' id='bank-span-"+maturities[i].id+"'>"+bank_date+"</span></p>";
+		contents += "<p class='col-xs-2 trigger-sub trigger-editable "+deadline_class+"' data-subtype='deadline-maturity' id='deadline-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Modifier la date limite'><span class='glyphicon glyphicon-time' title='Date de réception limite'></span> <span class='deadline-maturity-span' id='deadline-maturity-span-"+maturities[i].id+"'>"+moment(maturities[i].date).format("DD/MM/YYYY")+"</span></p>";
+
+		// Reception
+		contents += "<p class='col-lg-2 trigger-sub trigger-editable' data-subtype='receive-maturity' id='receive-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Valider la réception'><span class='glyphicon glyphicon-ok' title='Date de réception'></span> <span class='reception-span' id='reception-span-"+maturities[i].id+"'>"+reception_date+"</span></p>";
+
+		// Bank
+		contents += "<p class='col-lg-2 trigger-sub trigger-editable' data-subtype='bank-maturity' id='bank-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Encaisser l&apos;échéance'><span class='glyphicon glyphicon-download-alt' title='Date d&apos;encaissement'></span> <span class='bank-span' id='bank-span-"+maturities[i].id+"'>"+bank_date+"</span></p>";
 		contents += "</div></li>";
 		totalPrice += parseFloat(maturities[i].price);
 	}
@@ -93,90 +88,68 @@ function displayMaturities(maturities){
 }
 
 $(document).on('click', '.receive-maturity', function(){
-	if(!$(this).hasClass("disabled")){
-		var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
-		var table = "produits_echeances";
-		var reception_date = $(".reception-date").val();
-		if($("#receive-"+maturity_id).hasClass("glyphicon-ok")){
-			// Modal to set the date and the method. If the method is credit card, the maturity will automatically be banked.
-			var values = {
-				date_paiement: moment(reception_date, "DD/MM/YYYY").format("DD/MM/YYYY HH:mm:ss"),
-				methode_paiement: $(".reception-method").val()
-			};
-			if($(".reception-method").val() == "Carte bancaire"){
-				values["date_encaissement"] = moment(reception_date, "DD/MM/YYYY").format("DD/MM/YYYY HH:mm:ss");
-			}
-		} else {
-			var values = {
-				date_paiement: null
-			};
-		}
-
-		// As we contact updateEntry (which handles a URL), we $.param() to send the correct format
-		$.when(updateEntry(table, $.param(values), maturity_id)).done(function(){
-			var icon = $("#receive-"+maturity_id);
-			if(icon.hasClass("glyphicon-ok")){
-				icon.addClass("glyphicon-remove");
-				icon.addClass("receive-maturity");
-				icon.removeClass("glyphicon-ok");
-				icon.removeClass("trigger-sub");
-				icon.attr("title", "Annuler la réception");
-
-				console.log(reception_date);
-
-				$("#reception-span-"+maturity_id).text(reception_date);
-
-				$("#maturity-"+maturity_id).addClass("status-partial-success");
-				$("#maturity-"+maturity_id).removeClass("status-pre-success");
-				$("#maturity-"+maturity_id).removeClass("status-over");
-
-				// As the maturity is now received, it cannot be deleted anymore
-				$("#delete-maturity-"+maturity_id).addClass("disabled");
-				if($(".reception-method").val() == "Carte bancaire"){
-					feedbackBankMaturity(maturity_id, moment(reception_date, "DD/MM/YYYY"));
-				}
-				$("#maturity-"+maturity_id+"-method>span").first().text($(".reception-method").val());
-			} else {
-				icon.addClass("glyphicon-ok");
-				icon.addClass("trigger-sub");
-				icon.removeClass("glyphicon-remove");
-				icon.removeClass("receive-maturity");
-				icon.attr("title", "Valider la réception");
-
-				$("#reception-span-"+maturity_id).text("");
-
-				// If the maturity is late, we add the status-over class
-				if(moment($("#deadline-span-"+maturity_id).text(), "DD/MM/YYYY") < moment())
-					$("#maturity-"+maturity_id).addClass("status-over");
-				else
-					$("#maturity-"+maturity_id).addClass("status-pre-success");
-				$("#maturity-"+maturity_id).removeClass("status-partial-success");
-
-				// The maturity is now pending, it can be removed
-				$("#delete-maturity-"+maturity_id).removeClass("disabled");
-			}
-			$(".sub-modal").hide(0);
-		})
-	}
-}).on('click', '.bank-maturity', function(){
 	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
 	var table = "produits_echeances";
-
-	// Depending on the class of the icon, we set the date.
-	if($(this).hasClass("glyphicon-download-alt")){
-		var value = {
-			date_encaissement: moment().format("DD/MM/YYYY HH:mm:ss")
-		};
-	}
-	else{
-		var value = {
-			date_encaissement: null
-		};
+	var reception_date = $(".reception-date").val();
+	// Modal to set the date and the method. If the method is credit card, the maturity will automatically be banked.
+	var values = {
+		date_paiement: moment(reception_date, "DD/MM/YYYY").format("DD/MM/YYYY HH:mm:ss"),
+		methode_paiement: $(".reception-method").val()
+	};
+	if($(".reception-method").val() == "Carte bancaire"){
+		values["date_encaissement"] = moment(reception_date, "DD/MM/YYYY").format("DD/MM/YYYY HH:mm:ss");
 	}
 
 	// As we contact updateEntry (which handles a URL), we $.param() to send the correct format
+	$.when(updateEntry(table, $.param(values), maturity_id)).done(function(){
+		$(".sub-modal").hide(0);
+		$("#maturity-"+maturity_id+"-method>span").first().text($(".reception-method").val());
+		$("#reception-span-"+maturity_id).text(reception_date);
+		if($(".reception-method").val() == "Carte bancaire"){
+			$("#bank-span-"+maturity_id).text(reception_date);
+		}
+		updateMaturityState(maturity_id);
+	})
+}).on('click', '.cancel-reception', function(){
+	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
+	var table = "produits_echeances";
+
+	// We cancel the date of reception.
+	var value = {
+		date_paiement: null
+	};
+
 	$.when(updateEntry(table, $.param(value), maturity_id)).done(function(){
-		feedbackBankMaturity(maturity_id, moment());
+		$(".sub-modal").hide(0);
+		$("#reception-span-"+maturity_id).text("");
+		updateMaturityState(maturity_id);
+	})
+}).on('click', '.bank-maturity', function(){
+	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
+	var table = "produits_echeances";
+	var bank_date = $(".bank-date").val();
+
+	// Depending on the class of the icon, we set the date.
+	var value = {
+		date_encaissement: moment(bank_date, "DD/MM/YYYY").format("DD/MM/YYYY HH:mm:ss")
+	};
+
+	// As we contact updateEntry (which handles a URL), we $.param() to send the correct format
+	$.when(updateEntry(table, $.param(value), maturity_id)).done(function(){
+		$(".sub-modal").hide(0);
+		$("#bank-span-"+maturity_id).text(moment(bank_date, "DD/MM/YYYY").format("DD/MM/YYYY"));
+		updateMaturityState(maturity_id);
+	});
+}).on('click', '.cancel-bank', function(){
+	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
+	var table = "produits_echeances";
+	var value = {
+		date_encaissement: null
+	};
+	$.when(updateEntry(table, $.param(value), maturity_id)).done(function(){
+		$(".sub-modal").hide(0);
+		$("#bank-span-"+maturity_id).text("");
+		updateMaturityState(maturity_id);
 	});
 }).on('focus', '.reception-method', function(){
 	$(".reception-method").textcomplete([{
@@ -199,7 +172,20 @@ $(document).on('click', '.receive-maturity', function(){
 			date_encaissement: moment().format("DD/MM/YYYY HH:mm:ss")
 		};
 		$.when(updateEntry("produits_echeances", $.param(value), maturity_id)).done(function(){
-			feedbackBankMaturity(maturity_id, moment());
+			updateMaturityState(maturity_id);
 		});
+	})
+}).on('click', '.deadline-maturity', function(){
+	var maturity_id = document.getElementById($(this).attr("id")).dataset.maturity;
+	var table = "produits_echeances";
+	var deadline = $(".deadline-date").val();
+	var value = {
+		date_echeance: moment(deadline, "DD/MM/YYYY").format("DD/MM/YYYY HH:mm:ss")
+	};
+
+	$.when(updateEntry(table, $.param(value), maturity_id)).done(function(){
+		$(".sub-modal").hide(0);
+		$("#deadline-maturity-span-"+maturity_id).text(deadline);
+		updateMaturityState(maturity_id);
 	})
 })

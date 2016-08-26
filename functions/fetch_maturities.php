@@ -5,6 +5,7 @@ $db = PDOFactory::getConnection();
 $transaction = $_POST["purchase_id"];
 
 $load = $db->query("SELECT * FROM produits_echeances pe
+						JOIN transactions t ON pe.reference_achat = t.id_transaction
 						WHERE reference_achat = '$transaction'
 						ORDER BY date_echeance DESC");
 
@@ -20,7 +21,9 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 		"date_reception" => ($details["date_paiement"]!=NULL)?$details["date_paiement"]:"",
 		"bank_status" => $details["statut_banque"],
 		"date_bank" => ($details["date_encaissement"]!=NULL)?$details["date_encaissement"]:"",
-		"lock_montant" => $details["lock_montant"]
+		"lock_montant" => $details["lock_montant"],
+		"transaction_id" => $transaction,
+		"transaction_user" => $details["payeur_transaction"]
 	);
 	array_push($maturities, $m);
 }

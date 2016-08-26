@@ -502,12 +502,19 @@ $(document).ready(function(){
 			body += "<input type='text' class='form-control datepicker reception-date'/>";
 			body += "<label class='control-label'>Méthode de paiement</label>";
 			body += "<input type='text' class='form-control reception-method' value='"+method+"'></input>";
-			footer += "<button class='btn btn-success receive-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
+			footer += "<button class='btn btn-success receive-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Enregistrer</button>";
+			footer += "<button class='btn btn-danger cancel-reception float-right' data-maturity='"+maturity_id+"' id='btn-sm-cancel-receive'>Annuler réception</button>";
+			if($("#reception-span-"+maturity_id).text() != ""){
+				var default_date = moment($("#reception-span-"+maturity_id).text(), "DD/MM/YYYY");
+			} else {
+				var default_date = null;
+			}
 			$(".sub-modal").css({top : toffset.top+'px'});
 			$(".sub-modal").css({left : toffset.left-200+'px'});
 			$(".sub-modal-body").html(body);
 			var options = {
 				format: "DD/MM/YYYY",
+				defaultDate: default_date,
 				inline: true,
 				locale: "fr"
 			};
@@ -516,12 +523,35 @@ $(document).ready(function(){
 		case 'bank-maturity':
 			var maturity_id = target.dataset.maturity;
 			title = "Encaissement de l'échéance";
-			body += "<input type='text' class='form-control datepicker'/>";
+			body += "<input type='text' class='form-control datepicker bank-date'/>";
 			footer += "<button class='btn btn-success bank-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
+			footer += "<button class='btn btn-danger cancel-bank float-right' data-maturity='"+maturity_id+"' id='btn-sm-cancel-bank'>Annuler encaissement</button>";
+			if($("#bank-span-"+maturity_id).text() != ""){
+				var default_date = moment($("#bank-span-"+maturity_id).text(), "DD/MM/YYYY");
+			} else {
+				var default_date = null;
+			}
 			$(".sub-modal").css({top : tpos.top+51+'px'});
 			$(".sub-modal-body").html(body);
 			var options = {
 				format: "DD/MM/YYYY",
+				defaultDate: default_date,
+				inline: true,
+				locale: "fr"
+			};
+			break;
+
+		case 'deadline-maturity':
+			var maturity_id = target.dataset.maturity;
+			title = "Modifier la date limite";
+			body += "<input type='text' class='form-control datepicker deadline-date'/>";
+			footer += "<button class='btn btn-success deadline-maturity' data-maturity='"+maturity_id+"' id='btn-sm-deadline'>Enregistrer</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			var options = {
+				format: "DD/MM/YYYY",
+				defaultDate : moment($("#deadline-maturity-span-"+maturity_id).text(), "DD/MM/YYYY"),
+				inline: true,
 				locale: "fr"
 			};
 			break;
