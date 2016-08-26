@@ -36,6 +36,28 @@ function updateMaturityState(maturity_id){
 	}
 }
 
+function showAmountDiscrepancy(purchase_id){
+	// Compute total timetable price
+	var timetable_price = 0, transaction_price = parseFloat($("#price-"+purchase_id).text());
+	$(".maturity-price-transaction-"+purchase_id).each(function(){
+		timetable_price += parseFloat($(this).text());
+	})
+
+	var remaining_price = transaction_price - timetable_price;
+
+	if(remaining_price != 0){
+		$("#maturities-incomplete-"+purchase_id).show();
+		if(remaining_price > 0){
+			var warning_message = "<span>"+remaining_price+"</span> € sont actuellement ignorés par l'échéancier.</p>";
+		} else if(remaining_price < 0){
+			var warning_message = "<span>"+remaining_price+"</span> € sont actuellement ajoutés par l'échéancier.";
+		}
+		$("#maturities-incomplete-"+purchase_id).html(warning_message);
+	} else {
+		$("#maturities-incomplete-"+purchase_id).hide();
+	}
+}
+
 function displayMaturities(maturities){
 	var totalPrice = 0, contents = "";
 	for(var i = 0; i < maturities.length; i++){
@@ -56,8 +78,9 @@ function displayMaturities(maturities){
 		}
 
 		contents += "<li class='purchase-item panel-item maturity-item "+item_status+" container-fluid' id='maturity-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"'>";
+		contents += "<div class='delete-animation-holder' id='dah-"+maturities[i].id+"' data-target='"+maturities[i].id+"'><p class='hold-text'>Suppression...(Relâchez pour annuler)</p></div>";
 		contents += "<div class='container-fluid'>";
-		contents += "<p class='col-xs-10 panel-item-title bf' id='maturity-"+maturities[i].id+"-method'><span>"+maturities[i].method+"</span> pour <span>"+maturities[i].price+"</span> €</p>";
+		contents += "<p class='col-xs-10 panel-item-title bf' id='maturity-"+maturities[i].id+"-method'><span>"+maturities[i].method+"</span> pour <span class='maturity-price-transaction-"+maturities[i].transaction_id+"' id='maturity-price-"+maturities[i].price+"'>"+maturities[i].price+"</span> €</p>";
 
 		var redirection_link = "user/"+maturities[i].transaction_user+"/achats";
 
@@ -67,7 +90,7 @@ function displayMaturities(maturities){
 			contents += "<p class='col-xs-1'></p>";
 		}
 
-		contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt bank-maturity' id ='delete-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Supprimer l&apos;échéance'></span></p>";
+		contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt delete-maturity' id ='delete-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' data-transaction='"+maturities[i].transaction_id+"' title='Supprimer l&apos;échéance'></span></p>";
 
 		contents += "</div>"
 		contents += "<div class='container-fluid'>";
@@ -196,4 +219,44 @@ $(document).on('click', '.receive-maturity', function(){
 		$("#deadline-maturity-span-"+maturity_id).text(deadline);
 		updateMaturityState(maturity_id);
 	})
+}).on('mousedown', '.glyphicon-trash', function(){
+	if($(this).hasClass("glyphicon-button")){
+		var target = document.getElementById($(this).attr("id")).dataset.maturity;
+		var transaction_id = document.getElementById($(this).attr("id")).dataset.transaction;
+		var toBeDeleted = $("#dah-"+target);
+		$("#dah-"+target).show();
+		$("#dah-"+target).width($("#dah-"+target).parent().width());
+		$("#dah-"+target).height($("#dah-"+target).parent().height());
+		var startAngle = -Math.PI/2;
+		toBeDeleted.circleProgress({
+			value: 1,
+			size: 60,
+			startAngle: startAngle,
+			thickness: 100/18,
+			lineCap: "round",
+			fill:{
+				color: "white"
+			},
+			animation: {
+				duration: 2500
+			}
+		}).on('circle-animation-end', function(e){
+			var value = toBeDeleted.data('circle-progress').lastFrameValue;
+			if(value == 1){
+				// Deletion code
+				var table = "produits_echeances";
+				var deleted_price = parseFloat($("#maturity-"+target+"-method>span").eq(1).text());
+
+				$.when(deleteEntry(table, target)).done(function(){
+					$("#maturity-"+target).remove();
+					showAmountDiscrepancy(transaction_id);
+				})
+			}
+		})
+	}
+}).on('mouseup', '.delete-animation-holder', function(){
+	var target = document.getElementById($(this).attr("id")).dataset.target;
+	var toBeDeleted = $("#dah-"+target);
+	$("#dah-"+target).hide();
+	$(toBeDeleted.circleProgress('widget')).stop();
 })

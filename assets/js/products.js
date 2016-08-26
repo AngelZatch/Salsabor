@@ -467,21 +467,21 @@ function displayPurchase(purchase_id){
 			// Handle maturities
 			contents += "<p class='purchase-subtitle'>Echéancier</p>";
 			contents += "<div class='row purchase-maturities-container' id='maturities-"+purchase_id+"'>";
+			contents += "<p class='maturities-incomplete' id='maturities-incomplete-"+purchase_id+"'></p>";
 			contents += "<ul class='purchase-inside-list maturities-list'>";
+			contents += "<div class='maturities-button'>";
+			contents += "<button class='btn btn-primary' id='add-maturity-"+purchase_id+"' data-transaction='"+purchase_id+"'><span class='glyphicon glyphicon-plus'></span> Ajouter une échéance</button>";
+			contents += "</div>";
 			var maturities = displayMaturities(maturities_list);
 			contents += maturities[0];
 			contents += "</ul></div>";
 			// Add the total price to each input once it's calculated.
 			// Lock the appropriate sliders.
 			$("#body-purchase-"+purchase_id).append(contents);
-			if(maturities[1] != 0){
-				if(maturities[1] > 0){
-					var warning_message = "<p class='maturities-incomplete' id='maturities-incomplete-"+purchase_id+"'><span>"+maturities[1]+"</span> € sont actuellement ignorés par l'échéancier.</p>";
-				} else {
-					var warning_message = "<p class='maturities-incomplete' id='maturities-incomplete-"+purchase_id+"'><span>"+maturities[1]+"</span> € sont actuellement ajoutés par l'échéancier.</p>";
-				}
-				$("#maturities-"+purchase_id).before(warning_message);
-			}
+
+			// Display remaining price
+			var remaining_price = maturities[1].toFixed(2);
+			showAmountDiscrepancy(purchase_id);
 			$("#body-purchase-"+purchase_id).collapse("show");
 		})
 	}
