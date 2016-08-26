@@ -39,6 +39,9 @@ function updateMaturityState(maturity_id){
 function displayMaturities(maturities){
 	var totalPrice = 0, contents = "";
 	for(var i = 0; i < maturities.length; i++){
+		if(i == 0 && top.location.pathname != "/Salsabor/"+redirection_link){
+			var transaction_price = $("#price-"+maturities[i].transaction_id).text();
+		}
 		var item_status = "status-pre-success", reception_date = "", bank_date = "", deadline_class = "", method = maturities[i].method;
 		if(moment(maturities[i].date) < moment()){
 			item_status = "status-over";
@@ -84,7 +87,12 @@ function displayMaturities(maturities){
 		contents += "</div></li>";
 		totalPrice += parseFloat(maturities[i].price);
 	}
-	return contents;
+	var maturities_price = transaction_price - totalPrice;
+	if(top.location.pathname != "/Salsabor/"+redirection_link){
+		return contents;
+	} else {
+		return Array(contents, maturities_price);
+	}
 }
 
 $(document).on('click', '.receive-maturity', function(){
