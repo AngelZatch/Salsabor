@@ -39,6 +39,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<script src="assets/js/products.js"></script>
 		<script src="assets/js/maturities.js"></script>
 		<script src="assets/js/bootstrap-slider.min.js"></script>
+		<script src="assets/js/circle-progress.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -68,7 +69,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 							<div class="panel-heading container-fluid" onClick="displayPurchase('<?php echo $achats["id_transaction"];?>')">
 								<p class="purchase-id col-xs-4">Transaction <?php echo $achats["id_transaction"];?></p>
 								<p class="col-xs-3"><?php echo $productQty;?> produit(s)</p>
-								<p class="purchase-sub col-xs-3"><?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <?php echo $achats["prix_total"];?> €</p>
+								<p class="purchase-sub col-xs-3"><?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <span id="price-<?php echo $achats["id_transaction"];?>"><?php echo $achats["prix_total"];?></span> €</p>
 								<span class="glyphicon glyphicon-briefcase glyphicon-button glyphicon-button-alt glyphicon-button-big create-contract col-xs-1" id="create-contract-<?php echo $achats["id_transaction"];?>" data-transaction="<?php echo $achats["id_transaction"];?>"title="Afficher le contrat"></span>
 								<span class="glyphicon glyphicon-file glyphicon-button glyphicon-button-alt glyphicon-button-big create-invoice col-xs-1" id="create-invoice-<?php echo $achats["id_transaction"];?>" data-transaction="<?php echo $achats["id_transaction"];?>" title="Afficher la facture"></span>
 							</div>
@@ -82,6 +83,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		</div>
 		<?php include "inserts/modal_product.php";?>
 		<?php include "inserts/sub_modal_product.php";?>
+		<?php include "inserts/edit_modal.php";?>
 		<script>
 			$(".create-invoice").click(function(e){
 				e.stopPropagation();
