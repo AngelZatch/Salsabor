@@ -675,6 +675,58 @@ $(document).ready(function(){
 }).on('click', '.sub-menu-toggle', function(){
 	console.log("toggling");
 	$(".small-sidebar-container").toggle();
+}).on('show.bs.modal', '#edit-modal', function(event){
+	/*
+	Code responsible for the standard edition of every field. If you want some fields to be editable by this method, you need to do the following:
+	== In general ==
+		- Include the edit_modal.php file in the page you're planning to have editable things in
+
+	== For the edit butotn ==
+		- Attach the class 'edit-maturity' to your edit action. Add the data-argument to the dataset with the value database_entry_id and don't forget to link the modal by data-toggle='modal' and data-target='#edit-modal'.
+
+	== For every editable field ==
+		- For EVERY element of the entry you want to be editable, attach the class 'modal-editable-$' where $ is the database_entry_id.
+		- For EVERY element then, add two fields in the dataset : data-field is the name of the field in database, data-name is the name that will display in the label of the form.
+
+		Once you've done all this, you'll be set.
+	*/
+	var entry_id = $(event.relatedTarget).data('maturity'), transaction_id = $(event.relatedTarget).data('transaction'), modal = $(this);
+	console.log(entry_id);
+	modal.find(".modal-title").text("Modifier l'échéance "+entry_id);
+
+	// Constructing the form
+	var edit_form = "<form class='form-horizontal' id='modal-form'>";
+
+	// Form groups constructed from every editable field.
+	$(".modal-editable-"+entry_id).each(function(){
+		var element = $(this);
+		var field_name = $(this).data("field"), name = $(this).data("name");
+		edit_form += "<div class='form-group'>";
+		edit_form += "<label for='"+field_name+"' class='col-lg-5 control-label'>"+name+"</label>";
+		edit_form += "<div class='col-lg-7'>";
+		edit_form += "<input type='text' class='form-control' name='"+field_name+"' value='"+element.text()+"'>";
+		edit_form += "</div>";
+		edit_form += "</div>";
+	})
+
+	edit_form += "</form>";
+	modal.find(".edit-form-space").html(edit_form);
+
+	// Binding the edit code to the update button
+	modal.find(".send-edit-data").on('click', function(){
+		var values = modal.find("#modal-form").serialize();
+		$.when(updateEntry("produits_echeances", values, entry_id)).done(function(){
+			var updated_values = modal.find("#modal-form").serializeArray(), i = 0;
+			// We find all the field again, they're in the same order as the array of values since it's how the form has been constructed.
+			$(".modal-editable-"+entry_id).each(function(){
+				$(this).text(updated_values[i].value);
+				i++;
+			})
+			showAmountDiscrepancy(transaction_id);
+			modal.find(".send-edit-data").off('click');
+			modal.modal('hide');
+		})
+	})
 })
 
 $(".has-name-completion").on('click blur keyup', function(){

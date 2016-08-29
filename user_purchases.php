@@ -83,6 +83,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		</div>
 		<?php include "inserts/modal_product.php";?>
 		<?php include "inserts/sub_modal_product.php";?>
+		<?php include "inserts/edit_modal.php";?>
 		<script>
 			$(".create-invoice").click(function(e){
 				e.stopPropagation();

@@ -111,7 +111,9 @@ function renderMaturity(maturity){
 	contents += "<li class='purchase-item panel-item maturity-item "+item_status+" container-fluid' id='maturity-"+maturity.id+"' data-maturity='"+maturity.id+"'>";
 	contents += "<div class='delete-animation-holder' id='dah-"+maturity.id+"' data-target='"+maturity.id+"'><p class='hold-text'>Suppression...(Relâchez pour annuler)</p></div>";
 	contents += "<div class='container-fluid'>";
-	contents += "<p class='col-xs-10 panel-item-title bf' id='maturity-"+maturity.id+"-method'><span>"+maturity.method+"</span> pour <span class='maturity-price-transaction-"+maturity.transaction_id+"' id='maturity-price-"+maturity.price+"'>"+maturity.price+"</span> €</p>";
+
+	// Method and price
+	contents += "<p class='col-xs-9 panel-item-title bf' id='maturity-"+maturity.id+"-method'><span class='modal-editable-"+maturity.id+"' id='editable-method-"+maturity.id+"' data-field='methode_paiement' data-name='Méthode de paiement'>"+maturity.method+"</span> pour <span class='maturity-price-transaction-"+maturity.transaction_id+" modal-editable-"+maturity.id+"'' id='maturity-price-"+maturity.price+"' data-field='montant' data-name='Montant'>"+maturity.price+"</span> €</p>";
 
 	if(top.location.pathname != "/Salsabor/"+redirection_link && maturity.transaction_user != undefined){
 		contents += "<p class='col-xs-1'><a href='user/"+maturity.transaction_user+"/achats#purchase-"+maturity.transaction_id+"' class='link-glyphicon'><span class='glyphicon glyphicon-share-alt glyphicon-button-alt' title='Aller à la transaction'></span></a></p>";
@@ -119,23 +121,25 @@ function renderMaturity(maturity){
 		contents += "<p class='col-xs-1'></p>";
 	}
 
+	contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt edit-maturity' id='edit-"+maturity.id+"' data-maturity='"+maturity.id+"' data-toggle='modal' data-target='#edit-modal' data-argument='"+maturity.id+"' data-transaction='"+maturity.transaction_id+"' title='Modifier l&apos;échéance'></span></p>";
+
 	contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt delete-maturity' id ='delete-"+maturity.id+"' data-maturity='"+maturity.id+"' data-transaction='"+maturity.transaction_id+"' title='Supprimer l&apos;échéance'></span></p>";
 
 	contents += "</div>"
 	contents += "<div class='container-fluid'>";
-	contents += "<p class='col-xs-3'>"+payer+"</p>";
+	contents += "<p class='col-xs-3 modal-editable-"+maturity.id+"' id='editable-payer-"+maturity.id+"' data-field='payeur_echeance' data-name='Payeur'>"+payer+"</p>";
 
 	// Deadline
 	if(moment(maturity.date) < moment() && bank_date == ""){
 		deadline_class = "deadline-expired";
 	}
-	contents += "<p class='col-xs-2 trigger-sub trigger-editable "+deadline_class+"' data-subtype='deadline-maturity' id='deadline-"+maturity.id+"' data-maturity='"+maturity.id+"' title='Modifier la date limite'><span class='glyphicon glyphicon-time' title='Date de réception limite'></span> <span class='deadline-maturity-span' id='deadline-maturity-span-"+maturity.id+"'>"+deadline_date+"</span></p>";
+	contents += "<p class='col-xs-3 col-sm-2 trigger-sub trigger-editable "+deadline_class+"' data-subtype='deadline-maturity' id='deadline-"+maturity.id+"' data-maturity='"+maturity.id+"' title='Modifier la date limite'><span class='glyphicon glyphicon-time' title='Date de réception limite'></span> <span class='deadline-maturity-span' id='deadline-maturity-span-"+maturity.id+"'>"+deadline_date+"</span></p>";
 
 	// Reception
-	contents += "<p class='col-lg-2 trigger-sub trigger-editable' data-subtype='receive-maturity' id='receive-"+maturity.id+"' data-maturity='"+maturity.id+"' title='Valider la réception'><span class='glyphicon glyphicon-ok' title='Date de réception'></span> <span class='reception-span' id='reception-span-"+maturity.id+"'>"+reception_date+"</span></p>";
+	contents += "<p class='col-xs-3 col-sm-2 trigger-sub trigger-editable' data-subtype='receive-maturity' id='receive-"+maturity.id+"' data-maturity='"+maturity.id+"' title='Valider la réception'><span class='glyphicon glyphicon-ok' title='Date de réception'></span> <span class='reception-span' id='reception-span-"+maturity.id+"'>"+reception_date+"</span></p>";
 
 	// Bank
-	contents += "<p class='col-lg-2 trigger-sub trigger-editable' data-subtype='bank-maturity' id='bank-"+maturity.id+"' data-maturity='"+maturity.id+"' title='Encaisser l&apos;échéance'><span class='glyphicon glyphicon-download-alt' title='Date d&apos;encaissement'></span> <span class='bank-span' id='bank-span-"+maturity.id+"'>"+bank_date+"</span></p>";
+	contents += "<p class='col-xs-3 col-sm-2 trigger-sub trigger-editable' data-subtype='bank-maturity' id='bank-"+maturity.id+"' data-maturity='"+maturity.id+"' title='Encaisser l&apos;échéance'><span class='glyphicon glyphicon-download-alt' title='Date d&apos;encaissement'></span> <span class='bank-span' id='bank-span-"+maturity.id+"'>"+bank_date+"</span></p>";
 	contents += "</div></li>";
 	return contents;
 }
