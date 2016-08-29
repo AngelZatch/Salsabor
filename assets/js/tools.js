@@ -502,12 +502,19 @@ $(document).ready(function(){
 			body += "<input type='text' class='form-control datepicker reception-date'/>";
 			body += "<label class='control-label'>Méthode de paiement</label>";
 			body += "<input type='text' class='form-control reception-method' value='"+method+"'></input>";
-			footer += "<button class='btn btn-success receive-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
+			footer += "<button class='btn btn-success receive-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Enregistrer</button>";
+			footer += "<button class='btn btn-danger cancel-reception float-right' data-maturity='"+maturity_id+"' id='btn-sm-cancel-receive'>Annuler réception</button>";
+			if($("#reception-span-"+maturity_id).text() != ""){
+				var default_date = moment($("#reception-span-"+maturity_id).text(), "DD/MM/YYYY");
+			} else {
+				var default_date = null;
+			}
 			$(".sub-modal").css({top : toffset.top+'px'});
 			$(".sub-modal").css({left : toffset.left-200+'px'});
 			$(".sub-modal-body").html(body);
 			var options = {
 				format: "DD/MM/YYYY",
+				defaultDate: default_date,
 				inline: true,
 				locale: "fr"
 			};
@@ -516,12 +523,40 @@ $(document).ready(function(){
 		case 'bank-maturity':
 			var maturity_id = target.dataset.maturity;
 			title = "Encaissement de l'échéance";
-			body += "<input type='text' class='form-control datepicker'/>";
+			body += "<input type='text' class='form-control datepicker bank-date'/>";
 			footer += "<button class='btn btn-success bank-maturity' data-maturity='"+maturity_id+"' id='btn-sm-receive'>Recevoir</button>";
+			footer += "<button class='btn btn-danger cancel-bank float-right' data-maturity='"+maturity_id+"' id='btn-sm-cancel-bank'>Annuler encaissement</button>";
+			if($("#bank-span-"+maturity_id).text() != ""){
+				var default_date = moment($("#bank-span-"+maturity_id).text(), "DD/MM/YYYY");
+			} else {
+				var default_date = null;
+			}
 			$(".sub-modal").css({top : tpos.top+51+'px'});
 			$(".sub-modal-body").html(body);
 			var options = {
 				format: "DD/MM/YYYY",
+				defaultDate: default_date,
+				inline: true,
+				locale: "fr"
+			};
+			break;
+
+		case 'deadline-maturity':
+			var maturity_id = target.dataset.maturity;
+			title = "Modifier la date limite";
+			body += "<input type='text' class='form-control datepicker deadline-date'/>";
+			footer += "<button class='btn btn-success deadline-maturity' data-maturity='"+maturity_id+"' id='btn-sm-deadline'>Enregistrer</button>";
+			$(".sub-modal").css({top : tpos.top+51+'px'});
+			$(".sub-modal-body").html(body);
+			if($("#deadline-maturity-span-"+maturity_id).text() != ""){
+				var default_date = moment($("#deadline-maturity-span-"+maturity_id).text(), "DD/MM/YYYY");
+			} else {
+				var default_date = null;
+			}
+			var options = {
+				format: "DD/MM/YYYY",
+				defaultDate : default_date,
+				inline: true,
 				locale: "fr"
 			};
 			break;
@@ -640,6 +675,58 @@ $(document).ready(function(){
 }).on('click', '.sub-menu-toggle', function(){
 	console.log("toggling");
 	$(".small-sidebar-container").toggle();
+}).on('show.bs.modal', '#edit-modal', function(event){
+	/*
+	Code responsible for the standard edition of every field. If you want some fields to be editable by this method, you need to do the following:
+	== In general ==
+		- Include the edit_modal.php file in the page you're planning to have editable things in
+
+	== For the edit butotn ==
+		- Attach the class 'edit-maturity' to your edit action. Add the data-argument to the dataset with the value database_entry_id and don't forget to link the modal by data-toggle='modal' and data-target='#edit-modal'.
+
+	== For every editable field ==
+		- For EVERY element of the entry you want to be editable, attach the class 'modal-editable-$' where $ is the database_entry_id.
+		- For EVERY element then, add two fields in the dataset : data-field is the name of the field in database, data-name is the name that will display in the label of the form.
+
+		Once you've done all this, you'll be set.
+	*/
+	var entry_id = $(event.relatedTarget).data('maturity'), transaction_id = $(event.relatedTarget).data('transaction'), modal = $(this);
+	console.log(entry_id);
+	modal.find(".modal-title").text("Modifier l'échéance "+entry_id);
+
+	// Constructing the form
+	var edit_form = "<form class='form-horizontal' id='modal-form'>";
+
+	// Form groups constructed from every editable field.
+	$(".modal-editable-"+entry_id).each(function(){
+		var element = $(this);
+		var field_name = $(this).data("field"), name = $(this).data("name");
+		edit_form += "<div class='form-group'>";
+		edit_form += "<label for='"+field_name+"' class='col-lg-5 control-label'>"+name+"</label>";
+		edit_form += "<div class='col-lg-7'>";
+		edit_form += "<input type='text' class='form-control' name='"+field_name+"' value='"+element.text()+"'>";
+		edit_form += "</div>";
+		edit_form += "</div>";
+	})
+
+	edit_form += "</form>";
+	modal.find(".edit-form-space").html(edit_form);
+
+	// Binding the edit code to the update button
+	modal.find(".send-edit-data").on('click', function(){
+		var values = modal.find("#modal-form").serialize();
+		$.when(updateEntry("produits_echeances", values, entry_id)).done(function(){
+			var updated_values = modal.find("#modal-form").serializeArray(), i = 0;
+			// We find all the field again, they're in the same order as the array of values since it's how the form has been constructed.
+			$(".modal-editable-"+entry_id).each(function(){
+				$(this).text(updated_values[i].value);
+				i++;
+			})
+			showAmountDiscrepancy(transaction_id);
+			modal.find(".send-edit-data").off('click');
+			modal.modal('hide');
+		})
+	})
 })
 
 $(".has-name-completion").on('click blur keyup', function(){

@@ -226,6 +226,9 @@ a
 	&:hover
 		text-decoration: underline
 
+.trigger-editable
+	@extend .editable
+
 .inline-editable
 	&:nth-child(1n+0)
 		display: inline-flex
@@ -999,8 +1002,8 @@ div.legend:nth-child(1n+0)
 	padding-top: 4px
 
 .deadline-span
-	padding: 4px 0 4px 10px
 	&:not(.deadline-maturity-span)
+		padding: 4px 0 4px 10px
 		&:hover
 			text-decoration: underline
 	&.deadline-near
@@ -1010,8 +1013,24 @@ div.legend:nth-child(1n+0)
 		color: white
 		font-weight: 700
 
+.deadline-expired
+	background-color: $danger-color
+	color: white
+	font-weight: 700
+
 .deadline-maturity-span
 	padding-right: 10px
+
+.maturities-button
+	margin: 10px
+
+.maturities-incomplete
+	font-size: 1.4em
+	font-weight: 700
+	display: none
+	margin-left: 10px
+	span
+		color: $danger-color
 
 .main-maintenance
 	margin-top: 80px
