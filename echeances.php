@@ -60,11 +60,11 @@ $time = new DateTime($year.'-'.$month.'-'.$maturityDay);
 					<legend><span class="glyphicon glyphicon-repeat"></span> Echéances</legend>
 					<div class="panel panel-purchase  maturities-container" id="maturities-list">
 						<div class="panel-heading container-fluid">
-							<p class="col-xs-5 col-md-4">Encaissement prévu le <?php echo $time->format('d/m/Y');?></p>
+							<p class="col-xs-4 col-md-4">Encaissement prévu le <?php echo $time->format('d/m/Y');?></p>
 							<p class="col-xs-2 col-md-1"><span class="glyphicon glyphicon-repeat"></span> <span class="maturities-total-count">0</span></p>
 							<p class="col-xs-2 col-md-1"><span class="glyphicon glyphicon-ok"></span> <span class="maturities-received-count">0</span></p>
 							<p class="col-xs-3 col-md-2"><span class="glyphicon glyphicon-piggy-bank"></span> <span class="total-value">0</span> €</p>
-							<span class="glyphicon glyphicon-download-alt col-xs-2 col-md-1 col-md-offset-3 glyphicon-button glyphicon-button-alt glyphicon-button-big bank-all" title="Marquer toutes les échéances comme encaissées"></span>
+							<span class="glyphicon glyphicon-download-alt col-xs-1 col-md-1 col-md-offset-3 glyphicon-button glyphicon-button-alt glyphicon-button-big bank-all" title="Marquer toutes les échéances comme encaissées"></span>
 						</div>
 						<div class="panel-body row">
 							<ul class="purchase-inside-list maturities-list"></ul>
@@ -74,5 +74,6 @@ $time = new DateTime($year.'-'.$month.'-'.$maturityDay);
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
+		<?php include "inserts/edit_modal.php";?>
 	</body>
 </html>
