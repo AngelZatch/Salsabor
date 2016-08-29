@@ -16,7 +16,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 		"payer" => ($details["payeur_echeance"]!=NULL)?$details["payeur_echeance"]:"Pas de payeur",
 		"date" => $details["date_echeance"],
 		"price" => $details["montant"],
-		"method" => ($details["methode_paiement"]!=NULL)?$details["methode_paiement"]:"En attente",
+		"method" => $details["methode_paiement"],
 		"reception_status" => $details["echeance_effectuee"],
 		"date_reception" => $details["date_paiement"],
 		"bank_status" => $details["statut_banque"],
