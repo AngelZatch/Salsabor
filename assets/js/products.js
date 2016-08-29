@@ -468,12 +468,14 @@ function displayPurchase(purchase_id){
 			contents += "<p class='purchase-subtitle'>Echéancier</p>";
 			contents += "<div class='row purchase-maturities-container' id='maturities-"+purchase_id+"'>";
 			contents += "<p class='maturities-incomplete' id='maturities-incomplete-"+purchase_id+"'></p>";
-			contents += "<ul class='purchase-inside-list maturities-list'>";
+			contents += "<ul class='purchase-inside-list maturities-list' id='maturities-list-"+purchase_id+"'>";
 			contents += "<div class='maturities-button'>";
-			contents += "<button class='btn btn-primary' id='add-maturity-"+purchase_id+"' data-transaction='"+purchase_id+"'><span class='glyphicon glyphicon-plus'></span> Ajouter une échéance</button>";
+			contents += "<button class='btn btn-primary add-maturity' id='add-maturity-"+purchase_id+"' data-transaction='"+purchase_id+"'><span class='glyphicon glyphicon-plus'></span> Ajouter une échéance</button>";
 			contents += "</div>";
+			contents += "<div class='maturities-display' id='maturities-display-"+purchase_id+"'>";
 			var maturities = displayMaturities(maturities_list);
 			contents += maturities[0];
+			contents += "</div>";
 			contents += "</ul></div>";
 			// Add the total price to each input once it's calculated.
 			// Lock the appropriate sliders.

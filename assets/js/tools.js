@@ -548,9 +548,14 @@ $(document).ready(function(){
 			footer += "<button class='btn btn-success deadline-maturity' data-maturity='"+maturity_id+"' id='btn-sm-deadline'>Enregistrer</button>";
 			$(".sub-modal").css({top : tpos.top+51+'px'});
 			$(".sub-modal-body").html(body);
+			if($("#deadline-maturity-span-"+maturity_id).text() != ""){
+				var default_date = moment($("#deadline-maturity-span-"+maturity_id).text(), "DD/MM/YYYY");
+			} else {
+				var default_date = null;
+			}
 			var options = {
 				format: "DD/MM/YYYY",
-				defaultDate : moment($("#deadline-maturity-span-"+maturity_id).text(), "DD/MM/YYYY"),
+				defaultDate : default_date,
 				inline: true,
 				locale: "fr"
 			};

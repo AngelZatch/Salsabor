@@ -55,59 +55,18 @@ function showAmountDiscrepancy(purchase_id){
 		$("#maturities-incomplete-"+purchase_id).html(warning_message);
 	} else {
 		$("#maturities-incomplete-"+purchase_id).hide();
+		$("#maturities-incomplete-"+purchase_id).empty();
 	}
 }
 
 function displayMaturities(maturities){
 	var totalPrice = 0, contents = "";
 	for(var i = 0; i < maturities.length; i++){
+		var redirection_link = "user/"+maturities[i].transaction_user+"/achats";
 		if(i == 0 && top.location.pathname != "/Salsabor/"+redirection_link){
 			var transaction_price = $("#price-"+maturities[i].transaction_id).text();
 		}
-		var item_status = "status-pre-success", reception_date = "", bank_date = "", deadline_class = "", method = maturities[i].method;
-		if(moment(maturities[i].date) < moment()){
-			item_status = "status-over";
-		}
-		if(maturities[i].date_reception != ""){
-			reception_date = moment(maturities[i].date_reception).format("DD/MM/YYYY");
-			item_status = "status-partial-success";
-		}
-		if(maturities[i].date_bank != ""){
-			bank_date = moment(maturities[i].date_bank).format("DD/MM/YYYY");
-			item_status = "status-success";
-		}
-
-		contents += "<li class='purchase-item panel-item maturity-item "+item_status+" container-fluid' id='maturity-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"'>";
-		contents += "<div class='delete-animation-holder' id='dah-"+maturities[i].id+"' data-target='"+maturities[i].id+"'><p class='hold-text'>Suppression...(Relâchez pour annuler)</p></div>";
-		contents += "<div class='container-fluid'>";
-		contents += "<p class='col-xs-10 panel-item-title bf' id='maturity-"+maturities[i].id+"-method'><span>"+maturities[i].method+"</span> pour <span class='maturity-price-transaction-"+maturities[i].transaction_id+"' id='maturity-price-"+maturities[i].price+"'>"+maturities[i].price+"</span> €</p>";
-
-		var redirection_link = "user/"+maturities[i].transaction_user+"/achats";
-
-		if(top.location.pathname != "/Salsabor/"+redirection_link){
-			contents += "<p class='col-xs-1'><a href='user/"+maturities[i].transaction_user+"/achats#purchase-"+maturities[i].transaction_id+"' class='link-glyphicon'><span class='glyphicon glyphicon-share-alt glyphicon-button-alt' title='Aller à la transaction'></span></a></p>";
-		} else {
-			contents += "<p class='col-xs-1'></p>";
-		}
-
-		contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt delete-maturity' id ='delete-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' data-transaction='"+maturities[i].transaction_id+"' title='Supprimer l&apos;échéance'></span></p>";
-
-		contents += "</div>"
-		contents += "<div class='container-fluid'>";
-		contents += "<p class='col-xs-3'>"+maturities[i].payer+"</p>";
-
-		// Deadline
-		if(moment(maturities[i].date) < moment() && bank_date == ""){
-			deadline_class = "deadline-expired";
-		}
-		contents += "<p class='col-xs-2 trigger-sub trigger-editable "+deadline_class+"' data-subtype='deadline-maturity' id='deadline-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Modifier la date limite'><span class='glyphicon glyphicon-time' title='Date de réception limite'></span> <span class='deadline-maturity-span' id='deadline-maturity-span-"+maturities[i].id+"'>"+moment(maturities[i].date).format("DD/MM/YYYY")+"</span></p>";
-
-		// Reception
-		contents += "<p class='col-lg-2 trigger-sub trigger-editable' data-subtype='receive-maturity' id='receive-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Valider la réception'><span class='glyphicon glyphicon-ok' title='Date de réception'></span> <span class='reception-span' id='reception-span-"+maturities[i].id+"'>"+reception_date+"</span></p>";
-
-		// Bank
-		contents += "<p class='col-lg-2 trigger-sub trigger-editable' data-subtype='bank-maturity' id='bank-"+maturities[i].id+"' data-maturity='"+maturities[i].id+"' title='Encaisser l&apos;échéance'><span class='glyphicon glyphicon-download-alt' title='Date d&apos;encaissement'></span> <span class='bank-span' id='bank-span-"+maturities[i].id+"'>"+bank_date+"</span></p>";
-		contents += "</div></li>";
+		contents += renderMaturity(maturities[i]);
 		totalPrice += parseFloat(maturities[i].price);
 	}
 	var maturities_price = transaction_price - totalPrice;
@@ -116,6 +75,69 @@ function displayMaturities(maturities){
 	} else {
 		return Array(contents, maturities_price);
 	}
+}
+
+function renderMaturity(maturity){
+	var contents = "", item_status = "status-pre-success", reception_date = "", bank_date = "", deadline_date = "", deadline_class = "", redirection_link = "user/"+maturity.transaction_user+"/achats";
+	if(maturity.method != undefined || maturity.method != ""){
+		var method = maturity.method;
+	} else {
+		var method = "En attente";
+	}
+
+	if(maturity.payer != undefined){
+		var payer = maturity.payer;
+	} else {
+		var payer = "Pas de payeur";
+	}
+
+	if(maturity.date != undefined){
+		deadline_date = moment(maturity.date).format("DD/MM/YYYY");
+		if(moment(maturity.date) < moment()){
+			item_status = "status-over";
+		}
+	}
+
+	if(maturity.date_reception != undefined){
+		reception_date = moment(maturity.date_reception).format("DD/MM/YYYY");
+		item_status = "status-partial-success";
+	}
+
+	if(maturity.date_bank != undefined){
+		bank_date = moment(maturity.date_bank).format("DD/MM/YYYY");
+		item_status = "status-success";
+	}
+
+	contents += "<li class='purchase-item panel-item maturity-item "+item_status+" container-fluid' id='maturity-"+maturity.id+"' data-maturity='"+maturity.id+"'>";
+	contents += "<div class='delete-animation-holder' id='dah-"+maturity.id+"' data-target='"+maturity.id+"'><p class='hold-text'>Suppression...(Relâchez pour annuler)</p></div>";
+	contents += "<div class='container-fluid'>";
+	contents += "<p class='col-xs-10 panel-item-title bf' id='maturity-"+maturity.id+"-method'><span>"+maturity.method+"</span> pour <span class='maturity-price-transaction-"+maturity.transaction_id+"' id='maturity-price-"+maturity.price+"'>"+maturity.price+"</span> €</p>";
+
+	if(top.location.pathname != "/Salsabor/"+redirection_link && maturity.transaction_user != undefined){
+		contents += "<p class='col-xs-1'><a href='user/"+maturity.transaction_user+"/achats#purchase-"+maturity.transaction_id+"' class='link-glyphicon'><span class='glyphicon glyphicon-share-alt glyphicon-button-alt' title='Aller à la transaction'></span></a></p>";
+	} else {
+		contents += "<p class='col-xs-1'></p>";
+	}
+
+	contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt delete-maturity' id ='delete-"+maturity.id+"' data-maturity='"+maturity.id+"' data-transaction='"+maturity.transaction_id+"' title='Supprimer l&apos;échéance'></span></p>";
+
+	contents += "</div>"
+	contents += "<div class='container-fluid'>";
+	contents += "<p class='col-xs-3'>"+payer+"</p>";
+
+	// Deadline
+	if(moment(maturity.date) < moment() && bank_date == ""){
+		deadline_class = "deadline-expired";
+	}
+	contents += "<p class='col-xs-2 trigger-sub trigger-editable "+deadline_class+"' data-subtype='deadline-maturity' id='deadline-"+maturity.id+"' data-maturity='"+maturity.id+"' title='Modifier la date limite'><span class='glyphicon glyphicon-time' title='Date de réception limite'></span> <span class='deadline-maturity-span' id='deadline-maturity-span-"+maturity.id+"'>"+deadline_date+"</span></p>";
+
+	// Reception
+	contents += "<p class='col-lg-2 trigger-sub trigger-editable' data-subtype='receive-maturity' id='receive-"+maturity.id+"' data-maturity='"+maturity.id+"' title='Valider la réception'><span class='glyphicon glyphicon-ok' title='Date de réception'></span> <span class='reception-span' id='reception-span-"+maturity.id+"'>"+reception_date+"</span></p>";
+
+	// Bank
+	contents += "<p class='col-lg-2 trigger-sub trigger-editable' data-subtype='bank-maturity' id='bank-"+maturity.id+"' data-maturity='"+maturity.id+"' title='Encaisser l&apos;échéance'><span class='glyphicon glyphicon-download-alt' title='Date d&apos;encaissement'></span> <span class='bank-span' id='bank-span-"+maturity.id+"'>"+bank_date+"</span></p>";
+	contents += "</div></li>";
+	return contents;
 }
 
 $(document).on('click', '.receive-maturity', function(){
@@ -259,4 +281,29 @@ $(document).on('click', '.receive-maturity', function(){
 	var toBeDeleted = $("#dah-"+target);
 	$("#dah-"+target).hide();
 	$(toBeDeleted.circleProgress('widget')).stop();
+}).on('click', '.add-maturity', function(){
+	var transaction_id = document.getElementById($(this).attr("id")).dataset.transaction;
+	var remaining_price = 0;
+	if($("#maturities-incomplete-"+transaction_id+">span").first().text() != "")
+		var remaining_price = $("#maturities-incomplete-"+transaction_id+">span").first().text();
+	if(remaining_price < 0)
+		remaining_price = 0;
+
+	console.log(transaction_id, remaining_price);
+	var new_maturity = {
+		reference_achat: transaction_id,
+		montant: remaining_price,
+		methode_paiement: "En attente"
+	};
+	$.when(addEntry("produits_echeances", $.param(new_maturity))).done(function(data){
+		var render_maturity = {
+			id: data,
+			transaction_id: transaction_id,
+			price: remaining_price,
+			method: "En attente"
+		}
+		var contents = renderMaturity(render_maturity);
+		$("#maturities-display-"+transaction_id).prepend(contents);
+		showAmountDiscrepancy(transaction_id);
+	});
 })
