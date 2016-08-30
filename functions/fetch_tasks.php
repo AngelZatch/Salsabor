@@ -11,7 +11,7 @@ $task_token = $_GET["task_token"]; // Token (entity the task concerns)
 $creator_id = $_SESSION["user_id"]; // Creator ID (the person who created the task)
 
 // We dynamically construct the query depending on the flags
-$query = "SELECT *, CONCAT (u.user_prenom, ' ', u.user_nom) AS recipient, CONCAT (u2.user_prenom, ' ', u2.user_nom) AS creator FROM tasks t
+$query = "SELECT *, CONCAT (u.user_prenom, ' ', u.user_nom) AS recipient, CONCAT (u2.user_prenom, ' ', u2.user_nom) AS creator, u2.user_id AS creator_id FROM tasks t
 			LEFT JOIN users u ON t.task_recipient = u.user_id
 			LEFT JOIN users u2 ON t.task_creator = u2.user_id
 			LEFT JOIN assoc_task_tags at ON t.task_id = at.task_id_foreign";
@@ -64,8 +64,10 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	}
 	if($details["task_creator"] == null){
 		$t["creator"] = "Système";
+		$t["creator_id"] = -1;
 	} else {
 		$t["creator"] = $details["creator"];
+		$t["creator_id"] = $details["creator_id"];
 	}
 	// Additional details depending of the token
 	$t["type"] = substr($t["token"], 0, 3);
@@ -139,6 +141,8 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	}
 	$t["message_count"] = $db->query("SELECT * FROM task_comments WHERE task_id_foreign = '$t[id]'")->rowCount();
 	$t["status"] = $details["task_state"];
+
+	$t["connected_id"] = $_SESSION["user_id"];
 
 	// Tags
 	$labels = $db->query("SELECT * FROM assoc_task_tags ur

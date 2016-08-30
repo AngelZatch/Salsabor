@@ -249,6 +249,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
+		<?php include "inserts/edit_modal.php";?>
 		<script>
 			$(document).ready(function(){
 				setInterval(function () {

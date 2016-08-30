@@ -48,6 +48,7 @@ $display = $_GET["display"];
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
+		<?php include "inserts/edit_modal.php";?>
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');
