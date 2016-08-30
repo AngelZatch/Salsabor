@@ -682,17 +682,20 @@ $(document).ready(function(){
 		- Include the edit_modal.php file in the page you're planning to have editable things in
 
 	== For the edit butotn ==
-		- Attach the class 'edit-maturity' to your edit action. Add the data-argument to the dataset with the value database_entry_id and don't forget to link the modal by data-toggle='modal' and data-target='#edit-modal'.
+		- Add the data-entry to the dataset with the value database_entry_id and don't forget to link the modal by data-toggle='modal' and data-target='#edit-modal'.
+		- Add the data-table as well to indicate which table has to be edited
+		- If you need a secondary id to do additional things, add a data-secondary and add some logic below
 
 	== For every editable field ==
 		- For EVERY element of the entry you want to be editable, attach the class 'modal-editable-$' where $ is the database_entry_id.
 		- For EVERY element then, add two fields in the dataset : data-field is the name of the field in database, data-name is the name that will display in the label of the form.
+		- You can overwrite the deafult input type by adding a data-input as well.
 
 		Once you've done all this, you'll be set.
 	*/
-	var entry_id = $(event.relatedTarget).data('maturity'), transaction_id = $(event.relatedTarget).data('transaction'), modal = $(this);
-	console.log(entry_id);
-	modal.find(".modal-title").text("Modifier l'échéance "+entry_id);
+	var entry_id = $(event.relatedTarget).data('entry'), secondary_id = $(event.relatedTarget).data('transaction'), table = $(event.relatedTarget).data('table'), modal = $(this);
+	modal.find(".modal-title").text($(event.relatedTarget).attr('title'));
+
 
 	// Constructing the form
 	var edit_form = "<form class='form-horizontal' id='modal-form'>";
@@ -700,11 +703,19 @@ $(document).ready(function(){
 	// Form groups constructed from every editable field.
 	$(".modal-editable-"+entry_id).each(function(){
 		var element = $(this);
-		var field_name = $(this).data("field"), name = $(this).data("name");
+		var field_name = $(this).data("field"), name = $(this).data("name"), input_type = $(this).data('input');
 		edit_form += "<div class='form-group'>";
-		edit_form += "<label for='"+field_name+"' class='col-lg-5 control-label'>"+name+"</label>";
-		edit_form += "<div class='col-lg-7'>";
-		edit_form += "<input type='text' class='form-control' name='"+field_name+"' value='"+element.text()+"'>";
+		edit_form += "<label for='"+field_name+"' class='col-lg-4 control-label'>"+name+"</label>";
+		edit_form += "<div class='col-lg-8'>";
+
+		// Overwriting default input_type (text)
+		if(input_type === undefined){
+			edit_form += '<input type="text" class="form-control" name="'+field_name+'" value="'+element.text()+'">';
+		} else {
+			if(input_type == "textarea"){
+				edit_form += "<textarea class='form-control' name='"+field_name+"'>"+element.text()+"</textarea>";
+			}
+		}
 		edit_form += "</div>";
 		edit_form += "</div>";
 	})
@@ -715,14 +726,20 @@ $(document).ready(function(){
 	// Binding the edit code to the update button
 	modal.find(".send-edit-data").on('click', function(){
 		var values = modal.find("#modal-form").serialize();
-		$.when(updateEntry("produits_echeances", values, entry_id)).done(function(){
+		console.log(values);
+		$.when(updateEntry(table, values, entry_id)).done(function(data){
+			console.log(data);
 			var updated_values = modal.find("#modal-form").serializeArray(), i = 0;
 			// We find all the field again, they're in the same order as the array of values since it's how the form has been constructed.
 			$(".modal-editable-"+entry_id).each(function(){
 				$(this).text(updated_values[i].value);
 				i++;
 			})
-			showAmountDiscrepancy(transaction_id);
+			// Additional logic goes there
+			if(table == 'produits_echeances'){
+				showAmountDiscrepancy(secondary_id);
+			}
+			// End of additional logic
 			modal.find(".send-edit-data").off('click');
 			modal.modal('hide');
 		})

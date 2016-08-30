@@ -124,6 +124,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				</div>
 			</div>
 		</div>
+		<?php include "inserts/edit_modal.php";?>
 		<script>
 			$(document).ready(function(){
 				$("#datepicker-start").datetimepicker({

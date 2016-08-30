@@ -85,6 +85,13 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<?php include "inserts/sub_modal_product.php";?>
 		<?php include "inserts/edit_modal.php";?>
 		<script>
+			$(document).ready(function(){
+				var m, re = /purchase-([a-z0-9]+)/i;
+				if((m = re.exec(top.location.hash)) !== null){
+					var target_transaction = m[1];
+					$("#purchase-"+target_transaction+">div").click();
+				}
+			})
 			$(".create-invoice").click(function(e){
 				e.stopPropagation();
 				var transaction_id = document.getElementById($(this).attr("id")).dataset.transaction;

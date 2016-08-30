@@ -121,7 +121,7 @@ function renderMaturity(maturity){
 		contents += "<p class='col-xs-1'></p>";
 	}
 
-	contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt edit-maturity' id='edit-"+maturity.id+"' data-maturity='"+maturity.id+"' data-toggle='modal' data-target='#edit-modal' data-argument='"+maturity.id+"' data-transaction='"+maturity.transaction_id+"' title='Modifier l&apos;échéance'></span></p>";
+	contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt edit-maturity' id='edit-"+maturity.id+"' data-toggle='modal' data-target='#edit-modal' data-entry='"+maturity.id+"' data-secondary='"+maturity.transaction_id+"' data-table='produits_echeances' title='Modifier l&apos;échéance'></span></p>";
 
 	contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt delete-maturity' id ='delete-"+maturity.id+"' data-maturity='"+maturity.id+"' data-transaction='"+maturity.transaction_id+"' title='Supprimer l&apos;échéance'></span></p>";
 

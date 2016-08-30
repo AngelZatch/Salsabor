@@ -64,6 +64,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
+		<?php include "inserts/edit_modal.php";?>
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');
@@ -82,7 +83,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 				emptyTask += "<input class='form-control task-title-input' type='text' placeholder='Titre de la tâche'>";
 				emptyTask += "</p>"
 				emptyTask += "<div class='container-fluid'>";
-				emptyTask += "<input class='form-control' id='task-target-input' type='text' placeholder='Cible de la tâche (Tapez un nom de produit, une transaction... Laissez vide pour une tâche générale)' data-user='<?php echo $data;?>'>";
+				emptyTask += "<input class='form-control' id='task-target-input' type='text' placeholder='Cible de la tâche (Laissez vide pour que la tâche concerne l&apos;utilisateur. Tapez un nom de produit ou de transaction pour spécifier.)' data-user='<?php echo $data;?>'>";
 				emptyTask += "<textarea class='form-control task-description-input'></textarea>";
 				emptyTask += "<button class='btn btn-primary post-task' id='post-task-button'>Valider</button>";
 				emptyTask += "</div>";
