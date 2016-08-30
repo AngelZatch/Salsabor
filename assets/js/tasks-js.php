@@ -296,7 +296,7 @@ function renderTask(task, half){
 	contents += "</div>";
 	contents += "</div>";
 
-	contents += "<p class='task-title col-xs-7 col-sm-9' id='task-title-"+task.id+"'>";
+	contents += "<p class='task-title col-xs-7 col-sm-8 modal-editable-"+task.id+"' data-field='task_title' data-name='Intitulé' id='task-title-"+task.id+"'>";
 
 	contents += task.title;
 
@@ -332,6 +332,7 @@ function renderTask(task, half){
 	} else {
 		contents += "<span class='col-xs-1'></span>";
 	}
+	contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt glyphicon-button-big' id='edit-"+task.id+"' data-toggle='modal' data-target='#edit-modal' data-entry='"+task.id+"' data-table='tasks' title='Modifier la tâche'></span></p>";
 	if(task.status == 1){
 		contents += "<span class='glyphicon glyphicon-remove col-xs-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme non traitée'></span>";
 	} else {
@@ -344,6 +345,8 @@ function renderTask(task, half){
 
 	contents += "<div class='container-fluid col-xs-12'>";
 	contents += "<p class='task-hour col-xs-12 col-sm-12'> créée "+moment(task.date).format("[le] ll [à] HH:mm")+" par <span class='task-creator' id='creator-"+task.id+"'>"+task.creator+"</span></p>";
+
+	// Labels
 	contents += "<h4>";
 	for(var j = 0; j < task.labels.length; j++){
 		contents += "<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='task-tag-"+task.labels[j].entry_id+"' data-target='"+task.labels[j].entry_id+"' data-targettype='task' style='background-color:"+task.labels[j].tag_color+"'>"+task.labels[j].rank_name+"</span>";
@@ -354,12 +357,8 @@ function renderTask(task, half){
 	}
 	contents += "</span>";
 	contents += "</h4>";
-	if(task.description == ""){
-		var value = "no-value";
-	} else {
-		var value = "value";
-	}
-	contents += "<div><span class='glyphicon glyphicon-align-left glyphicon-description'></span><p class='editable' id='task-description-"+task.id+"' data-input='textarea' data-table='tasks' data-column='task_description' data-target='"+task.id+"' data-value='"+value+"'>"+task.description+"</p></div>";
+
+	contents += "<div><span class='glyphicon glyphicon-align-left glyphicon-description'></span><p class='modal-editable-"+task.id+"' id='task-description-"+task.id+"' data-field='task_description' data-name='Description' data-input='textarea'>"+task.description+"</p></div>";
 	contents += "<div class='col-xs-2 col-md-2 "+comments_count_width+" comment-span' id='comments-count-"+task.id+"'>";
 	contents += "<span class='glyphicon glyphicon-comment'></span> "+task.message_count;
 	contents += "</div>";
@@ -376,13 +375,11 @@ function renderTask(task, half){
 	contents += "<div class='col-xs-5 col-md-5 "+recipient_width+" comment-span'>";
 	contents += "<span class='glyphicon glyphicon-user glyphicon-description'></span> ";
 	if(task.recipient == ""){
-		var value = "no-value";
 		var recipient = "Affecter un membre";
 	} else {
-		var value = "value";
 		var recipient = task.recipient;
 	}
-	contents += "<p class='editable' id='task-recipient-"+task.id+"' data-input='text' data-table='tasks' data-column='task_recipient' data-target='"+task.id+"' data-value='"+value+"'>"+recipient+"</p>";
+	contents += "<p class='modal-editable-"+task.id+"' id='task-recipient-"+task.id+"' data-field='task_recipient' data-name='Membre affecté à cette tâche'>"+recipient+"</p>";
 	contents += "</div>";
 
 	contents += "</div>";

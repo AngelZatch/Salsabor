@@ -18,7 +18,7 @@ $primary_key = $db->query("SHOW INDEX FROM $table_name WHERE Key_name = 'PRIMARY
 $query = "UPDATE $table_name SET ";
 foreach($values as $column => $value){
 	// Have to solve users to their ID if needed here.
-	if($column == "session_teacher" || $column == "event_handler" || $column == "booking_holder"){
+	if($column == "session_teacher" || $column == "event_handler" || $column == "booking_holder" || $column == "task_recipient"){
 		$value = solveAdherentToId($value);
 	}
 	if(preg_match("/(start|end|date)/i", $column)){
@@ -33,7 +33,7 @@ foreach($values as $column => $value){
 		$value = htmlspecialchars($value);
 	}
 	if($value != NULL)
-		$query .= "$column = '$value'";
+		$query .= "$column = ".$db->quote($value);
 	else
 		$query .= "$column = NULL";
 	if($column !== end(array_keys($values))){
