@@ -203,15 +203,15 @@ $db = PDOFactory::getConnection();
 				contents += "<span class='glyphicon glyphicon-star col-xs-2'></span> ";
 				contents += "<p class='col-xs-10 purchase-sub no-padding'>"+status+"</p>";
 				contents += "</div>"; // container-fluid
-				if(room.reader_token != null){
-					var reader = room.reader_token;
-					var value = "value";
+				if(room.reader_token == null){
+					var reader = "-";
+					var is_placeholder = true;
 				} else {
-					var reader = "Pas de lecteur couplé";
-					var value = "no-value";
+					var reader = room.reader_token;
+					var is_placeholder = false;
 				}
 				contents += "<div class='container-fluid'>";
-				contents += "<span class='glyphicon glyphicon-hdd col-xs-2'></span> <p class='col-xs-10 no-padding modal-editable-room-"+room.room_id+"' id='room-reader-"+room.room_id+"' data-field='room_reader' data-name='Lecteur' data-placeholder='false'>"+reader+"</p>";
+				contents += "<span class='glyphicon glyphicon-hdd col-xs-2'></span> <p class='col-xs-10 no-padding modal-editable-room-"+room.room_id+"' id='room-reader-"+room.room_id+"' data-field='room_reader' data-name='Lecteur' data-placeholder='"+is_placeholder+"'>"+reader+"</p>";
 				contents += "</div>"; //container-fluid
 				contents += "</div>"; //panel-body
 				contents += "</div>"; //panel
