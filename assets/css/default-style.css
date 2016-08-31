@@ -99,61 +99,60 @@
   margin-bottom: 10px;
   display: inherit;
   padding-left: 0;
-  padding-right: 0;
-  cursor: pointer; }
-  /* line 8, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  padding-right: 0; }
+  /* line 7, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .panel-item:not(.panel-room) p, .product-participation:not(.panel-room) p {
     padding: 10px;
     margin-top: 2px;
     margin-bottom: 0; }
-  /* line 12, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 11, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .panel-item a, .product-participation a {
     color: black;
     text-decoration: none; }
 
-/* line 16, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+/* line 15, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .panel-item-title {
   font-weight: 700; }
 
-/* line 19, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+/* line 18, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .panel-record {
   text-align: center;
   padding: 5px;
   height: 350px;
   cursor: default; }
 
-/* line 25, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+/* line 24, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .irregular-record {
   text-align: inherit;
   padding: 10px;
   height: auto; }
-  /* line 30, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 29, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .irregular-record .irregular-record-details {
     text-align: center; }
 
-/* line 33, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+/* line 32, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .panel-add-record {
   cursor: pointer;
   border-radius: 0;
   border-top: 3px solid #888888;
   border-bottom: 3px solid #888888;
   background-color: rgba(136, 136, 136, 0.3); }
-  /* line 37, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 36, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .panel-add-record:hover {
     background-color: #888888; }
-    /* line 39, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+    /* line 38, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
     .panel-add-record:hover .empty-pp {
       border-color: white; }
 
-/* line 42, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+/* line 41, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .personal-participation-title {
   padding-left: 20px !important; }
 
-/* line 45, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+/* line 44, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .panel-search {
   background-color: #eeeeee; }
 
-/* line 51, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+/* line 50, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .user-entry {
   font-size: 18px;
   text-align: center;
@@ -161,59 +160,59 @@
   padding: 30px 15px 30px 15px;
   border-radius: 5px;
   word-wrap: break-word; }
-  /* line 58, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 57, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .user-entry:hover {
     background-color: #888888; }
-  /* line 60, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 59, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .user-entry a {
     text-decoration: none;
     color: black; }
-  /* line 63, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 62, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .user-entry a:hover {
     text-decoration: none;
     color: black; }
-  /* line 66, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 65, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .user-entry .user-pp {
     float: inherit;
     margin: 0 auto; }
 
-/* line 70, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+/* line 69, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .irregular-user {
   margin-top: 0 !important; }
-  /* line 73, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 72, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .irregular-user:hover {
     color: black; }
 
-/* line 77, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+/* line 76, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .panel-room .panel-body {
   position: relative; }
 
-/* line 80, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+/* line 79, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .panel-product-container {
   min-height: 240px; }
 
-/* line 83, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+/* line 82, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .panel-promotion {
   padding: 10px; }
-  /* line 85, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 84, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .panel-promotion .promotion-details {
     padding-left: 20px; }
-  /* line 87, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 86, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .panel-promotion.promotion-running {
     background-color: #FAB913;
     font-size: 1.2em; }
-    /* line 90, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+    /* line 89, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
     .panel-promotion.promotion-running .promotion-title {
       font-size: 20px; }
-  /* line 92, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 91, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .panel-promotion.promotion-over {
     background-color: #d9d9d9;
     color: #888888; }
-  /* line 95, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+  /* line 94, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
   .panel-promotion.promotion-upcoming {
     background-color: #79C3E5; }
 
-/* line 98, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
+/* line 97, C:/xampp/htdocs/Salsabor/assets/css/_panel-items.sass */
 .promotion-value {
   font-weight: 700; }
 
@@ -1612,43 +1611,49 @@ p.legend, div.legend:nth-child(1n+0) {
   text-align: center; }
 
 /* line 1117, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-.room-rectangle {
-  height: 20px;
-  border: 2px solid black; }
+.row-location {
+  border-bottom: 1px solid #d5d5d5;
+  margin-bottom: 15px; }
 
 /* line 1121, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.room-rectangle {
+  height: 20px;
+  border: 2px solid black;
+  cursor: pointer; }
+
+/* line 1126, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .room-filter, .filter-title {
   cursor: pointer;
   padding: 5px 0 5px 5px; }
-  /* line 1124, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 1129, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .room-filter:hover, .filter-title:hover {
     background-color: #6f6f6f;
     color: white; }
 
-/* line 1128, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 1133, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .cube-filter {
   height: 15px;
   width: 15px;
   margin: 2px; }
-  /* line 1133, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 1138, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .cube-filter.disabled {
     opacity: 0;
     border: 1px solid #888888; }
 
-/* line 1137, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 1142, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .filter-title {
   padding-bottom: 7px;
   height: 34px; }
 
-/* line 1143, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 1148, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .filter-name {
   margin: 0 !important; }
 
-/* line 1146, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 1151, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .chart {
   background-color: white; }
 
-/* line 1149, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 1154, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .price-display {
   font-size: 25px;
   color: #A80139;

@@ -358,7 +358,15 @@ function renderTask(task, half){
 	contents += "</span>";
 	contents += "</h4>";
 
-	contents += "<div><span class='glyphicon glyphicon-align-left glyphicon-description'></span><p class='modal-editable-"+task.id+"' id='task-description-"+task.id+"' data-field='task_description' data-name='Description' data-input='textarea'>"+task.description+"</p></div>";
+	if(task.description == null){
+		var description = "-";
+		var is_placeholder = true;
+	} else {
+		var description = task.description;
+		var is_placeholder = false;
+	}
+
+	contents += "<div><span class='glyphicon glyphicon-align-left glyphicon-description'></span><p class='modal-editable-"+task.id+"' id='task-description-"+task.id+"' data-field='task_description' data-name='Description' data-input='textarea' data-placeholder='"+is_placeholder+"'>"+description+"</p></div>";
 	contents += "<div class='col-xs-2 col-md-2 "+comments_count_width+" comment-span' id='comments-count-"+task.id+"'>";
 	contents += "<span class='glyphicon glyphicon-comment'></span> "+task.message_count;
 	contents += "</div>";
@@ -375,11 +383,13 @@ function renderTask(task, half){
 	contents += "<div class='col-xs-5 col-md-5 "+recipient_width+" comment-span'>";
 	contents += "<span class='glyphicon glyphicon-user glyphicon-description'></span> ";
 	if(task.recipient == ""){
-		var recipient = "Affecter un membre";
+		var recipient = "-";
+		var is_placeholder = true;
 	} else {
 		var recipient = task.recipient;
+		var is_placeholder = false;
 	}
-	contents += "<p class='modal-editable-"+task.id+"' id='task-recipient-"+task.id+"' data-field='task_recipient' data-name='Membre affecté à cette tâche'>"+recipient+"</p>";
+	contents += "<p class='modal-editable-"+task.id+"' id='task-recipient-"+task.id+"' data-field='task_recipient' data-name='Membre affecté à cette tâche' data-placeholder='"+is_placeholder+"'>"+recipient+"</p>";
 	contents += "</div>";
 
 	contents += "</div>";
