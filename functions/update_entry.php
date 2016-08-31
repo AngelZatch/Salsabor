@@ -2,6 +2,7 @@
 // This is the generic script to edit an entry into whatever table. With this, you only have to call it once you're set and avoid a billion scripts for every little thing.
 require_once "db_connect.php";
 require_once "tools.php";
+require_once "add_entry.php";
 $db = PDOFactory::getConnection();
 
 // Array of values (user serialize in php to have the correct format)
@@ -21,8 +22,21 @@ foreach($values as $column => $value){
 	if($column == "session_teacher" || $column == "event_handler" || $column == "booking_holder" || $column == "task_recipient"){
 		$value = solveAdherentToId($value);
 	}
+	// Have to solve the reader ID of the room
+	if($column == "room_reader"){
+		$resolved_value = $db->query("SELECT reader_id FROM readers WHERE reader_token = '$value'")->fetch(PDO::FETCH_COLUMN);
+		if($resolved_value == null){
+			$new = htmlspecialchars($value);
+			$reader_details = array(
+				"reader_token" => $new
+			);
+			$value = addEntry($db, "readers", $reader_details);
+		} else {
+			$value = $resolved_value;
+		}
+	}
+	// In the database, all dates contain one of these 3 words. We can then test against them to find dates and format them correctly.
 	if(preg_match("/(start|end|date)/i", $column)){
-		// In the database, all dates contain one of these 3 words. We can then test against them to find dates and format them correctly.
 		if($value != null){
 			$value_date = DateTime::createFromFormat("d/m/Y H:i:s", $value);
 			$value = $value_date->format("Y-m-d H:i:s");

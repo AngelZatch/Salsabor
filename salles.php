@@ -41,7 +41,7 @@ $db = PDOFactory::getConnection();
 								// Close the row
 								contents += "</div>";
 							}
-							contents += "<div class='row'>";
+							contents += "<div class='row row-location' id='row-location-"+rooms[i].location_id+"'>";
 							contents += "<p class='sub-legend col-xs-11 modal-editable-"+rooms[i].location_id+"' id='location-name-"+rooms[i].location_id+"' data-field='location_name' data-name='Nom' data-placeholder='false'>"+rooms[i].location_name+"</p>";
 							contents += "<span class='col-xs-1 glyphicon glyphicon-pencil glyphicon-button glyphicon-button-big glyphicon-button-alt' data-toggle='modal' data-target='#edit-modal' data-entry='"+rooms[i].location_id+"' data-table='locations' title='Modifier la location "+rooms[i].location_name+"'></span>";
 
@@ -173,7 +173,7 @@ $db = PDOFactory::getConnection();
 
 			function constructRoomPanel(room){
 				var contents = "";
-				contents += "<div class='col-xs-12 col-md-6 col-lg-4' id='room-"+room.room_id+"'>";
+				contents += "<div class='col-xs-12 col-md-6 col-lg-6' id='room-"+room.room_id+"'>";
 				if(room.availability == 0){
 					var availability_class = "status-over";
 					var status = room.current_session+" (jusqu'à "+moment(room.current_end).format("HH:mm")+")";
@@ -195,8 +195,9 @@ $db = PDOFactory::getConnection();
 				contents += "<div class='delete-animation-holder' id='dah-"+room.room_id+"' data-target='"+room.room_id+"'><p class='hold-text'>Suppression...</p><p class='hold-help'>(Relâchez pour annuler)</p></div>";
 				contents += "<div class='panel-title container-fluid'>";
 				contents += "<div class='col-xs-1 room-rectangle trigger-sub' id='room-color-cube-"+room.room_id+"' data-subtype='room-color' data-target='"+room.room_id+"' style='background-color:#"+room.room_color+"' title='Couleur de la salle. Cliquez pour changer la couleur'></div>";
-				contents += "<p class='col-xs-8 editable' id='room-name-"+room.room_id+"' data-input='text' data-table='rooms' data-column='room_name' data-target='"+room.room_id+"' data-value='value'>"+room.room_name+"</p>";
-				contents += "<p class='col-xs-2'><span class='glyphicon glyphicon-trash "+trash_class+"' id='delete-"+room.room_id+"' data-target='"+room.room_id+"' title='"+trash_title+"'></span></p>";
+				contents += "<p class='col-xs-9 modal-editable-room-"+room.room_id+"' id='room-name-"+room.room_id+"' data-field='room_name' data-name='Nom' data-placeholder='false'>"+room.room_name+"</p>";
+				contents += "<span class='glyphicon glyphicon-pencil col-xs-1 glyphicon-button glyphicon-button-alt' data-entry='room-"+room.room_id+"' data-toggle='modal' data-target='#edit-modal' data-table='rooms' title='Modifier "+room.room_name+"'></span>";
+				contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash "+trash_class+" glyphicon-button-alt' id='delete-"+room.room_id+"' data-target='"+room.room_id+"' title='"+trash_title+"'></span></p>";
 				contents += "</div>"; // panel-title
 				contents += "<div class='container-fluid'>";
 				contents += "<span class='glyphicon glyphicon-star col-xs-2'></span> ";
@@ -210,7 +211,7 @@ $db = PDOFactory::getConnection();
 					var value = "no-value";
 				}
 				contents += "<div class='container-fluid'>";
-				contents += "<span class='glyphicon glyphicon-hdd col-xs-2'></span> <p class='editable col-xs-10 no-padding' id='room-reader-"+room.room_id+"' data-input='text' data-table='rooms' data-column='room_reader' data-target='"+room.room_id+"' data-value='"+value+"'>"+reader+"</p>";
+				contents += "<span class='glyphicon glyphicon-hdd col-xs-2'></span> <p class='col-xs-10 no-padding modal-editable-room-"+room.room_id+"' id='room-reader-"+room.room_id+"' data-field='room_reader' data-name='Lecteur' data-placeholder='false'>"+reader+"</p>";
 				contents += "</div>"; //container-fluid
 				contents += "</div>"; //panel-body
 				contents += "</div>"; //panel
