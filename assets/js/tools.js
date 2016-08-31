@@ -730,9 +730,9 @@ $(document).ready(function(){
 	// Binding the edit code to the update button
 	modal.find(".send-edit-data").on('click', function(){
 		var values = modal.find("#modal-form").serialize();
-		console.log(values);
-		$.when(updateEntry(table, values, entry_id)).done(function(data){
-			console.log(data);
+		var real_entry_id = entry_id.replace(/([a-z\_\-]*)/i, '');
+		$.when(updateEntry(table, values, real_entry_id)).done(function(data){
+			/*console.log(data);*/
 			var updated_values = modal.find("#modal-form").serializeArray(), i = 0;
 			// We find all the field again, they're in the same order as the array of values since it's how the form has been constructed.
 			$(".modal-editable-"+entry_id).each(function(){

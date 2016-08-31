@@ -48,10 +48,10 @@ function addEntry($db, $table_name, Array $values){
 		$insert = $db->query($query);
 		$new_id = $db->lastInsertId();
 		$db->commit();
-		if(isset($_POST["table"])) //AJAX
+		if(isset($_POST["table"])){//AJAX
 			echo $new_id;
-		else //PHP
-			return $new_id;
+		}
+		return $new_id;
 	} catch(PDOException $e){
 		$db->rollBack();
 		echo $e->getMessage();
