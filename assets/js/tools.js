@@ -690,12 +690,12 @@ $(document).ready(function(){
 		- For EVERY element of the entry you want to be editable, attach the class 'modal-editable-$' where $ is the database_entry_id.
 		- For EVERY element then, add two fields in the dataset : data-field is the name of the field in database, data-name is the name that will display in the label of the form.
 		- You can overwrite the deafult input type by adding a data-input as well.
+		- Your field is empty? Set data-placeholder to true.
 
 		Once you've done all this, you'll be set.
 	*/
 	var entry_id = $(event.relatedTarget).data('entry'), secondary_id = $(event.relatedTarget).data('transaction'), table = $(event.relatedTarget).data('table'), modal = $(this);
 	modal.find(".modal-title").text($(event.relatedTarget).attr('title'));
-
 
 	// Constructing the form
 	var edit_form = "<form class='form-horizontal' id='modal-form'>";
@@ -703,14 +703,18 @@ $(document).ready(function(){
 	// Form groups constructed from every editable field.
 	$(".modal-editable-"+entry_id).each(function(){
 		var element = $(this);
-		var field_name = $(this).data("field"), name = $(this).data("name"), input_type = $(this).data('input');
+		var field_name = $(this).data("field"), name = $(this).data("name"), input_type = $(this).data('input'), is_placeholder = $(this).data('placeholder');
 		edit_form += "<div class='form-group'>";
 		edit_form += "<label for='"+field_name+"' class='col-lg-4 control-label'>"+name+"</label>";
 		edit_form += "<div class='col-lg-8'>";
 
 		// Overwriting default input_type (text)
 		if(input_type === undefined){
-			edit_form += '<input type="text" class="form-control" name="'+field_name+'" value="'+element.text()+'">';
+			if(is_placeholder){
+				edit_form += '<input type="text" class="form-control" name="'+field_name+'" placeholder="'+element.text()+'">';
+			} else {
+				edit_form += '<input type="text" class="form-control" name="'+field_name+'" value="'+element.text()+'">';
+			}
 		} else {
 			if(input_type == "textarea"){
 				edit_form += "<textarea class='form-control' name='"+field_name+"'>"+element.text()+"</textarea>";
@@ -732,7 +736,13 @@ $(document).ready(function(){
 			var updated_values = modal.find("#modal-form").serializeArray(), i = 0;
 			// We find all the field again, they're in the same order as the array of values since it's how the form has been constructed.
 			$(".modal-editable-"+entry_id).each(function(){
-				$(this).text(updated_values[i].value);
+				if(updated_values[i].value != ""){
+					$(this).text(updated_values[i].value);
+					$(this).data('placeholder', false);
+				} else {
+					$(this).text('-');
+					$(this).data('placeholder', true);
+				}
 				i++;
 			})
 			// Additional logic goes there
@@ -740,10 +750,13 @@ $(document).ready(function(){
 				showAmountDiscrepancy(secondary_id);
 			}
 			// End of additional logic
-			modal.find(".send-edit-data").off('click');
 			modal.modal('hide');
 		})
 	})
+}).on('hide.bs.modal', '#edit-modal', function(e){
+	console.log("unbinding edit button");
+	// End of additional logic
+	$(this).find(".send-edit-data").off('click');
 })
 
 $(".has-name-completion").on('click blur keyup', function(){
