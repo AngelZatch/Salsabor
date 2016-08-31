@@ -2,10 +2,11 @@
 	<div class="user-pp">
 		<img src="<?php echo $details["photo"];?>" alt="<?php echo $details["user_prenom"];?>" class="profile-picture">
 	</div>
-	<div class="col-sm-9 inline-editable legend">
-		<p class="editable inline-first" id="user_prenom" data-input="text" data-table="users" data-column="user_prenom" data-target="<?php echo $data;?>" data-value="value"><?php echo $details["user_prenom"];?></p>
-		<p class="editable" id="user_nom" data-input="text" data-table="users" data-column="user_nom" data-target="<?php echo $data;?>" data-value="value"><?php echo $details["user_nom"];?></p>
+	<div class="col-sm-8 inline-editable legend">
+		<p class="modal-editable-<?php echo $data;?>" data-field="user_prenom" data-name="Prénom"><?php echo $details["user_prenom"];?></p>
+		<p class="modal-editable-<?php echo $data;?>" data-field="user_nom" data-name="Nom"><?php echo $details["user_nom"];?></p>
 	</div>
+	<span class="col-xs-1 col-sm-1 glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt glyphicon-button-big" data-toggle="modal" data-target="#edit-modal" data-entry="<?php echo $details["user_id"];?>" data-table="users" title='Modifier les détails de <?php echo $details["user_prenom"]." ".$details["user_nom"];?>'></span>
 	<div class="user-summary">
 		<div class="col-xs-12 user-labels">
 			<?php if($details["actif"] == 1){ ?>
@@ -18,10 +19,10 @@
 			<?php }
 } ?>
 		</div>
-		<div class="col-Xs-6">
+		<div class="col-xs-6">
 			<div>
 				<span class="glyphicon glyphicon-envelope glyphicon-description"></span>
-				<p class="editable" id="refresh-mail" data-input="mail" data-table="users" data-column="mail" data-target="<?php echo $data;?>" data-value="<?php echo ($details["mail"]="")?"no-value":"value";?>"><?php echo $details["mail"];?></p>
+				<p class="modal-editable-<?php echo $data;?>" data-field="mail" data-name="Adresse mail"><?php echo $details["mail"];?></p>
 			</div>
 			<p id="refresh-rfid"></p>
 			<?php
@@ -44,7 +45,7 @@
 		<div class="col-xs-6">
 			<div>
 				<span class="glyphicon glyphicon-earphone glyphicon-description"></span>
-				<p class="editable" id="refresh-phone" data-input="tel" data-table="users" data-column="telephone" data-target="<?php echo $data;?>" data-value="<?php echo ($details["mail"]="")?"no-value":"value";?>"><?php echo $details["telephone"];?></p>
+				<p class="modal-editable-<?php echo $data;?>" data-field="telephone" data-name="Téléphone"><?php echo $details["telephone"];?></p>
 			</div>
 			<p id="refresh-address"></p>
 		</div>
