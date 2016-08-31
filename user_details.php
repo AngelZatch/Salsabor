@@ -222,6 +222,7 @@ if(isset($_POST["edit"])){
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
+		<?php include "inserts/edit_modal.php";?>
 		<script>
 			$(document).ready(function(){
 				$("#avatar").fileinput({
@@ -284,7 +285,7 @@ if(isset($_POST["edit"])){
 				});
 			})
 				<?php if($is_teacher == 1){?>
-/*
+			/*
 			$("#add-tarif").click(function(){
 				$("#new-tarif").show();
 			});
@@ -393,7 +394,7 @@ if(isset($_POST["edit"])){
 				});
 			}
 			*/
-			<?php } ?>
+				<?php } ?>
 		</script>
 	</body>
 </html>

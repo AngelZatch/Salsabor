@@ -28,29 +28,50 @@ $db = PDOFactory::getConnection();
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
+		<?php include "inserts/edit_modal.php";?>
 		<script>
 			$(document).ready(function(){
 				$.get("functions/fetch_rooms.php").done(function(data){
 					var rooms = JSON.parse(data);
 					var contents = "", previousLocation = -1;
 					for(var i = 0; i < rooms.length; i++){
-						console.log(i);
 						if(rooms[i].location_id != previousLocation){
 							if(i != 0){
 								contents += constructNewPanel(previousLocation);
 								// Close the row
 								contents += "</div>";
 							}
-							contents += "<p class='sub-legend editable' id='location-name-"+rooms[i].location_id+"' data-input='text' data-table='locations' data-column='location_name' data-target='"+rooms[i].location_id+"' data-value='value'>"+rooms[i].location_name+"</p>";
-							if(rooms[i].location_address == ""){
-								var address = "Ajouter une adresse";
-								var value = "no-value";
+							contents += "<div class='row'>";
+							contents += "<p class='sub-legend col-xs-11 modal-editable-"+rooms[i].location_id+"' id='location-name-"+rooms[i].location_id+"' data-field='location_name' data-name='Nom' data-placeholder='false'>"+rooms[i].location_name+"</p>";
+							contents += "<span class='col-xs-1 glyphicon glyphicon-pencil glyphicon-button glyphicon-button-big glyphicon-button-alt' data-toggle='modal' data-target='#edit-modal' data-entry='"+rooms[i].location_id+"' data-table='locations' title='Modifier la location "+rooms[i].location_name+"'></span>";
+
+							// Address
+							if(rooms[i].location_address == null || rooms[i].location_address == ""){
+								var address = "-";
+								var is_placeholder = true;
 							} else {
 								var address = rooms[i].location_address;
-								var value = "value";
+								var is_placeholder = false;
 							}
-							contents += "<p class='editable' id='location-address-"+rooms[i].location_id+"' data-input='text' data-table='locations' data-column='location_address' data-target='"+rooms[i].location_id+"' data-value='"+value+"'>"+address+"</p>";
-							contents += "<div class='row'>";
+							contents += "<div class='col-xs-8 col-sm-5'>";
+							contents += "<span class='glyphicon glyphicon-home glyphicon-description'></span>";
+							contents += "<p class='modal-editable-"+rooms[i].location_id+"' id='location-address-"+rooms[i].location_id+"' data-field='location_address' data-name='Adresse' data-placeholder='false'>"+address+"</p>";
+							contents += "</div>";
+
+
+							// Phone number
+							if(rooms[i].location_telephone == null || rooms[i].location_telephone == ""){
+								var phone_number = "-";
+								var is_placeholder = true;
+							} else {
+								var phone_number = rooms[i].location_telephone;
+								var is_placeholder = false;
+							}
+							contents += "<div class='col-xs-4 col-sm-7'>";
+							contents += "<span class='glyphicon glyphicon-earphone glyphicon-description'></span>";
+							contents += "<p class='modal-editable-"+rooms[i].location_id+"' id='location-telephone-"+rooms[i].location_id+"' data-field='location_telephone' data-name='Téléphone' data-placeholder='"+is_placeholder+"'>"+phone_number+"</p>";
+							contents += "</div>";
+
 						}
 						if(rooms[i].room_id != null){
 							contents += constructRoomPanel(rooms[i]);

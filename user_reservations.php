@@ -83,5 +83,6 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 			</div>
 		</div>
 		<?php include "scripts.php";?>
+		<?php include "inserts/edit_modal.php";?>
 	</body>
 </html>
