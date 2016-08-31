@@ -16,6 +16,7 @@ while($room = $load->fetch(PDO::FETCH_ASSOC)){
 	$r["location_id"] = $room["location_id"];
 	$r["location_name"] = $room["location_name"];
 	$r["location_address"] = $room["location_address"];
+	$r["location_telephone"] = $room["location_telephone"];
 	$r["room_id"] = $room["room_id"];
 	$r["room_color"] = $room["color_value"];
 

@@ -72,6 +72,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
+		<?php include "inserts/edit_modal.php";?>
 		<script>
 			$(".participation-type").click(function(){
 				var id = $(this).attr("id");
