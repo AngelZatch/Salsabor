@@ -57,6 +57,6 @@ function prepareParticipationBeta($db, $user_tag, $reader_token){
 								WHERE session_opened = '1' AND room_reader = '$reader_token'")->fetch(PDO::FETCH_COLUMN);
 		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$user_tag'")->fetch(PDO::FETCH_COLUMN);
 
-		addParticipationBeta($db, $today, $session_id, $user_details["user_id"], $reader_token, $user_tag);
+		addParticipationBeta($db, $today, $session_id, $user_id, $reader_token, $user_tag);
 	}
 }
