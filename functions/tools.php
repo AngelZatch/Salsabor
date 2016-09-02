@@ -158,20 +158,20 @@ function addParticipationBeta($db, $today, $session_id, $user_id, $reader_token,
 		if($session_id != ""){
 			$product_id = getCorrectProductFromTags($db, $session_id, $user_id);
 			if($product_id != "")
-				$status = 0;
+				$status = 0; // Product found.
 			else
-				$status = 3;
+				$status = 3; // No product available
 			$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, session_id, produit_adherent_id, status)
 						VALUES('$user_tag', '$user_id', '$reader_token', '$today', '$session_id', '$product_id', $status)");
 			echo "$";
 		} else {
-			$status = 4;
+			$status = 4; // No session has been found
 			$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, status)
 						VALUES('$user_tag', '$user_id', '$reader_token', '$today', $status)");
 			echo "$";
 		}
 	} else {
-		$status = 5;
+		$status = 5; // No user ID has been matched
 		$new = $db->query("INSERT INTO participations(user_rfid, room_token, passage_date, status)
 						VALUES('$user_tag', '$reader_token', '$today', '$status')");
 		echo "$";
