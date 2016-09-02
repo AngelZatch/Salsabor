@@ -36,7 +36,7 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 	// If there's a set birthdate
 	if($_POST["date_naissance"] != null){
 		$birthdate = DateTime::createFromFormat("d/m/Y", $_POST["date_naissance"]);
-		$birthdate = $birthdate->format("Y-m-d");
+		$birthdate = $birthdate->format("d/m/Y H:i:s");
 		// Add to array
 		$user_details["date_naissance"] = $birthdate;
 	}
