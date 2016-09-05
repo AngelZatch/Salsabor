@@ -31,6 +31,18 @@ $db = PDOFactory::getConnection();
 $return = getCorrectProductFromTags($db, 2916, 10599);
 echo $return;
 
+$value = "02/05/2016";
+
+/*if(preg_match('/\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}/',$value)){
+	$value_date = DateTime::createFromFormat("d/m/Y H:i:s", $value);
+	$value = $value_date->format("Y-m-d H:i:s");
+	echo $value;
+}else{
+	$value_date = DateTime::createFromFormat("d/m/Y", $value);
+	$value = $value_date->format("Y-m-d");
+	echo $value;
+}*/
+
 						?>
 					</pre>
 
