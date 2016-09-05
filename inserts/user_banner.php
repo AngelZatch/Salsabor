@@ -1,6 +1,6 @@
 <div class="user-banner">
 	<div class="user-pp">
-		<img src="<?php echo $details["photo"];?>" alt="<?php echo $details["user_prenom"];?>" class="profile-picture">
+		<img src="/Salsabor/<?php echo $details["photo"];?>" alt="<?php echo $details["user_prenom"];?>" class="banner-profile-picture">
 	</div>
 	<div class="col-sm-8 inline-editable legend">
 		<p class="modal-editable-<?php echo $data;?>" data-field="user_prenom" data-name="Prénom"><?php echo $details["user_prenom"];?></p>

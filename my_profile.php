@@ -113,7 +113,7 @@ if(isset($_POST['imagebase64'])){
 							</div>
 						</div>
 					</form>
-					<button class="btn btn-primary btn-block save-settings">Valider</button>
+					<button class="btn btn-primary btn-block save-settings">Enregistrer les modifications</button>
 				</div>
 			</div>
 		</div>

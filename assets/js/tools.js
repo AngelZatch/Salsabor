@@ -730,7 +730,15 @@ $(document).ready(function(){
 	// Binding the edit code to the update button
 	modal.find(".send-edit-data").on('click', function(){
 		var values = modal.find("#modal-form").serialize();
-		var real_entry_id = entry_id.replace(/([a-z\_\-]*)/i, '');
+		console.log(entry_id);
+		var m = /\D*/.exec(entry_id);
+		if(m === null || m == ""){
+			console.log("no chars");
+			real_entry_id = entry_id;
+		} else {
+			console.log("chars");
+			var real_entry_id = entry_id.replace(/(\D*)/i, '');
+		}
 		$.when(updateEntry(table, values, real_entry_id)).done(function(data){
 			/*console.log(data);*/
 			var updated_values = modal.find("#modal-form").serializeArray(), i = 0;

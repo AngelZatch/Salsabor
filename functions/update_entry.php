@@ -2,7 +2,6 @@
 // This is the generic script to edit an entry into whatever table. With this, you only have to call it once you're set and avoid a billion scripts for every little thing.
 require_once "db_connect.php";
 require_once "tools.php";
-require_once "add_entry.php";
 $db = PDOFactory::getConnection();
 
 // Array of values (user serialize in php to have the correct format)
@@ -30,6 +29,7 @@ foreach($values as $column => $value){
 			$reader_details = array(
 				"reader_token" => $new
 			);
+			require_once "add_entry.php";
 			$value = addEntry($db, "readers", $reader_details);
 		} else {
 			$value = $resolved_value;
@@ -38,8 +38,13 @@ foreach($values as $column => $value){
 	// In the database, all dates contain one of these 3 words. We can then test against them to find dates and format them correctly.
 	if(preg_match("/(start|end|date)/i", $column)){
 		if($value != null){
-			$value_date = DateTime::createFromFormat("d/m/Y H:i:s", $value);
-			$value = $value_date->format("Y-m-d H:i:s");
+			if(preg_match('/\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}/',$value)){
+				$value_date = DateTime::createFromFormat("d/m/Y H:i:s", $value);
+				$value = $value_date->format("Y-m-d H:i:s");
+			}else{
+				$value_date = DateTime::createFromFormat("d/m/Y", $value);
+				$value = $value_date->format("Y-m-d");
+			}
 		} else {
 			$value = NULL;
 		}
