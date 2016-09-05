@@ -43,7 +43,7 @@ function showAmountDiscrepancy(purchase_id){
 		timetable_price += parseFloat($(this).text());
 	})
 
-	var remaining_price = transaction_price - timetable_price;
+	var remaining_price = (transaction_price - timetable_price).toFixed(2);
 
 	if(remaining_price != 0){
 		$("#maturities-incomplete-"+purchase_id).show();
@@ -70,11 +70,8 @@ function displayMaturities(maturities){
 		totalPrice += parseFloat(maturities[i].price);
 	}
 	var maturities_price = transaction_price - totalPrice;
-	if(top.location.pathname != "/Salsabor/"+redirection_link){
-		return contents;
-	} else {
-		return Array(contents, maturities_price);
-	}
+	console.log(contents);
+	return contents;
 }
 
 function renderMaturity(maturity){
