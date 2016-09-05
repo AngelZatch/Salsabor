@@ -474,15 +474,13 @@ function displayPurchase(purchase_id){
 			contents += "</div>";
 			contents += "<div class='maturities-display' id='maturities-display-"+purchase_id+"'>";
 			var maturities = displayMaturities(maturities_list);
-			contents += maturities[0];
+			contents += maturities;
 			contents += "</div>";
 			contents += "</ul></div>";
 			// Add the total price to each input once it's calculated.
 			// Lock the appropriate sliders.
 			$("#body-purchase-"+purchase_id).append(contents);
 
-			// Display remaining price
-			var remaining_price = maturities[1].toFixed(2);
 			showAmountDiscrepancy(purchase_id);
 			$("#body-purchase-"+purchase_id).collapse("show");
 		})

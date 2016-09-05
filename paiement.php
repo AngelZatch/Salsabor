@@ -37,7 +37,7 @@ if(isset($_POST["submit"])){
 								<span class="glyphicon glyphicon-repeat"></span> Etape 3/3 : Ajustement des échéances
 							</div>
 						</div>
-						<p>Récapitulatif de la commande</p>
+						<p class="sub-legend">Récapitulatif de la commande</p>
 						<table class="table">
 							<thead>
 								<tr>
