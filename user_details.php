@@ -53,35 +53,6 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 
 // Et on cherche à savoir si des échéances sont en retard
 $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$data")->rowCount();
-
-// Edit des informations
-if(isset($_POST["edit"])){
-	try{
-		$db->beginTransaction();
-		$edit = $db->prepare('UPDATE users
-								SET user_rfid = :rfid, date_naissance = :date_naissance, rue = :rue, code_postal = :code_postal, ville = :ville, tel_secondaire = :tel_secondaire, commentaires = :commentaires
-								WHERE user_id = :id');
-		$edit->bindParam(':rfid', $_POST["user_rfid"]);
-		$edit->bindParam(':date_naissance', $_POST["date_naissance"]);
-		$edit->bindParam(':rue', $_POST["rue"]);
-		$edit->bindParam(':code_postal', $_POST["code_postal"]);
-		$edit->bindParam(':ville', $_POST["ville"]);
-		$edit->bindParam(':tel_secondaire', $_POST["tel_secondaire"]);
-		$edit->bindParam(':commentaires', $_POST["commentaires"]);
-		$edit->bindParam(':id', $data);
-		$edit->execute();
-		if(isset($_POST["user_rfid"])){
-			$delete = $db->prepare('DELETE FROM participations WHERE user_rfid = ? AND status=1');
-			$delete->bindParam(1, $_POST["user_rfid"]);
-			$delete->execute();
-		}
-		$db->commit();
-		header("Location:$data");
-	} catch(PDOException $e){
-		$db->rollBack();
-		var_dump($e->getMessage());
-	}
-}
 ?>
 <html>
 	<head>
@@ -149,7 +120,7 @@ if(isset($_POST["edit"])){
 							<label for="user_rfid" class="col-sm-3 control-label">Code carte</label>
 							<div class="col-sm-9">
 								<div class="input-group">
-									<input type="text" name="user_rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
+									<input type="text" name="user_rfid" id="user-rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
 									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
 								</div>
 							</div>
@@ -328,6 +299,10 @@ if(isset($_POST["edit"])){
 				var values = $("#user-details-form").serialize(), table = "users", entry_id = user_id[0];
 				$.when(updateEntry(table, values, entry_id)).done(function(data){
 					console.log(data);
+					var rfid = $("#user-rfid").val();
+					if(rfid != ""){
+						$.post("functions/delete_association_record.php", {rfid : rfid});
+					}
 				})
 			})
 				<?php if($is_teacher == 1){?>
