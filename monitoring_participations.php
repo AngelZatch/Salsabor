@@ -57,7 +57,7 @@ $db = PDOFactory::getConnection();
 						if(record_details.status == 5){
 							$("#rfid_name").text("Pas d'utilisateur correspondant");
 						} else {
-							$("#rfid_name").text(record_details.user_prenom+" "+record_details.user_nom);
+							$("#rfid_name").text(record_details.user_prenom+" "+record_details.user_nom+" ("+record_details.user_rfid+")");
 						}
 						$("#qr_image").attr("src", record_details.photo);
 						$("#rfid_location").text(record_details.room_name+" ( "+record_details.room_token+" )")
