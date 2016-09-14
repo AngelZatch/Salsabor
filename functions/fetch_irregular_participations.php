@@ -3,11 +3,12 @@ include "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $participation_id = $_GET["participation_id"];
+$age_action = $_GET["age_action"];
 if($participation_id == 0){
 	$participation_id = PHP_INT_MAX;
 }
 
-$load = $db->query("SELECT *, pr.user_rfid AS pr_rfid FROM participations pr
+$query = "SELECT *, pr.user_rfid AS pr_rfid FROM participations pr
 					LEFT JOIN readers re ON pr.room_token = re.reader_token
 					LEFT JOIN rooms r ON re.reader_id = r.room_reader
 					LEFT JOIN users u ON pr.user_id = u.user_id
@@ -16,8 +17,27 @@ $load = $db->query("SELECT *, pr.user_rfid AS pr_rfid FROM participations pr
 					LEFT JOIN sessions s ON pr.session_id = s.session_id
 					WHERE (pr.status = 0 OR pr.status = 3 OR (pr.status = 2 AND (produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0)))
 					AND passage_id < '$participation_id'
-					ORDER BY pr.passage_id DESC
-					LIMIT 30");
+					AND passage_date";
+if($age_action == 0){
+	$query .= " > ";
+}
+if($age_action == 1){
+	$query .= " < ";
+}
+
+// Age of participations
+$date = new DateTime();
+$age = $db->query("SELECT setting_value FROM settings WHERE setting_code = 'archiv_part'")->fetch(PDO::FETCH_COLUMN);
+$delta = "P".$age."M";
+$date->sub(new DateInterval($delta));
+$date = $date->format('Y-m-d H:i:s');
+
+$query .= "'$date' ";
+$query .= "ORDER BY pr.passage_id DESC
+					LIMIT 30";
+
+/*echo $query;*/
+$load = $db->query($query);
 
 $notifications_settings = $db->query("SELECT * FROM master_settings WHERE user_id = '0'")->fetch(PDO::FETCH_ASSOC);
 
@@ -29,6 +49,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$duplicates = $db->query("SELECT passage_id FROM participations
 							WHERE user_rfid = '$details[user_rfid]'
 							AND room_token = '$details[room_token]'
+							AND user_id = '$details[user_id]'
 							AND CASE WHEN session_id IS NOT NULL
 								THEN session_id = '$details[session_id]'
 							END
