@@ -303,6 +303,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 					if(rfid != ""){
 						$.post("functions/delete_association_record.php", {rfid : rfid});
 					}
+					showNotification("Modifications enregistrées", "success");
 				})
 			})
 				<?php if($is_teacher == 1){?>

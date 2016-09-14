@@ -12,7 +12,7 @@ $limit_start = date("Y-m-d H:i:s", strtotime($session["session_start"].'-30MINUT
 $limit_end = date("Y-m-d H:i:s", strtotime($session["session_start"].'+30MINUTES'));
 
 $load = $db->query("SELECT * FROM participations pr
-					LEFT JOIN readers re ON pr.room_token = re.reader_id
+					LEFT JOIN readers re ON pr.room_token = re.reader_token
 					LEFT JOIN rooms r ON re.reader_id = r.room_reader
 					LEFT JOIN users u ON pr.user_id = u.user_id
 					LEFT JOIN produits_adherents pa ON pr.produit_adherent_id = pa.id_produit_adherent

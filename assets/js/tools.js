@@ -759,6 +759,7 @@ $(document).ready(function(){
 			}
 			// End of additional logic
 			modal.modal('hide');
+			showNotification("Modifications enregistrées", "success");
 		})
 	})
 }).on('hide.bs.modal', '#edit-modal', function(e){
@@ -820,6 +821,10 @@ function badgeTasks(){
 
 function showSuccessNotif(data){
 	$.notify(data, {globalPosition:"right bottom", className:"success"});
+}
+
+function showNotification(message, notif_type){
+	$.notify(message, {globalPosition: "bottom right", className:notif_type});
 }
 
 // FONCTIONS UTILITAIRES //

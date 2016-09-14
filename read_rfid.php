@@ -14,10 +14,10 @@ if(isset($_GET["carte"])){
 if(isset($_POST["add"])){
 	$tag_rfid = $_POST["tag"];
 	$reader_token = $_POST["salle"];
-	prepareParticipation($db, $tag_rfid, $reader_token);
+	prepareParticipationBeta($db, $tag_rfid, $reader_token);
 }
 
-function prepareParticipation($db, $user_tag, $reader_token){
+function prepareParticipationBeta($db, $user_tag, $reader_token){
 	$today = date("Y-m-d H:i:s");
 	if($reader_token == "192.168.0.3"){
 		$status = "1";
@@ -34,9 +34,7 @@ function prepareParticipation($db, $user_tag, $reader_token){
 		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$user_tag'")->fetch(PDO::FETCH_COLUMN);
 
 		addParticipationBeta($db, $today, $session_id, $user_id, $reader_token, $user_tag);
-		/*addParticipation($db, $cours_name, $session_id, $user_details["user_id"], $reader_token, $tag);*/
 	}
-	/*header('Location: passages');*/
 }
 ?>
 <html>

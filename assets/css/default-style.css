@@ -1659,4 +1659,8 @@ p.legend, div.legend:nth-child(1n+0) {
   color: #A80139;
   height: inherit; }
 
+/* line 1159, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.monitoring-infos {
+  font-size: 1.4em; }
+
 /*# sourceMappingURL=default-style.css.map */
