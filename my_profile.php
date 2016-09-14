@@ -194,6 +194,7 @@ if(isset($_POST['imagebase64'])){
 						$(".save-settings").switchClass("btn-success", "btn-primary");
 						$(".save-settings").text("Valider");
 					}, 3000);
+					showNotification("Votre profil a été mis à jour", "success");
 				})
 			})
 		</script>

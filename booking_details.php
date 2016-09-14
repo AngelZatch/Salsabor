@@ -176,6 +176,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				updateEntry(table, values, booking_id).done(function(data){
 					console.log(data);
 					$("#last-edit-date").text(moment().format("DD/MM/YYYY HH:mm:ss"));
+					showNotification("Modifications enregistrées", "success");
 				});
 			}).on('click', '.btn-delete', function(){
 				var booking_id = <?php echo $booking_id;?>;

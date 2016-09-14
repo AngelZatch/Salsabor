@@ -34,6 +34,7 @@ function updateMaturityState(maturity_id){
 	} else {
 		deadline_span.removeClass("deadline-expired");
 	}
+	showNotification("Echéance mise à jour", "success");
 }
 
 function showAmountDiscrepancy(purchase_id){
