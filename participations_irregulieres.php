@@ -21,9 +21,13 @@ $display = $_GET["display"];
 		<script>
 			$(document).ready(function(){
 				<?php if($display == "all"){ ?>
-				displayIrregularParticipations(0);
-				<?php } else { ?>
+				displayIrregularParticipations(0, 0);
+				<?php }
+				if($display == "user"){ ?>
 				displayIrregularUsers();
+				<?php }
+				if($display == "old"){ ?>
+				displayIrregularParticipations(0, 1);
 				<?php } ?>
 			}).on('show.bs.collapse', '.panel-collapse', function(){
 				var user_id = document.getElementById($(this).attr("id")).dataset.user;
@@ -48,8 +52,9 @@ $display = $_GET["display"];
 							<a href="regularisation/participations/all">Tout afficher</a>
 						</li>
 						<li role="presentation" <?php if($display == "user") echo "class='active'";?>><a href="regularisation/participations/user">Par utilisateur</a></li>
+						<li role="presentation" <?php if($display == "old") echo "class='active'";?>><a href="regularisation/participations/old">Archivées</a></li>
 					</ul>
-					<?php if($display == "all"){ ?>
+					<?php if($display == "all" || $display == "old"){ ?>
 					<div class="container-fluid irregular-sessions-container">
 						<ul class="irregulars-list">
 

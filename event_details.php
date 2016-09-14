@@ -154,7 +154,9 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 			}).on('click', '.btn-edit', function(){
 				var values = $("#event_details").serialize(), table = "events", event_id = <?php echo $event_id;?>;
 				//console.log(values);
-				updateEntry(table, values, event_id);
+				$.when(updateEntry(table, values, event_id)).done(function(){
+					showNotification("Modifications enregistrées", "success");
+				});
 			}).on('click', '.btn-delete', function(){
 				var event_id = <?php echo $event_id;?>;
 				$.when(deleteEntry("events", event_id), deleteTasksByTarget("EVT", event_id)).done(function(){

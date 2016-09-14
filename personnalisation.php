@@ -130,7 +130,7 @@ $indicePanier = $_GET["order"];
 					ordre_panier : "<?php echo $indicePanier;?>",
 					id_beneficiaire : null,
 					nom_beneficiaire : null,
-					date_activation : null,
+					date_activation : ($("#date_activation").val()!="")?$("#date_activation").val():null,
 					prix : "<?php echo $article["product_price"];?>",
 					reduction : null,
 					prix_final : null
