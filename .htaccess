@@ -30,6 +30,7 @@ RewriteRule ^my/profile$ my_profile.php
 RewriteRule ^my/products$ my_products.php
 RewriteRule ^event/new$ event_add.php
 RewriteRule ^reservation/new$ booking_add.php
+RewriteRule ^monitoring/participations$ monitoring_participations.php
 
 #User Details
 RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]
