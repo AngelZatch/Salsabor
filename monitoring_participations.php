@@ -36,7 +36,6 @@ $db = PDOFactory::getConnection();
 							<p>Type de passage : <span id="passage_type"></span></p>
 							<p>Prévu pour le cours : <span id="passage_session"></span></p>
 							<p>Produit utilisé : <span id="passage_product"></span></p>
-							<p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
 						</div>
 					</div>
 				</div>
@@ -55,8 +54,11 @@ $db = PDOFactory::getConnection();
 						console.log(data);
 						var record_details = JSON.parse(data);
 						date = record_details.passage_date;
-						console.log(date);
-						$("#rfid_name").text(record_details.user_prenom+" "+record_details.user_nom);
+						if(record_details.status == 5){
+							$("#rfid_name").text("Pas d'utilisateur correspondant");
+						} else {
+							$("#rfid_name").text(record_details.user_prenom+" "+record_details.user_nom);
+						}
 						$("#qr_image").attr("src", record_details.photo);
 						$("#rfid_location").text(record_details.room_name+" ( "+record_details.room_token+" )")
 						$("#record_time").text(moment(record_details.passage_date).format("DD/MM/YYYY HH:mm:ss"));
@@ -87,7 +89,7 @@ $db = PDOFactory::getConnection();
 								break;
 						}
 						$("#passage_type").text(record_message);
-						$("#passage_session").text(record_details.session_name);
+						$("#passage_session").text(record_details.session_name+"(du "+moment(record_details.session_start).format("DD/MM/YYYY HH:mm:ss")+" au "+moment(record_details.session_end).format("DD/MM/YYYY HH:mm:ss")+")");
 						$("#passage_product").text(record_details.product_name);
 					} else {
 						console.log("En attente");
