@@ -125,124 +125,137 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<?php } ?>
 						</div>
 					</div>
-					<p class="sub-legend">Détails</p>
-					<form name="session_details" id="session_details" role="form" class="form-horizontal">
-						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Intitulé du cours</label>
-							<div class="col-lg-9">
-								<input type="text" class="form-control" name="session_name" id="session_name_input" value="<?php echo $cours['session_name'];?>">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Professeur <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Vous pouvez régler les noms qui vous seront suggérés avec le sélecteur 'Suggérer parmi...'"></span></label>
-							<div class="col-lg-9">
-								<div class="input-group">
-									<div class="input-group-btn">
-										<button type="button" class="btn btn-default dropdown-toggle suggestion-text" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Suggérer parmi... <span class="caret"></span></button>
-										<ul class="dropdown-menu dropdown-custom">
-											<?php while($user_label = $user_labels->fetch(PDO::FETCH_ASSOC)){ ?>
-											<li class="completion-option"><a><?php echo $user_label["rank_name"];?></a></li>
-											<?php } ?>
-											<li class="completion-option"><a>Ne pas suggérer</a></li>
-										</ul>
+					<ul class="nav nav-tabs" role="tablist">
+						<li role="presentation" class="active"><a href="#details" role="tab" data-toggle="tab">Détails</a></li>
+						<li role="presentation"><a href="#stats" role="tab" data-toggle="tab">Statistiques</a></li>
+						<li role="presentation"><a href="#tasks" role="tab" data-toggle="tab">Tâches</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="details">
+							<p class="sub-legend">Détails</p>
+							<form name="session_details" id="session_details" role="form" class="form-horizontal">
+								<div class="form-group">
+									<label for="" class="col-lg-3 control-label">Intitulé du cours</label>
+									<div class="col-lg-9">
+										<input type="text" class="form-control" name="session_name" id="session_name_input" value="<?php echo $cours['session_name'];?>">
 									</div>
-									<input type="text" class="form-control filtered-complete" id="complete-teacher" name="session_teacher" value="<?php echo $cours['user_prenom']." ".$cours['user_nom'];?>">
 								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="session_start" class="col-lg-3 control-label">Début</label>
-							<div class="col-lg-9">
-								<input type="text" class="form-control" name="session_start" id="datepicker-start">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="session_end" class="col-lg-3 control-label">Fin</label>
-							<div class="col-lg-9">
-								<input type="text" class="form-control" name="session_end" id="datepicker-end">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Etiquettes</label>
-							<div class="col-lg-9">
-								<h4>
-									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){
+								<div class="form-group">
+									<label for="" class="col-lg-3 control-label">Professeur <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Vous pouvez régler les noms qui vous seront suggérés avec le sélecteur 'Suggérer parmi...'"></span></label>
+									<div class="col-lg-9">
+										<div class="input-group">
+											<div class="input-group-btn">
+												<button type="button" class="btn btn-default dropdown-toggle suggestion-text" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Suggérer parmi... <span class="caret"></span></button>
+												<ul class="dropdown-menu dropdown-custom">
+													<?php while($user_label = $user_labels->fetch(PDO::FETCH_ASSOC)){ ?>
+													<li class="completion-option"><a><?php echo $user_label["rank_name"];?></a></li>
+													<?php } ?>
+													<li class="completion-option"><a>Ne pas suggérer</a></li>
+												</ul>
+											</div>
+											<input type="text" class="form-control filtered-complete" id="complete-teacher" name="session_teacher" value="<?php echo $cours['user_prenom']." ".$cours['user_nom'];?>">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="session_start" class="col-lg-3 control-label">Début</label>
+									<div class="col-lg-9">
+										<input type="text" class="form-control" name="session_start" id="datepicker-start">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="session_end" class="col-lg-3 control-label">Fin</label>
+									<div class="col-lg-9">
+										<input type="text" class="form-control" name="session_end" id="datepicker-end">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="" class="col-lg-3 control-label">Etiquettes</label>
+									<div class="col-lg-9">
+										<h4>
+											<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){
 	if($label["is_mandatory"] == 1){
 		$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
 	} else {
 		$label_name = $label["rank_name"];
 	}?>
-									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="session-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='session' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label_name;?></span>
-									<?php } ?>
-									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='session-tags' data-targettype='session' title="Ajouter une étiquette">+</span>
-								</h4>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Salle</label>
-							<div class="col-lg-9">
-								<select name="session_room" class="form-control">
-									<?php while($salles = $querySalles->fetch(PDO::FETCH_ASSOC)){
+											<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="session-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='session' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label_name;?></span>
+											<?php } ?>
+											<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='session-tags' data-targettype='session' title="Ajouter une étiquette">+</span>
+										</h4>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="" class="col-lg-3 control-label">Salle</label>
+									<div class="col-lg-9">
+										<select name="session_room" class="form-control">
+											<?php while($salles = $querySalles->fetch(PDO::FETCH_ASSOC)){
 	if($cours["session_room"] == $salles["room_id"]) {?>
-									<option selected="selected" value="<?php echo $salles["room_id"];?>"><?php echo $salles["room_name"];?></option>
-									<?php } else { ?>
-									<option value="<?php echo $salles["room_id"];?>"><?php echo $salles["room_name"];?></option>
-									<?php }
+											<option selected="selected" value="<?php echo $salles["room_id"];?>"><?php echo $salles["room_name"];?></option>
+											<?php } else { ?>
+											<option value="<?php echo $salles["room_id"];?>"><?php echo $salles["room_name"];?></option>
+											<?php }
 } ?>
-								</select>
+										</select>
+									</div>
+								</div>
+							</form>
+							<p class="sub-legend top-divider">Série</p>
+							<form name="session_group" id="session_group" role="form" class="form-horizontal">
+								<div class="form-group">
+									<label for="" class="col-lg-3 control-label">Identifiant <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Série auquel appartient le cours."></span></label>
+									<div class="col-lg-9">
+										<p type="text" class="form-control-static" name="cours_parent" id="group-input"><?php echo $cours["session_group"];?></p>
+									</div>
+								</div>
+								<span class="col-lg-offset-2 col-lg-10 help-block">Modifiez les champs ci-dessous pour ajouter ou retirer des cours. Si vous prolongez la récurrence (en augmentant le nombre ou la date) de nouveaux cours seront créés. Inversement, si vous réduisez la récurrence, des cours existants seront supprimés. Pensez à vérifier les jours chômés avant de valider vos modifications.</span>
+								<div class="form-group">
+									<label for="" class="col-lg-3 control-label">Nombre de cours</label>
+									<div class="col-lg-9">
+										<input type="number" class="form-control" id="steps" name="steps" value="<?php echo $count;?>">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="recurrence_end" class="col-lg-3 control-label">Fin de récurrence</label>
+									<div class="col-lg-9">
+										<input type="text" class="form-control" name="recurrence_end" id="recurrence_end">
+									</div>
+								</div>
+							</form>
+							<div class="container-fluid">
+								<button class="btn btn-primary col-xs-12 col-sm-offset-6 col-sm-6" id="group-edit">Valider les modifications d'appartenance</button>
+								<!--<button class="btn btn-danger col-xs-6" id="group-split">Dissocier du groupe</button>-->
+							</div>
+							<p class="sub-legend top-divider">Participations de ce cours</p>
+							<div class="panel panel-session" id="session-<?php echo $id;?>">
+								<a class="panel-heading-container" id='ph-session-<?php echo $id;?>' data-session='<?php echo $id;?>' data-trigger='<?php echo $id;?>'>
+									<div class="panel-heading">
+										<div class="container-fluid">
+											<p class="col-xs-5 col-md-3">Liste des participants</p>
+											<p class="col-xs-2 col-lg-1"><span class="glyphicon glyphicon-user"></span> <span class="user-total-count" id="user-total-count-<?php echo $id;?>"></span></p>
+											<p class="col-xs-2 col-lg-1"><span class="glyphicon glyphicon-ok"></span> <span class="user-ok-count" id="user-ok-count-<?php echo $id;?>"></span></p>
+											<p class="col-xs-2 col-lg-1"><span class="glyphicon glyphicon-warning-sign"></span> <span class="user-warning-count" id="user-warning-count-<?php echo $id;?>"></span></p>
+											<span class="glyphicon glyphicon-ok-sign col-xs-1 col-md-1 col-md-offset-5 glyphicon-button-alt glyphicon-button-big validate-session" id="validate-session-<?php echo $id;?>" data-session="<?php echo $id;?>" title="Valider tous les passages"></span>
+										</div>
+									</div>
+								</a>
+								<div class="panel-body collapse" id="body-session-<?php echo $id;?>" data-session="<?php echo $id;?>"></div>
 							</div>
 						</div>
-					</form>
-					<p class="sub-legend top-divider">Groupe de récurrence</p>
-					<form name="session_group" id="session_group" role="form" class="form-horizontal">
-						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Identifiant <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Groupe de récurrence auquel appartient le cours."></span></label>
-							<div class="col-lg-9">
-								<p type="text" class="form-control-static" name="cours_parent" id="group-input"><?php echo $cours["session_group"];?></p>
-							</div>
+						<div class="tab-pane" id="stats">
+							<p class="sub-legend top-divider">Participations de la série</p>
+							<span class="help-block">Nombre de participants à chaque cours (Série : <?php echo $cours["session_group"];?>)</span>
+							<div class="chart" id="session-chart" style="height:250px"></div>
 						</div>
-						<span class="col-lg-offset-2 col-lg-10 help-block">Modifiez les champs ci-dessous pour ajouter ou retirer des cours. Si vous prolongez la récurrence (en augmentant le nombre ou la date) de nouveaux cours seront créés. Inversement, si vous réduisez la récurrence, des cours existants seront supprimés. Pensez à vérifier les jours chômés avant de valider vos modifications.</span>
-						<div class="form-group">
-							<label for="" class="col-lg-3 control-label">Nombre de cours</label>
-							<div class="col-lg-9">
-								<input type="number" class="form-control" id="steps" name="steps" value="<?php echo $count;?>">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="recurrence_end" class="col-lg-3 control-label">Fin de récurrence</label>
-							<div class="col-lg-9">
-								<input type="text" class="form-control" name="recurrence_end" id="recurrence_end">
-							</div>
-						</div>
-					</form>
-					<div class="container-fluid">
-						<button class="btn btn-primary col-xs-12 col-sm-offset-6 col-sm-6" id="group-edit">Valider les modifications d'appartenance</button>
-						<!--<button class="btn btn-danger col-xs-6" id="group-split">Dissocier du groupe</button>-->
-					</div>
-					<p class="sub-legend top-divider">Participations de ce cours</p>
-					<div class="panel panel-session" id="session-<?php echo $id;?>">
-						<a class="panel-heading-container" id='ph-session-<?php echo $id;?>' data-session='<?php echo $id;?>' data-trigger='<?php echo $id;?>'>
-							<div class="panel-heading">
-								<div class="container-fluid">
-									<p class="col-xs-5 col-md-3">Liste des participants</p>
-									<p class="col-xs-2 col-lg-1"><span class="glyphicon glyphicon-user"></span> <span class="user-total-count" id="user-total-count-<?php echo $id;?>"></span></p>
-									<p class="col-xs-2 col-lg-1"><span class="glyphicon glyphicon-ok"></span> <span class="user-ok-count" id="user-ok-count-<?php echo $id;?>"></span></p>
-									<p class="col-xs-2 col-lg-1"><span class="glyphicon glyphicon-warning-sign"></span> <span class="user-warning-count" id="user-warning-count-<?php echo $id;?>"></span></p>
-									<span class="glyphicon glyphicon-ok-sign col-xs-1 col-md-1 col-md-offset-5 glyphicon-button-alt glyphicon-button-big validate-session" id="validate-session-<?php echo $id;?>" data-session="<?php echo $id;?>" title="Valider tous les passages"></span>
+						<div class="tab-pane" id="tasks">
+							<p class="sub-legend top-divider">Tâches à faire</p>
+							<div class="tasks-container container-fluid"></div>
+							<div class="sub-container container-fluid">
+								<div class="panel-heading panel-add-record container-fluid">
+									<div class="col-sm-1"><div class="notif-pp empty-pp"></div></div>
+									<div class="col-sm-11 new-task-text">Ajouter une nouvelle tâche...</div>
 								</div>
 							</div>
-						</a>
-						<div class="panel-body collapse" id="body-session-<?php echo $id;?>" data-session="<?php echo $id;?>"></div>
-					</div>
-					<p class="sub-legend top-divider">Statistiques de participations du groupe de récurrence</p>
-					<span class="help-block">Nombre de participants à chaque cours (Groupe de récurrence : <?php echo $cours["session_group"];?>)</span>
-					<div class="chart" id="session-chart" style="height:250px"></div>
-					<p class="sub-legend top-divider">Tâches à faire</p>
-					<div class="tasks-container container-fluid"></div>
-					<div class="sub-container container-fluid">
-						<div class="panel-heading panel-add-record container-fluid">
-							<div class="col-sm-1"><div class="notif-pp empty-pp"></div></div>
-							<div class="col-sm-11 new-task-text">Ajouter une nouvelle tâche...</div>
 						</div>
 					</div>
 				</div>
@@ -250,7 +263,15 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
 		<?php include "inserts/edit_modal.php";?>
+		<style>
+			#session-chart svg{
+				width: 100%;
+			}
+		</style>
 		<script>
+			$("a[href='#stats']").on('shown.bs.tab', function(e){
+				stats_group.redraw();
+			})
 			$(document).ready(function(){
 				setInterval(function () {
 					$('.label-active-text').shineText({
@@ -317,8 +338,8 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					})
 				})
 
-				$.getJSON("functions/fetch_all_sessions_participations.php", {session_group_id : session_group_id}, function(data){
-					new Morris.Line({
+				var stats_data = $.getJSON("functions/fetch_all_sessions_participations.php", {session_group_id : session_group_id}, function(data){
+					var line_options = {
 						// ID of the element in which to draw the chart.
 						element: 'session-chart',
 						// Chart data records -- each entry in this array corresponds to a point on
@@ -332,8 +353,10 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						// chart.
 						labels: ['Participants'],
 						lineColors: ['#A80139']
-					});
+					};
+					stats_group = Morris.Line(line_options);
 				});
+
 
 				// Redirect to week of the session if going back to planning
 				$("a[href=planning]").attr("href", "planning?default-date=<?php echo date_create($cours['session_start'])->format("Y-m-d");?>");
@@ -471,6 +494,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 				$(".tasks-container").append(emptyTask);
 				// When validating a new task, we delete the new template one and reload the correct one. Easy!
 			})
+
 			$(window).on('beforeunload', function(){
 				var current_form = $("#session_details").serialize();
 				console.log(window.initial_form, current_form);
