@@ -1041,3 +1041,25 @@ function getUrlParameter(sParam) {
 		}
 	}
 };
+
+function provideAutoComplete(target, filter){
+	$.get("functions/fetch_user_list.php", {filter : filter}).done(function(data){
+		var userList = JSON.parse(data);
+		var autocompleteList = [];
+		for(var i = 0; i < userList.length; i++){
+			autocompleteList.push(userList[i].user);
+		}
+		$(target).textcomplete('destroy');
+		$(target).textcomplete([{
+			match: /(^|\b)(\w{2,})$/,
+			search: function(term, callback){
+				callback($.map(autocompleteList, function(item){
+					return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
+				}));
+			},
+			replace: function(item){
+				return item;
+			}
+		}]);
+	});
+}

@@ -825,16 +825,16 @@ a {
   border: 0; }
   /* line 495, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .panel-purchase .panel-heading-container, .panel-session .panel-heading-container {
-    cursor: pointer;
     text-decoration: none;
     color: black; }
-    /* line 499, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+    /* line 498, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
     .panel-purchase .panel-heading-container:hover, .panel-session .panel-heading-container:hover {
       color: black; }
-  /* line 501, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 500, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .panel-purchase .panel-heading, .panel-session .panel-heading {
     background-color: white;
-    text-decoration: none; }
+    text-decoration: none;
+    cursor: pointer; }
     /* line 504, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
     .panel-purchase .panel-heading p, .panel-session .panel-heading p {
       margin-top: 10px; }

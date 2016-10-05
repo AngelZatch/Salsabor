@@ -18,7 +18,8 @@ $details["count"] = $db->query("SELECT * FROM tasks
 						AND task_state = 0")->rowCount();
 
 //Enfin, on obtient l'historique de tous les achats (mêmes les forfaits d'autres personnes)
-$queryAchats = $db->query("SELECT * FROM transactions
+$queryAchats = $db->query("SELECT *, CONCAT(user_prenom, ' ', user_nom) AS handler FROM transactions t
+						LEFT JOIN users u ON t.transaction_handler = u.user_id
 						WHERE id_transaction IN (SELECT id_transaction_foreign FROM produits_adherents WHERE id_user_foreign = '$user_id') OR payeur_transaction='$user_id'
 						ORDER BY date_achat DESC");
 
@@ -64,12 +65,13 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 					</ul>
 					<div>
 						<?php while($achats = $queryAchats->fetch(PDO::FETCH_ASSOC)){
-	$productQty = $db->query("SELECT id_produit_adherent FROM produits_adherents WHERE id_transaction_foreign='$achats[id_transaction]'")->rowCount();?>
+	$productQty = $db->query("SELECT id_produit_adherent FROM produits_adherents WHERE id_transaction_foreign='$achats[id_transaction]'")->rowCount();
+						$handler = ($achats["handler"]!=null)?$achats["handler"]:"Pas de vendeur";?>
 						<div class="panel panel-purchase" id="purchase-<?php echo $achats["id_transaction"];?>">
 							<div class="panel-heading container-fluid" onClick="displayPurchase('<?php echo $achats["id_transaction"];?>')">
 								<p class="purchase-id col-xs-4">Transaction <?php echo $achats["id_transaction"];?></p>
-								<p class="col-xs-3"><?php echo $productQty;?> produit(s)</p>
-								<p class="purchase-sub col-xs-3"><?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <span id="price-<?php echo $achats["id_transaction"];?>"><?php echo $achats["prix_total"];?></span> €</p>
+								<p class="col-xs-2"><?php echo $productQty;?> produit(s)</p>
+								<p class="purchase-sub col-xs-4"><?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <span id="handler-<?php echo $achats["id_transaction"];?>"><?php echo $handler;?></span> - <span id="price-<?php echo $achats["id_transaction"];?>"><?php echo $achats["prix_total"];?></span> €</p>
 								<span class="glyphicon glyphicon-briefcase glyphicon-button glyphicon-button-alt glyphicon-button-big create-contract col-xs-1" id="create-contract-<?php echo $achats["id_transaction"];?>" data-transaction="<?php echo $achats["id_transaction"];?>"title="Afficher le contrat"></span>
 								<span class="glyphicon glyphicon-file glyphicon-button glyphicon-button-alt glyphicon-button-big create-invoice col-xs-1" id="create-invoice-<?php echo $achats["id_transaction"];?>" data-transaction="<?php echo $achats["id_transaction"];?>" title="Afficher la facture"></span>
 							</div>

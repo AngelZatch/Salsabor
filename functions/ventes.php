@@ -16,6 +16,9 @@ function vente(){
 	// Purchase date
 	$date_achat = $_POST["date_achat"];
 
+	// Handler's ID
+	$handler_id = solveAdherentToId($_POST["handler"]);
+
 	// Get number of maturities
 	$echeances = $_POST["echeances"];
 
@@ -28,10 +31,11 @@ function vente(){
 	try{
 		$db->beginTransaction();
 		// Creating transaction
-		$new_transaction = $db->prepare("INSERT INTO transactions(id_transaction, payeur_transaction, date_achat, prix_total) VALUES(:transaction, :payeur, :date_achat, :prix_total)");
+		$new_transaction = $db->prepare("INSERT INTO transactions(id_transaction, payeur_transaction, date_achat, transaction_handler, prix_total) VALUES(:transaction, :payeur, :date_achat, :handler, :prix_total)");
 		$new_transaction->bindParam(':transaction', $transaction);
 		$new_transaction->bindParam(':payeur', $payer_id);
 		$new_transaction->bindParam(':date_achat', $date_achat);
+		$new_transaction->bindParam(':handler', $handler_id);
 		$new_transaction->bindParam(':prix_total', $prix_restant);
 		$new_transaction->execute();
 
