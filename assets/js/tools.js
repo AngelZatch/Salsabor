@@ -709,15 +709,35 @@ $(document).ready(function(){
 		edit_form += "<div class='col-lg-8'>";
 
 		// Overwriting default input_type (text)
-		if(input_type === undefined){
-			if(is_placeholder){
-				edit_form += '<input type="text" class="form-control" name="'+field_name+'" placeholder="'+element.text()+'">';
-			} else {
-				edit_form += '<input type="text" class="form-control" name="'+field_name+'" value="'+element.text()+'">';
-			}
+		if(field_name == 'rate_ratio'){
+			edit_form += '<select name="'+field_name+'" class="form-control">';
+			if(element.text() == "heure")
+				edit_form += '<option selected="selected" value="heure">heure</option>';
+			else
+				edit_form += '<option value="heure">heure</option>';
+
+			if(element.text() == "personne")
+				edit_form += '<option selected="selected" value="personne">personne</option>';
+			else
+				edit_form += '<option value="personne">personne</option>';
+
+			if(element.text() == "prestation")
+				edit_form += '<option selected="selected" value="prestation">prestation</option>';
+			else
+				edit_form += '<option value="prestation">prestation</option>';
+
+			edit_form += '</select>';
 		} else {
-			if(input_type == "textarea"){
-				edit_form += "<textarea class='form-control' name='"+field_name+"'>"+element.text()+"</textarea>";
+			if(input_type === undefined){
+				if(is_placeholder){
+					edit_form += '<input type="text" class="form-control" name="'+field_name+'" placeholder="'+element.text()+'">';
+				} else {
+					edit_form += '<input type="text" class="form-control" name="'+field_name+'" value="'+element.text()+'">';
+				}
+			} else {
+				if(input_type == "textarea"){
+					edit_form += "<textarea class='form-control' name='"+field_name+"'>"+element.text()+"</textarea>";
+				}
 			}
 		}
 		edit_form += "</div>";
@@ -766,6 +786,22 @@ $(document).ready(function(){
 	console.log("unbinding edit button");
 	// End of additional logic
 	$(this).find(".send-edit-data").off('click');
+}).on('show.bs.modal', '#delete-modal', function(event){
+	var entry_id = $(event.relatedTarget).data('entry'), table = $(event.relatedTarget).data('table'), to_delete = $(event.relatedTarget).data('delete'), modal = $(this);
+	modal.find(".modal-title").text($(event.relatedTarget).attr('title'));
+	modal.find(".modal-body").text("Êtes-vous sûr de vouloir supprimer cette entrée ?");
+	modal.find(".delete-target").on('click', function(){
+		console.log(entry_id);
+		$.when(deleteEntry(table, entry_id)).done(function(data){
+			console.log(data);
+			$("."+to_delete).remove();
+			// End of additional logic
+			modal.modal('hide');
+			showNotification("Suppression effectuée", "success");
+		})
+	})
+}).on('hide.bs.modal', '#delete-modal', function(e){
+	$(this).find(".delete-target").off('click');
 })
 
 $(".has-name-completion").on('click blur keyup', function(){

@@ -41,6 +41,8 @@ $labels = $db->query("SELECT * FROM assoc_session_tags us
 						ORDER BY tag_color DESC");
 
 $user_labels = $db->query("SELECT * FROM tags_user");
+
+$rates = $db->query("SELECT * FROM teacher_rates WHERE user_id_foreign = $cours[user_id]");
 ?>
 <html>
 	<head>
@@ -127,7 +129,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					</div>
 					<ul class="nav nav-tabs" role="tablist">
 						<li role="presentation" class="active"><a href="#details" role="tab" data-toggle="tab">Détails</a></li>
-						<li role="presentation"><a href="#stats" role="tab" data-toggle="tab">Statistiques</a></li>
+						<li role="presentation"><a href="#stats" role="tab" data-toggle="tab">Rentabilité</a></li>
 						<li role="presentation"><a href="#tasks" role="tab" data-toggle="tab">Tâches</a></li>
 					</ul>
 					<div class="tab-content">
@@ -155,6 +157,16 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 											</div>
 											<input type="text" class="form-control filtered-complete" id="complete-teacher" name="session_teacher" value="<?php echo $cours['user_prenom']." ".$cours['user_nom'];?>">
 										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="teacher_rate" class="col-lg-3 control-label">Tarif</label>
+									<div class="col-lg-9">
+										<select name="teacher_rate" class="form-control" id="teacher-rate">
+										<?php while($rate = $rates->fetch(PDO::FETCH_ASSOC)){ ?>
+											<option <?php if($rate["rate_id"] == $cours["teacher_rate"]) echo "selected='selected'";?> value="<?php echo $rate["rate_id"];?>"><?php echo $rate["rate_title"]." (".$rate["rate_value"]."€/".$rate["rate_ratio"].")";?></option>
+										<?php } ?>
+										</select>
 									</div>
 								</div>
 								<div class="form-group">
@@ -510,6 +522,23 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					$('#paiement-sub').val(0);
 				}
 			});
+
+			$("#complete-teacher").on('keyup change', function(){
+				var to_match = $(this).val();
+				$("#teacher-rate option").remove();
+				$.get("functions/fetch_user_rates.php", {user_name : to_match}).done(function(data){
+					if(data){
+						var options = JSON.parse(data);
+						console.log(options);
+						for(var i = 0; i < options.length; i++){
+							console.log(options[i]);
+							$("#teacher-rate").append(
+								$("<option></option>").text(options[i].text).val(options[i].value)
+							);
+						}
+					}
+				})
+			})
 
 			function changeGroupButtonMessage(delta_steps){
 				if(delta_steps < -1)

@@ -5,28 +5,28 @@ if(!isset($_SESSION["username"])){
 }
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
-$data = $_GET['id'];
+$user_id = $_GET['id'];
 
 // User details
 $details = $db->query("SELECT * FROM users u
-						WHERE user_id='$data'")->fetch(PDO::FETCH_ASSOC);
+						WHERE user_id='$user_id'")->fetch(PDO::FETCH_ASSOC);
 
 $details["count"] = $db->query("SELECT * FROM tasks
-					WHERE ((task_token LIKE '%USR%' AND task_target = '$data')
-					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$data'))
-					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$data')))
+					WHERE ((task_token LIKE '%USR%' AND task_target = '$user_id')
+					OR (task_token LIKE '%PRD%' AND task_target IN (SELECT id_produit_adherent FROM produits_adherents WHERE id_user_foreign = '$user_id'))
+					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$user_id')))
 						AND task_state = 0")->rowCount();
 
 //Enfin, on obtient l'historique de tous les achats (mêmes les forfaits d'autres personnes)
 $queryAchats = $db->query("SELECT * FROM transactions
-						WHERE id_transaction IN (SELECT id_transaction_foreign FROM produits_adherents WHERE id_user_foreign = '$data') OR payeur_transaction='$data'
+						WHERE id_transaction IN (SELECT id_transaction_foreign FROM produits_adherents WHERE id_user_foreign = '$user_id') OR payeur_transaction='$user_id'
 						ORDER BY date_achat DESC");
 
-$queryTransactions = $db->query("SELECT * FROM produits_adherents WHERE id_user_foreign = '$data'");
+$queryTransactions = $db->query("SELECT * FROM produits_adherents WHERE id_user_foreign = '$user_id'");
 
 $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 								JOIN tags_user tu ON tu.rank_id = ur.tag_id_foreign
-								WHERE rank_name = 'Professeur' AND user_id_foreign = '$data'")->rowCount();
+								WHERE rank_name = 'Professeur' AND user_id_foreign = '$user_id'")->rowCount();
 ?>
 <html>
 	<head>
@@ -49,18 +49,18 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<?php include "inserts/user_banner.php";?>
 					<ul class="nav nav-tabs">
-						<li role="presentation" class="visible-xs-block"><a href="user/<?php echo $data;?>">Infos perso</a></li>
-						<li role="presentation" class="hidden-xs"><a href="user/<?php echo $data;?>">Informations personnelles</a></li>
-						<li role="presentation"><a href="user/<?php echo $data;?>/abonnements">Abonnements</a></li>
-						<li role="presentation"><a href="user/<?php echo $data;?>/historique">Participations</a></li>
-						<li role="presentation" class="active"><a href="user/<?php echo $data;?>/achats">Achats</a></li>
-						<li role="presentation"><a href="user/<?php echo $data;?>/reservations">Réservations</a></li>
-						<li role="presentation"><a href="user/<?php echo $data;?>/taches">Tâches</a></li>
+						<li role="presentation" class="visible-xs-block"><a href="user/<?php echo $user_id;?>">Infos perso</a></li>
+						<li role="presentation" class="hidden-xs"><a href="user/<?php echo $user_id;?>">Informations personnelles</a></li>
 						<?php if($is_teacher == 1){ ?>
-						<li role="presentation"><a>Cours donnés</a></li>
-						<li role="presentation"><a>Tarifs</a></li>
-						<li role="presentation"><a>Statistiques</a></li>
+						<!--<li role="presentation"><a>Cours donnés</a></li>-->
+						<li role="presentation"><a href="user/<?php echo $user_id;?>/tarifs">Tarifs</a></li>
+						<!--<li role="presentation"><a>Statistiques</a></li>-->
 						<?php } ?>
+						<li role="presentation"><a href="user/<?php echo $user_id;?>/abonnements">Abonnements</a></li>
+						<li role="presentation"><a href="user/<?php echo $user_id;?>/historique">Participations</a></li>
+						<li role="presentation" class="active"><a href="user/<?php echo $user_id;?>/achats">Achats</a></li>
+						<li role="presentation"><a href="user/<?php echo $user_id;?>/reservations">Réservations</a></li>
+						<li role="presentation"><a href="user/<?php echo $user_id;?>/taches">Tâches</a></li>
 					</ul>
 					<div>
 						<?php while($achats = $queryAchats->fetch(PDO::FETCH_ASSOC)){
