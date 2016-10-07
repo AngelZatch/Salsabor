@@ -7,7 +7,14 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 $searchTerms = $_GET["search_terms"];
 
-$searchUsers = $db->prepare("SELECT user_id, user_prenom, user_nom, mail, telephone, photo, actif FROM users WHERE (user_nom LIKE ? OR user_prenom LIKE ? OR mail LIKE ? OR telephone LIKE ?) ORDER BY user_nom ASC");
+$search_query = "SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS identity, mail, telephone, photo, actif, archived FROM users WHERE (user_nom LIKE ? OR user_prenom LIKE ? OR mail LIKE ? OR telephone LIKE ?)";
+
+if(!isset($_GET["archive"]) || $_GET["archive"] == "0")
+	$search_query .= " AND archived = 1";
+
+$search_query .= " ORDER BY archived DESC, actif DESC, user_nom ASC, user_prenom ASC";
+$searchUsers = $db->prepare($search_query);
+
 $searchUsers->execute(array("%".$searchTerms."%", "%".$searchTerms."%", "%".$searchTerms."%", "%".$searchTerms."%"));
 $numberUsers = $searchUsers->rowCount();
 
@@ -30,30 +37,48 @@ $numberTransactions = $searchTransactions->rowCount();
 					<legend>Résultats de recherche</legend>
 					<p class="search-title">
 						<span class="glyphicon glyphicon-user"></span> <?php echo $numberUsers;?> utilisateur(s) correspond(ent) à votre recherche
+						<?php if(!isset($_GET["archive"]) || $_GET["archive"] == "0"){ ?>
+						<a href="search.php?search_terms=<?php echo $searchTerms;?>&archive=1" class="btn btn-primary float-right">Inclure les résultats archivés</a>
+						<?php } else { ?>
+						<a href="search.php?search_terms=<?php echo $searchTerms;?>&archive=0" class="btn btn-primary float-right">Exclure les résultats archivés</a>
+						<?php } ?>
 					</p>
-					<div class="container-fluid">
-						<?php while ($users = $searchUsers->fetch(PDO::FETCH_ASSOC)){ ?>
-						<div class="col-lg-3">
-							<div class="panel panel-search">
-								<div class="panel-body user-entry">
+					<div class="row">
+						<?php while ($users = $searchUsers->fetch(PDO::FETCH_ASSOC)){
+						if($users["archived"] == 0){
+							$archived_class = "user-archived";
+						} else {
+							$archived_class = "";
+						}?>
+						<div class="col-md-6 col-lg-4">
+							<div class="panel panel-search <?php echo $archived_class;?>">
+								<div class="panel-body user-entry" title="<?php echo $users["identity"];?>">
 									<a href="user/<?php echo $users["user_id"];?>">
-										<div class="user-pp">
-											<img src="<?php echo $users["photo"];?>" alt="<?php echo $users["user_prenom"]." ".$users["user_nom"];?>" class="profile-picture">
+										<div class="col-lg-4 col-md-3">
+											<div class="small-user-pp visible-lg-block">
+												<img src="<?php echo $users["photo"];?>" alt="<?php echo $users["identity"];?>">
+											</div>
+											<div class="notif-pp hidden-lg">
+												<img src="<?php echo $users["photo"];?>" alt="<?php echo $users["identity"];?>">
+											</div>
 										</div>
-										<p>
-											<?php if($users["actif"] == 1){ ?>
-											<span class="glyphicon glyphicon-certificate glyphicon-success" title="Adhérent actif"></span>
-											<?php } else {  ?>
-											<span class="glyphicon glyphicon-certificate glyphicon-inactive" title="Adhérent inactif"></span>
-											<?php } ?>
-											<?php echo $users["user_prenom"]." ".$users["user_nom"];?>
-										</p>
-										<p>
-											<span class="glyphicon glyphicon-envelope"></span> <?php echo ($users["mail"]!=null)?$users["mail"]:"-";?>
-										</p>
-										<p>
-											<span class="glyphicon glyphicon-phone"></span> <?php echo ($users["telephone"])?$users["telephone"]:"-";?>
-										</p>
+										<div class="col-lg-8 col-md-9">
+											<p class="panel-item-title bf"><?php echo $users["identity"];?></p>
+											<p>
+												<?php if($users["actif"] == 1){ ?>
+												<span class="label label-success">Actif</span>
+												<?php } else {  ?>
+												<span class="label label-danger">Inactif</span>
+												<?php } ?>
+											</p>
+
+											<p>
+												<span class="glyphicon glyphicon-envelope"></span> <?php echo ($users["mail"]!=null)?$users["mail"]:"-";?>
+											</p>
+											<p>
+												<span class="glyphicon glyphicon-phone"></span> <?php echo ($users["telephone"])?$users["telephone"]:"-";?>
+											</p>
+										</div>
 									</a>
 								</div>
 							</div>

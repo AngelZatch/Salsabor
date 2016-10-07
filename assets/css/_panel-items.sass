@@ -42,29 +42,38 @@
 	padding-left: 20px !important
 
 .panel-search
-	background-color: lighten($system-color, 40%)
+	background-color: lighten($system-color, 80%)
 
 .search-title
 	@extend .sub-legend
 
 .user-entry
 	font-size: 18px
-	text-align: center
-	height: 350px
+	min-height: 150px
 	padding: 30px 15px 30px 15px
 	border-radius: 5px
 	word-wrap: break-word
 	&:hover
-		background-color: $system-color
+		background-color: lighten($system-color, 40%)
 	a
 		text-decoration: none
 		color: black
 	a:hover
 		text-decoration: none
 		color: black
-	.user-pp
-		float: inherit
-		margin: 0 auto
+	.panel-item-title
+		font-size: 24px
+		white-space: nowrap
+		overflow: hidden
+		text-overflow: ellipsis
+
+.user-archived
+	background-color: lighten($system-color, 20%)
+	img
+		opacity: 0.5
+	.user-entry
+		a
+			color: $system-color
 
 .irregular-user
 	@extend .purchase-id

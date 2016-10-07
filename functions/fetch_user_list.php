@@ -8,11 +8,12 @@ if($filter == "active"){
 	$queryList = $db->query("SELECT * FROM users u
 						WHERE user_id NOT IN (SELECT user_id_foreign FROM assoc_user_tags ur JOIN tags_user tu ON ur.tag_id_foreign = tu.rank_id WHERE rank_name = 'Professeur')
 						AND user_id NOT IN (SELECT user_id_foreign FROM assoc_user_tags ur JOIN tags_user tu ON ur.tag_id_foreign = tu.rank_id WHERE rank_name = 'Staff')
-						AND actif = 1
+						AND actif = 1 AND archived = 1
 						ORDER BY user_nom DESC");
 } else {
 	$queryList = $db->query("SELECT * FROM users u
 						WHERE user_id IN (SELECT user_id_foreign FROM assoc_user_tags ur JOIN tags_user tu ON ur.tag_id_foreign = tu.rank_id WHERE rank_name = '$filter')
+						AND archived = 1
 						ORDER BY user_nom DESC");
 	$userList = array();
 }
