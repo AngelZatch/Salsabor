@@ -150,6 +150,18 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							</div>
 						</div>
 						<div class="form-group">
+							<label for="website" class="col-sm-3 control-label">Site Web</label>
+							<div class="col-sm-9">
+								<input type="text" name="website" placeholder="Adresse de site web" class="form-control" value="<?php echo $details["website"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="organisation" class="col-sm-3 control-label">Organisation</label>
+							<div class="col-sm-9">
+								<input type="text" name="organisation" placeholder="Organisation" class="form-control" value="<?php echo $details["organisation"];?>">
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="date_naissance" class="col-sm-3 control-label">Date de naissance</label>
 							<div class="col-sm-9">
 								<input type="text" name="date_naissance" id="birthdate" class="form-control">
