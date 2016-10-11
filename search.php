@@ -45,11 +45,11 @@ $numberTransactions = $searchTransactions->rowCount();
 					</p>
 					<div class="row">
 						<?php while ($users = $searchUsers->fetch(PDO::FETCH_ASSOC)){
-						if($users["archived"] == 0){
-							$archived_class = "user-archived";
-						} else {
-							$archived_class = "";
-						}?>
+	if($users["archived"] == 0){
+		$archived_class = "user-archived";
+	} else {
+		$archived_class = "";
+	}?>
 						<div class="col-md-6 col-lg-4">
 							<div class="panel panel-search <?php echo $archived_class;?>">
 								<div class="panel-body user-entry" title="<?php echo $users["identity"];?>">
@@ -85,21 +85,19 @@ $numberTransactions = $searchTransactions->rowCount();
 						</div>
 						<?php }?>
 					</div>
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<p class="panel-title"><span class="glyphicon glyphicon-piggy-bank"></span> <?php echo $numberTransactions;?> transaction(s) corresponde(nt) à votre recherche</p>
-						</div>
-						<div class="list-group">
-							<?php while ($transaction = $searchTransactions->fetch(PDO::FETCH_ASSOC)){ ?>
-							<a href="user/<?php echo $transaction["payeur_transaction"];?>/achats#purchase-<?php echo $transaction["id_transaction"];?>" class="list-group-item">
-								<div class="row">
-									<div class="col-lg-6">
-										<?php echo $transaction["id_transaction"];?>
-									</div>
+					<p class="search-title">
+						<span class="glyphicon glyphicon-piggy-bank"></span> <?php echo $numberTransactions;?> transaction(s) correspond(ent) à votre recherche
+					</p>
+					<div class="list-group">
+						<?php while ($transaction = $searchTransactions->fetch(PDO::FETCH_ASSOC)){ ?>
+						<a href="user/<?php echo $transaction["payeur_transaction"];?>/achats#purchase-<?php echo $transaction["id_transaction"];?>" class="list-group-item">
+							<div class="row">
+								<div class="col-lg-6">
+									<?php echo $transaction["id_transaction"];?>
 								</div>
-							</a>
-							<?php } ?>
-						</div>
+							</div>
+						</a>
+						<?php } ?>
 					</div>
 				</div>
 			</div>

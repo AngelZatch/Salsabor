@@ -25,23 +25,21 @@ $db = PDOFactory::getConnection();
 					$start = $loading;
 					/** CODE **/
 					$start_date = new DateTime("2016-07-11 11:00:00");
+					$definitive_id = 12;
 					?>
 					<pre>
 						<?php
-$return = getCorrectProductFromTags($db, 2916, 10599);
-echo $return;
+$string = "user_id=409&user_rfid%5B%5D=Attente+357&user_rfid%5B%5D=Attente+7936&rue%5B%5D=33+av+de+St+Ouen&rue%5B%5D=3+rue+Vincent+Scotto&code_postal%5B%5D=75017&code_postal%5B%5D=5000&ville%5B%5D=Aucune+Valeur&photo=assets%2Fimages%2Flogotype-white.png";
 
-$value = "02/05/2016";
+$alt_string = "user_id=5372&user_rfid=Aucune+valeur&photo=assets%2Fimages%2Flogotype-white.png";
 
-/*if(preg_match('/\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}/',$value)){
-	$value_date = DateTime::createFromFormat("d/m/Y H:i:s", $value);
-	$value = $value_date->format("Y-m-d H:i:s");
-	echo $value;
-}else{
-	$value_date = DateTime::createFromFormat("d/m/Y", $value);
-	$value = $value_date->format("Y-m-d");
-	echo $value;
-}*/
+parse_str($alt_string, $values);
+print_r($values);
+foreach($values as $column => $value){
+	if(sizeof($values[$column]) > 1 || $value == "Aucune valeur")
+		$values[$column] = "NULL";
+}
+print_r($values);
 
 						?>
 					</pre>
