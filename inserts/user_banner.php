@@ -5,12 +5,12 @@
 	<div class="col-sm-8 legend user-legend">
 		<span class="modal-editable-<?php echo $user_id;?>" data-field="user_prenom" data-name="Prénom"><?php echo $details["user_prenom"];?></span>
 		<span class="modal-editable-<?php echo $user_id;?>" data-field="user_nom" data-name="Nom"><?php echo $details["user_nom"];?></span>
-		<?php if($details["archived"] == 0) { ?>
+		<?php if($details["archived"] == 1) { ?>
 		<span class="archived-state">(Archivé)</span>
 		<?php } ?>
 	</div>
 	<span class="col-xs-1 glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt glyphicon-button-big" data-toggle="modal" data-target="#edit-modal" data-entry="<?php echo $details["user_id"];?>" data-table="users" title='Modifier les détails de <?php echo $details["user_prenom"]." ".$details["user_nom"];?>'></span>
-	<?php if($details["archived"] == 1) { ?>
+	<?php if($details["archived"] == 0) { ?>
 	<span class="col-xs-1 glyphicon glyphicon-folder-close glyphicon-button glyphicon-button-alt glyphicon-button-big" title="Archiver" data-toggle="modal" data-target="#archive-modal" data-entry="<?php echo $details["user_id"];?>" data-table="users"></span>
 	<?php } else { ?>
 	<span class="col-xs-1 glyphicon glyphicon-folder-open glyphicon-button glyphicon-button-alt glyphicon-button-big dearchive-data" title="Désarchiver" data-entry="<?php echo $details["user_id"];?>" data-table="users"></span>

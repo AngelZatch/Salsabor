@@ -10,9 +10,9 @@ $searchTerms = $_GET["search_terms"];
 $search_query = "SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS identity, mail, telephone, photo, actif, archived FROM users WHERE (user_nom LIKE ? OR user_prenom LIKE ? OR mail LIKE ? OR telephone LIKE ?)";
 
 if(!isset($_GET["archive"]) || $_GET["archive"] == "0")
-	$search_query .= " AND archived = 1";
+	$search_query .= " AND archived = 0";
 
-$search_query .= " ORDER BY archived DESC, actif DESC, user_nom ASC, user_prenom ASC";
+$search_query .= " ORDER BY archived ASC, actif DESC, user_nom ASC, user_prenom ASC";
 $searchUsers = $db->prepare($search_query);
 
 $searchUsers->execute(array("%".$searchTerms."%", "%".$searchTerms."%", "%".$searchTerms."%", "%".$searchTerms."%"));
@@ -45,7 +45,7 @@ $numberTransactions = $searchTransactions->rowCount();
 					</p>
 					<div class="row">
 						<?php while ($users = $searchUsers->fetch(PDO::FETCH_ASSOC)){
-	if($users["archived"] == 0){
+	if($users["archived"] == 1){
 		$archived_class = "user-archived";
 	} else {
 		$archived_class = "";

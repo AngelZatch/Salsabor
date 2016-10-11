@@ -805,7 +805,7 @@ $(document).ready(function(){
 }).on('show.bs.modal', '#archive-modal', function(e){
 	var entry_id = $(e.relatedTarget).data('entry'), table = $(e.relatedTarget).data('table'), modal = $(this), button = $(e.relatedTarget);
 	modal.find(".archive-data").on('click', function(){
-		$.when(updateColumn(table, "archived", 0, entry_id)).done(function(data){
+		$.when(updateColumn(table, "archived", 1, entry_id)).done(function(data){
 			$(".user-legend").append("<span class='archived-state'>(Archivé)</span>");
 			button.replaceWith("<span class='col-xs-1 glyphicon glyphicon-folder-open glyphicon-button glyphicon-button-alt glyphicon-button-big dearchive-data' title='Désarchiver' data-entry='"+entry_id+"' data-table='users'></span>");
 			modal.modal('hide');
@@ -816,7 +816,7 @@ $(document).ready(function(){
 	$(this).find(".archive-data").off('click');
 }).on('click', '.dearchive-data', function(){
 	var entry_id = $(this).data('entry'), table = $(this).data('table');
-	$.when(updateColumn(table, "archived", 1, entry_id)).done(function(data){
+	$.when(updateColumn(table, "archived", 0, entry_id)).done(function(data){
 		$(".archived-state").empty();
 		$(".dearchive-data").replaceWith("<span class='col-xs-1 glyphicon glyphicon-folder-close glyphicon-button glyphicon-button-alt glyphicon-button-big' title='Archiver' data-toggle='modal' data-target='#archive-modal' data-entry='"+entry_id+"' data-table='users'></span>");
 		showNotification("Utilisateur désarchivé", "Success");
