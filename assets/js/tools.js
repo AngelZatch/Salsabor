@@ -709,15 +709,35 @@ $(document).ready(function(){
 		edit_form += "<div class='col-lg-8'>";
 
 		// Overwriting default input_type (text)
-		if(input_type === undefined){
-			if(is_placeholder){
-				edit_form += '<input type="text" class="form-control" name="'+field_name+'" placeholder="'+element.text()+'">';
-			} else {
-				edit_form += '<input type="text" class="form-control" name="'+field_name+'" value="'+element.text()+'">';
-			}
+		if(field_name == 'rate_ratio'){
+			edit_form += '<select name="'+field_name+'" class="form-control">';
+			if(element.text() == "heure")
+				edit_form += '<option selected="selected" value="heure">heure</option>';
+			else
+				edit_form += '<option value="heure">heure</option>';
+
+			if(element.text() == "personne")
+				edit_form += '<option selected="selected" value="personne">personne</option>';
+			else
+				edit_form += '<option value="personne">personne</option>';
+
+			if(element.text() == "prestation")
+				edit_form += '<option selected="selected" value="prestation">prestation</option>';
+			else
+				edit_form += '<option value="prestation">prestation</option>';
+
+			edit_form += '</select>';
 		} else {
-			if(input_type == "textarea"){
-				edit_form += "<textarea class='form-control' name='"+field_name+"'>"+element.text()+"</textarea>";
+			if(input_type === undefined){
+				if(is_placeholder){
+					edit_form += '<input type="text" class="form-control" name="'+field_name+'" placeholder="'+element.text()+'">';
+				} else {
+					edit_form += '<input type="text" class="form-control" name="'+field_name+'" value="'+element.text()+'">';
+				}
+			} else {
+				if(input_type == "textarea"){
+					edit_form += "<textarea class='form-control' name='"+field_name+"'>"+element.text()+"</textarea>";
+				}
 			}
 		}
 		edit_form += "</div>";
@@ -766,6 +786,41 @@ $(document).ready(function(){
 	console.log("unbinding edit button");
 	// End of additional logic
 	$(this).find(".send-edit-data").off('click');
+}).on('show.bs.modal', '#delete-modal', function(event){
+	var entry_id = $(event.relatedTarget).data('entry'), table = $(event.relatedTarget).data('table'), to_delete = $(event.relatedTarget).data('delete'), modal = $(this);
+	modal.find(".modal-title").text($(event.relatedTarget).attr('title'));
+	modal.find(".modal-body").text("Êtes-vous sûr de vouloir supprimer cette entrée ?");
+	modal.find(".delete-target").on('click', function(){
+		console.log(entry_id);
+		$.when(deleteEntry(table, entry_id)).done(function(data){
+			console.log(data);
+			$("."+to_delete).remove();
+			// End of additional logic
+			modal.modal('hide');
+			showNotification("Suppression effectuée", "success");
+		})
+	})
+}).on('hide.bs.modal', '#delete-modal', function(e){
+	$(this).find(".delete-target").off('click');
+}).on('show.bs.modal', '#archive-modal', function(e){
+	var entry_id = $(e.relatedTarget).data('entry'), table = $(e.relatedTarget).data('table'), modal = $(this), button = $(e.relatedTarget);
+	modal.find(".archive-data").on('click', function(){
+		$.when(updateColumn(table, "archived", 1, entry_id)).done(function(data){
+			$(".user-legend").append("<span class='archived-state'>(Archivé)</span>");
+			button.replaceWith("<span class='col-xs-1 glyphicon glyphicon-folder-open glyphicon-button glyphicon-button-alt glyphicon-button-big dearchive-data' title='Désarchiver' data-entry='"+entry_id+"' data-table='users'></span>");
+			modal.modal('hide');
+			showNotification("Utilisateur archivé", "Success");
+		})
+	})
+}).on('hide.bs.modal', '#archive-modal', function(e){
+	$(this).find(".archive-data").off('click');
+}).on('click', '.dearchive-data', function(){
+	var entry_id = $(this).data('entry'), table = $(this).data('table');
+	$.when(updateColumn(table, "archived", 0, entry_id)).done(function(data){
+		$(".archived-state").empty();
+		$(".dearchive-data").replaceWith("<span class='col-xs-1 glyphicon glyphicon-folder-close glyphicon-button glyphicon-button-alt glyphicon-button-big' title='Archiver' data-toggle='modal' data-target='#archive-modal' data-entry='"+entry_id+"' data-table='users'></span>");
+		showNotification("Utilisateur désarchivé", "Success");
+	})
 })
 
 $(".has-name-completion").on('click blur keyup', function(){
@@ -1005,3 +1060,25 @@ function getUrlParameter(sParam) {
 		}
 	}
 };
+
+function provideAutoComplete(target, filter){
+	$.get("functions/fetch_user_list.php", {filter : filter}).done(function(data){
+		var userList = JSON.parse(data);
+		var autocompleteList = [];
+		for(var i = 0; i < userList.length; i++){
+			autocompleteList.push(userList[i].user);
+		}
+		$(target).textcomplete('destroy');
+		$(target).textcomplete([{
+			match: /(^|\b)(\w{2,})$/,
+			search: function(term, callback){
+				callback($.map(autocompleteList, function(item){
+					return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
+				}));
+			},
+			replace: function(item){
+				return item;
+			}
+		}]);
+	});
+}
