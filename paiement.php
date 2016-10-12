@@ -7,6 +7,8 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 include 'functions/ventes.php';
 
+$handler = $db->query("SELECT CONCAT(user_prenom, ' ', user_nom) AS handler FROM users WHERE user_id = $_SESSION[user_id]")->fetch(PDO::FETCH_COLUMN);
+
 $queryAdherentsNom = $db->query("SELECT * FROM users ORDER BY user_nom ASC");
 $array_eleves = array();
 while($adherents = $queryAdherentsNom->fetch(PDO::FETCH_ASSOC)){
@@ -66,16 +68,22 @@ if(isset($_POST["submit"])){
 									<input type="date" name="date_achat" class="form-control input-lg" value="<?php echo $date_now;?>">
 								</div>
 							</div>
-							<div class="col-lg-1">
+							<div class="col-lg-2">
 								<div class="form-group">
 									<label for="echeances">Echéances</label>
 									<input type="number" name="echeances" class="form-control input-lg">
 								</div>
 							</div>
-							<div class="col-lg-6">
+							<div class="col-lg-5">
 								<div class="form-group">
 									<label for="payeur">Payeur</label>
 									<input type="text" name="payeur" class="form-control has-check mandatory has-name-completion input-lg" placeholder="Nom">
+								</div>
+							</div>
+							<div class="col-sm-5">
+								<div class="form-group">
+									<label for="handler">Responsable de la vente <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Par défaut, l&apos;utilisateur actuellement connecté. Vous seront suggérés l&apos;ensemble des utilisateurs du groupe 'Accueil'"></span></label>
+									<input type="text" name="handler" class="form-control input-lg" id="transaction-handler" placeholder="Responsable de la vente" value="<?php echo $handler;?>">
 								</div>
 							</div>
 						</div>
@@ -262,6 +270,9 @@ if(isset($_POST["submit"])){
 					});
 				})
 				$(".mandatory").change();
+			}).on('focus', '#transaction-handler', function(){
+				var filter = "Accueil";
+				provideAutoComplete($(this), filter);
 			})
 		</script>
 		<script>
