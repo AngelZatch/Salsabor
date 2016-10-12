@@ -54,7 +54,7 @@ $numberTransactions = $searchTransactions->rowCount();
 							<div class="panel panel-search <?php echo $archived_class;?>">
 								<div class="panel-body user-entry" title="<?php echo $users["identity"];?>">
 									<a href="user/<?php echo $users["user_id"];?>">
-										<div class="col-lg-4 col-md-3">
+										<div class="col-lg-4 col-md-3 photo-space">
 											<div class="small-user-pp visible-lg-block">
 												<img src="<?php echo $users["photo"];?>" alt="<?php echo $users["identity"];?>">
 											</div>
@@ -62,7 +62,7 @@ $numberTransactions = $searchTransactions->rowCount();
 												<img src="<?php echo $users["photo"];?>" alt="<?php echo $users["identity"];?>">
 											</div>
 										</div>
-										<div class="col-lg-8 col-md-9">
+										<div class="col-lg-8 col-md-9 details-space">
 											<p class="panel-item-title bf"><?php echo $users["identity"];?></p>
 											<p>
 												<?php if($users["actif"] == 1){ ?>
@@ -72,10 +72,10 @@ $numberTransactions = $searchTransactions->rowCount();
 												<?php } ?>
 											</p>
 
-											<p>
+											<p class="no-overflow">
 												<span class="glyphicon glyphicon-envelope"></span> <?php echo ($users["mail"]!=null)?$users["mail"]:"-";?>
 											</p>
-											<p>
+											<p class="no-overflow">
 												<span class="glyphicon glyphicon-phone"></span> <?php echo ($users["telephone"])?$users["telephone"]:"-";?>
 											</p>
 										</div>
@@ -103,5 +103,16 @@ $numberTransactions = $searchTransactions->rowCount();
 			</div>
 		</div>
 		<?php include "scripts.php";?>
+		<script>
+			$(window).on('load ready resize', function(){
+				if(window.innerWidth >= 1200 && window.innerWidth < 1861){
+					$(".details-space").removeClass("col-lg-8");
+					$(".details-space").addClass("col-lg-12");
+				} else {
+					$(".details-space").removeClass("col-lg-12");
+					$(".details-space").addClass("col-lg-8");
+				}
+			});
+		</script>
 	</body>
 </html>
