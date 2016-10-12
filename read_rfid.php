@@ -8,16 +8,16 @@ if(isset($_GET["carte"])){
 	$data = explode('*', $_GET["carte"]);
 	$tag_rfid = $data[0];
 	$reader_token = $data[1];
-	prepareParticipation($db, $tag_rfid, $reader_token);
+	prepareParticipationBeta($db, $tag_rfid, $reader_token);
 }
 
 if(isset($_POST["add"])){
 	$tag_rfid = $_POST["tag"];
 	$reader_token = $_POST["salle"];
-	prepareParticipation($db, $tag_rfid, $reader_token);
+	prepareParticipationBeta($db, $tag_rfid, $reader_token);
 }
 
-function prepareParticipation($db, $user_tag, $reader_token){
+function prepareParticipationBeta($db, $user_tag, $reader_token){
 	$today = date("Y-m-d H:i:s");
 	if($reader_token == "192.168.0.3"){
 		$status = "1";
@@ -28,15 +28,12 @@ function prepareParticipation($db, $user_tag, $reader_token){
 		// If the tag is not for associating, we search a product that could be used for this session.
 		// First, we get the name of the session and the ID of the user.
 		// For the session, we have to find it based on the time of the record and the position.
-		$session_id = $db->query("SELECT session_id FROM sessions s
-								JOIN rooms r ON s.session_room = r.room_id
-								WHERE session_opened = '1' AND room_reader = '$reader_token'")->fetch(PDO::FETCH_COLUMN);
-		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$user_tag'")->fetch(PDO::FETCH_COLUMN);
-
-		addParticipationBeta($db, $today, $session_id, $user_id, $reader_token, $user_tag);
-		/*addParticipation($db, $cours_name, $session_id, $user_details["user_id"], $reader_token, $tag);*/
+		$values = array();
+		$values["passage_date"] = date("d/m/Y H:i:s");
+		$values["room_token"] = $reader_token;
+		$values["user_rfid"] = $user_tag;
+		addParticipationBeta($db, $values);
 	}
-	/*header('Location: passages');*/
 }
 ?>
 <html>

@@ -30,6 +30,8 @@ RewriteRule ^my/profile$ my_profile.php
 RewriteRule ^my/products$ my_products.php
 RewriteRule ^event/new$ event_add.php
 RewriteRule ^reservation/new$ booking_add.php
+RewriteRule ^monitoring/participations$ monitoring_participations.php
+RewriteRule ^doublons$ duplicates.php
 
 #User Details
 RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]
@@ -38,6 +40,7 @@ RewriteRule ^user/([0-9-]+)/abonnements user_subscriptions.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/historique user_history.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/reservations user_reservations.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/taches user_tasks.php?id=$1 [NC,L]
+RewriteRule ^user/([0-9-]+)/tarifs user_rates.php?id=$1 [NC,L]
 
 RewriteRule ^forfait/([A-Za-z0-9-]+)$ product_details.php?id=$1
 RewriteRule ^cours/([A-Za-z0-9-]+)$ session_details.php?id=$1

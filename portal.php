@@ -8,9 +8,10 @@ if(isset($_SESSION["username"])){
 		$username = stripslashes($_POST["user_login"]);
 		$password = stripslashes($_POST["user_pwd"]);
 
-		$checkCredentials = $db->prepare("SELECT * FROM users WHERE login=? AND password=?");
+		$checkCredentials = $db->prepare("SELECT * FROM users WHERE login=? OR mail=? AND password=?");
 		$checkCredentials->bindParam(1, $username);
-		$checkCredentials->bindParam(2, $password);
+		$checkCredentials->bindParam(2, $username);
+		$checkCredentials->bindParam(3, $password);
 		$checkCredentials->execute();
 
 		if($checkCredentials->rowCount() == 1){

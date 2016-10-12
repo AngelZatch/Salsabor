@@ -299,9 +299,10 @@ function displayParticipations(session_id){
 	})
 }
 
-function displayIrregularParticipations(participation_id){
-	console.log("ID de départ : "+participation_id)
-	$.get("functions/fetch_irregular_participations.php", {participation_id : participation_id}).done(function(data){
+function displayIrregularParticipations(participation_id, age_action){
+	// age_action : 0 means take all participations after, 1 means before
+	console.log("ID de départ : "+participation_id);
+	$.get("functions/fetch_irregular_participations.php", {participation_id : participation_id, age_action : age_action}).done(function(data){
 		var records_list = JSON.parse(data);
 		var users = 0, ok = 0, warning = 0;
 		var contents = "";
@@ -423,7 +424,11 @@ function displayIrregularParticipations(participation_id){
 					$("#"+this.element.id).removeClass("waypoint-mark");
 					this.destroy();
 					console.log($(".waypoint-mark").length);
-					displayIrregularParticipations(participation_id);
+					var age_limit = moment().subtract(2, 'months');
+					if(/old/.exec(top.location.pathname) !== null)
+						displayIrregularParticipations(participation_id, 1);
+					else
+						displayIrregularParticipations(participation_id, 0);
 				}
 			},
 			context: 'irregular-sessions-container',

@@ -153,29 +153,49 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 	}
 }
 
-function addParticipationBeta($db, $today, $session_id, $user_id, $reader_token, $user_tag){
-	if($user_id != ""){
-		if($session_id != ""){
-			$product_id = getCorrectProductFromTags($db, $session_id, $user_id);
-			if($product_id != "")
-				$status = 0; // Product found.
-			else
-				$status = 3; // No product available
-			$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, session_id, produit_adherent_id, status)
-						VALUES('$user_tag', '$user_id', '$reader_token', '$today', '$session_id', '$product_id', $status)");
-			echo "$";
+function addParticipationBeta($db, $values){
+	if(!isset($values["user_id"])){
+		// We try to find the user from the details
+		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$values[user_rfid]'")->fetch(PDO::FETCH_COLUMN);
+	} else {
+		$user_id = $values["user_id"];
+	}
+
+	if(!isset($values["session_id"])){
+		// We try to find the session
+		$session_id = $db->query("SELECT session_id FROM sessions s
+								JOIN rooms r ON s.session_room = r.room_id
+								JOIN readers re ON r.room_reader = re.reader_id
+								WHERE session_opened = '1' AND reader_token = '$values[room_token]'")->fetch(PDO::FETCH_COLUMN);
+
+		if($session_id != "" || $session_id != NULL)
+			$values["session_id"] = $session_id;
+	} else {
+		$session_id = $values["session_id"];
+	}
+
+	// We create the array of values the system will find
+
+	if($user_id != "" || $user_id != NULL){
+		$values["user_id"] = $user_id;
+		if($session_id != "" || $session_id != NULL){
+			$product_id = getCorrectProductFromTags($db, $session_id, $user_id) or NULL;
+			if($product_id != "") $status = 0; // Product found.
+			else $status = 3; // No product available
+			$values["produit_adherent_id"] = $product_id;
 		} else {
 			$status = 4; // No session has been found
-			$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, status)
-						VALUES('$user_tag', '$user_id', '$reader_token', '$today', $status)");
-			echo "$";
 		}
 	} else {
 		$status = 5; // No user ID has been matched
-		$new = $db->query("INSERT INTO participations(user_rfid, room_token, passage_date, status)
-						VALUES('$user_tag', '$reader_token', '$today', '$status')");
-		echo "$";
 	}
+
+	$values["status"] = $status;
+
+	include "add_entry.php";
+	addEntry($db, "participations", $values);
+
+	echo "$";
 }
 
 function getCorrectProductFromTags($db, $session_id, $user_id){
@@ -194,7 +214,7 @@ function getCorrectProductFromTags($db, $session_id, $user_id){
 			array_push($supplementary_tags, $tag["tag_id_foreign"]);
 		}
 	}
-/*	echo "<br>-- MANDATORY TAGS OF SESSION $session_id --</br>";
+	/*	echo "<br>-- MANDATORY TAGS OF SESSION $session_id --</br>";
 	print_r($mandatory_tags);
 
 	echo "<br>-- SUPPLEMENTARY TAGS OF SESSION $session_id --<br>";
