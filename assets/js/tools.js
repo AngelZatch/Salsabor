@@ -619,7 +619,6 @@ $(document).ready(function(){
 				});
 				$("#mandatory-tooltip").tooltip();
 			});
-			footer += "<button class='btn btn-danger btn-block delete-tag' id='delete-tag' data-target='"+target+"' data-tagtype='"+tag_type+"'><span class='glyphicon glyphicon-trash'></span> Supprimer l'étiquette</button>";
 			break;
 
 		case 'room-color':
@@ -788,13 +787,20 @@ $(document).ready(function(){
 	$(this).find(".send-edit-data").off('click');
 }).on('show.bs.modal', '#delete-modal', function(event){
 	var entry_id = $(event.relatedTarget).data('entry'), table = $(event.relatedTarget).data('table'), to_delete = $(event.relatedTarget).data('delete'), modal = $(this);
+	if(table == 'produits_echeances'){
+		var transaction_id = $(event.relatedTarget).data('transaction');
+	}
 	modal.find(".modal-title").text($(event.relatedTarget).attr('title'));
 	modal.find(".modal-body").text("Êtes-vous sûr de vouloir supprimer cette entrée ?");
 	modal.find(".delete-target").on('click', function(){
 		console.log(entry_id);
 		$.when(deleteEntry(table, entry_id)).done(function(data){
 			console.log(data);
-			$("."+to_delete).remove();
+			$(to_delete).remove();
+			// Additional logic
+			if(transaction_id){
+				showAmountDiscrepancy(transaction_id);
+			}
 			// End of additional logic
 			modal.modal('hide');
 			showNotification("Suppression effectuée", "success");

@@ -70,7 +70,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 									<span class="glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt edit-rate" id="edit-'<?php echo $rate["rate_id"];?>'" data-toggle="modal" data-target="#edit-modal" data-entry="<?php echo $rate["rate_id"];?>" data-table="teacher_rates" title="Modifier le tarif"></span>
 								</p>
 								<p class="col-xs-1">
-									<span class="glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt delete-rate" id="delete-<?php echo $rate["rate_id"];?>" data-toggle="modal" data-target="#delete-modal" data-entry="<?php echo $rate["rate_id"];?>" data-delete="rate-entity-<?php echo $rate["rate_id"];?>" data-table="teacher_rates" title="Supprimer le tarif <?php echo $rate["rate_title"];?> de <?php echo $details["user_prenom"]." ".$details["user_nom"];?>"></span>
+									<span class="glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt delete-rate" id="delete-<?php echo $rate["rate_id"];?>" data-toggle="modal" data-target="#delete-modal" data-entry="<?php echo $rate["rate_id"];?>" data-delete=".rate-entity-<?php echo $rate["rate_id"];?>" data-table="teacher_rates" title="Supprimer le tarif <?php echo $rate["rate_title"];?> de <?php echo $details["user_prenom"]." ".$details["user_nom"];?>"></span>
 								</p>
 							</div>
 							<?php } ?>

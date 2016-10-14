@@ -264,7 +264,7 @@ function displayParticipations(session_id){
 				}
 				contents += "<p class='col-xs-3 col-lg-3 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
 				contents += "<p class='col-xs-3 col-lg-3 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
-				contents += "<p class='col-xs-3 col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+				contents += "<p class='col-xs-3 col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' id='delete-record-"+records_list[i].id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+records_list[i].id+"' data-table='participations' data-delete='#participation-"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
 				contents += "</li>";
 			}
 		}
@@ -347,7 +347,7 @@ function displayIrregularParticipations(participation_id, age_action){
 			}
 			contents += "<p class='col-xs-3 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
 			contents += "<p class='col-xs-3 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
-			contents += "<p class='col-xs-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+			contents += "<p class='col-xs-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' id='delete-record-"+records_list[i].id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+records_list[i].id+"' data-table='participations' data-delete='#participation-"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
 			contents += "</div>";
 			contents += "</div>";
 
@@ -489,7 +489,7 @@ function displayIrregularUserParticipations(user_id){
 			}
 			contents += "<p class='col-xs-3 col-lg-1 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
 			contents += "<p class='col-xs-3 col-lg-1 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
-			contents += "<p class='col-xs-3 col-lg-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+			contents += "<p class='col-xs-3 col-lg-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' id='delete-record-"+records_list[i].id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+records_list[i].id+"' data-table='participations' data-delete='#participation-"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
 			contents += "</div>";
 
 			contents += "<div class='row irregular-record-details'>";
@@ -574,7 +574,7 @@ function displayUserParticipations(user_id){
 			}
 			contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
 			contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
-			contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+			contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' id='delete-record-"+records_list[i].id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+records_list[i].id+"' data-table='participations' data-delete='#participation-"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
 			contents += "</div>";
 
 			contents += "<div class='row irregular-record-details'>";

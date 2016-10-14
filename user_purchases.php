@@ -86,6 +86,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<?php include "inserts/modal_product.php";?>
 		<?php include "inserts/sub_modal_product.php";?>
 		<?php include "inserts/edit_modal.php";?>
+		<?php include "inserts/delete_modal.php";?>
 		<script>
 			$(document).ready(function(){
 				var m, re = /purchase-([a-z0-9]+)/i;

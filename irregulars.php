@@ -52,6 +52,7 @@ $queryIrregulars = $db->query("SELECT * FROM participations pr
 				</div>
 			</div>
 		</div>
+		<?php include "inserts/delete_modal.php";?>
 		<script>
 			$(document).on("click", ".irregular-participation", function(){
 				var participation_id = document.getElementById($(this).attr("id")).dataset.argument;
