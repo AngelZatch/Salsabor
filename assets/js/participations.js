@@ -50,29 +50,7 @@ $(document).ready(function(){
 	}
 	//}
 }).on('focus', '.name-input', function(){
-	$.get("functions/fetch_user_list.php", {filter : "active"}).done(function(data){
-		var userList = JSON.parse(data);
-		var autocompleteList = [];
-		for(var i = 0; i < userList.length; i++){
-			autocompleteList.push(userList[i].user);
-		}
-		$(".name-input").textcomplete([{
-			match: /(^|\b)(\w{2,})$/,
-			search: function(term, callback){
-				callback($.map(autocompleteList, function(item){
-					return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
-				}));
-			},
-			replace: function(item){
-				return item;
-			}
-		}]);
-	});
-	/*$(this).keypress(function(event){
-		if(event.which == 13){
-			console.log("coucou");
-		}
-	})*/
+	provideAutoComplete($(this), "active");
 }).on('click', '.add-record', function(){
 	var name = $(".name-input").val();
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
@@ -771,5 +749,6 @@ function addParticipation(target_session_id, user_name){
 	$.post("functions/add_participation.php", {name : user_name, session_id : target_session_id}).done(function(data){
 		console.log(data);
 		displayParticipations(target_session_id);
+		showNotification("Participation ajoutée (doublons ignorés)", "success");
 	})
 }
