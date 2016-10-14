@@ -9,7 +9,7 @@ $searchTerms = $_GET["search_terms"];
 
 $search_query = "SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS identity, mail, telephone, photo, actif, archived FROM users WHERE (user_nom LIKE ? OR user_prenom LIKE ? OR mail LIKE ? OR telephone LIKE ?)";
 
-if(!isset($_GET["archive"]) || $_GET["archive"] == "0")
+if(isset($_GET["archive"]) && $_GET["archive"] == "0")
 	$search_query .= " AND archived = 0";
 
 $search_query .= " ORDER BY archived ASC, actif DESC, user_nom ASC, user_prenom ASC";
@@ -36,11 +36,11 @@ $numberTransactions = $searchTransactions->rowCount();
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend>Résultats de recherche</legend>
 					<p class="search-title">
-						<span class="glyphicon glyphicon-user"></span> <?php echo $numberUsers;?> utilisateur(s) correspond(ent) à votre recherche
-						<?php if(!isset($_GET["archive"]) || $_GET["archive"] == "0"){ ?>
-						<a href="search.php?search_terms=<?php echo $searchTerms;?>&archive=1" class="btn btn-primary float-right">Inclure les résultats archivés</a>
+						<span class="glyphicon glyphicon-user"></span> <?php echo $numberUsers;?> utilisateur(s) trouvé(s)
+						<?php if(!isset($_GET["archive"]) || $_GET["archive"] == "1"){ ?>
+						<a href="search.php?search_terms=<?php echo $searchTerms;?>&archive=0" class="btn btn-primary float-right">Exclure les archives</a>
 						<?php } else { ?>
-						<a href="search.php?search_terms=<?php echo $searchTerms;?>&archive=0" class="btn btn-primary float-right">Exclure les résultats archivés</a>
+						<a href="search.php?search_terms=<?php echo $searchTerms;?>&archive=1" class="btn btn-primary float-right">Inclure les archives</a>
 						<?php } ?>
 					</p>
 					<div class="row">
@@ -54,7 +54,7 @@ $numberTransactions = $searchTransactions->rowCount();
 							<div class="panel panel-search <?php echo $archived_class;?>">
 								<div class="panel-body user-entry" title="<?php echo $users["identity"];?>">
 									<a href="user/<?php echo $users["user_id"];?>">
-										<div class="col-lg-4 col-md-3">
+										<div class="col-lg-4 col-md-3 photo-space">
 											<div class="small-user-pp visible-lg-block">
 												<img src="<?php echo $users["photo"];?>" alt="<?php echo $users["identity"];?>">
 											</div>
@@ -62,7 +62,7 @@ $numberTransactions = $searchTransactions->rowCount();
 												<img src="<?php echo $users["photo"];?>" alt="<?php echo $users["identity"];?>">
 											</div>
 										</div>
-										<div class="col-lg-8 col-md-9">
+										<div class="col-lg-8 col-md-9 details-space">
 											<p class="panel-item-title bf"><?php echo $users["identity"];?></p>
 											<p>
 												<?php if($users["actif"] == 1){ ?>
@@ -72,10 +72,10 @@ $numberTransactions = $searchTransactions->rowCount();
 												<?php } ?>
 											</p>
 
-											<p>
+											<p class="no-overflow">
 												<span class="glyphicon glyphicon-envelope"></span> <?php echo ($users["mail"]!=null)?$users["mail"]:"-";?>
 											</p>
-											<p>
+											<p class="no-overflow">
 												<span class="glyphicon glyphicon-phone"></span> <?php echo ($users["telephone"])?$users["telephone"]:"-";?>
 											</p>
 										</div>
@@ -86,7 +86,7 @@ $numberTransactions = $searchTransactions->rowCount();
 						<?php }?>
 					</div>
 					<p class="search-title">
-						<span class="glyphicon glyphicon-piggy-bank"></span> <?php echo $numberTransactions;?> transaction(s) correspond(ent) à votre recherche
+						<span class="glyphicon glyphicon-piggy-bank"></span> <?php echo $numberTransactions;?> transaction(s) trouvé(es)
 					</p>
 					<div class="list-group">
 						<?php while ($transaction = $searchTransactions->fetch(PDO::FETCH_ASSOC)){ ?>
@@ -103,5 +103,16 @@ $numberTransactions = $searchTransactions->rowCount();
 			</div>
 		</div>
 		<?php include "scripts.php";?>
+		<script>
+			$(window).on('load ready resize', function(){
+				if(window.innerWidth >= 1200 && window.innerWidth < 1860){
+					$(".details-space").removeClass("col-lg-8");
+					$(".details-space").addClass("col-lg-12");
+				} else {
+					$(".details-space").removeClass("col-lg-12");
+					$(".details-space").addClass("col-lg-8");
+				}
+			});
+		</script>
 	</body>
 </html>

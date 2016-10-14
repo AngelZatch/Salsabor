@@ -130,10 +130,32 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<script>
 			$(document).ready(function(){
 				console.log("ready");
+			}).on('show.bs.modal', '#add-modal', function(){
+				console.log("hey");
+				$.get("functions/fetch_rates_list.php").done(function(data){
+					var rates_list = JSON.parse(data);
+					var autocomplete_list = [];
+					for(var i = 0; i < rates_list.length; i++){
+						autocomplete_list.push(rates_list[i].rate_title);
+					}
+					console.log(autocomplete_list);
+					$("input[name='rate_title']").textcomplete('destroy');
+					$("input[name='rate_title']").textcomplete([{
+						match: /(^|\b)(\w{2,})$/,
+						search: function(term, callback){
+							callback($.map(autocomplete_list, function(item){
+								return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
+							}));
+						},
+						replace: function(item){
+							return item;
+						}
+					}]);
+				});
 			}).on('click', '.add-data', function(){
 				var values = $("#modal-add-form").serialize();
 				var rate_title = $("input[name='rate_title']").val(), rate_value = $("input[name='rate_value']").val(), rate_ratio = $("select[name='rate_ratio']").val();
-				console.log(values);
+				/*console.log(values);*/
 				$.when(addEntry("teacher_rates", values)).done(function(data){
 					var new_rate = "<div class='rate-entity-"+data+"' id='rate-"+data+"'>";
 					new_rate += "<p class='rate-title panel-item-title bf col-xs-7 modal-editable-"+data+"' id='editable-title-"+data+"' data-field='rate_title' data-name='Définition'>"+rate_title+"</p>";
@@ -150,6 +172,9 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 					new_rate += "</p>";
 					$(".rates-list").append(new_rate);
 					showNotification("Tarif ajouté", "success");
+					// Empty the fields
+					$("input[name='rate_title']").val("");
+					$("input[name='rate_value']").val("");
 					$("#add-modal").modal('hide');
 				})
 			})

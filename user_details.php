@@ -152,7 +152,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						<div class="form-group">
 							<label for="website" class="col-sm-3 control-label">Site Web</label>
 							<div class="col-sm-9">
-								<input type="text" name="website" placeholder="Adresse de site web" class="form-control" value="<?php echo $details["website"];?>">
+								<input type="url" name="website" placeholder="Adresse de site web" class="form-control" value="<?php echo $details["website"];?>">
 							</div>
 						</div>
 						<div class="form-group">
@@ -164,7 +164,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						<div class="form-group">
 							<label for="date_naissance" class="col-sm-3 control-label">Date de naissance</label>
 							<div class="col-sm-9">
-								<input type="text" name="date_naissance" id="birthdate" class="form-control">
+								<input type="text" name="date_naissance" id="birthdate" class="form-control" placeholder="Date de naissance">
 							</div>
 						</div>
 						<div class="form-group">
@@ -209,7 +209,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 			$(document).ready(function(){
 				$("#birthdate").datetimepicker({
 					format: "DD/MM/YYYY",
-					defaultDate: "<?php echo date_create($details['date_naissance'])->format("m/d/Y H:i");?>",
+					defaultDate: "<?php echo (isset($details["date_naissance"]))?date_create($details['date_naissance'])->format("m/d/Y"):false;?>",
 					locale: "fr",
 				});
 
