@@ -33,6 +33,7 @@ if(isset($_POST["edit"])){
 	try{
 		$db->beginTransaction();
 		$edit = $db->prepare("UPDATE produits SET product_name = :product_name,
+												product_code = :product_code,
 												description = :description,
 												product_size = :product_size,
 												product_validity = :validite,
@@ -42,6 +43,7 @@ if(isset($_POST["edit"])){
 												autorisation_report = :autorisation_report
 												WHERE product_id = :product_id");
 		$edit->bindParam(':product_name', $_POST["product_name"], PDO::PARAM_STR);
+		$edit->bindParam(':product_code', $_POST["product_code"], PDO::PARAM_STR);
 		$edit->bindParam(':description', $_POST["description"], PDO::PARAM_STR);
 		$edit->bindParam(':product_size', $_POST["product_size"], PDO::PARAM_INT);
 		$edit->bindParam(':validite', $validite, PDO::PARAM_INT);
@@ -83,6 +85,12 @@ if(isset($_POST["edit"])){
 							<label for="product_name" class="control-label col-lg-3">Intitulé</label>
 							<div class="col-lg-9">
 								<input type="text" class="form-control" name="product_name" value="<?php echo $produit["product_name"];?>" placeholder="Nom du produit">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="product_code" class="control-label col-lg-3">Code produit</label>
+							<div class="col-lg-9">
+								<input type="text" class="form-control" name="product_code" value="<?php echo $produit["product_code"];?>" placeholder="Code du produit">
 							</div>
 						</div>
 						<div class="form-group">
