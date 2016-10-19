@@ -175,28 +175,28 @@ function addParticipationBeta($db, $values){
 	}
 
 	// We create the array of values the system will find
-	$duplicate_test = $db->query("SELECT COUNT(passage_id) FROM participations WHERE (user_rfid = '$values[user_rfid]' OR user_id = $values[user_id]) AND session_id = $values[session_id]")->fetch(PDO::FETCH_COLUMN);
+	//$duplicate_test = $db->query("SELECT COUNT(passage_id) FROM participations WHERE (user_rfid = '$values[user_rfid]' OR user_id = $values[user_id]) AND session_id = $values[session_id]")->fetch(PDO::FETCH_COLUMN);
 
-	if($duplicate_test == 0){
-		if($user_id != "" || $user_id != NULL){
-			$values["user_id"] = $user_id;
-			if($session_id != "" || $session_id != NULL){
-				$product_id = getCorrectProductFromTags($db, $session_id, $user_id) or NULL;
-				if($product_id != "") $status = 0; // Product found.
-				else $status = 3; // No product available
-				$values["produit_adherent_id"] = $product_id;
-			} else {
-				$status = 4; // No session has been found
-			}
+	/*if($duplicate_test == 0){*/
+	if($user_id != "" || $user_id != NULL){
+		$values["user_id"] = $user_id;
+		if($session_id != "" || $session_id != NULL){
+			$product_id = getCorrectProductFromTags($db, $session_id, $user_id) or NULL;
+			if($product_id != "") $status = 0; // Product found.
+			else $status = 3; // No product available
+			$values["produit_adherent_id"] = $product_id;
 		} else {
-			$status = 5; // No user ID has been matched
+			$status = 4; // No session has been found
 		}
-
-		$values["status"] = $status;
-
-		include "add_entry.php";
-		addEntry($db, "participations", $values);
+	} else {
+		$status = 5; // No user ID has been matched
 	}
+
+	$values["status"] = $status;
+
+	include "add_entry.php";
+	addEntry($db, "participations", $values);
+	/*}*/
 
 	echo "$";
 }
