@@ -6,7 +6,9 @@ if(!isset($_SESSION["username"])){
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
-$produits = $db->query("SELECT * FROM produits");
+$produits = $db->query("SELECT * FROM produits p
+						LEFT JOIN product_categories pc ON p.product_category = pc.category_id
+						ORDER BY category_name ASC, product_name ASC");
 ?>
 <html>
 	<head>
@@ -23,13 +25,22 @@ $produits = $db->query("SELECT * FROM produits");
 					<legend><span class="glyphicon glyphicon-credit-card"></span> Forfaits
 						<a href="forfait_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait</a>
 					</legend>
-					<?php while($produit = $produits->fetch(PDO::FETCH_ASSOC)){
-	$validite_semaines = $produit["product_validity"] / 7;
-	if($validite_semaines < 1){
-		$validite = $produit["product_validity"]." jour(s)";
-	} else {
-		$validite = $validite_semaines." semaine(s)";
-	}
+					<?php
+					$current_category = -1;
+					while($produit = $produits->fetch(PDO::FETCH_ASSOC)){
+						$validite_semaines = $produit["product_validity"] / 7;
+						if($validite_semaines < 1){
+							$validite = $produit["product_validity"]." jour(s)";
+						} else {
+							$validite = $validite_semaines." semaine(s)";
+						}
+						if($produit["product_category"] != $current_category){
+							if($current_category != -1){?>
+				</div> <!-- Closing previous category -->
+				<?php } ?>
+				<p class='sub-legend'><?php echo $produit["category_name"];?></p>
+				<div class="category row">
+					<?php }
 					?>
 					<div class="col-xs-12 col-md-4 col-lg-3 panel-product-container">
 						<div class="panel panel-product">
@@ -39,17 +50,17 @@ $produits = $db->query("SELECT * FROM produits");
 						JOIN tags_session ts ON apt.tag_id_foreign = ts.rank_id
 						WHERE product_id_foreign = ?
 						ORDER BY tag_color DESC");
-	$labels->bindParam(1, $produit["product_id"], PDO::PARAM_INT);
-	$labels->execute(); ?>
+						$labels->bindParam(1, $produit["product_id"], PDO::PARAM_INT);
+						$labels->execute(); ?>
 								<p>Valable <?php echo $validite;?></p>
 								<div class="tags-display">
 									<h5>
 										<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){
-		if($label["is_mandatory"] == 1){
-			$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
-		} else {
-			$label_name = $label["rank_name"];
-		}
+							if($label["is_mandatory"] == 1){
+								$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
+							} else {
+								$label_name = $label["rank_name"];
+							}
 										?>
 										<span class="label label-salsabor" title="Supprimer l'étiquette" id="product-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype="product" style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label_name;?></span>
 										<?php } ?>
@@ -65,7 +76,8 @@ $produits = $db->query("SELECT * FROM produits");
 							</div>
 						</div>
 					</div>
-					<?php } ?>
+					<?php $current_category = $produit["product_category"];
+					} ?>
 				</div>
 			</div>
 		</div>

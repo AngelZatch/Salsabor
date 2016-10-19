@@ -14,6 +14,9 @@ $queryProduit->bindParam(1, $data, PDO::PARAM_INT);
 $queryProduit->execute();
 $produit = $queryProduit->fetch(PDO::FETCH_ASSOC);
 
+// Product categories
+$categories = $db->query("SELECT * FROM product_categories ORDER BY category_name ASC");
+
 // Labels
 $labels = $db->prepare("SELECT * FROM assoc_product_tags apt
 						JOIN tags_session ts ON apt.tag_id_foreign = ts.rank_id
@@ -30,11 +33,14 @@ if(isset($_POST["edit"])){
 	}
 	$actif = 1;
 
+	$product_category = ($_POST["product_category"]=="0")?null:$_POST["product_category"];
+
 	try{
 		$db->beginTransaction();
 		$edit = $db->prepare("UPDATE produits SET product_name = :product_name,
 												product_code = :product_code,
 												description = :description,
+												product_category = :product_category,
 												product_size = :product_size,
 												product_validity = :validite,
 												product_price = :product_price,
@@ -45,6 +51,7 @@ if(isset($_POST["edit"])){
 		$edit->bindParam(':product_name', $_POST["product_name"], PDO::PARAM_STR);
 		$edit->bindParam(':product_code', $_POST["product_code"], PDO::PARAM_STR);
 		$edit->bindParam(':description', $_POST["description"], PDO::PARAM_STR);
+		$edit->bindValue(':product_category', $product_category, PDO::PARAM_INT);
 		$edit->bindParam(':product_size', $_POST["product_size"], PDO::PARAM_INT);
 		$edit->bindParam(':validite', $validite, PDO::PARAM_INT);
 		$edit->bindParam(':product_price', $_POST["product_price"], PDO::PARAM_INT);
@@ -111,6 +118,21 @@ if(isset($_POST["edit"])){
 							</div>
 						</div>
 						<div class="form-group">
+							<label for="product_category" class="control-label col-lg-3">Catégorie</label>
+							<div class="col-lg-9">
+								<select name="product_category" class="form-control">
+										<option value="0">Aucune catégorie</option>
+											<?php while($category = $categories->fetch(PDO::FETCH_ASSOC)){
+	if($produit["product_category"] == $category["category_id"]) {?>
+											<option selected="selected" value="<?php echo $category["category_id"];?>"><?php echo $category["category_name"];?></option>
+											<?php } else { ?>
+											<option value="<?php echo $category["category_id"];?>"><?php echo $category["category_name"];?></option>
+											<?php }
+} ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="description" class="col-lg-3 control-label">Description</label>
 							<div class="col-lg-9">
 								<textarea rows="5" class="form-control" name="description" placeholder="Décrivez rapidement le produit en 100 caractères maximum (facultatif)"><?php echo $produit["description"];?></textarea>
@@ -158,4 +180,18 @@ if(isset($_POST["edit"])){
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
 	</body>
+	<script>
+		/*$(document).ready(function(){
+			$.get("functions/fetch_product_categories.php").done(function(data){
+				var options = JSON.parse(data);
+				console.log(options);
+				for(var i = 0; i < options.length; i++){
+					console.log(options[i]);
+					$("#product-category").append(
+						$("<option></option>").text(options[i].text).val(options[i].value)
+					);
+				}
+			})
+		})*/
+	</script>
 </html>

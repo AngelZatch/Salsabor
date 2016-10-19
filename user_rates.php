@@ -31,12 +31,10 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<title>Achats - <?php echo $details["user_prenom"]." ".$details["user_nom"];?> | Salsabor</title>
 		<base href="../../">
 		<?php include "styles.php";?>
-		<link rel="stylesheet" href="assets/css/bootstrap-slider.min.css">
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
 		<script src="assets/js/maturities.js"></script>
 		<script src="assets/js/bootstrap-slider.min.js"></script>
-		<script src="assets/js/circle-progress.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -95,13 +93,13 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 								<div class="form-group">
 									<label for="rate_title" class="col-lg-4 control-label">Définition</label>
 									<div class="col-lg-8">
-										<input type="text" class="form-control" name="rate_title" valule="">
+										<input type="text" class="form-control" name="rate_title" value="">
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="rate_value" class="col-lg-4 control-label">Value</label>
 									<div class="col-lg-8">
-										<input type="text" class="form-control" name="rate_value" valule="">
+										<input type="text" class="form-control" name="rate_value" value="">
 									</div>
 								</div>
 								<div class="form-group">
