@@ -26,6 +26,9 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 								JOIN tags_user tu ON tu.rank_id = ur.tag_id_foreign
 								WHERE rank_name = 'Professeur' AND user_id_foreign = '$user_id'")->rowCount();
 
+// Locations
+$locations = $db->query("SELECT * FROM locations ORDER BY location_name ASC");
+
 // If the user is a teacher
 /*if($is_teacher == 1){
 	// On obtient l'historique de ses cours
@@ -141,6 +144,21 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							<label for="ville" class="col-sm-3 control-label">Ville</label>
 							<div class="col-sm-9">
 								<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control" value="<?php echo $details["ville"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="user_location" class="control-label col-lg-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings, membres accessibles en fonction de leurs régions. La région est ignorée pour les utilisateurs non-staff."></span></label>
+							<div class="col-lg-9">
+								<select name="user_location" class="form-control">
+									<option value="">Aucune région</option>
+									<?php while($location = $locations->fetch(PDO::FETCH_ASSOC)){
+	if($details["user_location"] == $location["location_id"]){ ?>
+									<option selected value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
+									<?php } else { ?>
+									<option value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
+									<?php }
+} ?>
+								</select>
 							</div>
 						</div>
 						<div class="form-group">
@@ -309,6 +327,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 			}).on('click', '#update-user', function(){
 				var user_id = /([0-9]+)/.exec(top.location.pathname);
 				var values = $("#user-details-form").serialize(), table = "users", entry_id = user_id[0];
+				console.log(values);
 				$.when(updateEntry(table, values, entry_id)).done(function(data){
 					console.log(data);
 					var rfid = $("#user-rfid").val();

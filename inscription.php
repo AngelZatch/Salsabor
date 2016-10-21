@@ -13,6 +13,9 @@ $now = date_create('now')->format('Y-m-d');
 
 $connaissances = $db->query("SELECT * FROM sources_connaissance");
 
+// Locations
+$locations = $db->query("SELECT * FROM locations ORDER BY location_name ASC");
+
 if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 	// Formatting sign_in_date
 	$sign_up_date = DateTime::createFromFormat("d/m/Y", $_POST["date_inscription"]);
@@ -26,10 +29,13 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 		"code_postal" => $_POST["code_postal"],
 		"ville" => $_POST["ville"],
 		"mail" => $_POST["mail"],
+		"website" => $_POST["website"],
+		"organisation" => $_POST["organisation"],
 		"telephone" => $_POST["telephone"],
 		"tel_secondaire" => $_POST["tel_secondaire"],
 		"commentaires" => $_POST["commentaires"],
 		"source_connaissance" => $_POST["sources_connaissance"],
+		"user_location" => $_POST["user_location"],
 		"user_rib" => $_POST["user_rib"],
 		"commentaires" => $_POST["commentaires"]
 	);
@@ -134,6 +140,18 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 							</div>
 						</div>
 						<div class="form-group">
+							<label for="website" class="col-sm-3 control-label">Site Web</label>
+							<div class="col-sm-9">
+								<input type="url" name="website" placeholder="Adresse de site web" class="form-control">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="organisation" class="col-sm-3 control-label">Organisation</label>
+							<div class="col-sm-9">
+								<input type="text" name="organisation" placeholder="Organisation" class="form-control">
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="tel_secondaire" class="col-sm-3 control-label">Téléphone secondaire</label>
 							<div class="col-sm-9">
 								<input type="tel" name="tel_secondaire" id="tel_secondaire" placeholder="Numéro de téléphone secondaire" class="form-control">
@@ -174,6 +192,17 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 									<input type="text" name="user_rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID">
 									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
 								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="product_location" class="control-label col-lg-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings, membres accessibles en fonction de leurs régions. La région est ignorée pour les utilisateurs non-staff."></span></label>
+							<div class="col-lg-9">
+								<select name="user_location" class="form-control">
+									<option value="">Pas de région</option>
+									<?php while($location = $locations->fetch(PDO::FETCH_ASSOC)){ ?>
+									<option value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
+									<?php } ?>
+								</select>
 							</div>
 						</div>
 						<div class="form-group" id="rib-data" style="display:none;">
