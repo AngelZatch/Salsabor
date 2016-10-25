@@ -520,93 +520,91 @@ function displayIrregularUserParticipations(user_id){
 	})
 }
 
-function displayUserParticipations(user_id){
-	$.get("functions/fetch_user_participations.php", {user_id : user_id}).done(function(data){
-		var records_list = JSON.parse(data);
-		$(".participations-list").empty();
-		var users = 0, ok = 0, warning = 0, pending = 0;
-		var contents = "";
-		for(var i = 0; i < records_list.length; i++){
-			var record_status;
-			switch(records_list[i].status){
-				case '0':
-					if(records_list[i].product_name == "-"){
-						record_status = "status-over";
-						warning++;
-					} else {
-						record_status = "status-pre-success";
-						pending++;
-					}
-					break;
-
-				case '2':
-					if(records_list[i].product_name == "-"){
-						record_status = "status-partial-success";
-						warning++;
-					} else {
-						record_status = "status-success";
-						ok++;
-					}
-					break;
-
-				case '3':
+function displayUserParticipations(data){
+	var records_list = JSON.parse(data);
+	$(".participations-list").empty();
+	var users = 0, ok = 0, warning = 0, pending = 0;
+	var contents = "";
+	for(var i = 0; i < records_list.length; i++){
+		var record_status;
+		switch(records_list[i].status){
+			case '0':
+				if(records_list[i].product_name == "-"){
 					record_status = "status-over";
 					warning++;
-					break;
-			}
-			users++;
-			contents += "<li class='panel-item panel-record irregular-record "+record_status+" container-fluid col-lg-12' id='participation-"+records_list[i].id+"' data-participation='"+records_list[i].id+"'>";
-			// Details
-			contents += "<div class='row irregular-record-actions'>";
+				} else {
+					record_status = "status-pre-success";
+					pending++;
+				}
+				break;
 
-			contents += "<p class='panel-item-title personal-participation-title col-xs-8 bf'>";
-			// Session
-			if(records_list[i].cours_name != null){
-				contents += "<span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].session_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].session_end).format("HH:mm")+")";
-			} else {
-				contents += "<span class='glyphicon glyphicon-eye-open'></span> Pas de cours associé";
-			}
-			contents += " - Passage n°"+records_list[i].id+"</p>";
+			case '2':
+				if(records_list[i].product_name == "-"){
+					record_status = "status-partial-success";
+					warning++;
+				} else {
+					record_status = "status-success";
+					ok++;
+				}
+				break;
 
-			// Action buttons
-			// Different button depending on the status of the record
-			if(records_list[i].status == '2'){
-				contents += "<p class='col-xs-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateParticipation("+records_list[i].id+")' title='Annuler la validation'></span></p>";
-			} else {
-				contents += "<p class='col-xs-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateParticipation("+records_list[i].id+")' title='Valider le passage'></span></p>";
-			}
-			contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
-			contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
-			contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' id='delete-record-"+records_list[i].id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+records_list[i].id+"' data-table='participations' data-delete='#participation-"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
-			contents += "</div>";
-
-			contents += "<div class='row irregular-record-details'>";
-
-			// Record hour
-			contents += "<p class='col-xs-4 participation-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("DD/MM/YYYY HH:mm:ss")+"</p>";
-
-			// Reader
-			contents += "<p class='col-xs-4 participation-details'><span class='glyphicon glyphicon-pushpin'></span> "+records_list[i].room+"</p>";
-
-			// Indicating the product will soon expire
-			if(moment(records_list[i].product_expiration).isBefore(moment('now').add(records_list[i].days_before_exp, 'days'))){
-				console.log("days");
-				contents += "<p class='col-xs-4 participation-details srd-product product-soon' title='Expiration prochaine : "+moment(records_list[i].product_expiration).format("DD/MM/YYYY")+"'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
-			} else if(parseFloat(records_list[i].product_hours) <= records_list[i].hours_before_exp){
-				contents += "<p class='col-xs-4 participation-details srd-product product-soon' title='Expiration prochaine : "+records_list[i].product_hours+" heures restantes'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
-			} else {
-				contents += "<p class='col-xs-4 participation-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
-			}
-
-			contents += "</div>";
-			contents += "</li>";
+			case '3':
+				record_status = "status-over";
+				warning++;
+				break;
 		}
-		$(".participations-list").append(contents);
-		$("#total-count").text(users);
-		$("#valid-count").text(ok);
-		$("#pending-count").text(pending);
-		$("#over-count").text(warning);
-	})
+		users++;
+		contents += "<li class='panel-item panel-record irregular-record "+record_status+" container-fluid col-lg-12' id='participation-"+records_list[i].id+"' data-participation='"+records_list[i].id+"'>";
+		// Details
+		contents += "<div class='row irregular-record-actions'>";
+
+		contents += "<p class='panel-item-title personal-participation-title col-xs-8 bf'>";
+		// Session
+		if(records_list[i].cours_name != null){
+			contents += "<span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].session_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].session_end).format("HH:mm")+")";
+		} else {
+			contents += "<span class='glyphicon glyphicon-eye-open'></span> Pas de cours associé";
+		}
+		contents += " - Passage n°"+records_list[i].id+"</p>";
+
+		// Action buttons
+		// Different button depending on the status of the record
+		if(records_list[i].status == '2'){
+			contents += "<p class='col-xs-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateParticipation("+records_list[i].id+")' title='Annuler la validation'></span></p>";
+		} else {
+			contents += "<p class='col-xs-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateParticipation("+records_list[i].id+")' title='Valider le passage'></span></p>";
+		}
+		contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
+		contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
+		contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' id='delete-record-"+records_list[i].id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+records_list[i].id+"' data-table='participations' data-delete='#participation-"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+		contents += "</div>";
+
+		contents += "<div class='row irregular-record-details'>";
+
+		// Record hour
+		contents += "<p class='col-xs-4 participation-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("DD/MM/YYYY HH:mm:ss")+"</p>";
+
+		// Reader
+		contents += "<p class='col-xs-4 participation-details'><span class='glyphicon glyphicon-pushpin'></span> "+records_list[i].room+"</p>";
+
+		// Indicating the product will soon expire
+		if(moment(records_list[i].product_expiration).isBefore(moment('now').add(records_list[i].days_before_exp, 'days'))){
+			console.log("days");
+			contents += "<p class='col-xs-4 participation-details srd-product product-soon' title='Expiration prochaine : "+moment(records_list[i].product_expiration).format("DD/MM/YYYY")+"'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+		} else if(parseFloat(records_list[i].product_hours) <= records_list[i].hours_before_exp){
+			contents += "<p class='col-xs-4 participation-details srd-product product-soon' title='Expiration prochaine : "+records_list[i].product_hours+" heures restantes'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+		} else {
+			contents += "<p class='col-xs-4 participation-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+		}
+
+		contents += "</div>";
+		contents += "</li>";
+	}
+	$(".participations-list").append(contents);
+	$("#total-count").text(users);
+	$("#valid-count").text(ok);
+	$("#pending-count").text(pending);
+	$("#over-count").text(warning);
 }
 
 function validateParticipation(participation_id){

@@ -30,11 +30,6 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
 		<script src="assets/js/participations.js"></script>
-		<script>
-			$(document).ready(function(){
-				displayUserParticipations(<?php echo $user_id;?>);
-			})
-		</script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -58,6 +53,16 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 						<li role="presentation"><a href="user/<?php echo $user_id;?>/taches">Tâches</a></li>
 					</ul>
 					<div class="container-fluid">
+						<div class="form-group">
+							<label for="" class="control-label col-xs-6">Date de début</label>
+							<label for="" class="control-label col-xs-6">Date de fin</label>
+							<div class="col-xs-6">
+								<input type="text" class="form-control date-filter" id="datepicker-start">
+							</div>
+							<div class="col-xs-6">
+								<input type="text" class="form-control date-filter" id="datepicker-end">
+							</div>
+						</div>
 						<p class="col-xs-3 participation-type" id="type-total"><span class="participation-count" id="total-count"></span> Participations</p>
 						<p class="col-xs-3 participation-type" id="type-valid"><span class="participation-count" id="valid-count"></span> Participations valides</p>
 						<p class="col-xs-3 participation-type" id="type-pending"><span class="participation-count" id="pending-count"></span> Participations en attente</p>
@@ -74,7 +79,34 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<?php include "inserts/sub_modal_product.php";?>
 		<?php include "inserts/edit_modal.php";?>
 		<?php include "inserts/delete_modal.php";?>
+		<style>
+			.control-label{
+				text-align: center;
+			}
+		</style>
 		<script>
+			$(document).ready(function(){
+				$("#datepicker-start").datetimepicker({
+					format: "DD/MM/YYYY",
+					defaultDate: moment().subtract(1, 'year'),
+					locale: "fr",
+					sideBySide: true,
+					stepping: 15
+				}).on('dp.change', function(e){
+					fetchUserParticipations(<?php echo $user_id;?>);
+				})
+				$("#datepicker-end").datetimepicker({
+					format: "DD/MM/YYYY",
+					locale: "fr",
+					sideBySide: true,
+					stepping: 15
+				}).on('dp.change', function(e){
+					fetchUserParticipations(<?php echo $user_id;?>);
+				})
+				fetchUserParticipations(<?php echo $user_id;?>);
+			}).on('change', '.date', function(){
+				console.log("changed");
+			})
 			$(".participation-type").click(function(){
 				var id = $(this).attr("id");
 				if(id == "type-total"){
@@ -93,6 +125,34 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 					}
 				}
 			})
+			function fetchUserParticipations(user_id){
+				var filters = [];
+				$(".date-filter").each(function(){
+					if($(this).val() != "")
+						filters.push(moment($(this).val(), "DD/MM/YYYY").format("YYYY-MM-DD"));
+				})
+				console.log(filters);
+				$.get("functions/fetch_user_participations.php", {user_id : user_id, filters : filters}).done(function(data){
+					displayUserParticipations(data);
+				})
+				/*$.ajax({
+					url: "functions/fetch_user_participations.php",
+					type: "GET",
+					data: function(){
+						var filters = [];
+						filters.push(user_id);
+						$(".date-filter").each(function(){
+							filters.push(moment($(this).val(), "DD/MM/YYYY"));
+						})
+						console.log(filters);
+						return {
+							filters : filters
+						};
+					}
+				}).done(function(data){
+					console.log(data);
+				})*/
+			}
 		</script>
 	</body>
 </html>
