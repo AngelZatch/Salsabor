@@ -4,13 +4,14 @@ $db = PDOFactory::getConnection();
 
 $user_id = $_GET["user_id"];
 
-$load = $db->query("SELECT *, pr.user_rfid AS pr_rfid FROM participations pr
+$load = $db->query("SELECT pr.passage_id, pr.passage_date, pr.status, s.session_id, s.session_name, s.session_start, s.session_end, p.product_name, pa.date_expiration, pa.date_fin_utilisation, pa.date_prolongee, p.est_illimite, pa.volume_cours, r.room_name AS reader_room_name, r2.room_name AS session_room_name, u.user_rfid, pr.room_token FROM participations pr
 					LEFT JOIN readers re ON pr.room_token = re.reader_token
 					LEFT JOIN rooms r ON re.reader_id = r.room_reader
 					LEFT JOIN users u ON pr.user_id = u.user_id
 					LEFT JOIN produits_adherents pa ON pr.produit_adherent_id = pa.id_produit_adherent
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.product_id
 					LEFT JOIN sessions s ON pr.session_id = s.session_id
+					LEFT JOIN rooms r2 ON s.session_room = r.room_id
 					WHERE (pr.status = 0 OR pr.status = 3 OR (pr.status = 2 AND (produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0)))
 					AND pr.user_id = '$user_id'
 					ORDER BY pr.passage_id DESC");
@@ -35,13 +36,9 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$r = array();
 	$r["duplicates"] = $duplicates;
 	$r["id"] = $details["passage_id"];
-	$r["card"] = $details["pr_rfid"];
-	$r["user_id"] = $details["user_id"];
-	$r["user"] = $details["user_prenom"]." ".$details["user_nom"];
-	$r["photo"] = $details["photo"];
 	$r["date"] = $details["passage_date"];
 	$r["status"] = $details["status"];
-	$r["room"] = $details["room_name"];
+	$r["room"] = ($details["reader_room_name"] == null)?$details["session_room_name"]:$details["reader_room_name"];
 	$r["session_id"] = $details["session_id"];
 	$r["cours_name"] = $details["session_name"];
 	$r["session_start"] = $details["session_start"];

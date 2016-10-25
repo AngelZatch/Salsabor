@@ -33,6 +33,13 @@ try{
 	ADD CONSTRAINT fk_product_location FOREIGN KEY(product_location)
 	REFERENCES locations(location_id)
 	ON DELETE SET NULL
+	ON UPDATE NO ACTION");
+
+	$db->query("ALTER TABLE holidays
+	ADD holiday_location INT(11) DEFAULT NULL AFTER holiday_date,
+	ADD CONSTRAINT fk_holiday_location FOREIGN KEY(holiday_location)
+	REFERENCES locations(location_id)
+	ON DELETE SET NULL
 	ON UPDATE NO ACTION");*/
 } catch(PDOException $e){
 	echo $e->getMessage();

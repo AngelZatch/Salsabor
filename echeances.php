@@ -32,7 +32,9 @@ $time = new DateTime($year.'-'.$month.'-'.$maturityDay);
 		<script src="assets/js/list.min.js"></script>
 		<script>
 			$(document).ready(function(){
-				$.get("functions/fetch_current_maturities.php").done(function(data){
+				var region_flag = /[0-9]/.exec(window.location.search)[0];
+				console.log(region_flag);
+				$.get("functions/fetch_current_maturities.php", {region : region_flag}).done(function(data){
 					var maturities = JSON.parse(data);
 					var display = displayMaturities(maturities);
 					$(".maturities-list").append(display);
@@ -57,7 +59,12 @@ $time = new DateTime($year.'-'.$month.'-'.$maturityDay);
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
-					<legend><span class="glyphicon glyphicon-repeat"></span> Echéances</legend>
+					<legend><span class="glyphicon glyphicon-repeat"></span> Echéances
+						<?php if($_GET["region"] == "1"){?>
+						<a href="echeances?region=0" class="btn btn-primary float-right"><span class="glyphicon glyphicon-globe"></span> Exclure les autres régions</a>
+						<?php } else { ?>
+						<a href="echeances?region=1" class="btn btn-primary float-right"><span class="glyphicon glyphicon-globe"></span> Inclure toutes les régions</a>
+						<?php } ?></legend>
 					<div class="panel panel-purchase  maturities-container" id="maturities-list">
 						<div class="panel-heading container-fluid">
 							<p class="col-xs-4 col-md-4">Encaissement prévu le <?php echo $time->format('d/m/Y');?></p>

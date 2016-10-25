@@ -147,8 +147,8 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="user_location" class="control-label col-lg-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings, membres accessibles en fonction de leurs régions. La région est ignorée pour les utilisateurs non-staff."></span></label>
-							<div class="col-lg-9">
+							<label for="user_location" class="control-label col-sm-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings, membres accessibles en fonction de leurs régions. La région est ignorée pour les utilisateurs non-staff."></span></label>
+							<div class="col-sm-9">
 								<select name="user_location" class="form-control">
 									<option value="">Aucune région</option>
 									<?php while($location = $locations->fetch(PDO::FETCH_ASSOC)){
@@ -335,9 +335,13 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						$.post("functions/delete_association_record.php", {rfid : rfid});
 					}
 					showNotification("Modifications enregistrées", "success");
+					if(user_id[0] == "<?php echo $_SESSION["user_id"];?>"){
+						console.log("updating saved session"+ user_id);
+						$.get("functions/update_user_session.php");
+					}
 				})
 			})
-				<?php if($is_teacher == 1){?>
+			<?php if($is_teacher == 1){?>
 			/*
 			$("#add-tarif").click(function(){
 				$("#new-tarif").show();
@@ -447,7 +451,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 				});
 			}
 			*/
-				<?php } ?>
+			<?php } ?>
 		</script>
 	</body>
 </html>

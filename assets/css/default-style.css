@@ -1653,48 +1653,51 @@ p.legend, div.legend:nth-child(1n+0) {
   cursor: pointer; }
 
 /* line 1138, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-.room-filter, .filter-title {
+.room-filter, .filter-title, .location-filter {
   cursor: pointer;
   padding: 5px 0 5px 5px; }
   /* line 1141, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-  .room-filter:hover, .filter-title:hover {
+  .room-filter.activated, .activated.filter-title, .location-filter.activated {
+    font-weight: 800; }
+  /* line 1143, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  .room-filter:hover, .filter-title:hover, .location-filter:hover {
     background-color: #6f6f6f;
     color: white; }
 
-/* line 1145, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 1147, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .cube-filter {
   height: 15px;
   width: 15px;
   margin: 2px; }
-  /* line 1150, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  /* line 1152, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
   .cube-filter.disabled {
     opacity: 0;
     border: 1px solid #888888; }
 
-/* line 1154, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 1156, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .filter-title {
   padding-bottom: 7px;
   height: 34px; }
 
-/* line 1160, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 1162, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .filter-name {
   margin: 0 !important; }
 
-/* line 1163, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 1165, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .chart {
   background-color: white; }
 
-/* line 1166, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 1168, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .price-display {
   font-size: 25px;
   color: #A80139;
   height: inherit; }
 
-/* line 1171, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 1173, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .monitoring-infos {
   font-size: 1.4em; }
 
-/* line 1174, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+/* line 1176, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
 .photo-space {
   margin-right: 0.008%; }
 

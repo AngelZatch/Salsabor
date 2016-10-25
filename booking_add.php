@@ -6,7 +6,9 @@ if(!isset($_SESSION["username"])){
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
-$rooms_query = $db->query('SELECT * FROM rooms');
+$rooms = $db->query("SELECT room_id, room_name, location_name FROM rooms r
+							JOIN locations l ON r.room_location = l.location_id
+							WHERE room_location = $_SESSION[location]");
 
 $user_labels = $db->query("SELECT * FROM tags_user");
 ?>
@@ -63,8 +65,8 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 							<label for="booking_room" class="col-lg-3 control-label">Lieu</label>
 							<div class="col-lg-9">
 								<select name="booking_room" class="form-control mandatory" id="booking-room" onChange="checkCalendar(false, false)">
-									<?php while($rooms_details = $rooms_query->fetch(PDO::FETCH_ASSOC)){ ?>
-									<option value="<?php echo $rooms_details['room_id'];?>"><?php echo $rooms_details['room_name'];?></option>
+									<?php while($room = $rooms->fetch(PDO::FETCH_ASSOC)){ ?>
+									<option value="<?php echo $room['room_id'];?>"><?php echo $room['room_name'];?></option>
 									<?php } ?>
 								</select>
 							</div>

@@ -6,9 +6,18 @@ if(!isset($_SESSION["username"])){
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
-$produits = $db->query("SELECT * FROM produits p
-						LEFT JOIN product_categories pc ON p.product_category = pc.category_id
-						ORDER BY category_name ASC, product_name ASC");
+$is_admin = $db->query("SELECT COUNT(*) FROM assoc_user_tags aut
+				JOIN tags_user tu ON aut.tag_id_foreign = tu.rank_id
+				WHERE rank_name = 'Super Admin' AND aut.user_id_foreign = $_SESSION[user_id]")->fetch(PDO::FETCH_COLUMN);
+
+$query = "SELECT * FROM produits p
+			LEFT JOIN product_categories pc ON p.product_category = pc.category_id
+			LEFT JOIN locations l ON p.product_location = l.location_id";
+if(isset($_SESSION["location"]) && $is_admin != 1)
+	$query .= " WHERE product_location = $_SESSION[location]";
+$query .= " ORDER BY category_name ASC, product_name ASC";
+
+$produits = $db->query($query);
 ?>
 <html>
 	<head>
@@ -52,7 +61,10 @@ $produits = $db->query("SELECT * FROM produits p
 						ORDER BY tag_color DESC");
 						$labels->bindParam(1, $produit["product_id"], PDO::PARAM_INT);
 						$labels->execute(); ?>
-								<p>Valable <?php echo $validite;?></p>
+								<div class="row">
+									<p class="col-xs-6"><span class="glyphicon glyphicon-time" title="Durée de validité"></span> <?php echo $validite;?></p>
+									<p class="col-xs-6"><span class="glyphicon glyphicon-globe" title="Région de disponibilité"></span> <?php echo $produit["location_name"];?></p>
+								</div>
 								<div class="tags-display">
 									<h5>
 										<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){

@@ -426,7 +426,7 @@ function displayIrregularUsers(){
 				contents += "<div class='panel panel-item panel-purchase'>";
 				contents += "<a class='panel-heading-container' id='ph-user-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"' data-trigger='"+user_list[i].user_id+"'>";
 				contents += "<div class='panel-heading container-fluid'>";
-				contents += "<p class='irregular-user'>"+user_list[i].user+" (<span class='irregular-user-count' id='count-"+user_list[i].user_id+"'>"+user_list[i].count+"</span>) <span class='glyphicon glyphicon-share-alt glyphicon-button glyphicon-button-alt' id='glyph-user-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"' title='Aller aux participations de l&apos;utilisateur'></span></p>";
+				contents += "<p class='irregular-user'><span class='col-xs-11'>"+user_list[i].user+" (<span class='irregular-user-count' id='count-"+user_list[i].user_id+"'>"+user_list[i].count+"</span>)</span> <span class='glyphicon glyphicon-share-alt glyphicon-button glyphicon-button-alt col-xs-1' id='glyph-user-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"' title='Aller aux participations de l&apos;utilisateur'></span></p>";
 				contents += "</div>";
 				contents += "</a>";
 				contents += "<div class='panel-collapse collapse' id='body-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"'>";
@@ -498,7 +498,10 @@ function displayIrregularUserParticipations(user_id){
 			contents += "<p class='col-xs-6 col-lg-4 participation-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("DD/MM/YYYY HH:mm:ss")+"</p>";
 
 			// Reader
-			contents += "<p class='col-xs-6 col-lg-4 participation-details'><span class='glyphicon glyphicon-pushpin'></span> "+records_list[i].room+"</p>";
+			if(records_list[i].room != null)
+				contents += "<p class='col-xs-6 col-lg-4 participation-details'><span class='glyphicon glyphicon-pushpin'></span> "+records_list[i].room+"</p>";
+			else
+				contents += "<p class='col-xs-6 col-lg-4 participation-details'><span class='glyphicon glyphicon-pushpin'></span> -</p>";
 
 			// Indicating the product will soon expire
 			if(moment(records_list[i].product_expiration).isBefore(moment('now').add(records_list[i].days_before_exp, 'days'))){

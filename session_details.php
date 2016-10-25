@@ -9,6 +9,8 @@ require_once 'functions/cours.php';
 /** Récupération des valeurs dans la base de données des champs **/
 $id = $_GET['id'];
 $cours = $db->query("SELECT * FROM sessions s
+							JOIN rooms r ON s.session_room = r.room_id
+							JOIN locations l ON r.room_location = l.location_id
 							JOIN users u ON s.session_teacher = u.user_id
 							WHERE session_id='$id'")->fetch(PDO::FETCH_ASSOC);
 
@@ -33,7 +35,9 @@ $session_end = new DateTime($cours["session_end"]);
 if($session_start <= $now && $session_end > $now)
 	$on_going = true;
 
-$querySalles = $db->query("SELECT * FROM rooms");
+$querySalles = $db->query("SELECT room_id, room_name, location_name FROM rooms r
+							JOIN locations l ON r.room_location = l.location_id
+							WHERE room_location = $_SESSION[location] OR room_location= $cours[location_id]");
 
 $labels = $db->query("SELECT * FROM assoc_session_tags us
 						JOIN tags_session ts ON us.tag_id_foreign = ts.rank_id
