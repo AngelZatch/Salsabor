@@ -3,6 +3,8 @@ session_start();
 require_once 'functions/db_connect.php';
 include "functions/mails.php";
 include "functions/tools.php";
+include "functions/post_task.php";
+include "functions/attach_tag.php";
 $db = PDOFactory::getConnection();
 ?>
 <html>
@@ -26,69 +28,26 @@ $db = PDOFactory::getConnection();
 					$searchTerms = "An";
 					$location = 2;
 					/** CODE **/
-					$general_query = "SELECT u.user_id, CONCAT(u.user_prenom, ' ', u.user_nom) AS identity, u.user_prenom, u.user_nom, u.mail, u.telephone, u.photo, u.user_location, u.actif, u.archived FROM users u";
-					$general_where = " (u.user_nom LIKE ? OR u.user_prenom LIKE ? OR u.mail LIKE ? OR u.telephone LIKE ?)";
-					$criteria_array = array("%".$searchTerms."%",
-											"%".$searchTerms."%",
-											"%".$searchTerms."%",
-											"%".$searchTerms."%");
+					$noCards = $db->query("SELECT user_id FROM users u WHERE actif = 1")->fetchAll(PDO::FETCH_COLUMN);
 
-					// Query to find staff
-					$staff_query = $general_query." WHERE user_location = $location AND".$general_where;
-					if(isset($_GET["archive"]) && $_GET["archive"] == "0")
-						$staff_query .= " AND archived = 0";
-					$match_by_staff = $db->prepare($staff_query);
-					$match_by_staff->execute($criteria_array);
-
-					// Query to find by participations
-					$by_participations_query = $general_query." RIGHT JOIN participations p ON u.user_id = p.user_id
-				LEFT JOIN sessions s ON p.session_id = s.session_id
-				LEFT JOIN rooms r ON s.session_room = r.room_id
-				LEFT JOIN locations l ON r.room_location = l.location_id
-				WHERE".$general_where." AND (l.location_id = $location OR u.user_location = $location)";
-					if(isset($_GET["archive"]) && $_GET["archive"] == "0")
-						$by_participations_query .= " AND archived = 0";
-					$by_participations_query .= " GROUP BY u.user_id ORDER BY u.archived ASC, u.actif DESC, u.user_nom ASC, u.user_prenom ASC";
-					$match_by_participations = $db->prepare($by_participations_query);
-					$match_by_participations->execute($criteria_array);
-
-					// Query to find by transactions
-					$by_transactions_query = $general_query." RIGHT JOIN transactions t on u.user_id = t.payeur_transaction
-				LEFT JOIN users u2 ON t.transaction_handler = u2.user_id
-				LEFT JOIN locations l ON u2.user_location = l.location_id
-				WHERE".$general_where." AND (u2.user_location = $location)";
-					if(isset($_GET["archive"]) && $_GET["archive"] == "0")
-						$by_transactions_query .= " AND archived = 0";
-					$by_transactions_query .= " GROUP BY l.location_id ORDER BY u.archived ASC, u.actif DESC, u.user_nom ASC, u.user_prenom ASC";
-					$match_by_transactions = $db->prepare($by_transactions_query);
-					$match_by_transactions->execute($criteria_array);
-
-					$result_array = array();
-					while($match = $match_by_staff->fetch(PDO::FETCH_ASSOC)){
-						array_push($result_array, $match);
-					}
-					while($match = $match_by_participations->fetch(PDO::FETCH_ASSOC)){
-						array_push($result_array, $match);
-					}
-					while($match = $match_by_transactions->fetch(PDO::FETCH_ASSOC)){
-						array_push($result_array, $match);
-					}
 
 					?>
 					<pre>
 						<?php
-/*print_r($match_by_staff->fetchAll(PDO::FETCH_ASSOC));
-print_r($match_by_participations->fetchAll(PDO::FETCH_ASSOC));
-print_r($match_by_transactions->fetchAll(PDO::FETCH_ASSOC));*/
-
-$result = array_intersect_key($result_array, array_unique(array_map('serialize' , $result_array)));
-usort($result, function($a, $b){
-	if($a['user_nom'] == $b['user_prenom']){
-		return ($a['user_prenom'] < $b['user_prenom']) ? -1 : 1;
+foreach($noCards as $user){
+	echo "User actif n°".$user;
+	$test = $db->query("SELECT * FROM produits_adherents pa
+							JOIN produits p ON pa.id_produit_foreign = p.product_id
+							WHERE id_user_foreign = '$user' AND product_name = 'Adhésion Annuelle' AND pa.actif != 2")->rowCount();
+	echo " - Nombre d'adhésions annuelles détectées : ".$test;
+	if($test == "0"){
+		echo " | Création d'une tâche";
+		$new_task_id = createTask($db, "Adhésion Annuelle manquante", "Cet utilisateur n'a pas d'adhésion annuelle.", "[USR-".$user."]", null);
+		$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
+		associateTag($db, intval($tag), $new_task_id, "task");
 	}
-	return ($a['user_nom'] < $b['user_nom']) ? -1 : 1;
-});
-print_r($result);
+	echo "<br>";
+}
 						?>
 					</pre>
 

@@ -1,8 +1,12 @@
 <?php
 require_once "/opt/lampp/htdocs/Salsabor/functions/db_connect.php";
 require_once "/opt/lampp/htdocs/Salsabor/functions/compute_remaining_hours.php";
+require_once "/opt/lampp/htdocs/Salsabor/functions/post_task.php";
+require_once "/opt/lampp/htdocs/Salsabor/functions/attach_tag.php";
 /*require_once "../db_connect.php";
-require_once "../compute_remaining_hours.php";*/
+require_once "../compute_remaining_hours.php";
+require_once "../post_task.php";
+require_once "../attach_tag.php";*/
 
 $db = PDOFactory::getConnection();
 
@@ -53,6 +57,25 @@ try{
 	// We deactivate any user that didn't buy a product or attended a session for more than 12 months.
 	$deactivateUser = $db->query("UPDATE users SET actif = 0 WHERE actif = '1' AND date_last < '$activationLimit'");
 	$db->commit();
+} catch(PDOException $e){
+	$db->rollBack();
+	echo $e->getMessage();
+}
+
+try{
+	$db->beginTransaction();
+	// We check all active users whod don't have an active membership card
+	$noCards = $db->query("SELECT user_id FROM users u WHERE actif = 1")->fetchAll(PDO::FETCH_COLUMN);
+	foreach($noCards as $user){
+		$test = $db->query("SELECT * FROM produits_adherents pa
+							JOIN produits p ON pa.id_produit_foreign = p.product_id
+							WHERE id_user_foreign = '$user' AND product_name = 'Adhésion Annuelle' AND pa.actif != 2")->rowCount();
+		if($test == 0){
+			$new_task_id = createTask($db, "Adhésion Annuelle manquante", "Cet utilisateur n'a pas d'adhésion annuelle.", "[USR-".$user."]", null);
+			$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
+			associateTag($db, intval($tag), $new_task_id, "task");
+		}
+	}
 } catch(PDOException $e){
 	$db->rollBack();
 	echo $e->getMessage();
