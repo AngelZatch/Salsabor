@@ -9,6 +9,7 @@ $user_id = $_GET['id'];
 
 // User details
 $details = $db->query("SELECT * FROM users u
+						LEFT JOIN locations l ON u.user_location = l.location_id
 						WHERE user_id='$user_id'")->fetch(PDO::FETCH_ASSOC);
 
 $labels = $db->query("SELECT * FROM assoc_user_tags ur
@@ -149,7 +150,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						<div class="form-group">
 							<label for="user_location" class="control-label col-sm-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings, membres accessibles en fonction de leurs régions. La région est ignorée pour les utilisateurs non-staff."></span></label>
 							<div class="col-sm-9">
-								<select name="user_location" class="form-control">
+								<select name="user_location" id="user-location" class="form-control">
 									<option value="">Aucune région</option>
 									<?php while($location = $locations->fetch(PDO::FETCH_ASSOC)){
 	if($details["user_location"] == $location["location_id"]){ ?>
@@ -339,6 +340,10 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						console.log("updating saved session"+ user_id);
 						$.get("functions/update_user_session.php");
 					}
+					$("#refresh-rfid").text($("#user-rfid").val());
+					var updated_adress = $("#rue").val()+" - "+$("#code_postal").val()+" "+$("#ville").val();
+					$("#refresh-address").text(updated_adress);
+					$("#refresh-region").text($("#user-location>option:selected").text());
 				})
 			})
 			<?php if($is_teacher == 1){?>

@@ -2,7 +2,7 @@
 	<div class="user-pp">
 		<img src="/Salsabor/<?php echo $details["photo"];?>" alt="<?php echo $details["user_prenom"];?>" class="banner-profile-picture">
 	</div>
-	<div class="col-sm-8 legend user-legend">
+	<div class="col-sm-7 legend user-legend">
 		<span class="modal-editable-<?php echo $user_id;?>" data-field="user_prenom" data-name="Prénom"><?php echo $details["user_prenom"];?></span>
 		<span class="modal-editable-<?php echo $user_id;?>" data-field="user_nom" data-name="Nom"><?php echo $details["user_nom"];?></span>
 		<?php if($details["archived"] == 1) { ?>
@@ -32,7 +32,10 @@
 				<span class="glyphicon glyphicon-envelope glyphicon-description"></span>
 				<p class="modal-editable-<?php echo $user_id;?>" data-field="mail" data-name="Adresse mail"><?php echo $details["mail"];?></p>
 			</div>
-			<p id="refresh-rfid"></p>
+			<div>
+				<span class="glyphicon glyphicon-qrcode glyphicon-description"></span>
+				<p id="refresh-rfid"><?php echo $details["user_rfid"];?></p>
+			</div>
 			<?php
 			$count = $details["count"];
 			if($count > 0){
@@ -55,7 +58,14 @@
 				<span class="glyphicon glyphicon-earphone glyphicon-description"></span>
 				<p class="modal-editable-<?php echo $user_id;?>" data-field="telephone" data-name="Téléphone"><?php echo $details["telephone"];?></p>
 			</div>
-			<p id="refresh-address"></p>
+			<div>
+				<span class="glyphicon glyphicon-home glyphicon-description"></span>
+				<p id="refresh-address"><?php echo $details["rue"];?> - <?php echo $details["code_postal"]." ".$details["ville"];?></p>
+			</div>
+			<div>
+				<span class="glyphicon glyphicon-globe glyphicon-description"></span>
+				<p id="refresh-region"><?php echo $details["location_name"];?></p>
+			</div>
 		</div>
 	</div>
 </div>

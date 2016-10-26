@@ -49,14 +49,6 @@ $(document).ready(function(){
 	badgeTasks();
 	moment.locale("fra");
 
-	// If we're on one of the user pages, then we have to fetch and refresh details of the user banner.
-	var re = /user\//i;
-	if(re.exec(top.location.pathname) != null){
-		re = /([0-9]+)/;
-		var user_id = re.exec(top.location.pathname);
-		refreshUserBanner(user_id[0]);
-	}
-
 	// Construit le tableau d'inputs obligatoires par formulaire
 	var mandatories = [];
 	$(".mandatory").each(function(){
@@ -206,121 +198,6 @@ $(document).ready(function(){
 			return prevent();
 		}
 	});
-}).on('click', '.editable', function(e){
-	e.stopPropagation();
-	// we get the initial value
-	var initialValue = $(this).val();
-	if(initialValue == ""){initialValue = $(this).html();}
-	var class_list = document.getElementById($(this).attr("id")).className.split(/\s+/);
-	//classes = classes.replace(/,/g, " ");
-	var classes = "";
-	for(var i = 0; i < class_list.length; i++){
-		classes += class_list[i];
-		if(i != class_list.length - 1){
-			classes += " ";
-		}
-	}
-	console.log(classes);
-
-	// We get the data details for the upload
-	var table = document.getElementById($(this).attr("id")).dataset.table;
-	var column = document.getElementById($(this).attr("id")).dataset.column;
-	var target = document.getElementById($(this).attr("id")).dataset.target;
-	var value = document.getElementById($(this).attr("id")).dataset.value;
-
-	// And the ID.
-	var token = $(this).attr('id');
-
-	// If the value's a date, we have to take it a different way
-	if(initialValue.indexOf('/') != -1){
-		var initialDay = initialValue.substr(0,2);
-		var initialMonth = initialValue.substr(3,2);
-		var initialYear = initialValue.substr(6,4);
-		var initialDate = moment(new Date(initialYear+'-'+initialMonth+'-'+initialDay)).format("YYYY-MM-DD");
-		$(this).replaceWith("<input type='date' class='form-control editing' id='"+token+"' value="+initialDate+">");
-	} else {
-		// Switch depending on the input type
-		var input_type = document.getElementById($(this).attr("id")).dataset.input;
-		if(column == "task_recipient"){
-			var additional_classes = "name-input";
-		}
-		switch(input_type){
-			case "text":
-				initialValue = initialValue.replace(/(['"])/g, "\\$1");
-				if(value != "no-value"){
-					var replacement = "<input type='text' class='form-control editing "+additional_classes+"' id='"+token+"' value='"+initialValue+"'>";
-				} else {
-					var replacement = "<input type='text' class='form-control editing "+additional_classes+"' id='"+token+"' placeholder='"+initialValue+"'>";
-				}
-				$(this).replaceWith(replacement);
-				break;
-
-			case "textarea":
-				$(this).replaceWith("<textarea class='form-control editing "+additional_classes+"' id='"+token+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"'>"+initialValue+"</textarea>");
-				break;
-
-			default:
-				initialValue = initialValue.replace(/(['"])/g, "\\$1");
-				if(value != "no-value"){
-					var replacement = "<input type='"+input_type+"' class='form-control editing "+additional_classes+"' id='"+token+"' value='"+initialValue+"'>";
-				} else {
-					var replacement = "<input type='"+input_type+"' class='form-control editing "+additional_classes+"' id='"+token+"' placeholder='"+initialValue+"'>";
-				}
-				$(this).replaceWith(replacement);
-				break;
-		}
-	}
-	$(".editing").focus();
-	$(".editing").keypress(function(e){
-		if(e.keyCode === 13)
-			$(".editing").blur();
-	})
-	$(".editing").blur(function(e){
-		e.stopPropagation();
-		var editedValue = $(this).val(), replacementValue = "";
-		if(editedValue == ""){
-			switch(column){
-				case "task_recipient":
-					replacementValue = "Affecter un membre";
-					break;
-
-				case "task_description":
-					replacementValue = "Ajouter une description";
-					break;
-
-				case "room_reader":
-					replacementValue = "Pas de lecteur couplé";
-					break;
-			}
-			var replacement = "<p class='"+classes.replace(/,/, '')+"' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"' data-value='no-value'>"+replacementValue+"</p>";
-			if(value == "value"){
-				$.when(updateColumn(table, column, editedValue, target)).done(function(data){
-					$("#"+token).replaceWith(replacement);
-				})
-			} else {
-				$("#"+token).replaceWith(replacement);
-			}
-		} else {
-			if(column == "task_recipient"){
-				// Create notification for the recipient
-				postNotification("TAS-A", target, editedValue);
-			}
-			var replacement = "<p class='"+classes+"' id='"+token+"' data-input='"+input_type+"' data-table='"+table+"' data-column='"+column+"' data-target='"+target+"' data-value='value'>"+editedValue+"</p>";
-			$.when(updateColumn(table, column, editedValue, target)).done(function(data){
-				$("#"+token).replaceWith(replacement);
-			})
-		}
-		/*if(editedValue != "" && editedValue != initialValue){
-			if(editedValue.indexOf('-') != -1){
-				var editedDate = moment(new Date(editedValue)).format("DD/MM/YYYY");
-				$(this).replaceWith("<span class='editable' id='"+token+"'>"+editedDate+"</span>");
-			} else {
-				$(this).replaceWith("<span class='editable' id='"+token+"'>"+editedValue+"</span>");
-			}
-		} else {
-			$(this).replaceWith("<span class='editable' id='"+token+"'>"+initialValue+"</span>");
-		}*/
-	});
 }).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
 	event.preventDefault();
 	return $(this).ekkoLightbox({
@@ -460,15 +337,6 @@ $(document).ready(function(){
 			body += "ATTENTION : Si ce produit est seul dans une transaction, la transaction sera supprimée avec ce produit. Une fois validée, cette opération destructrice est irréversible. Êtes-vous sûr de vouloir supprimer ce produit ?";
 			footer += "<button class='btn btn-danger delete-product col-lg-6' id='btn-product-delete' data-product='"+product_id+"' data-dismiss='modal'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
 			$(".sub-modal").css({top : tpos.top+51+'px'});
-			$(".sub-modal-body").html(body);
-			break;
-
-		case 'delete-task':
-			title = "Supprimer une tâche";
-			var task_id = target.dataset.target;
-			body += "ATTENTION : Cette opération est irréversible. Êtes-vous sûr(e) de vouloir continuer ?";
-			footer += "<button class='btn btn-danger delete-task col-lg-6' id='btn-task-delete' data-task='"+task_id+"' data-dismiss='modal'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
-			$(".sub-modal").css({top : toffset.top+20+'px', left : toffset.left-321+'px'});
 			$(".sub-modal-body").html(body);
 			break;
 
@@ -1017,20 +885,6 @@ function updateColumn(table, column, value, target){
 // Updates a whole row
 function updateEntry(table, values, target){
 	return $.post("functions/update_entry.php", {table : table, target_id : target, values : values});
-}
-
-function refreshUserBanner(user_id){
-	$.get("functions/fetch_user_banner_details.php", {user_id : user_id}).done(function(data){
-		var user_details = JSON.parse(data);
-		$("#user_prenom:not(.editing)").text(user_details.user_prenom);
-		$("#user_nom:not(.editing)").text(user_details.user_nom);
-		$("#refresh-mail:not(.editing)").text(user_details.mail);
-		$("#refresh-rfid:not(.editing)").html("<span class='glyphicon glyphicon-barcode'></span> "+user_details.user_rfid);
-		//$("#refresh-tasks").append(user_details.tasks);
-		$("#refresh-phone:not(.editing)").html(user_details.telephone);
-		$("#refresh-address:not(.editing)").html("<span class='glyphicon glyphicon-home'></span> "+user_details.address);
-	})
-	setTimeout(refreshUserBanner, 10000, user_id);
 }
 
 // Deletes an entry in a table of the database
