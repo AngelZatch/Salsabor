@@ -41,6 +41,8 @@ try{
 	REFERENCES locations(location_id)
 	ON DELETE SET NULL
 	ON UPDATE NO ACTION");
+
+	$db->query("UPDATE app_pages SET page_url='echeances?region=0' WHERE page_name='Echéances'");
 } catch(PDOException $e){
 	echo $e->getMessage();
 }
