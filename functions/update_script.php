@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 try{
 	set_time_limit(0);
 
-	/*$db->query("ALTER TABLE produits ADD COLUMN product_code VARCHAR(20) DEFAULT NULL AFTER product_name");
+	$db->query("ALTER TABLE produits ADD COLUMN product_code VARCHAR(20) DEFAULT NULL AFTER product_name");
 
 	$db->query("CREATE TABLE product_categories(
 	category_id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -40,7 +40,7 @@ try{
 	ADD CONSTRAINT fk_holiday_location FOREIGN KEY(holiday_location)
 	REFERENCES locations(location_id)
 	ON DELETE SET NULL
-	ON UPDATE NO ACTION");*/
+	ON UPDATE NO ACTION");
 } catch(PDOException $e){
 	echo $e->getMessage();
 }
