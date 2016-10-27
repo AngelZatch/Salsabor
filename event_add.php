@@ -7,8 +7,6 @@ require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 require_once "functions/cours.php";
 
-$lieux = $db->query('SELECT * FROM rooms');
-
 $user_labels = $db->query("SELECT * FROM tags_user");
 ?>
 <html>

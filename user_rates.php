@@ -9,6 +9,7 @@ $user_id = $_GET['id'];
 
 // User details
 $details = $db->query("SELECT * FROM users u
+						LEFT JOIN locations l ON u.user_location = l.location_id
 						WHERE user_id='$user_id'")->fetch(PDO::FETCH_ASSOC);
 
 $details["count"] = $db->query("SELECT * FROM tasks
@@ -31,12 +32,10 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<title>Achats - <?php echo $details["user_prenom"]." ".$details["user_nom"];?> | Salsabor</title>
 		<base href="../../">
 		<?php include "styles.php";?>
-		<link rel="stylesheet" href="assets/css/bootstrap-slider.min.css">
 		<?php include "scripts.php";?>
 		<script src="assets/js/products.js"></script>
 		<script src="assets/js/maturities.js"></script>
 		<script src="assets/js/bootstrap-slider.min.js"></script>
-		<script src="assets/js/circle-progress.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -70,7 +69,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 									<span class="glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt edit-rate" id="edit-'<?php echo $rate["rate_id"];?>'" data-toggle="modal" data-target="#edit-modal" data-entry="<?php echo $rate["rate_id"];?>" data-table="teacher_rates" title="Modifier le tarif"></span>
 								</p>
 								<p class="col-xs-1">
-									<span class="glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt delete-rate" id="delete-<?php echo $rate["rate_id"];?>" data-toggle="modal" data-target="#delete-modal" data-entry="<?php echo $rate["rate_id"];?>" data-delete="rate-entity-<?php echo $rate["rate_id"];?>" data-table="teacher_rates" title="Supprimer le tarif <?php echo $rate["rate_title"];?> de <?php echo $details["user_prenom"]." ".$details["user_nom"];?>"></span>
+									<span class="glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt delete-rate" id="delete-<?php echo $rate["rate_id"];?>" data-toggle="modal" data-target="#delete-modal" data-entry="<?php echo $rate["rate_id"];?>" data-delete=".rate-entity-<?php echo $rate["rate_id"];?>" data-table="teacher_rates" title="Supprimer le tarif <?php echo $rate["rate_title"];?> de <?php echo $details["user_prenom"]." ".$details["user_nom"];?>"></span>
 								</p>
 							</div>
 							<?php } ?>
@@ -95,13 +94,13 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 								<div class="form-group">
 									<label for="rate_title" class="col-lg-4 control-label">Définition</label>
 									<div class="col-lg-8">
-										<input type="text" class="form-control" name="rate_title" valule="">
+										<input type="text" class="form-control" name="rate_title" value="">
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="rate_value" class="col-lg-4 control-label">Value</label>
 									<div class="col-lg-8">
-										<input type="text" class="form-control" name="rate_value" valule="">
+										<input type="text" class="form-control" name="rate_value" value="">
 									</div>
 								</div>
 								<div class="form-group">

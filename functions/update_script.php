@@ -3,35 +3,44 @@ include "db_connect.php";
 $db = PDOFactory::getConnection();
 try{
 	set_time_limit(0);
-	// October 11th
+
+	$db->query("ALTER TABLE produits ADD COLUMN product_code VARCHAR(20) DEFAULT NULL AFTER product_name");
+
+	$db->query("CREATE TABLE product_categories(
+	category_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+	category_name VARCHAR(80)
+	)");
+
+	$db->query("ALTER TABLE produits
+	ADD product_category INT(11) DEFAULT NULL AFTER product_code,
+	ADD CONSTRAINT fk_product_category FOREIGN KEY(product_category)
+	REFERENCES product_categories(category_id)
+	ON DELETE SET NULL
+	ON UPDATE NO ACTION");
+
 	$db->query("INSERT INTO app_pages(page_name, page_glyph, page_url, page_menu, page_order)
-					VALUES('Doublons', 'duplicate', 'doublons', 5, 3)");
-
-	$db->query("CREATE TABLE teacher_rates(
-		rate_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-		user_id_foreign INT(11),
-		rate_title VARCHAR(70),
-		rate_value DECIMAL(11,2),
-		rate_ratio SET('heure','prestation','personne'))");
-
-	$db->query("ALTER TABLE sessions
-		ADD teacher_rate INT(11) AFTER session_teacher,
-		ADD CONSTRAINT fk_teacher_rate FOREIGN KEY (teacher_rate)
-		REFERENCES teacher_rates(rate_id)
-		ON DELETE SET NULL
-		ON UPDATE NO ACTION");
-
-	$db->query("ALTER TABLE transactions
-		ADD transaction_handler INT(11) AFTER date_achat,
-		ADD CONSTRAINT fk_transaction_handler FOREIGN KEY (transaction_handler)
-		REFERENCES users(user_id)
-		ON DELETE SET NULL
-		ON UPDATE NO ACTION");
+			VALUES('Catégories', 'th-list', 'categories-produits', 3, 5)");
 
 	$db->query("ALTER TABLE users
-		ADD website VARCHAR(300) DEFAULT NULL AFTER mail,
-		ADD organisation VARCHAR(200) DEFAULT NULL AFTER website,
-		ADD archived TINYINT(4) NOT NULL DEFAULT '0' COMMENT '0 : non / 1 : oui (archivé)'");
+	ADD user_location INT(11) DEFAULT NULL AFTER source_connaissance,
+	ADD CONSTRAINT fk_user_location FOREIGN KEY(user_location)
+	REFERENCES locations(location_id)
+	ON DELETE SET NULL
+	ON UPDATE NO ACTION");
+
+	$db->query("ALTER TABLE produits
+	ADD product_location INT(11) DEFAULT NULL AFTER product_category,
+	ADD CONSTRAINT fk_product_location FOREIGN KEY(product_location)
+	REFERENCES locations(location_id)
+	ON DELETE SET NULL
+	ON UPDATE NO ACTION");
+
+	$db->query("ALTER TABLE holidays
+	ADD holiday_location INT(11) DEFAULT NULL AFTER holiday_date,
+	ADD CONSTRAINT fk_holiday_location FOREIGN KEY(holiday_location)
+	REFERENCES locations(location_id)
+	ON DELETE SET NULL
+	ON UPDATE NO ACTION");
 } catch(PDOException $e){
 	echo $e->getMessage();
 }

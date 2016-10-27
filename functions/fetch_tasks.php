@@ -82,7 +82,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			break;
 
 		case "PRD": // Task for products
-			$sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo, product_name FROM users u JOIN produits_adherents pa ON pa.id_user_foreign = u.user_id JOIN produits p ON p.product_id = pa.id_produit_foreign WHERE user_id IN (SELECT id_user_foreign FROM produits_adherents WHERE id_produit_adherent ='$t[target]')")->fetch(PDO::FETCH_ASSOC);
+			$sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo, product_name FROM users u JOIN produits_adherents pa ON pa.id_user_foreign = u.user_id JOIN produits p ON p.product_id = pa.id_produit_foreign WHERE id_produit_adherent ='$t[target]'")->fetch(PDO::FETCH_ASSOC);
 			$t["user_id"] = $sub_query["user_id"];
 			$t["link"] = "user/".$t["user_id"]."/abonnements";
 			$t["user"] = $sub_query["user"];
@@ -126,6 +126,17 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 			$t["photo"] = $sub_query["photo"];
 			$t["link"] = "reservation/".$t["target"];
 			$t["target_phrase"] = "Réservation par ".$sub_query["holder"]." du ".$date_start." de ".$hour_start." à ".$hour_end;
+			break;
+
+		case "MAT": // Task for maturities
+			$sub_query = $db->query("SELECT m.reference_achat, m.date_echeance, u.user_id, u.photo FROM produits_echeances m
+									JOIN transactions t ON m.reference_achat = t.id_transaction
+									JOIN users u ON t.payeur_transaction = u.user_id
+									WHERE produits_echeances_id = '$t[target]'")->fetch(PDO::FETCH_ASSOC);
+			$date = date_create($sub_query["date_echeance"])->format("d/m/Y");
+			$t["target_phrase"] = "Echéance du ".$date." pour la transaction ".$sub_query["reference_achat"];
+			$t["link"] = "user/".$sub_query["user_id"]."/achats#purchase-".$sub_query["reference_achat"];
+			$t["photo"] = $sub_query["photo"];
 			break;
 
 		default:

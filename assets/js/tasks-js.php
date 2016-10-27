@@ -338,7 +338,7 @@ function renderTask(task, half){
 	} else {
 		contents += "<span class='glyphicon glyphicon-ok col-xs-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme traitée'></span>";
 	}
-	contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button-alt glyphicon-button-big trigger-sub' id='delete-task-"+task.id+"' data-subtype='delete-task' data-target='"+task.id+"' title='Supprimer la tache'></span></p>";
+	contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button-alt glyphicon-button-big' id='delete-task-"+task.id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+task.id+"' data-table='tasks' data-delete='#task-"+task.id+"' title='Supprimer une tâche'></span></p>";
 	contents += "<p class='task-target col-xs-10 col-sm-12'><span class='glyphicon glyphicon-play'></span> <strong>"+task.target_phrase+"</strong></p>";
 	contents += "</div>";
 	contents += "</div>";

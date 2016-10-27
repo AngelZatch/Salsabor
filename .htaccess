@@ -32,6 +32,7 @@ RewriteRule ^event/new$ event_add.php
 RewriteRule ^reservation/new$ booking_add.php
 RewriteRule ^monitoring/participations$ monitoring_participations.php
 RewriteRule ^doublons$ duplicates.php
+RewriteRule ^categories-produits$ product_categories.php
 
 #User Details
 RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]

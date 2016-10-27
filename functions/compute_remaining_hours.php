@@ -1,6 +1,8 @@
 <?php
 require_once "db_connect.php";
 include "tools.php";
+include "post_task.php";
+include "attach_tag.php";
 
 /**
 This code will:
@@ -191,6 +193,9 @@ function computeProduct($product_id){
 	if($product_details["produit_adherent_actif"] != '2' && $status == '2'){ // If the product has expired because of this computing.
 		$token = "PRD-E";
 		postNotification($db, $token, $product_id, null, $today);
+		$new_task_id = createTask($db, "Produit expiré", "Le produit a expiré le ".$v["expiration"].". Veuillez contacter l'utilisateur pour un éventuel renouvellement.", "[PRD-".$product_id."]", null);
+		$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
+		associateTag($db, intval($tag), $new_task_id, "task");
 	} else if($remaining_hours > 0 && $remaining_hours <= $hour_limit){ // If the remaining hours are less than 5.
 		$token = "PRD-NH";
 		postNotification($db, $token, $product_id, null, $today);

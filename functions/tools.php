@@ -137,16 +137,16 @@ function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
 					VALUES('$tag', '$user_id', '$ip', '$today', '$status')");
 		echo $status;
 	}
-	// If the user doesn't have any mail address
-	$stmt = $db->prepare("SELECT mail FROM users WHERE user_id = ?");
+	// If the user have missing info
+	$stmt = $db->prepare("SELECT mail, telephone, code_postal FROM users WHERE user_id = ?");
 	$stmt->bindParam(1, $user_id, PDO::PARAM_INT);
 	$stmt->execute();
-	$mail = $stmt->fetch(PDO::FETCH_COLUMN);
-	if($mail == "" && $user_id != null){
+	$check = $stmt->fetch(PDO::FETCH_ASSOC);
+	if(($check["mail"] == "" || $check["telephone"] == "" || $check["code_postal"] == "") && $user_id != null){
 		include 'post_task.php';
 		include 'attach_tag.php';
 		// System created task
-		$new_task_id = createTask($db, "Manque d'informations", "Aucune adresse mail n'a été détectée pour cet utilisateur. Cette tâche a été créée car l'utilisateur est actuellement présent en cours.", "[USR-".$user_id."]", null);
+		$new_task_id = createTask($db, "Manque d'informations", "Au moins une de ces informations est manquante : adresse mail, numéro de téléphone ou code postal. Cette tâche a été créée car l'utilisateur est actuellement présent en cours.", "[USR-".$user_id."]", null);
 		// Tag can now change because it's set by the team.
 		$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
 		associateTag($db, intval($tag), $new_task_id, "task");

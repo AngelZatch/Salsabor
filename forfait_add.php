@@ -6,6 +6,12 @@ if(!isset($_SESSION["username"])){
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
 
+// Product categories
+$categories = $db->query("SELECT * FROM product_categories ORDER BY category_name ASC");
+
+// Locations
+$locations = $db->query("SELECT * FROM locations ORDER BY location_name ASC");
+
 if(isset($_POST["add"])){
 	$product_size = 0;
 	if($_POST["product_size"] != 0){
@@ -18,13 +24,17 @@ if(isset($_POST["add"])){
 	} else {
 		$arep = 0;
 	}
+	$product_category = ($_POST["product_category"]=="0")?null:$_POST["product_category"];
+	$product_location = ($_POST["product_location"]=="0")?null:$_POST["product_location"];
 
 	try{
 		$db->beginTransaction();
-		$new = $db->prepare("INSERT INTO produits(product_name, description, product_size, product_validity, product_price, date_activation ,date_desactivation, actif, echeances_paiement, autorisation_report, est_recharge, est_illimite, est_sans_engagement, est_cours_particulier, est_formation_professionnelle, est_abonnement, est_autre)
-		VALUES(:intitule, :description, :product_size, :validite, :product_price, :date_activation, :date_limite_achat, :actif, :echeances, :autorisation_report, :est_recharge, :est_illimite, :est_sans_engagement, :est_cours_particulier, :est_formation_professionnelle, :est_abonnement, :est_autre)");
+		$new = $db->prepare("INSERT INTO produits(product_name, description, product_category, product_location, product_size, product_validity, product_price, date_activation ,date_desactivation, actif, echeances_paiement, autorisation_report, est_recharge, est_illimite, est_sans_engagement, est_cours_particulier, est_formation_professionnelle, est_abonnement, est_autre)
+		VALUES(:intitule, :description, :product_category, :product_location, :product_size, :validite, :product_price, :date_activation, :date_limite_achat, :actif, :echeances, :autorisation_report, :est_recharge, :est_illimite, :est_sans_engagement, :est_cours_particulier, :est_formation_professionnelle, :est_abonnement, :est_autre)");
 		$new->bindParam(':intitule', $_POST["intitule"]);
 		$new->bindParam(':description', $_POST["description"]);
+		$new->bindValue(':product_category', $product_category, PDO::PARAM_INT);
+		$new->bindValue(':product_location', $product_location, PDO::PARAM_INT);
 		$new->bindParam(':product_size', $_POST["product_size"]);
 		$new->bindParam(':validite', $validite);
 		$new->bindParam(':product_price', $_POST["product_price"]);
@@ -88,6 +98,28 @@ if(isset($_POST["add"])){
 								<input name="est_abonnement" id="est_abonnement" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
 								<label for="est_autre" class="contorl-label">Divers</label>
 								<input name="est_autre" id="est_autre" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="product_category" class="control-label col-lg-3">Catégorie</label>
+							<div class="col-lg-9">
+								<select name="product_category" class="form-control">
+									<option value="0">Aucune catégorie</option>
+									<?php while($category = $categories->fetch(PDO::FETCH_ASSOC)){ ?>
+									<option value="<?php echo $category["category_id"];?>"><?php echo $category["category_name"];?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="product_location" class="control-label col-lg-3">Région de disponibilité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Restreint la vente du produit à la région désignée. Laissez vide pour que le produit soit disponible partout."></span></label>
+							<div class="col-lg-9">
+								<select name="product_location" class="form-control">
+									<option value="0">Pas de région</option>
+									<?php while($location = $locations->fetch(PDO::FETCH_ASSOC)){ ?>
+									<option value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
+									<?php } ?>
+								</select>
 							</div>
 						</div>
 						<div class="form-group">

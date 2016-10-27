@@ -9,6 +9,7 @@ $user_id = $_GET['id'];
 
 // User details
 $details = $db->query("SELECT * FROM users u
+						LEFT JOIN locations l ON u.user_location = l.location_id
 						WHERE user_id='$user_id'")->fetch(PDO::FETCH_ASSOC);
 
 $details["count"] = $db->query("SELECT * FROM tasks

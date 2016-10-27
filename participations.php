@@ -27,5 +27,6 @@ if(!isset($_SESSION["username"])){
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
+		<?php include "inserts/delete_modal.php";?>
 	</body>
 </html>

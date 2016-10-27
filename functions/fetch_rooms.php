@@ -1,12 +1,21 @@
 <?php
 include "db_connect.php";
+session_start();
 $db = PDOFactory::getConnection();
 
-$load = $db->query("SELECT * FROM locations l
-					LEFT JOIN rooms r ON r.room_location = l.location_id
-					LEFT JOIN readers re ON r.room_reader = re.reader_id
-					LEFT JOIN colors co ON r.room_color = co.color_id
-					ORDER BY location_id, room_name ASC");
+$is_admin = $db->query("SELECT COUNT(*) FROM assoc_user_tags aut
+				JOIN tags_user tu ON aut.tag_id_foreign = tu.rank_id
+				WHERE rank_name = 'Super Admin' AND aut.user_id_foreign = $_SESSION[user_id]")->fetch(PDO::FETCH_COLUMN);
+
+$query = "SELECT * FROM locations l
+			LEFT JOIN rooms r ON r.room_location = l.location_id
+			LEFT JOIN readers re ON r.room_reader = re.reader_id
+			LEFT JOIN colors co ON r.room_color = co.color_id";
+if(isset($_SESSION["location"]) && $is_admin != 1)
+	$query .= " WHERE location_id = $_SESSION[location]";
+$query .= " ORDER BY location_id, room_name ASC";
+
+$load = $db->query($query);
 
 $now = date("Y-m-d H:i:s");
 $later = date("Y-m-d H:i:s", strtotime($now.'+60MINUTES'));

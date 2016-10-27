@@ -3,16 +3,27 @@ include "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $user_id = $_GET["user_id"];
+if(isset($_GET["filters"][0]))
+	$start_date = $_GET["filters"][0];
+if(isset($_GET["filters"][1]))
+	$end_date = $_GET["filters"][1]." 23:59:59";
 
-$load = $db->query("SELECT *, pr.user_rfid AS pr_rfid FROM participations pr
+
+$query = "SELECT *, pr.user_rfid AS pr_rfid FROM participations pr
 					LEFT JOIN readers re ON pr.room_token = re.reader_token
 					LEFT JOIN rooms r ON re.reader_id = r.room_reader
 					LEFT JOIN users u ON pr.user_id = u.user_id
 					LEFT JOIN produits_adherents pa ON pr.produit_adherent_id = pa.id_produit_adherent
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.product_id
 					LEFT JOIN sessions s ON pr.session_id = s.session_id
-					WHERE pr.user_id = '$user_id'
-					ORDER BY session_start DESC");
+					WHERE pr.user_id = '$user_id'";
+if(isset($_GET["filters"][0]))
+	$query .= " AND passage_date > '$start_date'";
+if(isset($_GET["filters"][1]))
+	$query .= "AND passage_date < '$end_date'";
+$query .= "ORDER BY session_start DESC";
+
+	$load = $db->query($query);
 
 $notifications_settings = $db->query("SELECT * FROM master_settings WHERE user_id = '0'")->fetch(PDO::FETCH_ASSOC);
 

@@ -51,6 +51,8 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE booking_paid=0 AN
 					<div class="input-group">
 						<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
 						<input type="text" class="form-control nav-input" name="search_terms" placeholder="Rechercher">
+						<input type="hidden" name="archive" value="1">
+						<input type="hidden" name="region" value="1">
 					</div>
 					<!--<button type="submit" class="btn btn-default">Rechercher</button>-->
 				</form>

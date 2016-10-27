@@ -9,8 +9,24 @@ $db = PDOFactory::getConnection();
 require_once "functions/cours.php";
 require_once "functions/reservations.php";
 
-$rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
-					JOIN colors c ON r.room_color = c.color_id")->fetchAll(PDO::FETCH_ASSOC);
+$is_admin = $db->query("SELECT COUNT(*) FROM assoc_user_tags aut
+				JOIN tags_user tu ON aut.tag_id_foreign = tu.rank_id
+				WHERE rank_name = 'Super Admin' AND aut.user_id_foreign = $_SESSION[user_id]")->fetch(PDO::FETCH_COLUMN);
+
+$query_locations = "SELECT * FROM locations";
+if(isset($_SESSION["location"]) && $is_admin != 1)
+	$query_locations .= " WHERE location_id = $_SESSION[location]";
+$query_locations .= " ORDER BY location_name ASC";
+
+$locations = $db->query($query_locations)->fetchAll(PDO::FETCH_ASSOC);
+
+$query_rooms = "SELECT room_id, room_name, color_value, location_id, location_name FROM rooms r
+					JOIN locations l ON r.room_location = l.location_id
+					JOIN colors c ON r.room_color = c.color_id";
+if(isset($_SESSION["location"]) && $is_admin != 1)
+	$query_rooms .= " WHERE location_id = $_SESSION[location]";
+$query_rooms .= " ORDER BY room_id ASC";
+$rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <html>
 	<head>
@@ -36,15 +52,38 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 					</legend>
 					<p class="help-block">Sur périphériques tactiles, maintenez appuyé pour sélectionner un événement ou une plage horaire.</p>
 					<div class="filters row">
+						<?php if($is_admin == 1){ ?>
+						<div class="container-fluid col-xs-12 col-sm-4 col-lg-3">
+							<p class="filter-title" data-toggle="collapse" href="#location-filtering" title="Cliquer pour dérouler les régions disponibles">Régions <span class="glyphicon glyphicon-menu-down float-right"></span></p>
+							<ul class="collapse" id="location-filtering">
+								<?php foreach($locations as $location){
+	if($location["location_id"] == $_SESSION["location"]){
+		$filter = 1;
+		$selected = "activated";
+	} else{
+		$filter = 0;
+		$selected = "";
+	}
+								?>
+								<div class="location-filter <?php echo $selected;?>" id="location-<?php echo $location["location_id"];?>" data-location="<?php echo $location["location_id"];?>" title="Cliquer pour activer ou désactiver l'affichage de la région dans le planning">
+									<p class="filter-name"><?php echo $location["location_name"];?></p>
+								</div>
+								<?php } ?>
+							</ul>
+						</div>
+						<?php } ?>
 						<div class="container-fluid col-xs-12 col-sm-4 col-lg-3">
 							<p class="filter-title" data-toggle="collapse" href="#room-filtering" title="Cliquez pour dérouler les salles disponibles">Salles <span class="glyphicon glyphicon-menu-down float-right"></span></p>
 							<ul class="collapse" id="room-filtering">
-								<?php foreach($rooms as $room){ ?>
-								<div class="room-filter" id="room-<?php echo $room["room_id"];?>" data-room="<?php echo $room["room_id"];?>" data-filter="1" title="Cliquez pour activer ou désactiver l&apos;affichage d&apos;une salle dans le planning">
+								<?php foreach($rooms as $room){
+	if($room["location_id"] == $_SESSION["location"]){
+								?>
+								<div class="room-filter" id="room-<?php echo $room["room_id"];?>" data-room="<?php echo $room["room_id"];?>" data-location="<?php echo $room["location_id"];?>" data-filter="1" title="Cliquez pour activer ou désactiver l&apos;affichage d&apos;une salle dans le planning">
 									<div class="cube-filter enabled" style="background-color: #<?php echo $room["color_value"];?>"></div>
-									<p class="filter-name"><?php echo $room["room_name"];?></p>
+									<p class="filter-name"><?php echo $room["room_name"];?> <span class="glyphicon glyphicon-globe"></span> <?php echo $room["location_name"];?></p>
 								</div>
-								<?php } ?>
+								<?php }
+} ?>
 							</ul>
 						</div>
 					</div>
@@ -133,6 +172,18 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 						{
 							url: 'functions/calendarfeed_holidays.php',
 							type: 'GET',
+							data: function(){
+								var filters = [];
+								$(".location-filter").each(function(){
+									if($(this).hasClass("activated")){
+										filters.push($(this).data('location'));
+									}
+								})
+								console.log(filters);
+								return {
+									filters : filters
+								};
+							},
 							textColor: 'black',
 							rendering: 'background',
 							error: function(data){
@@ -308,7 +359,7 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 							var sub_modal_buttons = "";
 							sub_modal_buttons += "<div class='btn-group btn-group-justified' role='group'>";
 							sub_modal_buttons += "<div class='btn-group' role='group'>";
-							sub_modal_buttons += "<button class='btn btn-default btn-to-session' id='"+holiday_button_id+"' title='"+holiday_message+" une période chômée' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='"+duration+"'><span class='glyphicon glyphicon-"+holiday_glyphicon+"'></span> <span class='glyphicon glyphicon-leaf'></span></button>";
+							sub_modal_buttons += "<button class='btn btn-default btn-to-session' id='"+holiday_button_id+"' title='"+holiday_message+" une période chômée (effectif sur votre localisation uniquement)' data-date='"+moment(start).format("YYYY-MM-DD")+"' data-duration='"+duration+"'><span class='glyphicon glyphicon-"+holiday_glyphicon+"'></span> <span class='glyphicon glyphicon-leaf'></span></button>";
 							sub_modal_buttons += "</div>";
 							sub_modal_buttons += "<a href='event/new' class='btn btn-primary btn-to-session' title='Ajouter un événement'><span class='glyphicon glyphicon-plus'></span> <span class='glyphicon glyphicon-calendar'></span></a>";
 							sub_modal_buttons += "<a href='cours_add.php' class='btn btn-primary btn-to-session' title='Ajouter un cours'><span class='glyphicon glyphicon-plus'></span> <span class='glyphicon glyphicon-eye-open'></span></a>";
@@ -381,6 +432,33 @@ $rooms = $db->query("SELECT room_id, room_name, color_value FROM rooms r
 					$(this).children(".cube-filter").switchClass("disabled", "enabled");
 				}
 				$("#calendar").fullCalendar('refetchEvents');
+			}).on('click', '.location-filter', function(){
+				// When clicked on a location, we must checked if it's active or not, and add/remove rooms accordingly to the room filter.
+				var id = $(this).attr("id"), location_id = $(this).data('location');
+				console.log(id);
+				if(!$(this).hasClass("activated")){ // If the location is not selected, we add rooms
+					$.get("functions/fetch_location_rooms.php", {location_id : location_id}).done(function(data){
+						console.log(data);
+						var rooms = JSON.parse(data);
+						var construct = "";
+						for(var i = 0; i < rooms.length; i++){
+							construct += "<div class='room-filter' id='room-"+rooms[i].room_id+"' data-room='"+rooms[i].room_id+"' data-location='"+rooms[i].location_id+"' data-filter='1' title='Cliquez pour activer ou désactiver l&apos;affichage d&apos;une salle dans le planning'>";
+							construct += "<div class='cube-filter enabled' style='background-color : #"+rooms[i].color+"'></div>";
+							construct += "<p class='filter-name'>"+rooms[i].name+" <span class='glyphicon glyphicon-globe'></span> "+rooms[i].location_name+"</p>";
+							construct += "</div>";
+						}
+						$("#room-filtering").append(construct);
+						$("#calendar").fullCalendar('refetchEvents');
+					})
+					$(this).addClass("activated");
+				} else {
+					$(this).removeClass("activated");
+					$(".room-filter").each(function(){
+						if($(this).data('location') == location_id)
+							$(this).remove();
+					})
+					$("#calendar").fullCalendar('refetchEvents');
+				}
 			})
 
 			function postOrDeleteHolidays(date, duration, postOrDelete){

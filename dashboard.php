@@ -109,7 +109,7 @@ $welcome = $time_message[$rand];
 									</a>
 								</li>
 								<li><a href="participations" class="link-glyphicon"><span class="glyphicon glyphicon-map-marker"></span><span class="glyphicon-text">Participations</span></a></li>
-								<li><a href="echeances" class="link-glyphicon"><span class="glyphicon glyphicon-repeat"></span><span class="glyphicon-text">&Eacute;chéances</span></a></li>
+								<li><a href="echeances?region=0" class="link-glyphicon"><span class="glyphicon glyphicon-repeat"></span><span class="glyphicon-text">&Eacute;chéances</span></a></li>
 								<li><a href="planning" class="link-glyphicon"><span class="glyphicon glyphicon-time"></span><span class="glyphicon-text">Planning</span></a></li>
 							</ul>
 						</div>
@@ -128,6 +128,7 @@ $welcome = $time_message[$rand];
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
 		<?php include "inserts/edit_modal.php";?>
+		<?php include "inserts/delete_modal.php";?>
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');

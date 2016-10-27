@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "db_connect.php";
 $db = PDOFactory::getConnection();
 
@@ -11,11 +12,13 @@ if($participation_id == 0){
 $query = "SELECT *, pr.user_rfid AS pr_rfid FROM participations pr
 					LEFT JOIN readers re ON pr.room_token = re.reader_token
 					LEFT JOIN rooms r ON re.reader_id = r.room_reader
+					LEFT JOIN locations l ON r.room_location = l.location_id
 					LEFT JOIN users u ON pr.user_id = u.user_id
 					LEFT JOIN produits_adherents pa ON pr.produit_adherent_id = pa.id_produit_adherent
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.product_id
 					LEFT JOIN sessions s ON pr.session_id = s.session_id
 					WHERE (pr.status = 0 OR pr.status = 3 OR (pr.status = 2 AND (produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0)))
+					AND location_id = $_SESSION[location]
 					AND passage_id < '$participation_id'
 					AND passage_date";
 if($age_action == 0){
