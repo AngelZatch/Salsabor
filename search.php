@@ -12,7 +12,7 @@ $criteria_array = array("%".$searchTerms."%",
 						"%".$searchTerms."%",
 						"%".$searchTerms."%");
 
-if($_GET["region"] == "0"){
+if($_GET["region"] == "0" || !isset($_SESSION["location"])){
 	$search_query = "SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS identity, mail, telephone, photo, actif, archived FROM users WHERE (user_nom LIKE ? OR user_prenom LIKE ? OR mail LIKE ? OR telephone LIKE ?)";
 	if(isset($_GET["archive"]) && $_GET["archive"] == "0")
 		$search_query .= " AND archived = 0";
