@@ -317,7 +317,7 @@ $(document).ready(function(){
 			$(".sub-modal").css({top : tpos.top-45+'px'});
 			break;
 
-		case 'delete-record':
+		/*case 'delete-record':
 			title = "Supprimer un passage";
 			var participation_id = target.dataset.argument;
 			body += "Êtes-vous sûr de vouloir supprimer ce passage ?";
@@ -329,7 +329,7 @@ $(document).ready(function(){
 			} else {
 				$(".sub-modal").css({left : toffset.left+20+'px'});
 			}
-			break;
+			break;*/
 
 		case 'delete-product':
 			title = "Supprimer un produit";
@@ -338,20 +338,6 @@ $(document).ready(function(){
 			footer += "<button class='btn btn-danger delete-product col-lg-6' id='btn-product-delete' data-product='"+product_id+"' data-dismiss='modal'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
 			$(".sub-modal").css({top : tpos.top+51+'px'});
 			$(".sub-modal-body").html(body);
-			break;
-
-		case 'add-record':
-			title = "Ajouter un passage manuellement";
-			var session_id = target.dataset.session;
-			body += "<input type='text' class='form-control name-input'>";
-			$(".sub-modal-body").html(body);
-			footer += "<button class='btn btn-success add-record col-lg-6' id='btn-add-record' data-session='"+session_id+"'><span class='glyphicon glyphicon-plus'></span> Ajouter </button><button class='btn btn-default col-lg-6'>Annuler</button>";
-			$(".sub-modal").css({top : toffset.top+'px'});
-			if(toffset.left > 1000){
-				$(".sub-modal").css({left : toffset.left-350+'px'});
-			} else {
-				$(".sub-modal").css({left : toffset.left+20+'px'});
-			}
 			break;
 
 		case 'unlink':
@@ -695,6 +681,19 @@ $(document).ready(function(){
 		$(".dearchive-data").replaceWith("<span class='col-xs-1 glyphicon glyphicon-folder-close glyphicon-button glyphicon-button-alt glyphicon-button-big' title='Archiver' data-toggle='modal' data-target='#archive-modal' data-entry='"+entry_id+"' data-table='users'></span>");
 		showNotification("Utilisateur désarchivé", "Success");
 	})
+}).on('click', '.selectable', function(){
+	var selected = $(this);
+	// Get the group
+	var group_name = /([a-z]*-selectable)/gi.exec($(this).attr('class'))[0];
+
+	// Remove the selected from the whole group
+	$("."+group_name).removeClass("selected");
+
+	// Add selected to the item clicked
+	$(this).addClass("selected");
+
+	// Cue it's selected
+
 })
 
 $(".has-name-completion").on('click blur keyup', function(){

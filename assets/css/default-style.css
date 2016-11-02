@@ -1702,4 +1702,35 @@ p.legend, div.legend:nth-child(1n+0) {
 .photo-space {
   margin-right: 0.008%; }
 
+/* line 1180, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.user-loading-results {
+  text-align: center; }
+
+/* line 1183, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.loading-placeholder {
+  width: 100%;
+  display: none; }
+
+/* line 1187, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.load-identity {
+  font-size: 16px;
+  font-weight: 700; }
+
+/* line 1191, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.user-result {
+  padding: 10px 0 0; }
+
+/* line 1194, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.selectable {
+  cursor: pointer; }
+  /* line 1196, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  .selectable:hover {
+    background-color: #6f6f6f; }
+  /* line 1198, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+  .selectable.selected {
+    background-color: #b9e2af; }
+    /* line 1200, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+    .selectable.selected:hover {
+      background-color: #98d58a; }
+
 /*# sourceMappingURL=default-style.css.map */
