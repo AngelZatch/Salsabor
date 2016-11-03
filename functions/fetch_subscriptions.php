@@ -10,7 +10,7 @@ $load = $db->query("SELECT *, pa.actif AS produit_adherent_actif, pa.date_activa
 						) AS produit_validity
 					FROM produits_adherents pa
 					JOIN produits p ON pa.id_produit_foreign = p.product_id
-					JOIN users u ON pa.id_user_foreign = u.user_id
+					LEFT JOIN users u ON pa.id_user_foreign = u.user_id
 						WHERE id_transaction_foreign = '$transaction'
 						ORDER BY prix_achat DESC");
 
@@ -27,7 +27,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	$p["price"] = $details["prix_achat"];
 	$p["illimited"] = $details["est_illimite"];
 	$p["subscription"] = $details["est_abonnement"];
-	$p["user"] = $details["user_prenom"]." ".$details["user_nom"];
+	$p["user"] = (isset($details["user_id"]))$details["user_prenom"]." ".$details["user_nom"]:"Pas d'utilisateur";
 	if($details["est_illimite"] == 1 || $details["est_cours_particulier"] == 1 || $details["est_abonnement"]){
 		$p["flag_hours"] = 0;
 	} else {

@@ -50,7 +50,7 @@ $produits = $db->query($query);
 						if($validite_semaines < 1){
 							$validite = $produit["product_validity"]." jour(s)";
 						} else {
-							$validite = $validite_semaines." semaine(s)";
+							$validite = $validite_semaines." sem.";
 						}
 						if($produit["product_category"] != $current_category){
 							if($current_category != -1){?>

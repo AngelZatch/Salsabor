@@ -67,7 +67,7 @@ if(isset($_POST["edit"])){
 		$edit->bindParam(':product_id', $_GET["id"], PDO::PARAM_INT);
 		$edit->execute();
 		$db->commit();
-		header('Location: ../forfaits');
+		header('Location: ../forfaits?region=1');
 	}catch (PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());
