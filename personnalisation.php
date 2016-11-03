@@ -41,7 +41,7 @@ $indicePanier = $_GET["order"];
 							<span class="glyphicon glyphicon-erase"></span> Etape 2/3 : Personnalisation des produits
 						</div>
 					</div>
-					<p class="produit-title"><?php echo $article["product_name"];?></p>
+					<p class="product-title"><?php echo $article["product_name"];?></p>
 					<span role="button" class="input-group-btn">
 						<a href="#produit-details" class="btn btn-default btn-block" data-toggle="collapse" aria-expanded="false"><span class="glyphicon glyphicon-search"></span> Détails...</a>
 					</span>

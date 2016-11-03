@@ -3,18 +3,13 @@ require_once "db_connect.php";
 include "tools.php";
 $db = PDOFactory::getConnection();
 
-$name = $_POST["name"];
+$user_id = $_POST["user_id"];
 $session_id = $_POST["session_id"];
 $values = array();
 
-$stmt = $db->prepare("SELECT * FROM (
-	SELECT user_id, user_rfid, CONCAT(user_prenom, ' ', user_nom) as fullname FROM users) base
-	WHERE fullname = ?");
-$stmt->bindParam(1, $name, PDO::PARAM_STR);
-$stmt->execute();
-$user_details = $stmt->fetch(PDO::FETCH_ASSOC);
+$user_details = $db->query("SELECT user_rfid FROM users WHERE user_id = $user_id")->fetch(PDO::FETCH_ASSOC);
 
-$values["user_id"] = $user_details["user_id"];
+$values["user_id"] = $user_id;
 $values["user_rfid"] = $user_details["user_rfid"];
 
 $reader_token = $db->query("SELECT reader_token FROM sessions s

@@ -28,5 +28,6 @@ if(!isset($_SESSION["username"])){
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
 		<?php include "inserts/delete_modal.php";?>
+		<?php include "inserts/add_participation_modal.php";?>
 	</body>
 </html>

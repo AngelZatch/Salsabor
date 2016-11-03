@@ -132,6 +132,7 @@ session_start();
 })
 
 function fetchTasks(task_token, user_id, attached_id, filter, limit){
+	$(".tasks-container").trigger('loading');
 	$.get("functions/fetch_tasks.php", {task_token : task_token, user_id : user_id, attached_id : attached_id, limit : limit, filter : filter}).done(function(data){
 		if(limit == 0 || $(".sub-modal-notification").is(":visible")){
 			displayTasks(data, task_token, user_id, attached_id, limit, filter);
@@ -189,22 +190,14 @@ function displayTasks(data, task_token, user_id, attached_id, limit, filter){
 			refreshTask(tasks[i]);
 		} else {
 			if(i == 0){
-				if(limit != 0){
-					$(".smn-body").empty();
-				} else {
-					$(".tasks-container").empty();
-				}
+				$(".tasks-container").empty();
 			}
 
 			var contents = renderTask(tasks[i], half);
-
-			if(limit == 0){
-				$(".tasks-container").append(contents);
-			} else {
-				$(".smn-body").append(contents);
-			}
+			$(".tasks-container").append(contents);
 		}
 	}
+	$(".tasks-container").trigger('loaded');
 	setTimeout(fetchTasks, 5000, task_token, user_id, attached_id, filter, limit);
 }
 

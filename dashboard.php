@@ -114,7 +114,6 @@ $welcome = $time_message[$rand];
 							</ul>
 						</div>
 					</div>
-					<p class="alert alert-warning">Suite à une erreur de développement, <strong>les codes d'un grand nombre d'utilisateurs ont été perdus</strong>. Gardez leurs cartes pour que les codes puissent être récupérés.</p>
 					<div class="col-lg-6 dashboard-zones clearfix container-fluid">
 						<p class="sub-legend"><span class="glyphicon glyphicon-bell"></span> Récemment...</p>
 						<ul class="dashboard-notifications-container container-fluid"></ul>

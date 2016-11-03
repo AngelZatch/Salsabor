@@ -13,6 +13,59 @@ $(document).ready(function(){
 			});
 		})
 	}
+}).on('show.bs.modal', '#add-participation-modal', function(e){
+	var session_id = $(e.relatedTarget).data('session'), modal = $(this);
+	var previous_value = "";
+	var compare;
+	modal.find(".name-input").on('keyup change blur', function(){
+		// A few seconds after the field is changed, fetch results are display to show if the entry is valid
+		var name = $(".name-input").val();
+		if(name != previous_value){ // Condition for blur
+			if(name.length > 3){
+				if(compare){
+					clearTimeout(compare);
+				}
+				modal.find(".load-result").text("Recherche en cours...");
+				modal.find(".user-loading-results").empty();
+				modal.find(".user-loading-results").trigger('loading');
+				compare = setTimeout(function(){
+					$.get("functions/quick_search_users.php", {user : name, session_id : session_id}).done(function(data){
+						var user_details = JSON.parse(data);
+						if(user_details){
+							var construct = "";
+							for(var i = 0; i < user_details.length; i++){
+								construct += "<div class='col-xs-4 user-result selectable ur-selectable' id='result-"+user_details[i].user_id+"' data-user='"+user_details[i].user_id+"'>";
+								construct += "<img src='"+user_details[i].photo+"' alt='"+user_details[i].fullname+"' class='load-photo small-user-pp'>";
+								construct += "<p class='load-identity'>"+user_details[i].fullname+"</p>";
+								construct += "</div>";
+							}
+							modal.find(".load-result").text(user_details.length+" résultat(s) :");
+							modal.find(".user-loading-results").append(construct);
+						} else {
+							modal.find(".load-result").text("Aucun résultat");
+						}
+						modal.find(".user-loading-results").trigger('loaded');
+					})
+				}, 1500);
+			} else {
+				modal.find(".load-result").text("");
+				modal.find(".user-loading-results").empty();
+			}
+			previous_value = name;
+		}
+	})
+	modal.find(".add-participation").on('click', function(){
+		// Adding the participation
+		var user_id = $(".user-result.selected").data('user');
+		addParticipation(session_id, user_id);
+		$(".name-input").val("");
+		modal.find(".load-result").text("");
+		modal.find(".user-loading-results").empty();
+		$("#add-participation-modal").modal('hide');
+	})
+}).on('hide.bs.modal', '#add-participation-modal', function(e){
+	$(this).find(".add-participation").off('click');
+	$(this).find(".name-input").off();
 }).on('click', '.panel-heading-container', function(){
 	if(top.location.pathname === '/Salsabor/regularisation/participations/user'){
 		var id = document.getElementById($(this).attr("id")).dataset.user;
@@ -39,10 +92,6 @@ $(document).ready(function(){
 	var participation_id = document.getElementById($(this).attr("id")).dataset.participation;
 	var session_target = document.getElementById("product-selected").dataset.session;
 	changeSessionRecord(participation_id, session_target);
-}).on('click', '.delete-record', function(){
-	var participation_id = document.getElementById($(this).attr("id")).dataset.participation;
-	console.log(participation_id);
-	deleteParticipation(participation_id);
 }).on('click', function(e){
 	//if(top.location.pathname !== "/Salsabor/planning"){
 	if($(".sub-modal:hidden") && !$(".sub-modal").hasClass("sub-modal-session")){
@@ -51,10 +100,6 @@ $(document).ready(function(){
 	//}
 }).on('focus', '.name-input', function(){
 	provideAutoComplete($(this), "active");
-}).on('click', '.add-record', function(){
-	var name = $(".name-input").val();
-	var session_id = document.getElementById($(this).attr("id")).dataset.session;
-	addParticipation(session_id, name);
 }).on('click', '.validate-session', function(e){
 	e.stopPropagation();
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
@@ -68,24 +113,27 @@ $(document).ready(function(){
 (0 : closed, 1 : opened and available for automatic records, 2 : opened but closed to automatic records)**/
 	e.stopPropagation();
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
-	$.when(updateColumn("sessions", "session_opened", 0, session_id)).done(function(){
-		$("#session-"+session_id).remove();
-		// We remove the recently closed session from the list to be refreshed.
-		switch(window.openedSessions.length){
-			case 0:
-				break;
+	if($("#session-"+session_id+">ul>li.status-pre-success").length + $("#session-"+session_id+">ul>li.status-over").length != 0){
+		alert("Des participations ne sont pas validées. Vous ne pouvez pas fermer ce cours avant d'avoir traité toutes les participations");
+	} else {
+		$.when(updateColumn("sessions", "session_opened", 0, session_id)).done(function(){
+			$("#session-"+session_id).remove();
+			// We remove the recently closed session from the list to be refreshed.
+			switch(window.openedSessions.length){
+				case 0:
+					break;
 
-			case 1: // jQuery.grep() cannot empty an array
-				window.openedSessions.length = 0;
-				break;
+				case 1: // jQuery.grep() cannot empty an array
+					window.openedSessions.length = 0;
+					break;
 
-			default:
-				window.openedSessions = jQuery.grep(window.openedSessions, function(arr){
-					return arr !== parseInt(session_id);
-				})
-		}
-	})
-	//closeSession(session_id);
+				default:
+					window.openedSessions = jQuery.grep(window.openedSessions, function(arr){
+						return arr !== parseInt(session_id);
+					})
+			}
+		})
+	}
 })
 
 function fetchActiveSessions(fetched){
@@ -213,7 +261,7 @@ function displayParticipations(session_id){
 		var users = 0, ok = 0, warning = 0;
 		for(var i = 0; i <= records_list.length; i++){
 			if(i == records_list.length){
-				contents += "<li class='panel-item panel-record panel-add-record container-fluid trigger-sub col-xs-6 col-md-4 col-lg-3' id='add-record-"+session_id+"' data-subtype='add-record' data-session='"+session_id+"'>";
+				contents += "<li class='panel-item panel-record panel-add-record container-fluid col-xs-6 col-md-4 col-lg-3' id='add-record-"+session_id+"' data-toggle='modal' data-target='#add-participation-modal' data-session='"+session_id+"'>";
 				contents += "<div class='small-user-pp empty-pp'></div>";
 				contents += "<p class='col-lg-12 panel-item-title bf'>Ajouter un passage manuellement</p>";
 				contents += "</li>";
@@ -746,9 +794,8 @@ function changeSessionRecord(participation_id, target_session_id){
 
 }
 
-function addParticipation(target_session_id, user_name){
-	$.post("functions/add_participation.php", {name : user_name, session_id : target_session_id}).done(function(data){
-		console.log(data);
+function addParticipation(target_session_id, user_id){
+	$.post("functions/add_participation.php", {user_id : user_id, session_id : target_session_id}).done(function(data){
 		displayParticipations(target_session_id);
 		showNotification("Participation ajoutée (doublons ignorés)", "success");
 	})

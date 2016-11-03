@@ -30,28 +30,6 @@ $time = new DateTime($year.'-'.$month.'-'.$maturityDay);
 		<?php include "scripts.php";?>
 		<script src="assets/js/maturities.js"></script>
 		<script src="assets/js/list.min.js"></script>
-		<script>
-			$(document).ready(function(){
-				var region_flag = /[0-9]/.exec(window.location.search)[0];
-				console.log(region_flag);
-				$.get("functions/fetch_current_maturities.php", {region : region_flag}).done(function(data){
-					var maturities = JSON.parse(data);
-					var display = displayMaturities(maturities);
-					$(".maturities-list").append(display);
-					$(".maturities-total-count").text($(".maturity-item").length);
-					var total_price = 0;
-					for(var i = 0; i < maturities.length; i++){
-						total_price += parseFloat(maturities[i].price);
-					}
-					$(".total-value").text(total_price.toFixed(2));
-				})
-
-				setInterval(keepCounts, 5000);
-				function keepCounts(){
-					$(".maturities-received-count").text($(".status-partial-success").length + $(".status-success").length);
-				}
-			})
-		</script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -61,9 +39,9 @@ $time = new DateTime($year.'-'.$month.'-'.$maturityDay);
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-repeat"></span> Echéances
 						<?php if($_GET["region"] == "1"){?>
-						<a href="echeances?region=0" class="btn btn-primary float-right"><span class="glyphicon glyphicon-globe"></span> Exclure les autres régions</a>
+						<a href="echeances?region=0" class="btn btn-primary float-right"><span class="glyphicon glyphicon-globe"></span> Inclure toutes les régions</a>
 						<?php } else { ?>
-						<a href="echeances?region=1" class="btn btn-primary float-right"><span class="glyphicon glyphicon-globe"></span> Inclure toutes les régions</a>
+						<a href="echeances?region=1" class="btn btn-primary float-right"><span class="glyphicon glyphicon-globe"></span> Exclure les autres régions</a>
 						<?php } ?></legend>
 					<div class="panel panel-purchase  maturities-container" id="maturities-list">
 						<div class="panel-heading container-fluid">
@@ -83,5 +61,29 @@ $time = new DateTime($year.'-'.$month.'-'.$maturityDay);
 		<?php include "inserts/sub_modal_product.php";?>
 		<?php include "inserts/edit_modal.php";?>
 		<?php include "inserts/delete_modal.php";?>
+		<script>
+			$(document).ready(function(){
+				var region_flag = /[0-9]/.exec(window.location.search)[0];
+				console.log(region_flag);
+				$(".maturities-container>.panel-body").trigger('loading');
+				$.get("functions/fetch_current_maturities.php", {region : region_flag}).done(function(data){
+					var maturities = JSON.parse(data);
+					var display = displayMaturities(maturities);
+					$(".maturities-list").append(display);
+					$(".maturities-total-count").text($(".maturity-item").length);
+					var total_price = 0;
+					for(var i = 0; i < maturities.length; i++){
+						total_price += parseFloat(maturities[i].price);
+					}
+					$(".total-value").text(total_price.toFixed(2));
+					$(".maturities-container>panel-body").trigger('loaded');
+				})
+
+				setInterval(keepCounts, 5000);
+				function keepCounts(){
+					$(".maturities-received-count").text($(".status-partial-success").length + $(".status-success").length);
+				}
+			})
+		</script>
 	</body>
 </html>
