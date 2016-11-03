@@ -16,8 +16,7 @@
 				</form>
 				<div class="user-load">
 					<p class="load-result"></p>
-					<img src="assets/img/loading.gif" alt="" class="loading-placeholder" id="user-loading-placeholder">
-					<div class="user-loading-results" style="display:none;">
+					<div class="user-loading-results loading-container">
 					</div>
 				</div>
 			</div>

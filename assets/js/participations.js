@@ -22,12 +22,12 @@ $(document).ready(function(){
 		var name = $(".name-input").val();
 		if(name != previous_value){ // Condition for blur
 			if(name.length > 3){
-				$("#user-loading-placeholder").show();
 				if(compare){
 					clearTimeout(compare);
 				}
-				modal.find(".user-loading-results").empty();
 				modal.find(".load-result").text("Recherche en cours...");
+				modal.find(".user-loading-results").empty();
+				modal.find(".user-loading-results").trigger('loading');
 				compare = setTimeout(function(){
 					$.get("functions/quick_search_users.php", {user : name, session_id : session_id}).done(function(data){
 						var user_details = JSON.parse(data);
@@ -41,11 +41,10 @@ $(document).ready(function(){
 							}
 							modal.find(".load-result").text(user_details.length+" résultat(s) :");
 							modal.find(".user-loading-results").append(construct);
-							modal.find(".user-loading-results").show();
 						} else {
 							modal.find(".load-result").text("Aucun résultat");
 						}
-						$("#user-loading-placeholder").hide();
+						modal.find(".user-loading-results").trigger('loaded');
 					})
 				}, 1500);
 			} else {

@@ -317,7 +317,7 @@ $(document).ready(function(){
 			$(".sub-modal").css({top : tpos.top-45+'px'});
 			break;
 
-		/*case 'delete-record':
+			/*case 'delete-record':
 			title = "Supprimer un passage";
 			var participation_id = target.dataset.argument;
 			body += "Êtes-vous sûr de vouloir supprimer ce passage ?";
@@ -692,8 +692,17 @@ $(document).ready(function(){
 	// Add selected to the item clicked
 	$(this).addClass("selected");
 
-	// Cue it's selected
+	// Cue it's selected (additional logic goes here)
 
+}).on('loading', '.loading-container', function(){
+	// Custom event to place the loading gif before displaying fetched data.
+	if($(this).is(':empty')){
+		$(this).append("<img src='assets/img/loading.gif' class='loading-indicator'>");
+		console.log("Inserting loading gif in"+$(this));
+	}
+}).on('loaded', '.loading-container', function(){
+	$(this).find('.loading-indicator').remove();
+	/*$(this).remove(".loading-indicator");*/
 })
 
 $(".has-name-completion").on('click blur keyup', function(){
