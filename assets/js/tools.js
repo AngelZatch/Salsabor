@@ -703,6 +703,13 @@ $(document).ready(function(){
 }).on('loaded', '.loading-container', function(){
 	$(this).find('.loading-indicator').remove();
 	/*$(this).remove(".loading-indicator");*/
+}).on('keyup keypress', '.no-submit', function(e){
+	var keyCode = e.keyCode || e.which;
+	if (keyCode === 13) {
+		e.preventDefault();
+		$(document.activeElement).blur();
+		return false;
+	}
 })
 
 $(".has-name-completion").on('click blur keyup', function(){

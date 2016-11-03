@@ -6,7 +6,7 @@
 				<h4 class="modal-title">Ajouter une participation</h4>
 			</div>
 			<div class="modal-body container-fluid">
-				<form class="form-horizontal" id="add-participation-form">
+				<form class="form-horizontal no-submit" id="add-participation-form">
 					<div class="form-group">
 						<label for="user_identity" class="col-lg-4 control-label">Identité</label>
 						<div class="col-lg-8">
