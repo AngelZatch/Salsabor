@@ -22,10 +22,9 @@ $categories = $db->query("SELECT * FROM product_categories");
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-credit-card"></span> Catégories de produits
-						<a href="forfait_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un produit</a>
+						<button class="btn btn-primary maturities-button" data-toggle="modal" data-target="#add-modal">Ajouter une catégorie</button>
 					</legend>
 					<div>
-						<button class="btn btn-primary maturities-button" data-toggle="modal" data-target="#add-modal">Ajouter une catégorie</button>
 						<div class="categories-list">
 							<?php while($category = $categories->fetch(PDO::FETCH_ASSOC)){ ?>
 							<div class="category-<?php echo $category["category_id"];?>" id="category-<?php echo $category["category_id"];?>">

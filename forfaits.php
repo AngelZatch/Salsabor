@@ -13,7 +13,7 @@ $is_admin = $db->query("SELECT COUNT(*) FROM assoc_user_tags aut
 $query = "SELECT * FROM produits p
 			LEFT JOIN product_categories pc ON p.product_category = pc.category_id
 			LEFT JOIN locations l ON p.product_location = l.location_id";
-if(isset($_SESSION["location"]) && $is_admin != 1)
+if($_GET["region"] == "1")
 	$query .= " WHERE product_location = $_SESSION[location]";
 $query .= " ORDER BY category_name ASC, product_name ASC";
 
@@ -32,7 +32,16 @@ $produits = $db->query($query);
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-credit-card"></span> Forfaits
-						<a href="forfait_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait</a>
+						<div class="btn-group float-right">
+							<?php if($is_admin == 1){
+							if($_GET["region"] == "1"){ ?>
+							<a href="forfaits?region=0" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-globe"></span> Inclure toutes les régions</a>
+							<?php } else { ?>
+							<a href="forfaits?region=1" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-globe"></span> Exclure les autres régions</a>
+							<?php }
+} ?>
+							<a href="forfait_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter un forfait</a>
+						</div>
 					</legend>
 					<?php
 					$current_category = -1;
@@ -49,8 +58,7 @@ $produits = $db->query($query);
 				<?php } ?>
 				<p class='sub-legend'><?php echo $produit["category_name"];?></p>
 				<div class="category row">
-					<?php }
-					?>
+					<?php } ?>
 					<div class="col-xs-12 col-md-4 col-lg-3 panel-product-container">
 						<div class="panel panel-product">
 							<div class="panel-body">
