@@ -43,12 +43,13 @@ $display = $_GET["display"];
 					<?php if($display == "free") { ?>
 					<span class="help-block">Vous pouvez accomplir les tâches libres comme si elles vous étaient associées.</span>
 					<?php } ?>
-					<div class="tasks-container container-fluid"></div>
+					<div class="tasks-container container-fluid loading-container"></div>
 				</div>
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
 		<?php include "inserts/edit_modal.php";?>
+		<?php include "inserts/delete_modal.php";?>
 		<script>
 			$(document).ready(function(){
 				moment.locale('fr');

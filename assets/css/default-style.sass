@@ -85,6 +85,7 @@ a
 	padding: 0 4% 20px
 	position: relative
 	overflow: auto
+	min-height: 70vh
 
 .portal-main
 	background-size: 100%
@@ -1135,9 +1136,11 @@ div.legend:nth-child(1n+0)
 	border: 2px solid black
 	cursor: pointer
 
-.room-filter
+.room-filter, .location-filter
 	cursor: pointer
 	padding: 5px 0 5px 5px
+	&.activated
+		font-weight: 800
 	&:hover
 		background-color: darken($system-color, 10%)
 		color: white
@@ -1173,3 +1176,25 @@ div.legend:nth-child(1n+0)
 
 .photo-space
 	margin-right: 0.008%
+
+.user-loading-results
+	text-align: center
+
+.loading-indicator
+	width: 100%
+
+.load-identity
+	font-size: 16px
+	font-weight: 700
+
+.user-result
+	padding: 10px 0 0
+
+.selectable
+	cursor: pointer
+	&:hover
+		background-color: darken($system-color, 10%)
+	&.selected
+		background-color: lighten($success-color, 15%)
+		&:hover
+			background-color: lighten($success-color, 5%)

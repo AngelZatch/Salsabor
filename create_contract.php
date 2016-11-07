@@ -13,7 +13,10 @@ if(isset($_GET["transaction"])){
 
 function createContract($db, $transaction_id){
 	// Transaction details
-	$transaction_details = $db->query("SELECT * FROM transactions WHERE id_transaction = '$transaction_id'")->fetch(PDO::FETCH_ASSOC);
+	$transaction_details = $db->query("SELECT * FROM transactions t
+										LEFT JOIN users u ON t.transaction_handler = u.user_id
+										LEFT JOIN locations l ON u.user_location = l.location_id
+										WHERE id_transaction = '$transaction_id'")->fetch(PDO::FETCH_ASSOC);
 
 	$user_id = $transaction_details["payeur_transaction"];
 
@@ -30,14 +33,15 @@ function createContract($db, $transaction_id){
 
 	// PDF : Seller info
 	$pdf->setXY(49, 24);
-	$transaction_details_line = "31 rue Chapon - 75003 Paris\n"; // TO DO : Change location depending on where the transaction is done.
-	$transaction_details_line .= "01 42 71 61 61";
+	$transaction_details_line = "Contrat réalisé par : ".$transaction_details["user_prenom"]." ".$transaction_details["user_nom"]."\n";
+	$transaction_details_line .= $transaction_details["location_address"]."\n";
+	$transaction_details_line .= $transaction_details["location_telephone"];
 	$transaction_details_line = iconv('UTF-8', 'windows-1252', $transaction_details_line);
 	$pdf->MultiCell(0, 7, $transaction_details_line);
 
 	// PDF : User info
-	$pdf->setXY(130, 21);
-	$user_details_line = $user_details["user_identity"]."\n";
+	$pdf->setXY(130, 24);
+	$user_details_line = "Pour : ".$user_details["user_identity"]."\n";
 	$user_details_line .= $user_details["rue"]." - ".$user_details["code_postal"]." ".$user_details["ville"]."\n";
 	$user_details_line .= $user_details["mail"]." / ".$user_details["telephone"];
 	$user_details_line = iconv('UTF-8', 'windows-1252', $user_details_line);

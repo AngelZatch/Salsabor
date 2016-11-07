@@ -14,6 +14,12 @@ $queryProduit->bindParam(1, $data, PDO::PARAM_INT);
 $queryProduit->execute();
 $produit = $queryProduit->fetch(PDO::FETCH_ASSOC);
 
+// Product categories
+$categories = $db->query("SELECT * FROM product_categories ORDER BY category_name ASC");
+
+// Locations
+$locations = $db->query("SELECT * FROM locations ORDER BY location_name ASC");
+
 // Labels
 $labels = $db->prepare("SELECT * FROM assoc_product_tags apt
 						JOIN tags_session ts ON apt.tag_id_foreign = ts.rank_id
@@ -30,10 +36,16 @@ if(isset($_POST["edit"])){
 	}
 	$actif = 1;
 
+	$product_category = ($_POST["product_category"]=="0")?null:$_POST["product_category"];
+	$product_location = ($_POST["product_location"]=="0")?null:$_POST["product_location"];
+
 	try{
 		$db->beginTransaction();
 		$edit = $db->prepare("UPDATE produits SET product_name = :product_name,
+												product_code = :product_code,
 												description = :description,
+												product_category = :product_category,
+												product_location = :product_location,
 												product_size = :product_size,
 												product_validity = :validite,
 												product_price = :product_price,
@@ -42,7 +54,10 @@ if(isset($_POST["edit"])){
 												autorisation_report = :autorisation_report
 												WHERE product_id = :product_id");
 		$edit->bindParam(':product_name', $_POST["product_name"], PDO::PARAM_STR);
+		$edit->bindParam(':product_code', $_POST["product_code"], PDO::PARAM_STR);
 		$edit->bindParam(':description', $_POST["description"], PDO::PARAM_STR);
+		$edit->bindValue(':product_category', $product_category, PDO::PARAM_INT);
+		$edit->bindValue(':product_location', $product_location, PDO::PARAM_INT);
 		$edit->bindParam(':product_size', $_POST["product_size"], PDO::PARAM_INT);
 		$edit->bindParam(':validite', $validite, PDO::PARAM_INT);
 		$edit->bindParam(':product_price', $_POST["product_price"], PDO::PARAM_INT);
@@ -52,7 +67,7 @@ if(isset($_POST["edit"])){
 		$edit->bindParam(':product_id', $_GET["id"], PDO::PARAM_INT);
 		$edit->execute();
 		$db->commit();
-		header('Location: ../forfaits');
+		header('Location: ../forfaits?region=1');
 	}catch (PDOException $e){
 		$db->rollBack();
 		var_dump($e->getMessage());
@@ -86,6 +101,12 @@ if(isset($_POST["edit"])){
 							</div>
 						</div>
 						<div class="form-group">
+							<label for="product_code" class="control-label col-lg-3">Code produit</label>
+							<div class="col-lg-9">
+								<input type="text" class="form-control" name="product_code" value="<?php echo $produit["product_code"];?>" placeholder="Code du produit">
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">&Eacute;tiquettes</label>
 							<div class="col-lg-9 session-tags">
 								<h4>
@@ -100,6 +121,36 @@ if(isset($_POST["edit"])){
 									<?php } ?>
 									<span class="label label-default label-clickable label-add trigger-sub" id="label_add" data-subtype="session-tags" data-targettype="product" title="Ajouter une étiquette">+</span>
 								</h4>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="product_category" class="control-label col-lg-3">Catégorie</label>
+							<div class="col-lg-9">
+								<select name="product_category" class="form-control">
+									<option value="0">Aucune catégorie</option>
+									<?php while($category = $categories->fetch(PDO::FETCH_ASSOC)){
+	if($produit["product_category"] == $category["category_id"]) {?>
+									<option selected="selected" value="<?php echo $category["category_id"];?>"><?php echo $category["category_name"];?></option>
+									<?php } else { ?>
+									<option value="<?php echo $category["category_id"];?>"><?php echo $category["category_name"];?></option>
+									<?php }
+} ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="product_location" class="control-label col-lg-3">Région de disponibilité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Restreint la vente du produit à la région désignée. Laissez vide pour que le produit soit disponible partout."></span></label>
+							<div class="col-lg-9">
+								<select name="product_location" class="form-control">
+									<option value="0">Pas de région</option>
+									<?php while($location = $locations->fetch(PDO::FETCH_ASSOC)){
+	if($produit["product_location"] == $location["location_id"]){ ?>
+									<option selected value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
+									<?php } else { ?>
+									<option value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
+									<?php }
+} ?>
+								</select>
 							</div>
 						</div>
 						<div class="form-group">
@@ -150,4 +201,18 @@ if(isset($_POST["edit"])){
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
 	</body>
+	<script>
+		/*$(document).ready(function(){
+			$.get("functions/fetch_product_categories.php").done(function(data){
+				var options = JSON.parse(data);
+				console.log(options);
+				for(var i = 0; i < options.length; i++){
+					console.log(options[i]);
+					$("#product-category").append(
+						$("<option></option>").text(options[i].text).val(options[i].value)
+					);
+				}
+			})
+		})*/
+	</script>
 </html>

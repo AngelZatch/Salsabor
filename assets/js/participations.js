@@ -13,6 +13,59 @@ $(document).ready(function(){
 			});
 		})
 	}
+}).on('show.bs.modal', '#add-participation-modal', function(e){
+	var session_id = $(e.relatedTarget).data('session'), modal = $(this);
+	var previous_value = "";
+	var compare;
+	modal.find(".name-input").on('keyup change blur', function(){
+		// A few seconds after the field is changed, fetch results are display to show if the entry is valid
+		var name = $(".name-input").val();
+		if(name != previous_value){ // Condition for blur
+			if(name.length > 3){
+				if(compare){
+					clearTimeout(compare);
+				}
+				modal.find(".load-result").text("Recherche en cours...");
+				modal.find(".user-loading-results").empty();
+				modal.find(".user-loading-results").trigger('loading');
+				compare = setTimeout(function(){
+					$.get("functions/quick_search_users.php", {user : name, session_id : session_id}).done(function(data){
+						var user_details = JSON.parse(data);
+						if(user_details){
+							var construct = "";
+							for(var i = 0; i < user_details.length; i++){
+								construct += "<div class='col-xs-4 user-result selectable ur-selectable' id='result-"+user_details[i].user_id+"' data-user='"+user_details[i].user_id+"'>";
+								construct += "<img src='"+user_details[i].photo+"' alt='"+user_details[i].fullname+"' class='load-photo small-user-pp'>";
+								construct += "<p class='load-identity'>"+user_details[i].fullname+"</p>";
+								construct += "</div>";
+							}
+							modal.find(".load-result").text(user_details.length+" résultat(s) :");
+							modal.find(".user-loading-results").append(construct);
+						} else {
+							modal.find(".load-result").text("Aucun résultat");
+						}
+						modal.find(".user-loading-results").trigger('loaded');
+					})
+				}, 1500);
+			} else {
+				modal.find(".load-result").text("");
+				modal.find(".user-loading-results").empty();
+			}
+			previous_value = name;
+		}
+	})
+	modal.find(".add-participation").on('click', function(){
+		// Adding the participation
+		var user_id = $(".user-result.selected").data('user');
+		addParticipation(session_id, user_id);
+		$(".name-input").val("");
+		modal.find(".load-result").text("");
+		modal.find(".user-loading-results").empty();
+		$("#add-participation-modal").modal('hide');
+	})
+}).on('hide.bs.modal', '#add-participation-modal', function(e){
+	$(this).find(".add-participation").off('click');
+	$(this).find(".name-input").off();
 }).on('click', '.panel-heading-container', function(){
 	if(top.location.pathname === '/Salsabor/regularisation/participations/user'){
 		var id = document.getElementById($(this).attr("id")).dataset.user;
@@ -39,10 +92,6 @@ $(document).ready(function(){
 	var participation_id = document.getElementById($(this).attr("id")).dataset.participation;
 	var session_target = document.getElementById("product-selected").dataset.session;
 	changeSessionRecord(participation_id, session_target);
-}).on('click', '.delete-record', function(){
-	var participation_id = document.getElementById($(this).attr("id")).dataset.participation;
-	console.log(participation_id);
-	deleteParticipation(participation_id);
 }).on('click', function(e){
 	//if(top.location.pathname !== "/Salsabor/planning"){
 	if($(".sub-modal:hidden") && !$(".sub-modal").hasClass("sub-modal-session")){
@@ -51,10 +100,6 @@ $(document).ready(function(){
 	//}
 }).on('focus', '.name-input', function(){
 	provideAutoComplete($(this), "active");
-}).on('click', '.add-record', function(){
-	var name = $(".name-input").val();
-	var session_id = document.getElementById($(this).attr("id")).dataset.session;
-	addParticipation(session_id, name);
 }).on('click', '.validate-session', function(e){
 	e.stopPropagation();
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
@@ -68,24 +113,27 @@ $(document).ready(function(){
 (0 : closed, 1 : opened and available for automatic records, 2 : opened but closed to automatic records)**/
 	e.stopPropagation();
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
-	$.when(updateColumn("sessions", "session_opened", 0, session_id)).done(function(){
-		$("#session-"+session_id).remove();
-		// We remove the recently closed session from the list to be refreshed.
-		switch(window.openedSessions.length){
-			case 0:
-				break;
+	if($("#session-"+session_id+">ul>li.status-pre-success").length + $("#session-"+session_id+">ul>li.status-over").length != 0){
+		alert("Des participations ne sont pas validées. Vous ne pouvez pas fermer ce cours avant d'avoir traité toutes les participations");
+	} else {
+		$.when(updateColumn("sessions", "session_opened", 0, session_id)).done(function(){
+			$("#session-"+session_id).remove();
+			// We remove the recently closed session from the list to be refreshed.
+			switch(window.openedSessions.length){
+				case 0:
+					break;
 
-			case 1: // jQuery.grep() cannot empty an array
-				window.openedSessions.length = 0;
-				break;
+				case 1: // jQuery.grep() cannot empty an array
+					window.openedSessions.length = 0;
+					break;
 
-			default:
-				window.openedSessions = jQuery.grep(window.openedSessions, function(arr){
-					return arr !== parseInt(session_id);
-				})
-		}
-	})
-	//closeSession(session_id);
+				default:
+					window.openedSessions = jQuery.grep(window.openedSessions, function(arr){
+						return arr !== parseInt(session_id);
+					})
+			}
+		})
+	}
 })
 
 function fetchActiveSessions(fetched){
@@ -213,7 +261,7 @@ function displayParticipations(session_id){
 		var users = 0, ok = 0, warning = 0;
 		for(var i = 0; i <= records_list.length; i++){
 			if(i == records_list.length){
-				contents += "<li class='panel-item panel-record panel-add-record container-fluid trigger-sub col-xs-6 col-md-4 col-lg-3' id='add-record-"+session_id+"' data-subtype='add-record' data-session='"+session_id+"'>";
+				contents += "<li class='panel-item panel-record panel-add-record container-fluid col-xs-6 col-md-4 col-lg-3' id='add-record-"+session_id+"' data-toggle='modal' data-target='#add-participation-modal' data-session='"+session_id+"'>";
 				contents += "<div class='small-user-pp empty-pp'></div>";
 				contents += "<p class='col-lg-12 panel-item-title bf'>Ajouter un passage manuellement</p>";
 				contents += "</li>";
@@ -264,7 +312,7 @@ function displayParticipations(session_id){
 				}
 				contents += "<p class='col-xs-3 col-lg-3 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
 				contents += "<p class='col-xs-3 col-lg-3 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
-				contents += "<p class='col-xs-3 col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+				contents += "<p class='col-xs-3 col-lg-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' id='delete-record-"+records_list[i].id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+records_list[i].id+"' data-table='participations' data-delete='#participation-"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
 				contents += "</li>";
 			}
 		}
@@ -347,7 +395,7 @@ function displayIrregularParticipations(participation_id, age_action){
 			}
 			contents += "<p class='col-xs-3 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
 			contents += "<p class='col-xs-3 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
-			contents += "<p class='col-xs-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+			contents += "<p class='col-xs-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' id='delete-record-"+records_list[i].id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+records_list[i].id+"' data-table='participations' data-delete='#participation-"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
 			contents += "</div>";
 			contents += "</div>";
 
@@ -426,7 +474,7 @@ function displayIrregularUsers(){
 				contents += "<div class='panel panel-item panel-purchase'>";
 				contents += "<a class='panel-heading-container' id='ph-user-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"' data-trigger='"+user_list[i].user_id+"'>";
 				contents += "<div class='panel-heading container-fluid'>";
-				contents += "<p class='irregular-user'>"+user_list[i].user+" (<span class='irregular-user-count' id='count-"+user_list[i].user_id+"'>"+user_list[i].count+"</span>) <span class='glyphicon glyphicon-share-alt glyphicon-button glyphicon-button-alt' id='glyph-user-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"' title='Aller aux participations de l&apos;utilisateur'></span></p>";
+				contents += "<p class='irregular-user'><span class='col-xs-11'>"+user_list[i].user+" (<span class='irregular-user-count' id='count-"+user_list[i].user_id+"'>"+user_list[i].count+"</span>)</span> <span class='glyphicon glyphicon-share-alt glyphicon-button glyphicon-button-alt col-xs-1' id='glyph-user-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"' title='Aller aux participations de l&apos;utilisateur'></span></p>";
 				contents += "</div>";
 				contents += "</a>";
 				contents += "<div class='panel-collapse collapse' id='body-"+user_list[i].user_id+"' data-user='"+user_list[i].user_id+"'>";
@@ -489,7 +537,7 @@ function displayIrregularUserParticipations(user_id){
 			}
 			contents += "<p class='col-xs-3 col-lg-1 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
 			contents += "<p class='col-xs-3 col-lg-1 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
-			contents += "<p class='col-xs-3 col-lg-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+			contents += "<p class='col-xs-3 col-lg-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' id='delete-record-"+records_list[i].id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+records_list[i].id+"' data-table='participations' data-delete='#participation-"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
 			contents += "</div>";
 
 			contents += "<div class='row irregular-record-details'>";
@@ -498,7 +546,10 @@ function displayIrregularUserParticipations(user_id){
 			contents += "<p class='col-xs-6 col-lg-4 participation-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("DD/MM/YYYY HH:mm:ss")+"</p>";
 
 			// Reader
-			contents += "<p class='col-xs-6 col-lg-4 participation-details'><span class='glyphicon glyphicon-pushpin'></span> "+records_list[i].room+"</p>";
+			if(records_list[i].room != null)
+				contents += "<p class='col-xs-6 col-lg-4 participation-details'><span class='glyphicon glyphicon-pushpin'></span> "+records_list[i].room+"</p>";
+			else
+				contents += "<p class='col-xs-6 col-lg-4 participation-details'><span class='glyphicon glyphicon-pushpin'></span> -</p>";
 
 			// Indicating the product will soon expire
 			if(moment(records_list[i].product_expiration).isBefore(moment('now').add(records_list[i].days_before_exp, 'days'))){
@@ -517,93 +568,91 @@ function displayIrregularUserParticipations(user_id){
 	})
 }
 
-function displayUserParticipations(user_id){
-	$.get("functions/fetch_user_participations.php", {user_id : user_id}).done(function(data){
-		var records_list = JSON.parse(data);
-		$(".participations-list").empty();
-		var users = 0, ok = 0, warning = 0, pending = 0;
-		var contents = "";
-		for(var i = 0; i < records_list.length; i++){
-			var record_status;
-			switch(records_list[i].status){
-				case '0':
-					if(records_list[i].product_name == "-"){
-						record_status = "status-over";
-						warning++;
-					} else {
-						record_status = "status-pre-success";
-						pending++;
-					}
-					break;
-
-				case '2':
-					if(records_list[i].product_name == "-"){
-						record_status = "status-partial-success";
-						warning++;
-					} else {
-						record_status = "status-success";
-						ok++;
-					}
-					break;
-
-				case '3':
+function displayUserParticipations(data){
+	var records_list = JSON.parse(data);
+	$(".participations-list").empty();
+	var users = 0, ok = 0, warning = 0, pending = 0;
+	var contents = "";
+	for(var i = 0; i < records_list.length; i++){
+		var record_status;
+		switch(records_list[i].status){
+			case '0':
+				if(records_list[i].product_name == "-"){
 					record_status = "status-over";
 					warning++;
-					break;
-			}
-			users++;
-			contents += "<li class='panel-item panel-record irregular-record "+record_status+" container-fluid col-lg-12' id='participation-"+records_list[i].id+"' data-participation='"+records_list[i].id+"'>";
-			// Details
-			contents += "<div class='row irregular-record-actions'>";
+				} else {
+					record_status = "status-pre-success";
+					pending++;
+				}
+				break;
 
-			contents += "<p class='panel-item-title personal-participation-title col-xs-8 bf'>";
-			// Session
-			if(records_list[i].cours_name != null){
-				contents += "<span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].session_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].session_end).format("HH:mm")+")";
-			} else {
-				contents += "<span class='glyphicon glyphicon-eye-open'></span> Pas de cours associé";
-			}
-			contents += " - Passage n°"+records_list[i].id+"</p>";
+			case '2':
+				if(records_list[i].product_name == "-"){
+					record_status = "status-partial-success";
+					warning++;
+				} else {
+					record_status = "status-success";
+					ok++;
+				}
+				break;
 
-			// Action buttons
-			// Different button depending on the status of the record
-			if(records_list[i].status == '2'){
-				contents += "<p class='col-xs-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateParticipation("+records_list[i].id+")' title='Annuler la validation'></span></p>";
-			} else {
-				contents += "<p class='col-xs-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateParticipation("+records_list[i].id+")' title='Valider le passage'></span></p>";
-			}
-			contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
-			contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
-			contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button trigger-sub' id='delete-record-"+records_list[i].id+"' data-subtype='delete-record' data-argument='"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
-			contents += "</div>";
-
-			contents += "<div class='row irregular-record-details'>";
-
-			// Record hour
-			contents += "<p class='col-xs-4 participation-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("DD/MM/YYYY HH:mm:ss")+"</p>";
-
-			// Reader
-			contents += "<p class='col-xs-4 participation-details'><span class='glyphicon glyphicon-pushpin'></span> "+records_list[i].room+"</p>";
-
-			// Indicating the product will soon expire
-			if(moment(records_list[i].product_expiration).isBefore(moment('now').add(records_list[i].days_before_exp, 'days'))){
-				console.log("days");
-				contents += "<p class='col-xs-4 participation-details srd-product product-soon' title='Expiration prochaine : "+moment(records_list[i].product_expiration).format("DD/MM/YYYY")+"'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
-			} else if(parseFloat(records_list[i].product_hours) <= records_list[i].hours_before_exp){
-				contents += "<p class='col-xs-4 participation-details srd-product product-soon' title='Expiration prochaine : "+records_list[i].product_hours+" heures restantes'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
-			} else {
-				contents += "<p class='col-xs-4 participation-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
-			}
-
-			contents += "</div>";
-			contents += "</li>";
+			case '3':
+				record_status = "status-over";
+				warning++;
+				break;
 		}
-		$(".participations-list").append(contents);
-		$("#total-count").text(users);
-		$("#valid-count").text(ok);
-		$("#pending-count").text(pending);
-		$("#over-count").text(warning);
-	})
+		users++;
+		contents += "<li class='panel-item panel-record irregular-record "+record_status+" container-fluid col-lg-12' id='participation-"+records_list[i].id+"' data-participation='"+records_list[i].id+"'>";
+		// Details
+		contents += "<div class='row irregular-record-actions'>";
+
+		contents += "<p class='panel-item-title personal-participation-title col-xs-8 bf'>";
+		// Session
+		if(records_list[i].cours_name != null){
+			contents += "<span class='glyphicon glyphicon-eye-open'></span> "+records_list[i].cours_name+" ("+moment(records_list[i].session_start).format("DD/MM/YYYY HH:mm")+" - "+moment(records_list[i].session_end).format("HH:mm")+")";
+		} else {
+			contents += "<span class='glyphicon glyphicon-eye-open'></span> Pas de cours associé";
+		}
+		contents += " - Passage n°"+records_list[i].id+"</p>";
+
+		// Action buttons
+		// Different button depending on the status of the record
+		if(records_list[i].status == '2'){
+			contents += "<p class='col-xs-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateParticipation("+records_list[i].id+")' title='Annuler la validation'></span></p>";
+		} else {
+			contents += "<p class='col-xs-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateParticipation("+records_list[i].id+")' title='Valider le passage'></span></p>";
+		}
+		contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
+		contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
+		contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' id='delete-record-"+records_list[i].id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+records_list[i].id+"' data-table='participations' data-delete='#participation-"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+		contents += "</div>";
+
+		contents += "<div class='row irregular-record-details'>";
+
+		// Record hour
+		contents += "<p class='col-xs-4 participation-details'><span class='glyphicon glyphicon-time'></span> "+moment(records_list[i].date).format("DD/MM/YYYY HH:mm:ss")+"</p>";
+
+		// Reader
+		contents += "<p class='col-xs-4 participation-details'><span class='glyphicon glyphicon-pushpin'></span> "+records_list[i].room+"</p>";
+
+		// Indicating the product will soon expire
+		if(moment(records_list[i].product_expiration).isBefore(moment('now').add(records_list[i].days_before_exp, 'days'))){
+			console.log("days");
+			contents += "<p class='col-xs-4 participation-details srd-product product-soon' title='Expiration prochaine : "+moment(records_list[i].product_expiration).format("DD/MM/YYYY")+"'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+		} else if(parseFloat(records_list[i].product_hours) <= records_list[i].hours_before_exp){
+			contents += "<p class='col-xs-4 participation-details srd-product product-soon' title='Expiration prochaine : "+records_list[i].product_hours+" heures restantes'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+		} else {
+			contents += "<p class='col-xs-4 participation-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+		}
+
+		contents += "</div>";
+		contents += "</li>";
+	}
+	$(".participations-list").append(contents);
+	$("#total-count").text(users);
+	$("#valid-count").text(ok);
+	$("#pending-count").text(pending);
+	$("#over-count").text(warning);
 }
 
 function validateParticipation(participation_id){
@@ -745,9 +794,8 @@ function changeSessionRecord(participation_id, target_session_id){
 
 }
 
-function addParticipation(target_session_id, user_name){
-	$.post("functions/add_participation.php", {name : user_name, session_id : target_session_id}).done(function(data){
-		console.log(data);
+function addParticipation(target_session_id, user_id){
+	$.post("functions/add_participation.php", {user_id : user_id, session_id : target_session_id}).done(function(data){
 		displayParticipations(target_session_id);
 		showNotification("Participation ajoutée (doublons ignorés)", "success");
 	})

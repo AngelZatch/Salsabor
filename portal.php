@@ -20,6 +20,7 @@ if(isset($_SESSION["username"])){
 			$_SESSION["user_id"] = $credentials["user_id"];
 			$_SESSION["username"] = $credentials["user_prenom"];
 			$_SESSION["photo"] = $credentials["photo"];
+			$_SESSION["location"] = $credentials["user_location"];
 			header("Location: dashboard");
 		}
 	}

@@ -132,6 +132,7 @@ session_start();
 })
 
 function fetchTasks(task_token, user_id, attached_id, filter, limit){
+	$(".tasks-container").trigger('loading');
 	$.get("functions/fetch_tasks.php", {task_token : task_token, user_id : user_id, attached_id : attached_id, limit : limit, filter : filter}).done(function(data){
 		if(limit == 0 || $(".sub-modal-notification").is(":visible")){
 			displayTasks(data, task_token, user_id, attached_id, limit, filter);
@@ -189,22 +190,14 @@ function displayTasks(data, task_token, user_id, attached_id, limit, filter){
 			refreshTask(tasks[i]);
 		} else {
 			if(i == 0){
-				if(limit != 0){
-					$(".smn-body").empty();
-				} else {
-					$(".tasks-container").empty();
-				}
+				$(".tasks-container").empty();
 			}
 
 			var contents = renderTask(tasks[i], half);
-
-			if(limit == 0){
-				$(".tasks-container").append(contents);
-			} else {
-				$(".smn-body").append(contents);
-			}
+			$(".tasks-container").append(contents);
 		}
 	}
+	$(".tasks-container").trigger('loaded');
 	setTimeout(fetchTasks, 5000, task_token, user_id, attached_id, filter, limit);
 }
 
@@ -338,7 +331,7 @@ function renderTask(task, half){
 	} else {
 		contents += "<span class='glyphicon glyphicon-ok col-xs-1 glyphicon-button-alt glyphicon-button-big toggle-task' id='toggle-task-"+task.id+"' data-target='"+task.id+"' title='Marquer comme traitée'></span>";
 	}
-	contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button-alt glyphicon-button-big trigger-sub' id='delete-task-"+task.id+"' data-subtype='delete-task' data-target='"+task.id+"' title='Supprimer la tache'></span></p>";
+	contents += "<p class='col-xs-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button-alt glyphicon-button-big' id='delete-task-"+task.id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+task.id+"' data-table='tasks' data-delete='#task-"+task.id+"' title='Supprimer une tâche'></span></p>";
 	contents += "<p class='task-target col-xs-10 col-sm-12'><span class='glyphicon glyphicon-play'></span> <strong>"+task.target_phrase+"</strong></p>";
 	contents += "</div>";
 	contents += "</div>";

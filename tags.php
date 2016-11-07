@@ -40,6 +40,7 @@ if($type == "users"){
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
+		<?php include "inserts/delete_modal.php";?>
 		<script>
 			$(document).ready(function(){
 				var tag_type = '<?php echo $query_type;?>';
@@ -49,9 +50,10 @@ if($type == "users"){
 					body += "<p class='col-xs-4'>Etiquette</p>";
 					body += "<p class='col-xs-2'>Editer</p>";
 					if(tag_type == "user")
-						body += "<p class='col-xs-4'>Tâches 'infos. manquantes'</p></div>";
+						body += "<p class='col-xs-4'>Tâches 'infos. manquantes'</p>";
+					body += "<p class='col-xs-1'>Supprimer</p></div>";
 					for(var i = 0; i < tags.length; i++){
-						body += "<h4><div class='col-xs-12'><span class='label col-xs-4 label-clickable label-restyle' id='tag-"+tags[i].rank_id+"' data-tag='"+tags[i].rank_id+"' data-tagtype='"+tag_type+"' style='background-color:"+tags[i].color+"'>";
+						body += "<h4><div class='col-xs-12' id='tagline-"+tags[i].rank_id+"'><span class='label col-xs-4 label-clickable label-restyle' id='tag-"+tags[i].rank_id+"' data-tag='"+tags[i].rank_id+"' data-tagtype='"+tag_type+"' style='background-color:"+tags[i].color+"'>";
 						if(tags[i].is_mandatory == 1)
 							body += "<span class='glyphicon glyphicon-star' title='Etiquette obligatoire'></span> ";
 						body += tags[i].rank_name+"</span>";
@@ -67,6 +69,7 @@ if($type == "users"){
 							}
 							body += "' id='mid-"+tags[i].rank_id+"' data-target='"+tags[i].rank_id+"' title='Indiquer l&apos;étiquette comme celle par défaut pour les tâches de type &apos;Informations manquantes&apos;'></span></p>";
 						}
+						body += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt' id='delete-tag-"+tags[i].rank_id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+tags[i].rank_id+"' data-table='tags_"+tag_type+"' data-delete='#tagline-"+tags[i].rank_id+"' data-title='Supprimer l&apos;étiquette "+tags[i].rank_name+"'></span></p>";
 						body += "</div></h4>";
 					}
 					body += "<h4 class='new-label-space'><div class='col-sm-12'><span class='label col-xs-4 label-default label-clickable label-new-tag' id='label-new' data-tagtype='"+tag_type+"'>Créer une étiquette</span></div></h4>";

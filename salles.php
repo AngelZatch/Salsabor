@@ -29,6 +29,7 @@ $db = PDOFactory::getConnection();
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
 		<?php include "inserts/edit_modal.php";?>
+		<?php include "inserts/delete_modal.php";?>
 		<script>
 			$(document).ready(function(){
 				$.get("functions/fetch_rooms.php").done(function(data){
@@ -89,40 +90,6 @@ $db = PDOFactory::getConnection();
 					contents += "</div></div>";
 					$("#rooms-list").append(contents);
 				})
-			}).on('mousedown', '.glyphicon-trash', function(){
-				if($(this).hasClass("glyphicon-button")){
-					var target = document.getElementById($(this).attr("id")).dataset.target;
-					var toBeDeleted = $("#dah-"+target);
-					$("#dah-"+target).show();
-					var startAngle = -Math.PI/2;
-					toBeDeleted.circleProgress({
-						value: 1,
-						size: 60,
-						startAngle: startAngle,
-						thickness: 100/18,
-						lineCap: "round",
-						fill:{
-							color: "white"
-						},
-						animation: {
-							duration: 2500
-						}
-					}).on('circle-animation-end', function(e){
-						var value = toBeDeleted.data('circle-progress').lastFrameValue;
-						if(value == 1){
-							// Deletion code
-							$.when(deleteEntry("rooms", target)).done(function(data){
-								console.log(data);
-								$("#room-"+target).remove();
-							})
-						}
-					})
-				}
-			}).on('mouseup', '.delete-animation-holder', function(){
-				var target = document.getElementById($(this).attr("id")).dataset.target;
-				var toBeDeleted = $("#dah-"+target);
-				$("#dah-"+target).hide();
-				$(toBeDeleted.circleProgress('widget')).stop();
 			}).on('click', '.status-new', function(){
 				var parent = $(this).parent();
 				var location = document.getElementById($(this).attr("id")).dataset.location;
@@ -188,16 +155,15 @@ $db = PDOFactory::getConnection();
 					var availability_class = "status-success";
 					var status = "Disponible";
 					var trash_class = "glyphicon-button";
-					var trash_title = "Supprimer la salle (Maintenez appuyé)";
+					var trash_title = "Supprimer la salle "+room.room_name;
 				}
 				contents += "<div class='panel panel-item panel-room "+availability_class+"'>";
 				contents += "<div class='panel-body row'>";
-				contents += "<div class='delete-animation-holder' id='dah-"+room.room_id+"' data-target='"+room.room_id+"'><p class='hold-text'>Suppression...</p><p class='hold-help'>(Relâchez pour annuler)</p></div>";
 				contents += "<div class='panel-title container-fluid'>";
 				contents += "<div class='col-xs-1 room-rectangle trigger-sub' id='room-color-cube-"+room.room_id+"' data-subtype='room-color' data-target='"+room.room_id+"' style='background-color:#"+room.room_color+"' title='Couleur de la salle. Cliquez pour changer la couleur'></div>";
 				contents += "<p class='col-xs-9 modal-editable-room-"+room.room_id+"' id='room-name-"+room.room_id+"' data-field='room_name' data-name='Nom' data-placeholder='false'>"+room.room_name+"</p>";
 				contents += "<span class='glyphicon glyphicon-pencil col-xs-1 glyphicon-button glyphicon-button-alt' data-entry='room-"+room.room_id+"' data-toggle='modal' data-target='#edit-modal' data-table='rooms' title='Modifier "+room.room_name+"'></span>";
-				contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash "+trash_class+" glyphicon-button-alt' id='delete-"+room.room_id+"' data-target='"+room.room_id+"' title='"+trash_title+"'></span></p>";
+				contents += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash "+trash_class+" glyphicon-button-alt' id='delete-"+room.room_id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+room.room_id+"' data-table='rooms' data-delete='#room-"+room.room_id+"' title='"+trash_title+"'></span></p>";
 				contents += "</div>"; // panel-title
 				contents += "<div class='container-fluid'>";
 				contents += "<span class='glyphicon glyphicon-star col-xs-2'></span> ";

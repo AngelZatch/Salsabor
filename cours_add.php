@@ -13,7 +13,9 @@ while($row_cours_name = $cours_name->fetch(PDO::FETCH_ASSOC)){
 	array_push($arr_cours_name, trim(preg_replace('/[0-9]+/', '', $row_cours_name['session_name'])));
 }
 
-$lieux = $db->query('SELECT * FROM rooms');
+$lieux = $db->query("SELECT room_id, room_name, location_name FROM rooms r
+							JOIN locations l ON r.room_location = l.location_id
+							WHERE room_location = $_SESSION[location]");
 
 $user_labels = $db->query("SELECT * FROM tags_user");
 

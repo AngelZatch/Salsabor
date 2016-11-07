@@ -137,10 +137,11 @@ function createTag(tag_name, tag_type, target_type){
 		switch(top.location.pathname){
 			case "/Salsabor/tags/users":
 				var label_content = "<h4>";
-				label_content += "<div class='col-sm-12'>";
+				label_content += "<div class='col-sm-12' id='tagline-"+data+"'>";
 				label_content += "<span class='label col-xs-4 label-clickable label-restyle' id='tag-"+data+"' data-tag='"+data+"' data-tagtype='user' style='background-color:a80139'>"+tag_name+"</span>";
 				label_content += "<p class='col-xs-2'><span class='glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt trigger-sub' id='edit-"+data+"' data-subtype='edit-tag' data-tagtype='user' data-target='"+data+"' title='Editer l&apos;étiquette'></span></p>";
 				label_content += "<p class='col-xs-4'><span class='glyphicon glyphicon-list-alt glyphicon-button glyphicon-button-alt mid-button glyphicon-button-disabled' id='mid-"+data+"' data-target='"+data+"' title='Indiquer l&apos;étiquette comme celle par défaut pour les tâches de type &apos;Informations manquantes&apos;'></span></p>";
+				label_content += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt' id='delete-tag-"+data+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+data+"' data-table='tags_user' data-delete='#tagline-"+data+"' data-title='Supprimer l&apos;étiquette "+tag_name+"'></span></p>";
 				label_content += "</div>";
 				label_content += "</h4>";
 				$(".tag-input").remove();
@@ -149,9 +150,10 @@ function createTag(tag_name, tag_type, target_type){
 
 			case "/Salsabor/tags/sessions":
 				var label_content = "<h4>";
-				label_content += "<div class='col-sm-12'>";
+				label_content += "<div class='col-sm-12' id='tag-"+data+"'>";
 				label_content += "<span class='label col-xs-4 label-clickable label-restyle' id='tag-"+data+"' data-tag='"+data+"' data-tagtype='session' style='background-color:a80139'>"+tag_name+"</span>";
 				label_content += "<p class='col-xs-2'><span class='glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt trigger-sub' id='edit-"+data+"' data-subtype='edit-tag' data-target='"+data+"' data-tagtype='session' title='Editer l&apos;étiquette'></span></p>";
+				label_content += "<p class='col-xs-1'><span class='glyphicon glyphicon-trash glyphicon-button glyphicon-button-alt' id='delete-tag-"+data+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+data+"' data-table='tags_session' data-delete='#tagline-"+data+"' data-title='Supprimer l&apos;étiquette "+tag_name+"'></span></p>";
 				label_content += "</div>";
 				label_content += "</h4>";
 				$(".tag-input").remove();

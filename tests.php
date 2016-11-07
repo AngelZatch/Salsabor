@@ -3,6 +3,8 @@ session_start();
 require_once 'functions/db_connect.php';
 include "functions/mails.php";
 include "functions/tools.php";
+include "functions/post_task.php";
+include "functions/attach_tag.php";
 $db = PDOFactory::getConnection();
 ?>
 <html>
@@ -23,24 +25,29 @@ $db = PDOFactory::getConnection();
 					$loading = explode(' ', $loading);
 					$loading = $loading[1] + $loading[0];
 					$start = $loading;
+					$searchTerms = "An";
+					$location = 2;
 					/** CODE **/
-					$start_date = new DateTime("2016-07-11 11:00:00");
-					$definitive_id = 12;
+					$noCards = $db->query("SELECT user_id FROM users u WHERE actif = 1")->fetchAll(PDO::FETCH_COLUMN);
+
+
 					?>
 					<pre>
 						<?php
-$string = "user_id=409&user_rfid%5B%5D=Attente+357&user_rfid%5B%5D=Attente+7936&rue%5B%5D=33+av+de+St+Ouen&rue%5B%5D=3+rue+Vincent+Scotto&code_postal%5B%5D=75017&code_postal%5B%5D=5000&ville%5B%5D=Aucune+Valeur&photo=assets%2Fimages%2Flogotype-white.png";
-
-$alt_string = "user_id=5372&user_rfid=Aucune+valeur&photo=assets%2Fimages%2Flogotype-white.png";
-
-parse_str($alt_string, $values);
-print_r($values);
-foreach($values as $column => $value){
-	if(sizeof($values[$column]) > 1 || $value == "Aucune valeur")
-		$values[$column] = "NULL";
+foreach($noCards as $user){
+	echo "User actif n°".$user;
+	$test = $db->query("SELECT * FROM produits_adherents pa
+							JOIN produits p ON pa.id_produit_foreign = p.product_id
+							WHERE id_user_foreign = '$user' AND product_name = 'Adhésion Annuelle' AND pa.actif != 2")->rowCount();
+	echo " - Nombre d'adhésions annuelles détectées : ".$test;
+	if($test == "0"){
+		echo " | Création d'une tâche";
+		$new_task_id = createTask($db, "Adhésion Annuelle manquante", "Cet utilisateur n'a pas d'adhésion annuelle.", "[USR-".$user."]", null);
+		$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
+		associateTag($db, intval($tag), $new_task_id, "task");
+	}
+	echo "<br>";
 }
-print_r($values);
-
 						?>
 					</pre>
 

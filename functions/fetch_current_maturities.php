@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "db_connect.php";
 $db = PDOFactory::getConnection();
 
@@ -26,11 +27,21 @@ $maturityTime = $time->format('Y-m-d');
 
 $today = $date->format("Y-m-d");
 
-$load = $db->query("SELECT * FROM produits_echeances pe
+$region = $_GET["region"];
+
+$query = "SELECT * FROM produits_echeances pe
 						JOIN transactions t ON pe.reference_achat = t.id_transaction
+						LEFT JOIN users u ON t.transaction_handler = u.user_id
+						LEFT JOIN locations l ON u.user_location = l.location_id
 						WHERE ((date_echeance <= '$maturityTime' AND date_echeance > '$today' AND (methode_paiement !='Carte Bancaire' OR methode_paiement IS NULL))
-						OR (date_echeance <= '$today' AND date_encaissement IS NULL))
-						ORDER BY date_echeance DESC");
+						OR (date_echeance <= '$today' AND date_encaissement IS NULL))";
+
+if($region == "1"){
+	$query .= " AND (location_id = $_SESSION[location] OR location_id IS NULL)";
+}
+$query .= "ORDER BY date_echeance DESC";
+
+$load = $db->query($query);
 
 $maturities = array();
 while($details = $load->fetch(PDO::FETCH_ASSOC)){

@@ -46,7 +46,6 @@ $display = $_GET["display"];
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-bishop"></span> Participations irrégulières</legend>
-					<p class="sub-legend irregular-participations-title"><span></span> participations irrégulières.</p>
 					<ul class="nav nav-tabs">
 						<li role="presentation" <?php if($display == "all") echo "class='active'";?>>
 							<a href="regularisation/participations/all">Tout afficher</a>
@@ -54,7 +53,11 @@ $display = $_GET["display"];
 						<li role="presentation" <?php if($display == "user") echo "class='active'";?>><a href="regularisation/participations/user">Par utilisateur</a></li>
 						<li role="presentation" <?php if($display == "old") echo "class='active'";?>><a href="regularisation/participations/old">Archivées</a></li>
 					</ul>
-					<?php if($display == "all" || $display == "old"){ ?>
+
+					<?php if($display == "all" || $display == "old"){
+	if($display == "all"){ ?>
+					<p class="sub-legend irregular-participations-title"><span></span> participations irrégulières.</p>
+					<?php } ?>
 					<div class="container-fluid irregular-sessions-container">
 						<ul class="irregulars-list">
 
@@ -65,5 +68,6 @@ $display = $_GET["display"];
 			</div>
 		</div>
 		<?php include "inserts/sub_modal_product.php";?>
+		<?php include "inserts/delete_modal.php";?>
 	</body>
 </html>

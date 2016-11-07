@@ -9,6 +9,7 @@ $user_id = $_GET['id'];
 
 // User details
 $details = $db->query("SELECT * FROM users u
+						LEFT JOIN locations l ON u.user_location = l.location_id
 						WHERE user_id='$user_id'")->fetch(PDO::FETCH_ASSOC);
 
 $labels = $db->query("SELECT * FROM assoc_user_tags ur
@@ -25,6 +26,9 @@ $details["count"] = $db->query("SELECT * FROM tasks
 $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 								JOIN tags_user tu ON tu.rank_id = ur.tag_id_foreign
 								WHERE rank_name = 'Professeur' AND user_id_foreign = '$user_id'")->rowCount();
+
+// Locations
+$locations = $db->query("SELECT * FROM locations ORDER BY location_name ASC");
 
 // If the user is a teacher
 /*if($is_teacher == 1){
@@ -141,6 +145,21 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							<label for="ville" class="col-sm-3 control-label">Ville</label>
 							<div class="col-sm-9">
 								<input type="text" name="ville" id="ville" placeholder="Ville" class="form-control" value="<?php echo $details["ville"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="user_location" class="control-label col-sm-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings et résultats de recherche accessibles en fonction de leurs régions. Correspond à la région principale fréquentée pour les utilisateurs non-staff."></span></label>
+							<div class="col-sm-9">
+								<select name="user_location" id="user-location" class="form-control">
+									<option value="">Aucune région</option>
+									<?php while($location = $locations->fetch(PDO::FETCH_ASSOC)){
+	if($details["user_location"] == $location["location_id"]){ ?>
+									<option selected value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
+									<?php } else { ?>
+									<option value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
+									<?php }
+} ?>
+								</select>
 							</div>
 						</div>
 						<div class="form-group">
@@ -309,6 +328,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 			}).on('click', '#update-user', function(){
 				var user_id = /([0-9]+)/.exec(top.location.pathname);
 				var values = $("#user-details-form").serialize(), table = "users", entry_id = user_id[0];
+				console.log(values);
 				$.when(updateEntry(table, values, entry_id)).done(function(data){
 					console.log(data);
 					var rfid = $("#user-rfid").val();
@@ -316,119 +336,16 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						$.post("functions/delete_association_record.php", {rfid : rfid});
 					}
 					showNotification("Modifications enregistrées", "success");
+					if(user_id[0] == "<?php echo $_SESSION["user_id"];?>"){
+						console.log("updating saved session"+ user_id);
+						$.get("functions/update_user_session.php");
+					}
+					$("#refresh-rfid").text($("#user-rfid").val());
+					var updated_adress = $("#rue").val()+" - "+$("#code_postal").val()+" "+$("#ville").val();
+					$("#refresh-address").text(updated_adress);
+					$("#refresh-region").text($("#user-location>option:selected").text());
 				})
 			})
-				<?php if($is_teacher == 1){?>
-			/*
-			$("#add-tarif").click(function(){
-				$("#new-tarif").show();
-			});
-
-			$("#cancel").click(function(){
-				$("#new-tarif").hide();
-			});
-
-			$(document).ready(function(){
-				fetchTarifs();
-
-				var options = {
-					valueNames: ['cours-name', 'jour', 'niveau', 'lieu', 'montant']
-				};
-				var coursList = new List('cours-list', options);
-
-				var prof_id = <?php echo $user_id;?>;
-				$.post('functions/compile_prof_cours.php', {prof_id}).done(function(data){
-					var listeCours = JSON.parse(data);
-
-					// Nombre de cours par jour
-					var daysArray = [["lundi",0], ["mardi",0], ["mercredi",0], ["jeudi",0], ["vendredi",0], ["samedi",0]];
-					var resDays = [];
-					for (var j = 0; j < daysArray.length; j++){
-						for (var i = 0; i < listeCours.length; i++){
-							var date = moment(listeCours[i].day).locale('fr').format('dddd');
-							if(daysArray[j][0] == date){
-								daysArray[j][1]++;
-							}
-						}
-						var graphBar = {};
-						graphBar.d = daysArray[j][0];
-						graphBar.a = daysArray[j][1];
-						resDays.push(graphBar);
-					}
-					console.log(resDays);
-					new Morris.Bar({
-						element: 'nombre-cours',
-						data : resDays,
-						xkey: 'd',
-						ykeys: ['a'],
-						labels: ['Nombre de cours']
-					});
-				})
-
-			})
-
-			function addTarif(){
-				var prof_id = $("#prof_id").val();
-				var prestation = $("#prestation").val();
-				var tarif = $("#tarif").val();
-				var ratio = $("#ratio").val();
-				$.post("functions/add_tarif_prof.php", {prof_id : prof_id, prestation : prestation, tarif : tarif, ratio : ratio}).success(function(data){
-					$("#new-tarif").hide();
-					showSuccessNotif(data);
-					$(".fetched").remove();
-					fetchTarifs();
-				})
-			};
-
-			function fetchTarifs(){
-				var id = $("#prof_id").val();
-				$.post("functions/get_tarifs.php", {id : id}).done(function(data){
-					var json = JSON.parse(data);
-					for(var i = 0; i < json.length; i++){
-						var line = "<tr class='fetched' id='tarif-"+json[i].id+"'>";
-						line += "<td class='col-sm-3 tarif-nom'>";
-						line += json[i].prestation;
-						line += "</td><td class='col-sm-3 tarif-prix'><span contenteditable='true' onblur='updateTarif("+json[i].id+")'>";
-						line += json[i].tarif;
-						line += "</span> € </td><td class='col-sm-3 tarif-ratio'>";
-						line += json[i].ratio;
-						line += "</td><td class='col-sm-3'>";
-						line += "<button class='btn btn-default' onclick='deleteTarif("+json[i].id+")'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";
-						line += "</td></tr>";
-						$("#table-content").append(line);
-					}
-				});
-			}
-
-			function updateTarif(id){
-				var update_id = id;
-				var tarif = $("#tarif-"+update_id).children(".tarif-prix").children("span").html();
-				$.post("functions/update_tarif_prof.php", {update_id : update_id, tarif : tarif}).done(function(data){
-					showSuccessNotif(data);
-					var originalColor = $("#tarif-"+update_id).css("background-color");
-					var styles = {
-						backgroundColor : "#dff0d8",
-						transition: "0s"
-					};
-					var next = {
-						backgroundColor : originalColor,
-						transition : "2s"
-					};
-					$("#tarif-"+update_id).css(styles);
-					setTimeout(function(){ $("#tarif-"+update_id).css(next); },800);
-				});
-			}
-
-			function deleteTarif(id){
-				var delete_id = id;
-				$.post("functions/delete_tarif_prof.php", {delete_id : delete_id}).done(function(data){
-					showSuccessNotif(data);
-					$(".fetched").remove();
-					fetchTarifs();
-				});
-			}
-			*/
-				<?php } ?>
 		</script>
 	</body>
 </html>

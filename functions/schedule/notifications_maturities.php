@@ -19,16 +19,19 @@ MAT-L | 10024 | 1 - "The Maturity of the transaction TRANSACTION_ID of user USER
 **/
 require_once "/opt/lampp/htdocs/Salsabor/functions/db_connect.php";
 include "/opt/lampp/htdocs/Salsabor/functions/tools.php";
+include "/opt/lampp/htdocs/Salsabor/functions/post_task.php";
+include "/opt/lampp/htdocs/Salsabor/functions/attach_tag.php";
 /*require_once "../db_connect.php";
-include "../tools.php";*/
+include "../tools.php";
+include "../post_task.php";
+include "../attach_tag.php";*/
 $db = PDOFactory::getConnection();
 
 $master_settings = $db->query("SELECT * FROM master_settings WHERE user_id = 0")->fetch(PDO::FETCH_ASSOC);
 
 $today = date("Y-m-d H:i:s");
-$expiration_limit = date("Y-m-d", strtotime($today.'+'.$master_settings["days_before_exp"].'DAYS'));
-$maturity_limit = date("Y-m-d", strtotime($today.'+'.$master_settings["days_before_maturity"].'DAYS'));
-$maturity_over = date("Y-m-d", strtotime($today.'-'.$master_settings["days_after_maturity"].'DAYS'));
+$maturity_limit = date("Y-m-d", strtotime($today.'+'.$master_settings["days_before_maturity"].'DAYS')); // near expiration
+$reminder = date("Y-m-d", strtotime($today.'-'.$master_settings["days_after_maturity"].'DAYS')); // expired
 $hour_limit = $master_settings["hours_before_exp"];
 
 /*
@@ -37,15 +40,21 @@ For maturities, we will take all maturities which are still not paid and are com
 */
 $maturities = $db->query("SELECT * FROM produits_echeances
 						WHERE date_paiement IS NULL
-						AND (date_echeance <= '$maturity_limit' OR date_echeance >= '$maturity_over')");
+						AND date_echeance <= '$maturity_limit'");
 while($maturity = $maturities->fetch(PDO::FETCH_ASSOC)){
 	$token = "MAT-";
-	if($maturity["date_echeance"] <= $maturity_limit){
-		$token .= "NE";
-	} else if($maturity["date_echeance"] >= $maturity_over){
-		$token .= "L";
-	}
 	$target = $maturity["produits_echeances_id"];
+	if($maturity["date_echeance"] <= $reminder){
+		$token .= "L";
+	} else if($maturity["date_echeance"] > $reminder && $maturity["date_echeance"] <= $today){
+		$token .= "L";
+		$task_message = "L'échéance prévue le ".date_create($maturity["date_echeance"])->format("d/m/Y")." de ".$maturity["payeur_echeance"]." a atteint sa date limite alors qu'elle n'a pas été reçue.";
+		$new_task_id = createTask($db, "Echéance expirée", $task_message, "[MAT-".$target."]", null);
+		$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
+		associateTag($db, intval($tag), $new_task_id, "task");
+	} else if($maturity["date_echeance"] <= $maturity_limit){
+		$token .= "NE";
+	}
 	$date = date("Y-m-d H:i:s");
 
 	postNotification($db, $token, $target, null, $date);

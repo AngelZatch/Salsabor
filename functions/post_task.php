@@ -23,22 +23,25 @@ function createTask($db, $task_title, $task_description, $task_token, $task_crea
 	$token = substr($matches[1], 0, 3);
 	$target = substr($matches[1], 4);
 
-	try{
-		$stmt = $db->prepare("INSERT INTO tasks(task_token, task_target, task_title, task_description, task_creator)
+	$duplicates = $db->query("SELECT * FROM tasks WHERE task_token = '$token' AND task_target = '$target' AND task_title = '$task_title'")->rowCount();
+	if($duplicates == 0){
+		try{
+			$stmt = $db->prepare("INSERT INTO tasks(task_token, task_target, task_title, task_description, task_creator)
 							VALUES(:token, :target, :title, :description, :creator_id)");
-		$stmt->bindValue(":token", $token, PDO::PARAM_STR);
-		$stmt->bindValue(":target", $target, PDO::PARAM_INT);
-		$stmt->bindValue(":title", $task_title, PDO::PARAM_STR);
-		$stmt->bindValue(":description", $task_description, PDO::PARAM_STR);
-		if(isset($task_creator_id))
-			$stmt->bindValue(":creator_id", $task_creator_id, PDO::PARAM_INT);
-		else
-			$stmt->bindValue(":creator_id", NULL, PDO::PARAM_INT);
-		$stmt->execute();
-		echo $db->lastInsertId();
-		return $db->lastInsertId();
-	} catch(PDOException $e){
-		echo $e->getMessage();
+			$stmt->bindValue(":token", $token, PDO::PARAM_STR);
+			$stmt->bindValue(":target", $target, PDO::PARAM_INT);
+			$stmt->bindValue(":title", $task_title, PDO::PARAM_STR);
+			$stmt->bindValue(":description", $task_description, PDO::PARAM_STR);
+			if(isset($task_creator_id))
+				$stmt->bindValue(":creator_id", $task_creator_id, PDO::PARAM_INT);
+			else
+				$stmt->bindValue(":creator_id", NULL, PDO::PARAM_INT);
+			$stmt->execute();
+			echo $db->lastInsertId();
+			return $db->lastInsertId();
+		} catch(PDOException $e){
+			echo $e->getMessage();
+		}
 	}
 }
 ?>
