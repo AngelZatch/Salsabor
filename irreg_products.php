@@ -12,13 +12,13 @@ $queryIrregulars = $db->query("SELECT * FROM produits_adherents pa
 								JOIN users u ON id_user_foreign = u.user_id
 								JOIN produits p ON id_produit_foreign = p.product_id
 								JOIN transactions t ON id_transaction_foreign = t.id_transaction
-								WHERE volume_cours < '0.00' AND est_illimite != '1'
+								WHERE volume_cours < '0.00' AND product_size != 0
 								ORDER BY volume_cours ASC");
 ?>
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Template | Salsabor</title>
+		<title>Forfaits irréguliers | Salsabor</title>
 		<base href="../">
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>

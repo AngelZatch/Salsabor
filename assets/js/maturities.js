@@ -71,7 +71,6 @@ function displayMaturities(maturities){
 		totalPrice += parseFloat(maturities[i].price);
 	}
 	var maturities_price = transaction_price - totalPrice;
-	console.log(contents);
 	return contents;
 }
 

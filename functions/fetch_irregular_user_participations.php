@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $user_id = $_GET["user_id"];
 
-$load = $db->query("SELECT pr.passage_id, pr.passage_date, pr.status, s.session_id, s.session_name, s.session_start, s.session_end, p.product_name, pa.date_expiration, pa.date_fin_utilisation, pa.date_prolongee, p.est_illimite, pa.volume_cours, r.room_name AS reader_room_name, r2.room_name AS session_room_name, u.user_rfid, pr.room_token FROM participations pr
+$load = $db->query("SELECT pr.passage_id, pr.passage_date, pr.status, s.session_id, s.session_name, s.session_start, s.session_end, p.product_name, pa.date_expiration, pa.date_fin_utilisation, pa.date_prolongee, p.product_size, pa.volume_cours, r.room_name AS reader_room_name, r2.room_name AS session_room_name, u.user_rfid, pr.room_token FROM participations pr
 					LEFT JOIN readers re ON pr.room_token = re.reader_token
 					LEFT JOIN rooms r ON re.reader_id = r.room_reader
 					LEFT JOIN users u ON pr.user_id = u.user_id
@@ -46,7 +46,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	if($details["product_name"] != null){
 		$r["product_name"] = $details["product_name"];
 		$r["product_expiration"] = max($details["date_expiration"], $details["date_fin_utilisation"], $details["date_prolongee"]);
-		if($details["est_illimite"] == "1"){
+		if($details["product_size"] == "0"){
 			$r["product_hours"] = 9999;
 		} else {
 			$r["product_hours"] = $details["volume_cours"];

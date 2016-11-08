@@ -73,17 +73,15 @@ $rates = $db->query("SELECT * FROM teacher_rates WHERE user_id_foreign = $cours[
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend>
 						<span class="glyphicon glyphicon-eye-open"></span> <span class="session-name"><?php echo $cours['session_name'];?></span>
-						<?php if($cours["session_opened"] == 1){
-	if($on_going){ ?>
+						<?php if($on_going){ ?>
 						<div class="label label-active label-ongoing" title="Le cours se déroule actuellement">
 							<span class="label-active-text">En cours</span>
 						</div>
-						<?php } else { ?>
+						<?php } else if($cours["session_opened"] == 1){ ?>
 						<div class="label label-active label-soon" title="Le cours est actuellement ouvert">
 							<span class="label-active-text">Ouvert</span>
 						</div>
-						<?php }
-} ?>
+						<?php }?>
 						<div class="btn-toolbar float-right">
 							<?php if($count == '1'){ ?>
 							<input type='submit' name='edit-one' id='edit-one' role='button' class='btn btn-success btn-edit' value='Enregistrer les modifications'>
@@ -167,9 +165,9 @@ $rates = $db->query("SELECT * FROM teacher_rates WHERE user_id_foreign = $cours[
 									<label for="teacher_rate" class="col-lg-3 control-label">Tarif</label>
 									<div class="col-lg-9">
 										<select name="teacher_rate" class="form-control" id="teacher-rate">
-										<?php while($rate = $rates->fetch(PDO::FETCH_ASSOC)){ ?>
+											<?php while($rate = $rates->fetch(PDO::FETCH_ASSOC)){ ?>
 											<option <?php if($rate["rate_id"] == $cours["teacher_rate"]) echo "selected='selected'";?> value="<?php echo $rate["rate_id"];?>"><?php echo $rate["rate_title"]." (".$rate["rate_value"]."€/".$rate["rate_ratio"].")";?></option>
-										<?php } ?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>

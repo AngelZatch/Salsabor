@@ -276,8 +276,9 @@ $(document).ready(function(){
 		case 'set-participation-product':
 			title = "Changer le produit à utiliser";
 			var participation_id = target.dataset.participation;
-			console.log(participation_id);
-			$.when(fetchEligibleProducts(participation_id)).done(function(data){
+			var token = {};
+			token["participation_id"] = participation_id;
+			$.when(fetchProducts($.param(token))).done(function(data){
 				var construct = displayEligibleProducts(data);
 				$(".sub-modal-body").html(construct);
 			})

@@ -28,27 +28,45 @@ $db = PDOFactory::getConnection();
 					$searchTerms = "An";
 					$location = 2;
 					/** CODE **/
-					$noCards = $db->query("SELECT user_id FROM users u WHERE actif = 1")->fetchAll(PDO::FETCH_COLUMN);
+					$product_id = 7031;
 
+					$query = "SELECT *, pa.actif AS produit_adherent_actif, pa.date_activation AS produit_adherent_activation, CONCAT(user_prenom, ' ', user_nom) AS user, user_id, date_prolongee, date_fin_utilisation, date_expiration
+					FROM produits_adherents pa
+					JOIN produits p
+						ON pa.id_produit_foreign = p.product_id
+					LEFT JOIN transactions t
+						ON pa.id_transaction_foreign = t.id_transaction
+					LEFT JOIN users u
+						ON pa.id_user_foreign = u.user_id";
+					$query .= " WHERE id_produit_adherent = '$product_id'";
+					$query .= " ORDER BY prix_achat DESC";
+					$load = $db->query($query);
 
+					$count = $load->rowCount();
+					$products_list = array();
+					while($product = $load->fetch(PDO::FETCH_ASSOC)){
+						$p = array(
+							"id" => $product["id_produit_adherent"],
+							"recipient" => $product["id_user_foreign"],
+							"transaction_id" => $product["id_transaction_foreign"],
+							"product_name" => $product["product_name"],
+							"activation" => $product["produit_adherent_activation"],
+							"expiration" => max($product["date_prolongee"], $product["date_expiration"]),
+							"usage_date" => $product["date_fin_utilisation"],
+							"remaining_hours" => $product["volume_cours"],
+							"price" => $product["prix_achat"],
+							"product_size" => $product["product_size"],
+							"user" => (isset($product["user"]))?$product["user"]:"Pas d'utilisateur",
+							"status" => $product["produit_adherent_actif"]
+						);
+						array_push($products_list, $p);
+					}
 					?>
 					<pre>
 						<?php
-foreach($noCards as $user){
-	echo "User actif n°".$user;
-	$test = $db->query("SELECT * FROM produits_adherents pa
-							JOIN produits p ON pa.id_produit_foreign = p.product_id
-							WHERE id_user_foreign = '$user' AND product_name = 'Adhésion Annuelle' AND pa.actif != 2")->rowCount();
-	echo " - Nombre d'adhésions annuelles détectées : ".$test;
-	if($test == "0"){
-		echo " | Création d'une tâche";
-		$new_task_id = createTask($db, "Adhésion Annuelle manquante", "Cet utilisateur n'a pas d'adhésion annuelle.", "[USR-".$user."]", null);
-		$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
-		associateTag($db, intval($tag), $new_task_id, "task");
-	}
-	echo "<br>";
-}
-						?>
+print_r($products_list);
+print_r($products_list[0]);
+?>
 					</pre>
 
 					<?php

@@ -136,23 +136,6 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 				$.get("functions/fetch_user_participations.php", {user_id : user_id, filters : filters}).done(function(data){
 					displayUserParticipations(data);
 				})
-				/*$.ajax({
-					url: "functions/fetch_user_participations.php",
-					type: "GET",
-					data: function(){
-						var filters = [];
-						filters.push(user_id);
-						$(".date-filter").each(function(){
-							filters.push(moment($(this).val(), "DD/MM/YYYY"));
-						})
-						console.log(filters);
-						return {
-							filters : filters
-						};
-					}
-				}).done(function(data){
-					console.log(data);
-				})*/
 			}
 		</script>
 	</body>

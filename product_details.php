@@ -49,6 +49,7 @@ if(isset($_POST["edit"])){
 												product_size = :product_size,
 												product_validity = :validite,
 												product_price = :product_price,
+												counts_holidays = :counts_holidays,
 												actif = :actif,
 												echeances_paiement = :echeances,
 												autorisation_report = :autorisation_report
@@ -58,12 +59,16 @@ if(isset($_POST["edit"])){
 		$edit->bindParam(':description', $_POST["description"], PDO::PARAM_STR);
 		$edit->bindValue(':product_category', $product_category, PDO::PARAM_INT);
 		$edit->bindValue(':product_location', $product_location, PDO::PARAM_INT);
-		$edit->bindParam(':product_size', $_POST["product_size"], PDO::PARAM_INT);
+		if($_POST["size_null"] == '1')
+			$edit->bindParam(':product_size', $_POST["product_size"], PDO::PARAM_INT);
+		else
+			$edit->bindValue(':product_size', NULL, PDO::PARAM_NULL);
 		$edit->bindParam(':validite', $validite, PDO::PARAM_INT);
+		$edit->bindParam(':counts_holidays', $_POST["counts_holidays"], PDO::PARAM_INT);
 		$edit->bindParam(':product_price', $_POST["product_price"], PDO::PARAM_INT);
 		$edit->bindParam(':actif', $actif, PDO::PARAM_INT);
 		$edit->bindParam(':echeances', $_POST["echeances"]);
-		$edit->bindParam(':autorisation_report', $_POST["arep"], PDO::PARAM_INT);
+		$edit->bindParam(':autorisation_report', $_POST["autorisation_report"], PDO::PARAM_INT);
 		$edit->bindParam(':product_id', $_GET["id"], PDO::PARAM_INT);
 		$edit->execute();
 		$db->commit();
@@ -94,16 +99,11 @@ if(isset($_POST["edit"])){
 						<legend><span class="glyphicon glyphicon-credit-card"></span> <?php echo $produit["product_name"];?>
 							<input type="submit" name="edit" role="button" class="btn btn-primary hidden-xs" value="Enregistrer">
 						</legend>
+						<p class="sub-legend">Informations générales</p>
 						<div class="form-group">
 							<label for="product_name" class="control-label col-lg-3">Intitulé</label>
 							<div class="col-lg-9">
 								<input type="text" class="form-control" name="product_name" value="<?php echo $produit["product_name"];?>" placeholder="Nom du produit">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="product_code" class="control-label col-lg-3">Code produit</label>
-							<div class="col-lg-9">
-								<input type="text" class="form-control" name="product_code" value="<?php echo $produit["product_code"];?>" placeholder="Code du produit">
 							</div>
 						</div>
 						<div class="form-group">
@@ -121,6 +121,48 @@ if(isset($_POST["edit"])){
 									<?php } ?>
 									<span class="label label-default label-clickable label-add trigger-sub" id="label_add" data-subtype="session-tags" data-targettype="product" title="Ajouter une étiquette">+</span>
 								</h4>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="product_price" class="col-lg-3 control-label">Prix d'achat</label>
+							<div class="col-lg-9">
+								<div class="input-group">
+									<input type="number" step="any" class="form-control" name="product_price" id="product-price" value="<?php echo $produit["product_price"];?>">
+									<span class="input-group-addon">€</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="description" class="col-lg-3 control-label">Description</label>
+							<div class="col-lg-9">
+								<textarea rows="5" class="form-control" name="description" placeholder="Décrivez rapidement le produit en 100 caractères maximum (facultatif)"><?php echo $produit["description"];?></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="size_null" class="col-lg-3 control-label">Utilisable en cours <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Autorise la consommation du produit lors de cours ou d'événements"></span></label>
+							<div class="col-lg-9">
+								<input name="size_null" id='size-null' data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php ($produit["product_size"]!=null)?1:0;?>">
+							</div>
+						</div>
+						<div class="form-group" id="product-size-group">
+							<label for="product_size" class="col-lg-3 control-label">Volume de cours (en heures) <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Spécifiez 0 pour une formule illimitée."></span></label>
+							<div class="col-lg-9">
+								<input type="number" class="form-control" name="product_size" id='product-size-input' value="<?php echo $produit["product_size"];?>" placeholder="Spécifiez 0 pour une formule illimitée.">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="validite" class="col-lg-3 control-label">Durée de validité</label>
+							<div class="col-lg-9">
+								<input type="number" class="form-control" name="validite" value="<?php echo $produit["product_validity"];?>" placeholder="Exemple : 48">
+								<label for="validate_jour" class="control-label">Jours</label>
+								<input name="validite_jour" id="validite_jour" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1"><p class="help-block">Si décoché, la durée sera calculée en semaines.</p>
+							</div>
+						</div>
+						<p class="sub-legend">Informations de gestion</p>
+						<div class="form-group">
+							<label for="product_code" class="control-label col-lg-3">Code produit</label>
+							<div class="col-lg-9">
+								<input type="text" class="form-control" name="product_code" value="<?php echo $produit["product_code"];?>" placeholder="Code du produit">
 							</div>
 						</div>
 						<div class="form-group">
@@ -154,38 +196,15 @@ if(isset($_POST["edit"])){
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="description" class="col-lg-3 control-label">Description</label>
+							<label for="autorisation_report" class="col-lg-3 control-label">Extension de validité autorisée</label>
 							<div class="col-lg-9">
-								<textarea rows="5" class="form-control" name="description" placeholder="Décrivez rapidement le produit en 100 caractères maximum (facultatif)"><?php echo $produit["description"];?></textarea>
+								<input name="autorisation_report" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $produit["autorisation_report"];?>">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="product_size" class="col-lg-3 control-label">Volume de cours (en heures)</label>
+							<label for="counts_holidays" class="col-lg-3 control-label">Prise en compte des jours chômés <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Détermine si le calcul de la validité doit prendre en compte les jours chômés ou non."></span></label>
 							<div class="col-lg-9">
-								<input type="number" class="form-control" name="product_size" value="<?php echo $produit["product_size"];?>" placeholder="Exemple : 10">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="validite" class="col-lg-3 control-label">Durée de validité</label>
-							<div class="col-lg-9">
-								<input type="number" class="form-control" name="validite" value="<?php echo $produit["product_validity"];?>" placeholder="Exemple : 48">
-								<label for="est_recharge" class="control-label">Jours</label>
-								<input name="validite_jour" id="validite_jour" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1"><p class="help-block">Si décoché, la durée sera calculée en semaines.</p>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="arep" class="col-lg-3 control-label">Autoriser l'extension de validité ?</label>
-							<div class="col-lg-9">
-								<input name="arep" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="product_price" class="col-lg-3 control-label">Prix d'achat</label>
-							<div class="col-lg-9">
-								<div class="input-group">
-									<input type="number" step="any" class="form-control" name="product_price" id="product-price" value="<?php echo $produit["product_price"];?>">
-									<span class="input-group-addon">€</span>
-								</div>
+								<input name="counts_holidays" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo $produit["counts_holidays"];?>">
 							</div>
 						</div>
 						<div class="form-group">
@@ -202,17 +221,18 @@ if(isset($_POST["edit"])){
 		<?php include "inserts/sub_modal_product.php";?>
 	</body>
 	<script>
-		/*$(document).ready(function(){
-			$.get("functions/fetch_product_categories.php").done(function(data){
-				var options = JSON.parse(data);
-				console.log(options);
-				for(var i = 0; i < options.length; i++){
-					console.log(options[i]);
-					$("#product-category").append(
-						$("<option></option>").text(options[i].text).val(options[i].value)
-					);
-				}
-			})
-		})*/
+		$(document).ready(function(){
+			if($("#size-null").val() == 0){
+				$("#product-size-group").hide();
+			}
+		})
+		$('#size-null').on('change', function(){
+			console.log($(this));
+			if($(this).val() == "1"){
+				$("#product-size-group").show();
+			} else {
+				$("#product-size-group").hide();
+			}
+		})
 	</script>
 </html>

@@ -114,6 +114,9 @@ $welcome = $time_message[$rand];
 							</ul>
 						</div>
 					</div>
+					<?php if($_SESSION["location"] == null){ ?>
+					<p class="alert alert-warning"><strong>Attention !</strong> Vous n'appartenez à aucune région d'activité. Editez votre profil pour y assigner une région ou contacter votre administrateur local.</p>
+					<?php } ?>
 					<div class="col-lg-6 dashboard-zones clearfix container-fluid">
 						<p class="sub-legend"><span class="glyphicon glyphicon-bell"></span> Récemment...</p>
 						<ul class="dashboard-notifications-container container-fluid"></ul>

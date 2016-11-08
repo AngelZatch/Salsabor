@@ -36,7 +36,7 @@ function generateReference() {
 function computeExpirationDate($db, $date_activation, $validity, $has_holidays){
 	$validity--;
 	$date_expiration = date("Y-m-d 23:59:59", strtotime($date_activation.'+'.$validity.'DAYS'));
-	if($has_holidays){
+	if($has_holidays || $has_holidays == 1){
 		$queryHoliday = $db->prepare("SELECT * FROM holidays WHERE holiday_date >= ? AND holiday_date <= ?");
 		$queryHoliday->bindParam(1, $date_activation);
 		$queryHoliday->bindParam(2, $date_expiration);
@@ -60,97 +60,6 @@ function computeExpirationDate($db, $date_activation, $validity, $has_holidays){
 		$new_exp_date = $date_expiration;
 	}
 	return $new_exp_date;
-}
-
-function addParticipation($db, $cours_name, $session_id, $user_id, $ip, $tag){
-	$today = date_create('now')->format('Y-m-d H:i:s');
-	if($session_id != null){ // If we could find a session, then we're gonna look for a product.
-		if(preg_match("/jazz/i", $cours_name, $matches) || preg_match("/pilates/i", $cours_name, $matches) || preg_match("/particulier/i", $cours_name, $matches)){ // Search for specific Jazz, Pilates or private sessions
-			/*echo $matches[0];*/
-			$checkSpecific = $db->query("SELECT id_produit_adherent, id_produit_foreign, product_name, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
-									JOIN produits p ON pa.id_produit_foreign = p.product_id
-									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
-									WHERE id_user_foreign='$user_id'
-									AND product_name LIKE '%$matches[0]%'
-									AND pa.actif != '2'
-									ORDER BY date_achat ASC");
-			if($checkSpecific->rowCount() > 0){
-				$product = $checkSpecific->fetch(PDO::FETCH_ASSOC);
-			}
-		} else { // First, we search for any freebies
-			$checkInvitation = $db->query("SELECT id_produit_adherent, id_produit_foreign, product_name, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
-									JOIN produits p ON pa.id_produit_foreign = p.product_id
-									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
-									WHERE id_user_foreign='$user_id'
-									AND product_name = 'Invitation'
-									AND pa.actif = '0'
-									ORDER BY date_achat ASC");
-			if($checkInvitation->rowCount() > 0){ // If there are freebies still available, we take the first one.
-				$product = $checkInvitation->fetch(PDO::FETCH_ASSOC);
-			} else { // If no freebies, we look for every currently active products.
-				$checkActive = $db->query("SELECT id_produit_adherent, id_produit_foreign, product_name, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
-									JOIN produits p ON pa.id_produit_foreign = p.product_id
-									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
-									WHERE id_user_foreign='$user_id'
-									AND product_name != 'Invitation'
-									AND product_name NOT LIKE '%jazz%'
-									AND product_name NOT LIKE '%pilates%'
-									AND product_name NOT LIKE '%particulier%'
-									AND pa.actif = '1'
-									AND est_abonnement = '0'
-									AND est_cours_particulier = '0'
-									ORDER BY date_achat ASC");
-				if($checkActive->rowCount() > 0){ // If there are active products that are not an annual sub
-					$product = $checkActive->fetch(PDO::FETCH_ASSOC);
-				} else { // We check inactive products now.
-					$checkPending = $db->query("SELECT id_produit_adherent, id_produit_foreign, product_name, pa.actif AS produit_adherent_actif, date_achat FROM produits_adherents pa
-									JOIN produits p ON pa.id_produit_foreign = p.product_id
-									LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
-									WHERE id_user_foreign='$user_id'
-									AND product_name != 'Invitation'
-									AND product_name NOT LIKE '%jazz%'
-									AND product_name NOT LIKE '%pilates%'
-									AND product_name NOT LIKE '%particulier%'
-									AND pa.actif = '0'
-									AND est_abonnement = '0'
-									AND est_cours_particulier = '0'
-									ORDER BY date_achat ASC");
-					if($checkPending->rowCount() > 0){
-						$product = $checkPending->fetch(PDO::FETCH_ASSOC);
-					}
-				}
-			}
-		}
-		if(isset($product)){
-			$product_id = $product["id_produit_adherent"];
-			$status = "0";
-		} else {
-			$product = NULL;
-			$status = "3";
-		}
-		$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, session_id, produit_adherent_id, status)
-					VALUES('$tag', '$user_id', '$ip', '$today', '$session_id', '$product_id', '$status')");
-		echo "$";
-	} else {
-		$status = "4";
-		$new = $db->query("INSERT INTO participations(user_rfid, user_id, room_token, passage_date, status)
-					VALUES('$tag', '$user_id', '$ip', '$today', '$status')");
-		echo $status;
-	}
-	// If the user have missing info
-	$stmt = $db->prepare("SELECT mail, telephone, code_postal FROM users WHERE user_id = ?");
-	$stmt->bindParam(1, $user_id, PDO::PARAM_INT);
-	$stmt->execute();
-	$check = $stmt->fetch(PDO::FETCH_ASSOC);
-	if(($check["mail"] == "" || $check["telephone"] == "" || $check["code_postal"] == "") && $user_id != null){
-		include 'post_task.php';
-		include 'attach_tag.php';
-		// System created task
-		$new_task_id = createTask($db, "Manque d'informations", "Au moins une de ces informations est manquante : adresse mail, numéro de téléphone ou code postal. Cette tâche a été créée car l'utilisateur est actuellement présent en cours.", "[USR-".$user_id."]", null);
-		// Tag can now change because it's set by the team.
-		$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
-		associateTag($db, intval($tag), $new_task_id, "task");
-	}
 }
 
 function addParticipationBeta($db, $values){

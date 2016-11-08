@@ -27,7 +27,7 @@ function nearExpiration($db, $product_id){
 						<ul>
 							<li><span style='color: #A80139'>Produit</span> : ".$product_details["product_name"]."</li>
 							<li><span style='color: #A80139'>Date d'expiration</span> : ".utf8_encode(strftime("%d %B %Y", strtotime($product_details["produit_validity"])))."</li>";
-	if($product_details["est_illimite"] == '0' && $product_details["est_abonnement"] == '0'){
+	if($product_details["product_size"] != '0' && $product_details["product_size"] != null){
 		if($product_details["volume_cours"] == '1'){
 			$hours = "heure";
 		} else {
