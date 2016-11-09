@@ -315,22 +315,12 @@ $(document).ready(function(){
 			body += "Êtes-vous sûr de vouloir supprimer cette participation ?";
 			$(".sub-modal-body").html(body);
 			footer += "<button class='btn btn-danger delete-participation col-lg-6' id='btn-product-delete' data-session='"+participation_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
-			$(".sub-modal").css({top : tpos.top-45+'px'});
-			break;
-
-			/*case 'delete-record':
-			title = "Supprimer un passage";
-			var participation_id = target.dataset.argument;
-			body += "Êtes-vous sûr de vouloir supprimer ce passage ?";
-			$(".sub-modal-body").html(body);
-			footer += "<button class='btn btn-danger delete-record col-lg-6' id='btn-record-delete' data-participation='"+participation_id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button><button class='btn btn-default col-lg-6'>Annuler</button>";
-			$(".sub-modal").css({top : toffset.top+'px'});
 			if(toffset.left > 1000){
 				$(".sub-modal").css({left : toffset.left-350+'px'});
 			} else {
 				$(".sub-modal").css({left : toffset.left+20+'px'});
 			}
-			break;*/
+			break;
 
 		case 'delete-product':
 			title = "Supprimer un produit";
@@ -347,7 +337,11 @@ $(document).ready(function(){
 			body += "Êtes vous sûr de vouloir délier cette participation ? Vous la retrouverez dans les passages non régularisés";
 			$(".sub-modal-body").html(body);
 			footer += "<button class='btn btn-default unlink-session col-lg-6' id='btn-product-unlink' data-session='"+participation_id+"'><span class='glyphicon glyphicon-link'></span> Délier</button> <button class='btn btn-default col-lg-6'>Annuler</button>";
-			$(".sub-modal").css({top : tpos.top-45+'px'});
+			if(toffset.left > 1000){
+				$(".sub-modal").css({left : toffset.left-350+'px'});
+			} else {
+				$(".sub-modal").css({left : toffset.left+20+'px'});
+			}
 			break;
 
 		case 'receive-maturity':
