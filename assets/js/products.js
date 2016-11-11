@@ -1,83 +1,14 @@
 $(document).ready(function(){
 	moment.locale('fr');
-	$("#product-modal").on('show.bs.modal', function(event){
-		var argument = $(event.relatedTarget).data('argument'), modal = $(this);
-
-		$.when(fetchProduct(argument), fetchSessions(argument)).done(function(product, sessions){
-			var product_details = JSON.parse(product[0]), buttons = "";
-
-			// Handling the product
-			modal.find(".modal-title").text(product_details.product+" (ID : "+product_details.id+")");
-			modal.find(".purchase-sub").text("Transaction "+product_details.transaction+" du "+moment(product_details.transaction_date).format("DD/MM/YYYY")+"; utilisé par "+product_details.user);
-
-			switch(product_details.status){
-				case '0':
-					/*buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-activate-"+product_details.id+"' onclick='activateProduct("+product_details.id+")'><span class='glyphicon glyphicon-play-circle'></span> Activer</button>";*/
-					// Activation button
-					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-activate-"+product_details.id+"' data-argument='"+product_details.id+"' data-subtype='activate'><span class='glyphicon glyphicon-play-circle'></span> Activer</button>";
-					break;
-
-				case '1':
-					// Deactivation button
-					buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-activate-"+product_details.id+"' onclick='deactivateProduct("+product_details.id+")'><span class='glyphicon glyphicon-ban-circle'></span> Désactiver</button>";
-					// Extension button
-					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-arep' data-argument='"+product_details.id+"' data-arep='"+product_details.extended+"' data-subtype='AREP'><span class='glyphicon glyphicon-calendar'></span> AREP</button>";
-					break;
-
-				case '2':
-					// Reactivation button
-					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-activate-"+product_details.id+"' data-argument='"+product_details.id+"' data-subtype='activate'><span class='glyphicon glyphicon-play-circle'></span> Réactiver</button>";
-					// Extension button
-					buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-arep' data-argument='"+product_details.id+"' data-arep='"+product_details.extended+"' data-subtype='AREP'><span class='glyphicon glyphicon-calendar'></span> AREP</button>";
-					break;
-			}
-			if(product_details.flag_hours == '1'){ // If the product is not an illimited, a private lesson or an annual subscription
-				if(product_details.remaining_hours < 0){
-					var product_validity = "<p id='product-status-"+product_details.id+"'><span class='highlighted-value'>"+-1 * product_details.remaining_hours+" heures</span> de consommation excessive</p>";
-				} else {
-					var product_validity = "<p id='product-status-"+product_details.id+"'><span class='highlighted-value'>"+product_details.remaining_hours+" heures</span><br>restantes</p>";
-				}
-			} else {
-				if(product_details.status == '1'){ // If the product is active
-					var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+moment(product_details.validity).toNow(true)+"</span><br> restants</p>";
-				}
-			}
-			if(product_details.subscription == 0){ // If the product is NOT an annual subscription
-				// Computing hours button
-				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+", true)'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
-				buttons += "<button class='btn btn-default btn-block btn-modal' onclick='unlinkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-link'></span> Délier inval.</button>";
-				buttons += "<button class='btn btn-default btn-block btn-modal' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.</button>";
-				// Handling the sessions
-				computeRemainingHours(argument, true);
-			} else {
-				$(".participations-list").empty();
-			}
-			if(product_details.lock_status == 0){
-				var expiredAffix = "disabled";
-			} else {
-				var expiredAffix = "enabled";
-			}
-			buttons += "<button class='btn btn-default btn-block btn-modal "+expiredAffix+"' id='manual-expire' onclick='deactivateProduct("+product_details.id+", 2)'><span class='glyphicon glyphicon-hourglass'></span> Expirer</button>";
-			buttons += "<button class='btn btn-danger btn-block btn-modal trigger-sub' id='delete-product' data-subtype='delete-product' data-product='"+product_details.id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";
-			buttons += "<h2 class='modal-body-title'>Verrous</h2>";
-			// Button to toggle automatic computing of this product.
-			if(product_details.lock_status == 1){
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_status' data-product='"+product_details.id+"' title='Verrouillé : le système n&apos;a désormais pas l&apos;autorisation de changer l&apos;état (en attente, valide, expiré) du produit. Vous pouvez cependant toujours le modifier.'><span class='glyphicon glyphicon-lock'></span> Etat</button>";
-			} else {
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_status' data-product='"+product_details.id+"' title='Libre : le système modifiera l&apos;état du produit de façon appropriée en fonction des dates de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Etat</button>";
-			}
-			if(product_details.lock_dates == 1){
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_dates' data-product='"+product_details.id+"' title='Verrouilé : le système n&apos;a désormais pas l&apos;autorisation de changer les dates de validité, d&apos;activation ni d&apos;expiration du produit. Vous pouvez néanmoins fixer toutes ces dates.'><span class='glyphicon glyphicon-lock'></span> Dates</button>";
-			} else {
-				buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_dates' data-product='"+product_details.id+"' title='Libre : le système modifiera les dates en fonction du premier cours enregistré, de la validité du produit et d&apos;une potentielle extension de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Dates</button>";
-			}
-			modal.find(".product-validity").empty();
-			modal.find(".product-validity").html(product_validity);
-			modal.find(".modal-actions").html(buttons);
-		})
-	}).on('hidden.bs.modal', function(event){
-		$(".sub-modal").hide();
+}).on('show.bs.modal', '#product-modal', function(e){
+	var product_id = $(e.relatedTarget).data('argument'), modal = $(this);
+	var token = {};
+	token["product_id"] = product_id;
+	$.when(fetchProducts($.param(token)), fetchSessions(product_id)).done(function(product, sessions){
+		renderProductModal(modal, JSON.parse(product[0]), JSON.parse(sessions[0]));
 	})
+}).on('hide.bs.modal', '#product-modal', function(e){
+	$(".sub-modal").hide();
 }).on('click', '.activate-product', function(){
 	var date = moment($(".datepicker").val(),"DD/MM/YYYY").format("YYYY-MM-DD");
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
@@ -239,77 +170,49 @@ function activateProductWithDate(product_id, start_date){
 /** Compute the remaining hours of a product **/
 function computeRemainingHours(product_id, refresh){
 	console.log("Computing product "+product_id);
-	$.post("functions/compute_remaining_hours.php", {product_id : product_id}).done(function(value){
-		/** Things to do here:
-			This function checks everything and sets everything if needed. It computes the remaining hours of a product, its status, it activates or deactivates if necessary and computes the activation and expiration dates as well. Once it's done, it'll call the function to refresh the list of sessions so they stay up-to-date as well.
-			This is the all-purpose script that pretty much does everything for a product.
-		**/
-		/*console.log(value);*/
-		$("#purchase-item-"+product_id).removeClass("item-pending");
-		$("#purchase-item-"+product_id).removeClass("item-overused");
-		$("#purchase-item-"+product_id).removeClass("item-active");
-		$("#purchase-item-"+product_id).removeClass("item-expired");
-		$("#purchase-item-"+product_id).removeClass("item-consumed");
+	$.post("functions/compute_product.php", {product_id : product_id}).done(function(computed_product_details){
+		/*console.log(value);
+
 		var values = JSON.parse(value);
 		console.log(values);
-		var date = "-", activation = "-", usage = "-", hours = values.hours, status = values.status, limit = values.limit;
+		var hours = values.hours, status = values.status, product_size = values.product_size;
 		if(values.expiration != null){ var date = moment(values.expiration).format("DD/MM/YYYY"); }
 		if(values.activation != null){ var activation = moment(values.activation).format("DD/MM/YYYY"); }
 		if(values.usage != null){ var usage = moment(values.usage).format("DD/MM/YYYY"); }
 
 		if(status == 2){ // If the product is expired
 			if(hours < 0){ // If the product is overused
-				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ -1 * hours + " heures</span> de consommation excessive");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(-1 * hours + " heures en excès");
 				$("#purchase-item-"+product_id).addClass("item-overused");
-				$(".usage-slot-date").text(usage);
 			} else if(hours > 0){ // If the product still has remaining hours
-				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
-				if(limit != '1'){
-					$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
-				}
-				$(".usage-slot-date").text("-");
 				$("#purchase-item-"+product_id).addClass("item-expired");
 			} else { // If the product has no more hours.
-				$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html("Heures épuisées");
 				$("#purchase-item-"+product_id).addClass("item-expired");
-				$(".usage-slot-date").text(usage);
 			}
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+date);
-			$(".activation-slot-date").text(activation);
-			$(".expiration-slot-date").text(date);
 		} else if (status == 1){ // If the product is active
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Valide du "+activation+" au "+date);
 			$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
-			if(limit != '1'){
+			if(product_size != '1'){
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
 			}
 			$("#purchase-item-"+product_id).addClass("item-active");
-			$(".activation-slot-date").text(activation);
-			$(".expiration-slot-date").text(date);
-			$(".usage-slot-date").text("-");
 		} else { // If the product is pending
 			$("#product-status-"+product_id).html("<span class='highlighted-value'>En attente</span>");
-			if(limit != '1'){
+			if(product_size != '1'){
 				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
 			}
 			$("#product-validity-"+product_id).html("<span class='highlighted-value'>En attente</span>");
 			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("En attente");
 			$("#purchase-item-"+product_id).addClass("item-pending");
-			$(".activation-slot-date").text("-");
-			$(".expiration-slot-date").text("-");
-			$(".usage-slot-date").text("-");
-		}
+		}*/
 		if(refresh){
-			console.log("Refreshing participations");
-			(function(){
-				$.when(fetchProduct(product_id), fetchSessions(product_id)).done(function(product, sessions){
-					fillSessions(sessions);
-					console.log("Partcipations refreshed");
-				});
-			})();
+			$.when(fetchSessions(product_id)).done(function(sessions){
+				renderProductModal($("#product-modal"), JSON.parse(computed_product_details), JSON.parse(sessions));
+			});
 		}
+		refreshProductBanner(JSON.parse(computed_product_details));
 		console.log("Computing done.");
 	})
 }
@@ -350,10 +253,7 @@ function deleteProduct(product_id){
 	})
 }
 
-/** Fetch the products that can be target of a record reassignment **/
-function fetchEligibleProducts(participation_id){
-	return $.post("functions/fetch_user_products.php", {participation_id : participation_id});
-}
+/** Displays the products that can be target of a participation reassignment **/
 function displayEligibleProducts(data){
 	var products_list = JSON.parse(data), product_status, product_flavor_text, product_hours, product_purchase_date;
 	var body = "<ul class='purchase-inside-list'>";
@@ -361,20 +261,25 @@ function displayEligibleProducts(data){
 		body += "Aucun produit n'est disponible";
 	} else{
 		for(var i = 0; i < products_list.length; i++){
-			if(products_list[i].transaction_achat != null){
-				product_purchase_date = "Acheté le "+moment(products_list[i].transaction_achat).format("DD/MM/YYYY");
+			var usage_date;
+			if(products_list[i].date_achat != null){
+				product_purchase_date = "Acheté le "+moment(products_list[i].date_achat).format("DD/MM/YYYY");
 			} else {
 				product_purchase_date = "Pas de transaction";
 			}
+			if(products_list[i].usage_date)
+				usage_date = products_list[i].usage_date;
+			else
+				usage_date = products_list[i].expiration;
 			switch(products_list[i].status){
 				case '1':
 					product_status = "item-active";
-					product_flavor_text = "Valide du "+moment(products_list[i].start).format("DD/MM/YYYY")+" au "+moment(products_list[i].validity).format("DD/MM/YYYY");
+					product_flavor_text = "Valide du "+moment(products_list[i].activation).format("DD/MM/YYYY")+" au "+moment(usage_date).format("DD/MM/YYYY");
 					break;
 
 				case '2':
 					product_status = "item-expired";
-					product_flavor_text = "Valide du "+moment(products_list[i].start).format("DD/MM/YYYY")+" au "+moment(products_list[i].validity).format("DD/MM/YYYY");
+					product_flavor_text = "Valide du "+moment(products_list[i].activation).format("DD/MM/YYYY")+" au "+moment(usage_date).format("DD/MM/YYYY");
 					break;
 
 				case '0':
@@ -382,18 +287,18 @@ function displayEligibleProducts(data){
 					product_flavor_text = "En attente";
 					break;
 			}
-			if(products_list[i].hours < 0 && products_list[i].unlimited != 1){
+			if(products_list[i].remaining_hours < 0 && products_list[i].product_size != 0){
 				product_status = "item-overused";
 			}
 			body += "<li class='sub-modal-product "+product_status+"' data-argument='"+products_list[i].id+"'>";
-			body += "<p class='smp-title'>"+products_list[i].title+"</p>";
+			body += "<p class='smp-title'>"+products_list[i].product_name+"</p>";
 			body += "<p>"+product_purchase_date+"</p>";
 			body += "<p>"+product_flavor_text+"</p>";
-			if(products_list[i].unlimited != 1){
+			if(products_list[i].product_size != 0){
 				if(products_list[i].hours < 0){
-					product_hours = -1 * products_list[i].hours+" heures en excès";
+					product_hours = -1 * products_list[i].remaining_hours+" heures en excès";
 				} else {
-					product_hours = 1 * products_list[i].hours+" heures restantes";
+					product_hours = 1 * products_list[i].remaining_hours+" heures restantes";
 				}
 				body += "<p>"+product_hours+"</p>";
 			}
@@ -409,8 +314,8 @@ function fetchMaturities(purchase_id){
 	return $.post("functions/fetch_maturities.php", {purchase_id : purchase_id});
 }
 
-function fetchProduct(product_id){
-	return $.get("functions/fetch_product.php", {product_id : product_id});
+function fetchProducts(filter_token){
+	return $.get("functions/fetch_products.php", {filter_token : filter_token});
 }
 
 function displayPurchase(purchase_id){
@@ -418,7 +323,9 @@ function displayPurchase(purchase_id){
 		$("#body-purchase-"+purchase_id).collapse("hide");
 		$("#body-purchase-"+purchase_id).empty();
 	} else {
-		$.when(fetchSubs(purchase_id), fetchMaturities(purchase_id)).done(function(data1, data2){
+		var token = {};
+		token["purchase_id"] = purchase_id;
+		$.when(fetchProducts($.param(token)), fetchMaturities(purchase_id)).done(function(data1, data2){
 			var purchase_list = JSON.parse(data1[0]);
 			var maturities_list = JSON.parse(data2[0]);
 
@@ -426,42 +333,7 @@ function displayPurchase(purchase_id){
 			var contents = "<p class='purchase-subtitle'>Liste des produits</p>";
 			contents += "<div class='row purchase-product-list-container' id='products-"+purchase_id+"'>";
 			contents += "<ul class='purchase-inside-list purchase-product-list'>";
-			for(var i = 0; i < purchase_list.length; i++){
-				var item_status, text_status;
-				// Status of the purchase
-				if(purchase_list[i].status == '0'){ // If not yet activated
-					item_status = "item-pending";
-					text_status = "En attente";
-				} else if(purchase_list[i].status == '2'){ // If expired or fully used
-					item_status = "item-expired";
-					text_status = "Expiré le "+moment(purchase_list[i].validity).format("DD/MM/YYYY");
-				} else { // If active or set to activate in the near future
-					item_status = "item-active";
-					text_status = "Valide du <span> "+moment(purchase_list[i].activation).format("DD/MM/YYYY")+"</span> au <span>"+moment(purchase_list[i].validity).format("DD/MM/YYYY")+"</span>";
-				}
-				contents += "<li class='purchase-item panel-item "+item_status+" container-fluid' id='purchase-item-"+purchase_list[i].id+"' data-toggle='modal' data-target='#product-modal' data-argument='"+purchase_list[i].id+"'>";
-				contents += "<p class='col-lg-12 panel-item-title bf'>"+purchase_list[i].product+"</p>";
-				contents += "<div class='purchase-product-subdetails'>";
-				contents += "<p class='col-lg-3 purchase-product-validity'>";
-				contents += text_status;
-				contents += "</p>";
-				contents += "<p class='col-lg-3 purchase-product-user'>"+purchase_list[i].user+"</p>";
-				contents += "<p class='col-lg-3 purchase-product-hours'>";
-				if(purchase_list[i].flag_hours == 1){
-					if(purchase_list[i].remaining_hours < 0){
-						contents += -1 * purchase_list[i].remaining_hours+" heures en excès";
-					} else {
-						contents += 1 * purchase_list[i].remaining_hours+" heures restatntes";
-					}
-				}
-				contents += "</p>";
-				contents += "<p class='col-lg-1 purchase-product-price align-right'>";
-				contents += purchase_list[i].price;
-				contents += " €</p>";
-				contents += "</div>";
-				contents += "</li>";
-				/*contents += "<div class='purchase-item-options'>Opérations sur le produit acheté</div>";*/
-			}
+			contents += renderProductBanners(purchase_list);
 			contents += "</ul></div>";
 
 			// Handle maturities
@@ -492,14 +364,10 @@ function fetchSessions(product_id){
 	return $.get("functions/fetch_sessions_product.php", {product_id : product_id});
 }
 
-function fetchSubs(purchase_id){
-	return $.post("functions/fetch_subscriptions.php", {purchase_id : purchase_id});
-}
-
-function fillSessions(sessions){
+function fillSessions(sessions_list){
 	$(".participations-list").empty();
 	/*console.log(sessions);*/
-	var sessions_list = JSON.parse(sessions[0]), valid_sessions = "", over_sessions = "", out_sessions = "", previousSessions = [], valid_indicator = -1, over_indicator = -1;
+	var valid_sessions = "", over_sessions = "", out_sessions = "", previousSessions = [], valid_indicator = -1, over_indicator = -1;
 	for(var i = 0; i < sessions_list.length; i++){
 		/*console.log(sessions_list[i]);*/
 		if(sessions_list[i].valid == 2){
@@ -521,9 +389,6 @@ function fillSessions(sessions){
 			valid_sessions += "<p class='col-lg-12 session-hours'>"+moment(sessions_list[i].start).format("DD/MM/YYYY")+" : "+moment(sessions_list[i].start).format("HH:mm")+" - "+moment(sessions_list[i].end).format("HH:mm")+"</p>";
 			valid_sessions += "</li>";
 		}
-		/*if(product_details.status == '2' && product_details.flag_hours == '0'){
-			var product_validity = "<p id='product-status"+product_details.id+"'><span class='highlighted-value'>"+hoursUsed+"</span><br> heures consommées</p>";
-		}*/
 	}
 	for(var j = 0; j < previousSessions.length; j++){
 		if(over_indicator == -2){
@@ -600,6 +465,207 @@ function linkAll(){
 	}
 	$("#link-all").text("En cours...");
 	link(invalidMap, 0);
+}
+
+function renderProductModal(modal, product_details, participations_list){
+	// Renders product in the modal
+	// Title
+	modal.find(".modal-title").text(product_details.product_name+" (ID : "+product_details.id+")");
+	modal.find(".purchase-sub").text("Transaction "+product_details.transaction_id+" du "+moment(product_details.transaction_date).format("DD/MM/YYYY")+"; utilisé par "+product_details.user);
+
+	// Status block
+	if(product_details.activation)
+		modal.find(".activation-slot-date").text(moment(product_details.activation).format("DD/MM/YYYY"));
+	else
+		modal.find(".activation-slot-date").text(" -");
+
+	if(product_details.expiration)
+		modal.find(".expiration-slot-date").text(moment(product_details.expiration).format("DD/MM/YYYY"));
+	else
+		modal.find(".expiration-slot-date").text(" -");
+
+	if(product_details.usage_date)
+		modal.find(".usage-slot-date").text(moment(product_details.usage_date).format("DD/MM/YYYY"));
+	else
+		modal.find(".usage-slot-date").text(" -");
+
+	var product_validity = "<p id='product-status-"+product_details.id+"'><span class='highlighted-value'>";
+	if(product_details.product_size > 0){
+		if(product_details.remaining_hours < 0){
+			product_validity += -1 * product_details.remaining_hours+" heures</span> de consommation excessive</p>";
+		} else {
+			var product_validity = "<p id='product-status-"+product_details.id+"'><span class='highlighted-value'>"+product_details.remaining_hours+" heures</span><br>restantes</p>";
+		}
+	} else {
+		$(".participations-list").empty();
+		if(product_details.status == '1'){ // If the product is active
+			product_validity += moment(product_details.expiration).toNow(true)+"</span><br> avant expiration</p>";
+		} else {
+			product_validity += "Expiré</span> depuis "+moment(product_details.expiration).fromNow(true)+"</p>";
+		}
+	}
+	modal.find(".product-validity").empty();
+	modal.find(".product-validity").html(product_validity);
+
+	// Actions block
+	var buttons = "";
+	switch(product_details.status){
+		case '0':
+		case 0:
+			/*buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-activate-"+product_details.id+"' onclick='activateProduct("+product_details.id+")'><span class='glyphicon glyphicon-play-circle'></span> Activer</button>";*/
+			// Activation button
+			buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-activate-"+product_details.id+"' data-argument='"+product_details.id+"' data-subtype='activate'><span class='glyphicon glyphicon-play-circle'></span> Activer</button>";
+			break;
+
+		case '1':
+		case 1:
+			// Deactivation button
+			buttons += "<button class='btn btn-default btn-block btn-modal' id='btn-activate-"+product_details.id+"' onclick='deactivateProduct("+product_details.id+")'><span class='glyphicon glyphicon-ban-circle'></span> Désactiver</button>";
+			// Extension button
+			buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-arep' data-argument='"+product_details.id+"' data-arep='"+product_details.extended+"' data-subtype='AREP'><span class='glyphicon glyphicon-calendar'></span> AREP</button>";
+			break;
+
+		case '2':
+		case 2:
+			// Reactivation button
+			buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-activate-"+product_details.id+"' data-argument='"+product_details.id+"' data-subtype='activate'><span class='glyphicon glyphicon-play-circle'></span> Réactiver</button>";
+			// Extension button
+			buttons += "<button class='btn btn-default btn-block btn-modal trigger-sub' id='btn-arep' data-argument='"+product_details.id+"' data-arep='"+product_details.extended+"' data-subtype='AREP'><span class='glyphicon glyphicon-calendar'></span> AREP</button>";
+			break;
+	}
+	// Computing hours button
+	buttons += "<button class='btn btn-default btn-block btn-modal' onclick='computeRemainingHours("+product_details.id+", true)'><span class='glyphicon glyphicon-scale'></span> Recalculer</button>";
+	buttons += "<button class='btn btn-default btn-block btn-modal' onclick='unlinkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-link'></span> Délier inval.</button>";
+	buttons += "<button class='btn btn-default btn-block btn-modal' id='link-all' onclick='linkAll()' title='Délier tous les cours hors forfait'><span class='glyphicon glyphicon-arrow-right'></span> Trouver assoc.</button>";
+	// Handling the sessions
+	if(product_details.lock_status == 0){
+		var expiredAffix = "disabled";
+	} else {
+		var expiredAffix = "enabled";
+	}
+	buttons += "<button class='btn btn-default btn-block btn-modal "+expiredAffix+"' id='manual-expire' onclick='deactivateProduct("+product_details.id+", 2)'><span class='glyphicon glyphicon-hourglass'></span> Expirer</button>";
+	buttons += "<button class='btn btn-danger btn-block btn-modal trigger-sub' id='delete-product' data-subtype='delete-product' data-product='"+product_details.id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";
+	buttons += "<h2 class='modal-body-title'>Verrous</h2>";
+	// Button to toggle automatic computing of this product.
+	if(product_details.lock_status == 1){
+		buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_status' data-product='"+product_details.id+"' title='Verrouillé : le système n&apos;a désormais pas l&apos;autorisation de changer l&apos;état (en attente, valide, expiré) du produit. Vous pouvez cependant toujours le modifier.'><span class='glyphicon glyphicon-lock'></span> Etat</button>";
+	} else {
+		buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_status' data-product='"+product_details.id+"' title='Libre : le système modifiera l&apos;état du produit de façon appropriée en fonction des dates de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Etat</button>";
+	}
+	if(product_details.lock_dates == 1){
+		buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-enabled' id='lock_dates' data-product='"+product_details.id+"' title='Verrouilé : le système n&apos;a désormais pas l&apos;autorisation de changer les dates de validité, d&apos;activation ni d&apos;expiration du produit. Vous pouvez néanmoins fixer toutes ces dates.'><span class='glyphicon glyphicon-lock'></span> Dates</button>";
+	} else {
+		buttons += "<button class='btn btn-default btn-block btn-modal btn-boolean status-disabled' id='lock_dates' data-product='"+product_details.id+"' title='Libre : le système modifiera les dates en fonction du premier cours enregistré, de la validité du produit et d&apos;une potentielle extension de validité.'><span class='glyphicon glyphicon-floppy-remove'></span> Dates</button>";
+	}
+
+	modal.find(".modal-actions").html(buttons);
+
+	// Participations block
+	fillSessions(participations_list);
+}
+
+function refreshProductBanner(product_details){
+	var banner = $("#purchase-item-"+product_details.id);
+
+	// Display
+	banner.removeClass("item-overused item-pending item-active item-expired");
+
+	// Refreshing status
+	if(product_details.remaining_hours < 0 && product_details.product_size != 0){
+		$("#purchase-item-validity-"+product_details.id).text("Surconsommé à partir du "+moment(product_details.display_expiration).format("DD/MM/YYYY"));
+		$("#purchase-item-status-"+product_details.id).addClass("item-overused");
+	} else {
+		switch(product_details.status){
+			case '0':
+			case 0:
+				$("#purchase-item-validity-"+product_details.id).text("En attente");
+				banner.addClass("item-pending");
+				break;
+
+			case 1:
+			case '1':
+				$("#purchase-item-validity-"+product_details.id).text("Valide du "+moment(product_details.activation).format("DD/MM/YYYY")+" au "+moment(product_details.display_expiration).format("DD/MM/YYYY"));
+				banner.addClass("item-active");
+				break;
+
+			case 2:
+			case '2':
+				$("#purchase-item-validity-"+product_details.id).text("Expiré le "+moment(product_details.display_expiration).format("DD/MM/YYYY"));
+				banner.addClass("item-expired");
+				break;
+		}
+	}
+
+	// Refreshing size
+	var size = "";
+	if(product_details.product_size != null){
+		if(product_details.product_size != 0){
+			if(product_details.remaining_hours > 0)
+				size += product_details.remaining_hours+" heures restantes";
+			else
+				size += -1 * product_details.remaining_hours+" heures en excès";
+		} else {
+			size += -1 * product_details.remaining_hours+" heures utilisées";
+		}
+	} else {
+		size += "N'accepte pas les participations";
+	}
+	$("#purchase-item-status-"+product_details.id).text(size);
+
+}
+
+function renderProductBanners(purchase_items){
+	console.log(purchase_items);
+	var contents = "";
+	for(var i = 0; i < purchase_items.length; i++){
+		var item_status = "", text_status = "", size = "";
+		if(purchase_items[i].remaining_hours < 0 && purchase_items[i].product_size != 0){
+			item_status = "item-overused";
+			text_status = "Sur-consommé à partir du "+moment(purchase_items[i].display_expiration).format("DD/MM/YYYY");
+		} else {
+			switch(purchase_items[i].status){
+				case '0':
+				case 0:
+					item_status = "item-pending";
+					text_status = "En attente";
+					break;
+
+				case '1':
+				case 1:
+					item_status = "item-active";
+					text_status = "Valide du "+moment(purchase_items[i].activation).format("DD/MM/YYYY")+" au "+moment(purchase_items[i].display_expiration).format("DD/MM/YYYY");
+					break;
+
+				case '2':
+				case 2:
+					item_status = "item-expired";
+					text_status = "Expiré le "+moment(purchase_items[i].display_expiration).format("DD/MM/YYYY");
+					break;
+			}
+		}
+
+		contents += "<li class='purchase-item panel-item "+item_status+" container-fluid' id='purchase-item-"+purchase_items[i].id+"' data-toggle='modal' data-target='#product-modal' data-argument='"+purchase_items[i].id+"'>";
+		contents += "<p class='col-lg-12 panel-item-title bf'>"+purchase_items[i].product_name+"</p>";
+		contents += "<div>";
+		contents += "<p class='col-lg-3 purchase-item-validity' id='purchase-item-validity-"+purchase_items[i].id+"'>"+text_status+"</p>";
+		contents += "<p class='col-lg-3 purchase-item-user' id='purchase-item-user-"+purchase_items[i].id+"'>"+purchase_items[i].user+"</p>";
+		if(purchase_items[i].product_size != null){
+			if(purchase_items[i].product_size != 0){
+				if(purchase_items[i].remaining_hours > 0)
+					contents += "<p class='col-lg-3 purchase-item-status' id='purchase-item-status-"+purchase_items[i].id+"'>"+purchase_items[i].remaining_hours+" heures restantes</p>";
+				else
+					contents += "<p class='col-lg-3 purchase-item-status' id='purchase-item-status-"+purchase_items[i].id+"'>"+-1 * purchase_items[i].remaining_hours+" heures en excès</p>";
+			} else {
+				contents += "<p class='col-lg-3 purchase-item-status' id='purchase-item-status-"+purchase_items[i].id+"'>"+-1 * purchase_items[i].remaining_hours+" heures utilisées</p>";
+			}
+		} else {
+			contents += "<p class='col-lg-3 purchase-item-status' id='purchase-item-status-"+purchase_items[i].id+"'>N'accepte pas les participations</p>";
+		}
+		contents += "<p class='col-lg-3 purchase-item-price' id='purchase-item-price-"+purchase_items[i].id+"'>"+purchase_items[i].price+" €</p>";
+		contents += "</div>";
+		contents += "</li>";
+	}
+	return contents;
 }
 
 function unlinkAll(){

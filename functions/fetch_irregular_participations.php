@@ -77,7 +77,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	if($details["product_name"] != null){
 		$r["product_name"] = $details["product_name"];
 		$r["product_expiration"] = max($details["date_expiration"], $details["date_fin_utilisation"], $details["date_prolongee"]);
-		if($details["est_illimite"] == "1"){
+		if($details["product_size"] == "0"){
 			$r["product_hours"] = 9999;
 		} else {
 			$r["product_hours"] = $details["volume_cours"];

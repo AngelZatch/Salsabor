@@ -53,7 +53,7 @@ $sum = $db->query("SELECT SUM(prix_total) FROM transactions
 								<th>Revenu</th>
 							</thead>
 							<tbody>
-								<?php $unlimited = $db->query("SELECT product_id, product_name, product_price, product_size, est_illimite FROM produits WHERE est_illimite = 1 OR est_recharge = 1");
+								<?php $unlimited = $db->query("SELECT product_id, product_name, product_price, product_size FROM produits");
 
 								while($product = $unlimited->fetch(PDO::FETCH_ASSOC)){
 									$query = "SELECT prix_achat, date_achat, COUNT(pr.passage_id) AS count_participations, prix_achat/COUNT(pr.passage_id) AS mean_value FROM produits_adherents pa
@@ -65,7 +65,6 @@ $sum = $db->query("SELECT SUM(prix_total) FROM transactions
 									$query .= " GROUP BY produit_adherent_id";
 									$mean = $db->query($query);
 									$value = 0; $total_selling_price = 0; $total_participations = 0;
-									$is_full_pass = $product["est_illimite"];
 									while($single = $mean->fetch(PDO::FETCH_ASSOC)){
 										$value += $single["mean_value"];
 										$total_selling_price += $single["prix_achat"];
@@ -85,7 +84,7 @@ $sum = $db->query("SELECT SUM(prix_total) FROM transactions
 									echo "<td>".$count."</td>";
 									echo "<td>".number_format($mean_selling_price, 2)." €</td>";
 									echo "<td>".$total_participations."</td>";
-									if($is_full_pass == 0){
+									if($product["product_size"] != 0){
 										if($product["product_size"] > 0){
 											$price = $mean_selling_price * $total_participations / $product["product_size"];
 											echo "<td>".number_format($price, 2)." €</td>";
