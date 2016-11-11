@@ -141,7 +141,7 @@ if(isset($_POST["edit"])){
 						<div class="form-group">
 							<label for="size_null" class="col-lg-3 control-label">Utilisable en cours <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Autorise la consommation du produit lors de cours ou d'événements"></span></label>
 							<div class="col-lg-9">
-								<input name="size_null" id='size-null' data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php ($produit["product_size"]!=null)?1:0;?>">
+								<input name="size_null" id='size-null' data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="<?php echo ($produit["product_size"]!=null)?1:0;?>">
 							</div>
 						</div>
 						<div class="form-group" id="product-size-group">
