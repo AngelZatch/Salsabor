@@ -1,10 +1,10 @@
 <?php
 require_once "/opt/lampp/htdocs/Salsabor/functions/db_connect.php";
-require_once "/opt/lampp/htdocs/Salsabor/functions/compute_remaining_hours.php";
+require_once "/opt/lampp/htdocs/Salsabor/functions/compute_product.php";
 require_once "/opt/lampp/htdocs/Salsabor/functions/post_task.php";
 require_once "/opt/lampp/htdocs/Salsabor/functions/attach_tag.php";
 /*require_once "../db_connect.php";
-require_once "../compute_remaining_hours.php";
+require_once "../compute_product.php";
 require_once "../post_task.php";
 require_once "../attach_tag.php";*/
 

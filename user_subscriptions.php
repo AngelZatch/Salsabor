@@ -18,20 +18,6 @@ $details["count"] = $db->query("SELECT * FROM tasks
 					OR (task_token LIKE '%TRA%' AND task_target IN (SELECT id_transaction FROM transactions WHERE payeur_transaction = '$user_id')))
 						AND task_state = 0")->rowCount();
 
-// On obtient l'historique de ses forfaits
-$queryForfaits = $db->prepare('SELECT *, pa.date_activation AS produit_adherent_activation, pa.actif AS produit_adherent_actif
-								FROM produits_adherents pa
-								JOIN users u ON id_user_foreign=u.user_id
-								JOIN produits p ON id_produit_foreign=p.product_id
-								LEFT OUTER JOIN transactions t
-									ON id_transaction_foreign=t.id_transaction
-									AND t.id_transaction IS NOT NULL
-								WHERE id_user_foreign=?
-								ORDER BY
-									date_achat DESC');
-$queryForfaits->bindValue(1, $user_id);
-$queryForfaits->execute();
-
 $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 								JOIN tags_user tu ON tu.rank_id = ur.tag_id_foreign
 								WHERE rank_name = 'Professeur' AND user_id_foreign = '$user_id'")->rowCount();
@@ -68,48 +54,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 						<li role="presentation"><a href="user/<?php echo $user_id;?>/taches">Tâches</a></li>
 					</ul>
 					<div class="container-fluid purchase-product-list-container">
-						<ul class="purchase-inside-list purchase-product-list">
-							<?php while($forfaits = $queryForfaits->fetch(PDO::FETCH_ASSOC)){
-	$date_achat = date_create($forfaits["date_achat"])->format('d/m/Y');
-	$date_activation = date_create($forfaits["produit_adherent_activation"])->format('d/m/Y');
-	$date_expiration = date_create(max($forfaits["date_expiration"], $forfaits["date_prolongee"], $forfaits["date_fin_utilisation"]))->format('d/m/Y');
-	$today = date('Y-m-d');
-	if($forfaits["volume_cours"] < '0' && $forfaits["est_illimite"] != '1'){
-		$item_class = "item-overused";
-	} else {
-		if($forfaits["produit_adherent_actif"] == '0'){
-			$item_class = "item-pending";
-		} else if($forfaits["produit_adherent_actif"] == '2') {
-			$item_class = "item-expired";
-		} else {
-			$item_class = "item-active";
-		}
-	}?>
-							<li class="purchase-item panel-item <?php echo $item_class;?> container-fluid" id="purchase-item-<?php echo $forfaits["id_produit_adherent"];?>" data-toggle='modal' data-target='#product-modal' data-argument="<?php echo $forfaits["id_produit_adherent"];?>">
-								<p class="col-lg-12 panel-item-title bf"><?php echo $forfaits["product_name"];?></p>
-								<p class="col-lg-3">Acheté le <?php echo $date_achat;?></p>
-								<p class="col-lg-5 purchase-product-validity">
-									<?php if($forfaits["produit_adherent_actif"] == '0'){
-		echo "En attente";
-	} else if($forfaits["produit_adherent_actif"] == '2'){
-		echo "Expiré le ".$date_expiration;
-	} else {
-		echo "Valide du <span>".$date_activation."</span> au <span>".$date_expiration."</span>";
-	}?>
-								</p>
-								<p class="col-lg-3 purchase-product-hours">
-									<?php if($forfaits["est_illimite"] == "0" && $forfaits["est_abonnement"] == "0"){
-		if($forfaits["volume_cours"] < 0){
-			echo -1 * $forfaits["volume_cours"]." heures en excès";
-		} else {
-			echo 1 * $forfaits["volume_cours"]." heures restantes";
-		}
-	}?>
-								</p>
-								<p class="col-lg-1 purchase-price align-right"><?php echo $forfaits["prix_achat"];?> €</p>
-							</li>
-							<?php } ?>
-						</ul>
+						<ul class="purchase-inside-list purchase-product-list loading-container"></ul>
 					</div>
 					<a href="catalogue.php?user=<?php echo $details["user_id"];?>" class="btn btn-primary btn-block">Acheter un nouveau produit pour cet adhérent</a>
 				</div>
@@ -118,5 +63,17 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 		<?php include "inserts/modal_product.php";?>
 		<?php include "inserts/sub_modal_product.php";?>
 		<?php include "inserts/edit_modal.php";?>
+		<script>
+			$(document).ready(function(){
+				$(".purchase-product-list").trigger('loading');
+				var token = {};
+				token["user_id"] = /([0-9]+)/.exec(top.location.pathname)[0];
+				$.when(fetchProducts($.param(token))).done(function(data){
+					var construct = renderProductBanners(JSON.parse(data));
+					$(".purchase-product-list").trigger('loaded');
+					$(".purchase-product-list").append(construct);
+				})
+			})
+		</script>
 	</body>
 </html>

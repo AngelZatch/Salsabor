@@ -13,7 +13,7 @@ $is_admin = $db->query("SELECT COUNT(*) FROM assoc_user_tags aut
 $query = "SELECT * FROM produits p
 			LEFT JOIN product_categories pc ON p.product_category = pc.category_id
 			LEFT JOIN locations l ON p.product_location = l.location_id";
-if($_GET["region"] == "1")
+if($_GET["region"] == "1" && $_SESSION["location"] != null)
 	$query .= " WHERE product_location = $_SESSION[location]";
 $query .= " ORDER BY category_name ASC, product_name ASC";
 
