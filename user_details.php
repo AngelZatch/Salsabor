@@ -93,16 +93,24 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						<li role="presentation"><a href="user/<?php echo $user_id;?>/reservations">Réservations</a></li>
 						<li role="presentation"><a href="user/<?php echo $user_id;?>/taches">Tâches</a></li>
 					</ul>
+					<p class="sub-legend">Informations personnelles</p>
 					<form method="post" class="form-horizontal" role="form" id="user-details-form">
 						<div class="form-group">
-							<label for="statuts" class="col-lg-3 control-label">&Eacute;tiquettes</label>
-							<div class="col-sm-9 user_tags">
-								<h4>
-									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
-									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="user-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='user' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
-									<?php } ?>
-									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='user-tags' data-targettype='user' title="Ajouter une étiquette">+</span>
-								</h4>
+							<label for="user_prenom" class="col-sm-3 control-label">Prénom</label>
+							<div class="col-sm-9">
+								<input type="text" name="user_prenom" id="user_prenom" placeholder="Prénom" class="form-control" value="<?php echo $details["user_prenom"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="user_nom" class="col-sm-3 control-label">Nom</label>
+							<div class="col-sm-9">
+								<input type="text" name="user_nom" id="user_nom" placeholder="Nom" class="form-control modal-updatable-<?php echo $user_id;?>" value="<?php echo $details["user_nom"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="mail" class="col-sm-3 control-label">Adresse mail</label>
+							<div class="col-sm-9">
+								<input type="email" name="mail" id="mail" placeholder="Adresse mail" class="form-control modal-updatable-<?php echo $user_id;?>" value="<?php echo $details["mail"];?>">
 							</div>
 						</div>
 						<div class="form-group">
@@ -118,15 +126,6 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 								<div id="upload-demo"></div>
 								<input type="hidden" id="imagebase64">
 								<span class="btn btn-primary btn-block upload-result">Mettre à jour</span>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="user_rfid" class="col-sm-3 control-label">Code carte</label>
-							<div class="col-sm-9">
-								<div class="input-group">
-									<input type="text" name="user_rfid" id="user-rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
-									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
-								</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -148,18 +147,9 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="user_location" class="control-label col-sm-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings et résultats de recherche accessibles en fonction de leurs régions. Correspond à la région principale fréquentée pour les utilisateurs non-staff."></span></label>
+							<label for="telephone" class="col-sm-3 control-label">Téléphone principal</label>
 							<div class="col-sm-9">
-								<select name="user_location" id="user-location" class="form-control">
-									<option value="">Aucune région</option>
-									<?php while($location = $locations->fetch(PDO::FETCH_ASSOC)){
-	if($details["user_location"] == $location["location_id"]){ ?>
-									<option selected value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
-									<?php } else { ?>
-									<option value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
-									<?php }
-} ?>
-								</select>
+								<input type="tel" name="telephone" id="telephone" placeholder="Numéro de téléphone secondaire" class="form-control modal-updatable-<?php echo $user_id;?>" value="<?php echo $details["telephone"];?>">
 							</div>
 						</div>
 						<div class="form-group">
@@ -184,6 +174,42 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							<label for="date_naissance" class="col-sm-3 control-label">Date de naissance</label>
 							<div class="col-sm-9">
 								<input type="text" name="date_naissance" id="birthdate" class="form-control" placeholder="Date de naissance">
+							</div>
+						</div>
+						<p class="sub-legend">Informations Salsabor</p>
+						<div class="form-group">
+							<label for="statuts" class="col-lg-3 control-label">&Eacute;tiquettes</label>
+							<div class="col-sm-9 user_tags">
+								<h4>
+									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
+									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="user-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='user' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
+									<?php } ?>
+									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='user-tags' data-targettype='user' title="Ajouter une étiquette">+</span>
+								</h4>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="user_location" class="control-label col-sm-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings et résultats de recherche accessibles en fonction de leurs régions. Correspond à la région principale fréquentée pour les utilisateurs non-staff."></span></label>
+							<div class="col-sm-9">
+								<select name="user_location" id="user-location" class="form-control">
+									<option value="">Aucune région</option>
+									<?php while($location = $locations->fetch(PDO::FETCH_ASSOC)){
+	if($details["user_location"] == $location["location_id"]){ ?>
+									<option selected value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
+									<?php } else { ?>
+									<option value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
+									<?php }
+} ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="user_rfid" class="col-sm-3 control-label">Code carte</label>
+							<div class="col-sm-9">
+								<div class="input-group">
+									<input type="text" name="user_rfid" id="user-rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
+									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -344,6 +370,10 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 					var updated_adress = $("#rue").val()+" - "+$("#code_postal").val()+" "+$("#ville").val();
 					$("#refresh-address").text(updated_adress);
 					$("#refresh-region").text($("#user-location>option:selected").text());
+					$("#refresh-mail").text($("#mail").val());
+					$("#refresh-telephone").text($("#telephone").val());
+					$("#refresh-prenom").text($("#user_prenom").val());
+					$("#refresh-nom").text($("#user_nom").val());
 				})
 			})
 		</script>
