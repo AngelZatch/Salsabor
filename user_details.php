@@ -65,9 +65,11 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 		<base href="../">
 		<?php include "styles.php";?>
 		<link href="assets/css/croppie.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="assets/css/fileinput.min.css">
 		<?php include "scripts.php";?>
 		<script src="assets/js/tags.js"></script>
 		<script src="assets/js/croppie.min.js"></script>
+		<script src="assets/js/fileinput.min.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -94,7 +96,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						<li role="presentation"><a href="user/<?php echo $user_id;?>/taches">Tâches</a></li>
 					</ul>
 					<p class="sub-legend">Informations personnelles</p>
-					<form method="post" class="form-horizontal" role="form" id="user-details-form">
+					<form method="post" class="form-horizontal" role="form" id="user-details-form" enctype="multipart/form-data">
 						<div class="form-group">
 							<label for="user_prenom" class="col-sm-3 control-label">Prénom</label>
 							<div class="col-sm-9">
@@ -213,6 +215,36 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							</div>
 						</div>
 						<div class="form-group">
+							<label for="certificat" class="col-sm-3 control-label">Certificat Médical <span class="glyphicon glyphicon-floppy-saved" data-toggle="tooltip" title="Le document est enregistré automatiquement quand l&apos;upload est terminé."></span></label>
+							<div class="col-sm-9">
+								<div class="row">
+									<div class="col-sm-6">
+										<input type="file" class="file-loading" id="certificat" name="certificat">
+									</div>
+									<?php if($details["certificat"] != null){ ?>
+									<div class="col-sm-6">
+										<a href="Salsabor/<?php echo $details["certificat"];?>" target="_blank" class="btn btn-primary btn-block">Visualiser</a>
+									</div>
+									<?php } ?>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="rib" class="col-sm-3 control-label">RIB <span class="glyphicon glyphicon-floppy-saved" data-toggle="tooltip" title="Le document est enregistré automatiquement quand l&apos;upload est terminé."></span></label>
+							<div class="col-sm-9">
+								<div class="row">
+									<div class="col-sm-6">
+										<input type="file" class="file-loading" id="rib" name="rib">
+									</div>
+									<?php if($details["rib"] != null){ ?>
+									<div class="col-sm-6">
+										<a href="Salsabor/<?php echo $details["rib"];?>" class="btn btn-primary btn-block">Visualiser</a>
+									</div>
+									<?php } ?>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="commentaires" class="col-sm-3 control-label">Commentaires</label>
 							<div class="col-sm-9">
 								<textarea rows="5" class="form-control" name="commentaires"><?php echo $details["commentaires"];?></textarea>
@@ -255,8 +287,40 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 				$("#birthdate").datetimepicker({
 					format: "DD/MM/YYYY",
 					defaultDate: "<?php echo (isset($details["date_naissance"]))?date_create($details['date_naissance'])->format("m/d/Y"):false;?>",
-					locale: "fr",
+					locale: "fr"
 				});
+
+				$("#certificat").fileinput({
+					autoReplace: true,
+					browseClass: "btn btn-info btn-block",
+					browseLabel: 'Choisissez un fichier',
+					dropZoneEnabled: false,
+					maxFileCount: 1,
+					uploadLabel: 'Envoyer',
+					removeLabel: 'Supprimer',
+					showCaption: false,
+					uploadExtraData:{
+						user_id: /([0-9]+)/.exec(top.location.pathname)[0],
+						location: "../user_data/certificats_medicaux/"
+					},
+					uploadUrl: "functions/upload_file.php"
+				})
+
+				$("#rib").fileinput({
+					autoReplace: true,
+					browseClass: "btn btn-info btn-block",
+					browseLabel: 'Choisissez un fichier',
+					dropZoneEnabled: false,
+					maxFileCount: 1,
+					uploadLabel: 'Envoyer',
+					removeLabel: 'Supprimer',
+					showCaption: false,
+					uploadExtraData:{
+						user_id: /([0-9]+)/.exec(top.location.pathname)[0],
+						location: "../user_data/ribs/"
+					},
+					uploadUrl: "functions/upload_file.php"
+				})
 
 				// Croppie
 				var $uploadCrop;
@@ -374,6 +438,17 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 					$("#refresh-telephone").text($("#telephone").val());
 					$("#refresh-prenom").text($("#user_prenom").val());
 					$("#refresh-nom").text($("#user_nom").val());
+					/*$.ajax({
+						url: "functions/upload_file.php",
+						type: "POST",
+						data: new FormData(this),
+						contentType: false,
+						cache: false,
+						processData: false,
+						success(function(data){
+							showNotification("Fichier envoyé", "success");
+						})
+					})*/
 				})
 			})
 		</script>

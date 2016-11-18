@@ -107,15 +107,6 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="avatar" class="col-sm-3 control-label">Photo de profil</label>
-							<div class="col-sm-9">
-								<div id="kv-avatar-errors" class="center-block" style="width:800px;display:none;"></div>
-								<div id="avatar-container">
-									<input type="file" id="avatar" name="profile-picture" class="file-loading">
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
 							<label for="rue" class="col-sm-3 control-label">Adresse postale</label>
 							<div class="col-sm-9">
 								<input type="text" name="rue" id="rue" placeholder="Adresse" class="form-control">

@@ -7,3 +7,5 @@ assets/pictures/*
 functions/db_connect.php
 functions/alt_db_connect.php
 back-ups/*
+user_data/certificats_medicaux/*
+user_data/ribs/*
