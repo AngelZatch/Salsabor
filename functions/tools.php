@@ -1,67 +1,6 @@
 <?php
-function solveAdherentToId($name){
-	$db = PDOFactory::getConnection();
-	$stmt = $db->prepare("SELECT * FROM (
-							SELECT user_id, CONCAT(user_prenom, ' ', user_nom) as fullname FROM users) base
-						WHERE fullname = ?");
-	$stmt->bindParam(1, htmlspecialchars($name), PDO::PARAM_STR);
-	$stmt->execute();
-	$res = $stmt->fetch(PDO::FETCH_ASSOC);
-	if($res["user_id"] != null)
-		return $res["user_id"];
-	else
-		return null;
-}
-
-function getLieu($id){
-	$db = PDOFactory::getConnection();
-	$stmt = $db->prepare('SELECT * FROM rooms WHERE room_id=?');
-	$stmt->bindParam(1, $id, PDO::PARAM_INT);
-	$stmt->execute();
-	$res = $stmt->fetch(PDO::FETCH_ASSOC);
-	return $res;
-}
-
-function generateReference() {
-	$length = 10;
-	$characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	$chars_length = strlen($characters);
-	$reference = '';
-	for ($i = 0; $i < $length; $i++) {
-		$reference .= $characters[rand(0, $chars_length - 1)];
-	}
-	return $reference;
-}
-
-function computeExpirationDate($db, $date_activation, $validity, $has_holidays){
-	$validity--;
-	$date_expiration = date("Y-m-d 23:59:59", strtotime($date_activation.'+'.$validity.'DAYS'));
-	if($has_holidays || $has_holidays == 1){
-		$queryHoliday = $db->prepare("SELECT * FROM holidays WHERE holiday_date >= ? AND holiday_date <= ?");
-		$queryHoliday->bindParam(1, $date_activation);
-		$queryHoliday->bindParam(2, $date_expiration);
-		$queryHoliday->execute();
-
-		$j = 0;
-
-		for($i = 0; $i < $queryHoliday->rowCount(); $i++){
-			$exp_date = date("Y-m-d 23:59:59",strtotime($date_expiration.'+'.$i.'DAYS'));
-			$checkHoliday = $db->prepare("SELECT * FROM holidays WHERE holiday_date=?");
-			$checkHoliday->bindParam(1, $exp_date);
-			$checkHoliday->execute();
-			if($checkHoliday->rowCount() != 0){
-				$j++;
-			}
-			$totalOffset = $i + $j;
-			$new_exp_date = date("Y-m-d 23:59:59",strtotime($date_expiration.'+'.$totalOffset.'DAYS'));
-		}
-	}
-	if(!isset($new_exp_date)){
-		$new_exp_date = $date_expiration;
-	}
-	return $new_exp_date;
-}
-
+if(!isset($_SESSION))
+	session_start();
 function addParticipationBeta($db, $values){
 	if(!isset($values["user_id"])){
 		// We try to find the user from the details
@@ -108,6 +47,46 @@ function addParticipationBeta($db, $values){
 	/*}*/
 
 	echo "$";
+}
+
+function computeExpirationDate($db, $date_activation, $validity, $has_holidays){
+	$validity--;
+	$date_expiration = date("Y-m-d 23:59:59", strtotime($date_activation.'+'.$validity.'DAYS'));
+	if($has_holidays || $has_holidays == 1){
+		$queryHoliday = $db->prepare("SELECT * FROM holidays WHERE holiday_date >= ? AND holiday_date <= ?");
+		$queryHoliday->bindParam(1, $date_activation);
+		$queryHoliday->bindParam(2, $date_expiration);
+		$queryHoliday->execute();
+
+		$j = 0;
+
+		for($i = 0; $i < $queryHoliday->rowCount(); $i++){
+			$exp_date = date("Y-m-d 23:59:59",strtotime($date_expiration.'+'.$i.'DAYS'));
+			$checkHoliday = $db->prepare("SELECT * FROM holidays WHERE holiday_date=?");
+			$checkHoliday->bindParam(1, $exp_date);
+			$checkHoliday->execute();
+			if($checkHoliday->rowCount() != 0){
+				$j++;
+			}
+			$totalOffset = $i + $j;
+			$new_exp_date = date("Y-m-d 23:59:59",strtotime($date_expiration.'+'.$totalOffset.'DAYS'));
+		}
+	}
+	if(!isset($new_exp_date)){
+		$new_exp_date = $date_expiration;
+	}
+	return $new_exp_date;
+}
+
+function generateReference() {
+	$length = 10;
+	$characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$chars_length = strlen($characters);
+	$reference = '';
+	for ($i = 0; $i < $length; $i++) {
+		$reference .= $characters[rand(0, $chars_length - 1)];
+	}
+	return $reference;
 }
 
 function getCorrectProductFromTags($db, $session_id, $user_id){
@@ -214,12 +193,54 @@ function getCorrectProductFromTags($db, $session_id, $user_id){
 	}
 }
 
+function getLieu($id){
+	$db = PDOFactory::getConnection();
+	$stmt = $db->prepare('SELECT * FROM rooms WHERE room_id=?');
+	$stmt->bindParam(1, $id, PDO::PARAM_INT);
+	$stmt->execute();
+	$res = $stmt->fetch(PDO::FETCH_ASSOC);
+	return $res;
+}
+
+function isHoliday($db, $target_date){
+	// We format the date to the MySQL format
+	$target_date = DateTime::createFromFormat("Y-m-d H:i:s", $target_date);
+	$target_date = $target_date->format("Y-m-d");
+	$holiday_count = $db->query("SELECT * FROM holidays WHERE holiday_date = '$target_date'")->rowCount();
+	if($holiday_count > 0)
+		return true;
+	else
+		return false;
+}
+
+function logAction($db, $action, $target){
+	$insert = $db->prepare("INSERT INTO logging(user_id, action, action_target) VALUES(?, ?, ?)");
+	$insert->bindParam(1, $_SESSION["user_id"]);
+	$insert->bindParam(2, $action);
+	$insert->bindParam(3, $target);
+	$insert->execute();
+}
+
 function postNotification($db, $token, $target, $recipient, $date){
 	// To ensure there aren't two notifications about different states of the same target, we deleted every notification regarding the target before inserting the new one.
 	$type_token = substr($token, 0, 3);
 	$delete_previous_states = $db->query("DELETE FROM team_notifications WHERE notification_token LIKE '%$type_token%' AND notification_target = $target");
 	$notification = $db->query("INSERT IGNORE INTO team_notifications(notification_token, notification_target, notification_recipient, notification_date, notification_state)
 								VALUES('$token', '$target', '$recipient', '$date', '1')");
+}
+
+function solveAdherentToId($name){
+	$db = PDOFactory::getConnection();
+	$stmt = $db->prepare("SELECT * FROM (
+							SELECT user_id, CONCAT(user_prenom, ' ', user_nom) as fullname FROM users) base
+						WHERE fullname = ?");
+	$stmt->bindParam(1, htmlspecialchars($name), PDO::PARAM_STR);
+	$stmt->execute();
+	$res = $stmt->fetch(PDO::FETCH_ASSOC);
+	if($res["user_id"] != null)
+		return $res["user_id"];
+	else
+		return null;
 }
 
 function updateColumn($db, $table, $column, $value, $target_id){
@@ -252,16 +273,5 @@ function updateColumn($db, $table, $column, $value, $target_id){
 	} catch(PDOException $e){
 		echo $e->getMessage();
 	}
-}
-
-function isHoliday($db, $target_date){
-	// We format the date to the MySQL format
-	$target_date = DateTime::createFromFormat("Y-m-d H:i:s", $target_date);
-	$target_date = $target_date->format("Y-m-d");
-	$holiday_count = $db->query("SELECT * FROM holidays WHERE holiday_date = '$target_date'")->rowCount();
-	if($holiday_count > 0)
-		return true;
-	else
-		return false;
 }
 ?>

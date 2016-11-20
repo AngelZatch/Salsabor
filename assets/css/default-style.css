@@ -1392,7 +1392,7 @@ p.legend, div.legend:nth-child(1n+0) {
   display: block; }
 
 /* line 930, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-.notif-hour, .task-hour, .message-details {
+.notif-hour, .task-hour, .message-details, .timestamp {
   color: #888888 !important; }
 
 /** TASKS **/
@@ -1700,5 +1700,25 @@ p.legend, div.legend:nth-child(1n+0) {
     /* line 1174, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
     .selectable.selected:hover {
       background-color: #98d58a; }
+
+/* line 1177, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.log-picture {
+  height: 20px;
+  margin-right: 5px; }
+
+/* line 1181, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.centered {
+  text-align: center; }
+
+/* line 1184, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.log-row {
+  padding-bottom: 9px;
+  padding-top: 10px;
+  border-bottom: 1px solid rgba(136, 136, 136, 0.6); }
+
+/* line 1189, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
+.timestamp {
+  font-size: .85em;
+  padding-left: 5px; }
 
 /*# sourceMappingURL=default-style.css.map */

@@ -4,6 +4,7 @@ if(!isset($_SESSION["username"])){
 	header('location: portal');
 }
 require_once 'functions/db_connect.php';
+include "functions/tools.php";
 $db = PDOFactory::getConnection();
 
 $data = $_GET["id"];
@@ -71,6 +72,7 @@ if(isset($_POST["edit"])){
 		$edit->bindParam(':autorisation_report', $_POST["autorisation_report"], PDO::PARAM_INT);
 		$edit->bindParam(':product_id', $_GET["id"], PDO::PARAM_INT);
 		$edit->execute();
+		logAction($db, "Modification", "produits-".$_GET["id"]);
 		$db->commit();
 		header('Location: ../forfaits?region=1');
 	}catch (PDOException $e){

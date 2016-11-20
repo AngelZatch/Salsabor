@@ -121,6 +121,7 @@ function vente(){
 
 		$activateUser = $db->query("UPDATE users SET actif = '1', date_last='$date_achat' WHERE user_id='$payer_id'");
 
+		logAction($db, "Transaction", "transactions-".$transaction);
 		$db->commit();
 		header("Location: end_transaction.php?transaction=$transaction");
 	}catch(PDOException $e){

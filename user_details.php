@@ -30,32 +30,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 // Locations
 $locations = $db->query("SELECT * FROM locations ORDER BY location_name ASC");
 
-// If the user is a teacher
-/*if($is_teacher == 1){
-	// On obtient l'historique de ses cours
-	$queryHistoryDonnes = $db->prepare('SELECT * FROM sessions s JOIN rooms r ON s.session_room = r.room_id WHERE session_teacher=? ORDER BY session_start ASC');
-	$queryHistoryDonnes->bindValue(1, $user_id);
-	$queryHistoryDonnes->bindValue(2, $user_id);
-	$queryHistoryDonnes->execute();
-
-	// Tarifs
-	$queryTarifs = $db->prepare('SELECT * FROM tarifs_professeurs JOIN prestations ON type_prestation=prestations.prestations_id WHERE prof_id_foreign=?');
-	$queryTarifs->bindValue(1, $user_id);
-	$queryTarifs->execute();
-
-	// Prestations
-	$queryPrestations = $db->query('SELECT * FROM prestations WHERE est_cours=1');
-
-	// Types de ratio multiplicatif
-	$ratio = $db->query("SHOW COLUMNS FROM tarifs_professeurs LIKE 'ratio_multiplicatif'");
-
-	// Prix de tous les cours
-	$totalPrice = 0;
-	$totalPaid = 0;
-	$totalDue = 0;
-}*/
-
-// Et on cherche à savoir si des échéances sont en retard
+// Possible late maturities
 $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$user_id")->rowCount();
 ?>
 <html>
@@ -116,7 +91,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="avatar" class="col-sm-3 control-label">Photo de profil</label>
+							<label for="avatar" class="col-sm-3 control-label">Photo de profil <span class="glyphicon glyphicon-floppy-saved" data-toggle="tooltip" title="Enregistrement automatique."></span></label>
 							<div class="col-sm-9">
 								<div class="pp-input btn btn-primary">
 									<span>Choisissez une image</span>
@@ -238,7 +213,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 									</div>
 									<?php if($details["rib"] != null){ ?>
 									<div class="col-sm-6">
-										<a href="Salsabor/<?php echo $details["rib"];?>" class="btn btn-primary btn-block">Visualiser</a>
+										<a href="Salsabor/<?php echo $details["rib"];?>" target="_blank" class="btn btn-primary btn-block">Visualiser</a>
 									</div>
 									<?php } ?>
 								</div>
@@ -400,7 +375,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 					var product_id = clicked.val();
 					var session_id = clicked.prev().val();
 					$.post("functions/link_forfait.php", {eleve_id : eleve_id, session_id : session_id, product_id : product_id}).done(function(data){
-						showSuccessNotif(data);
+						showNotification(data, "success");
 						clicked.parents("tr.warning").removeClass('warning');
 						clicked.hide();
 						clicked.parent().html(product_id);
@@ -438,17 +413,6 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 					$("#refresh-telephone").text($("#telephone").val());
 					$("#refresh-prenom").text($("#user_prenom").val());
 					$("#refresh-nom").text($("#user_nom").val());
-					/*$.ajax({
-						url: "functions/upload_file.php",
-						type: "POST",
-						data: new FormData(this),
-						contentType: false,
-						cache: false,
-						processData: false,
-						success(function(data){
-							showNotification("Fichier envoyé", "success");
-						})
-					})*/
 				})
 			})
 		</script>

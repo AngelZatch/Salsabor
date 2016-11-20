@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once "db_connect.php";
 $db = PDOFactory::getConnection();
 
@@ -34,6 +35,7 @@ try{
 		"success" => "Inscription réalisée",
 		"id" => $db->lastInsertId()
 	);
+	logAction($db, "Ajout", $db->lastInsertId());
 	$db->commit();
 	echo json_encode($res);
 } catch(PDOException $e){

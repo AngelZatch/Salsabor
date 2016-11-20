@@ -19,6 +19,7 @@ $(document).ready(function(){
 	var product_id = document.getElementById($(this).attr("id")).dataset.argument;
 	$.when(updateColumn("produits_adherents", "date_prolongee", date, product_id)).done(function(){
 		$("#btn-arep").attr("data-arep", date);
+		logAction("produits_adherents", "Prolongation", product_id);
 		computeRemainingHours(product_id, true);
 	})
 }).on('click', '.btn-arep', function(){

@@ -1,5 +1,6 @@
 <?php
 require_once "db_connect.php";
+include "tools.php";
 $db = PDOFactory::getConnection();
 
 $participation_id = $_POST["participation_id"];
@@ -16,8 +17,9 @@ if(isset($_POST["user_id"])){
 }
 
 $today = date_create('now')->format('Y-m-d H:i:s');
-$activateUser = $db->query("UPDATE users SET actif = '1', date_last='$today' WHERE user_id='$user_id'");
-$validate_participation = $db->query("UPDATE participations SET status = 2 WHERE passage_id = '$participation_id'");
+$db->query("UPDATE users SET actif = '1', date_last='$today' WHERE user_id='$user_id'");
+$db->query("UPDATE participations SET status = 2 WHERE passage_id = '$participation_id'");
+logAction($db, "Validation", "participations-".$participation_id);
 
 echo $product_id;
 ?>

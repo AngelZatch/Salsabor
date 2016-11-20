@@ -95,10 +95,12 @@ session_start();
 			$("#task-"+target_id).addClass("task-old");
 			$("#toggle-task-"+target_id).addClass("glyphicon-remove");
 			$("#toggle-task-"+target_id).attr("title", "Marquer comme non traitée");
+			logAction(table_name, "Validation", target_id);
 		} else {
 			$("#task-"+target_id).addClass("task-new");
 			$("#toggle-task-"+target_id).addClass("glyphicon-ok");
 			$("#toggle-task-"+target_id).attr("title", "Marquer comme traitée");
+			logAction(table_name, "Invalidation", target_id);
 		}
 		if(top.location.pathname === "/Salsabor/dashboard"){
 			$("#task-"+target_id).fadeOut('normal', function(){
@@ -123,6 +125,7 @@ session_start();
 		} else {
 			$("#deadline-"+task_id).html("<span class='glyphicon glyphicon-time'></span> Ajouter une date limite");
 		}
+		logAction("tasks", "Modification", task_id);
 	})
 }).on('click', '.delete-comment', function(){
 	var id = document.getElementById($(this).attr("id")).dataset.target;
