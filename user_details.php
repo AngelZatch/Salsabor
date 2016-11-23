@@ -30,32 +30,7 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 // Locations
 $locations = $db->query("SELECT * FROM locations ORDER BY location_name ASC");
 
-// If the user is a teacher
-/*if($is_teacher == 1){
-	// On obtient l'historique de ses cours
-	$queryHistoryDonnes = $db->prepare('SELECT * FROM sessions s JOIN rooms r ON s.session_room = r.room_id WHERE session_teacher=? ORDER BY session_start ASC');
-	$queryHistoryDonnes->bindValue(1, $user_id);
-	$queryHistoryDonnes->bindValue(2, $user_id);
-	$queryHistoryDonnes->execute();
-
-	// Tarifs
-	$queryTarifs = $db->prepare('SELECT * FROM tarifs_professeurs JOIN prestations ON type_prestation=prestations.prestations_id WHERE prof_id_foreign=?');
-	$queryTarifs->bindValue(1, $user_id);
-	$queryTarifs->execute();
-
-	// Prestations
-	$queryPrestations = $db->query('SELECT * FROM prestations WHERE est_cours=1');
-
-	// Types de ratio multiplicatif
-	$ratio = $db->query("SHOW COLUMNS FROM tarifs_professeurs LIKE 'ratio_multiplicatif'");
-
-	// Prix de tous les cours
-	$totalPrice = 0;
-	$totalPaid = 0;
-	$totalDue = 0;
-}*/
-
-// Et on cherche à savoir si des échéances sont en retard
+// Possible late maturities
 $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions ON reference_achat=transactions.id_transaction WHERE echeance_effectuee=2 AND payeur_transaction=$user_id")->rowCount();
 ?>
 <html>
@@ -65,9 +40,11 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 		<base href="../">
 		<?php include "styles.php";?>
 		<link href="assets/css/croppie.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="assets/css/fileinput.min.css">
 		<?php include "scripts.php";?>
 		<script src="assets/js/tags.js"></script>
 		<script src="assets/js/croppie.min.js"></script>
+		<script src="assets/js/fileinput.min.js"></script>
 	</head>
 	<body>
 		<?php include "nav.php";?>
@@ -93,20 +70,28 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						<li role="presentation"><a href="user/<?php echo $user_id;?>/reservations">Réservations</a></li>
 						<li role="presentation"><a href="user/<?php echo $user_id;?>/taches">Tâches</a></li>
 					</ul>
-					<form method="post" class="form-horizontal" role="form" id="user-details-form">
+					<p class="sub-legend">Informations personnelles</p>
+					<form method="post" class="form-horizontal" role="form" id="user-details-form" enctype="multipart/form-data">
 						<div class="form-group">
-							<label for="statuts" class="col-lg-3 control-label">&Eacute;tiquettes</label>
-							<div class="col-sm-9 user_tags">
-								<h4>
-									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
-									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="user-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='user' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
-									<?php } ?>
-									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='user-tags' data-targettype='user' title="Ajouter une étiquette">+</span>
-								</h4>
+							<label for="user_prenom" class="col-sm-3 control-label">Prénom</label>
+							<div class="col-sm-9">
+								<input type="text" name="user_prenom" id="user_prenom" placeholder="Prénom" class="form-control" value="<?php echo $details["user_prenom"];?>">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="avatar" class="col-sm-3 control-label">Photo de profil</label>
+							<label for="user_nom" class="col-sm-3 control-label">Nom</label>
+							<div class="col-sm-9">
+								<input type="text" name="user_nom" id="user_nom" placeholder="Nom" class="form-control modal-updatable-<?php echo $user_id;?>" value="<?php echo $details["user_nom"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="mail" class="col-sm-3 control-label">Adresse mail</label>
+							<div class="col-sm-9">
+								<input type="email" name="mail" id="mail" placeholder="Adresse mail" class="form-control modal-updatable-<?php echo $user_id;?>" value="<?php echo $details["mail"];?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="avatar" class="col-sm-3 control-label">Photo de profil <span class="glyphicon glyphicon-floppy-saved" data-toggle="tooltip" title="Enregistrement automatique."></span></label>
 							<div class="col-sm-9">
 								<div class="pp-input btn btn-primary">
 									<span>Choisissez une image</span>
@@ -118,15 +103,6 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 								<div id="upload-demo"></div>
 								<input type="hidden" id="imagebase64">
 								<span class="btn btn-primary btn-block upload-result">Mettre à jour</span>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="user_rfid" class="col-sm-3 control-label">Code carte</label>
-							<div class="col-sm-9">
-								<div class="input-group">
-									<input type="text" name="user_rfid" id="user-rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
-									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
-								</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -148,18 +124,9 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="user_location" class="control-label col-sm-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings et résultats de recherche accessibles en fonction de leurs régions. Correspond à la région principale fréquentée pour les utilisateurs non-staff."></span></label>
+							<label for="telephone" class="col-sm-3 control-label">Téléphone principal</label>
 							<div class="col-sm-9">
-								<select name="user_location" id="user-location" class="form-control">
-									<option value="">Aucune région</option>
-									<?php while($location = $locations->fetch(PDO::FETCH_ASSOC)){
-	if($details["user_location"] == $location["location_id"]){ ?>
-									<option selected value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
-									<?php } else { ?>
-									<option value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
-									<?php }
-} ?>
-								</select>
+								<input type="tel" name="telephone" id="telephone" placeholder="Numéro de téléphone secondaire" class="form-control modal-updatable-<?php echo $user_id;?>" value="<?php echo $details["telephone"];?>">
 							</div>
 						</div>
 						<div class="form-group">
@@ -184,6 +151,72 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							<label for="date_naissance" class="col-sm-3 control-label">Date de naissance</label>
 							<div class="col-sm-9">
 								<input type="text" name="date_naissance" id="birthdate" class="form-control" placeholder="Date de naissance">
+							</div>
+						</div>
+						<p class="sub-legend">Informations Salsabor</p>
+						<div class="form-group">
+							<label for="statuts" class="col-lg-3 control-label">&Eacute;tiquettes</label>
+							<div class="col-sm-9 user_tags">
+								<h4>
+									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
+									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="user-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='user' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
+									<?php } ?>
+									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='user-tags' data-targettype='user' title="Ajouter une étiquette">+</span>
+								</h4>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="user_location" class="control-label col-sm-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings et résultats de recherche accessibles en fonction de leurs régions. Correspond à la région principale fréquentée pour les utilisateurs non-staff."></span></label>
+							<div class="col-sm-9">
+								<select name="user_location" id="user-location" class="form-control">
+									<option value="">Aucune région</option>
+									<?php while($location = $locations->fetch(PDO::FETCH_ASSOC)){
+	if($details["user_location"] == $location["location_id"]){ ?>
+									<option selected value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
+									<?php } else { ?>
+									<option value="<?php echo $location["location_id"];?>"><?php echo $location["location_name"];?></option>
+									<?php }
+} ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="user_rfid" class="col-sm-3 control-label">Code carte</label>
+							<div class="col-sm-9">
+								<div class="input-group">
+									<input type="text" name="user_rfid" id="user-rfid" class="form-control" placeholder="Scannez une nouvelle puce pour récupérer le code RFID" value="<?php echo $details["user_rfid"];?>">
+									<span role="buttton" class="input-group-btn"><a class="btn btn-info" role="button" name="fetch-rfid">Lancer la détection</a></span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="certificat" class="col-sm-3 control-label">Certificat Médical <span class="glyphicon glyphicon-floppy-saved" data-toggle="tooltip" title="Le document est enregistré automatiquement quand l&apos;upload est terminé."></span></label>
+							<div class="col-sm-9">
+								<div class="row">
+									<div class="col-sm-6">
+										<input type="file" class="file-loading" id="certificat" name="certificat">
+									</div>
+									<?php if($details["certificat"] != null){ ?>
+									<div class="col-sm-6">
+										<a href="Salsabor/<?php echo $details["certificat"];?>" target="_blank" class="btn btn-primary btn-block">Visualiser</a>
+									</div>
+									<?php } ?>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="rib" class="col-sm-3 control-label">RIB <span class="glyphicon glyphicon-floppy-saved" data-toggle="tooltip" title="Le document est enregistré automatiquement quand l&apos;upload est terminé."></span></label>
+							<div class="col-sm-9">
+								<div class="row">
+									<div class="col-sm-6">
+										<input type="file" class="file-loading" id="rib" name="rib">
+									</div>
+									<?php if($details["rib"] != null){ ?>
+									<div class="col-sm-6">
+										<a href="Salsabor/<?php echo $details["rib"];?>" target="_blank" class="btn btn-primary btn-block">Visualiser</a>
+									</div>
+									<?php } ?>
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -229,8 +262,40 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 				$("#birthdate").datetimepicker({
 					format: "DD/MM/YYYY",
 					defaultDate: "<?php echo (isset($details["date_naissance"]))?date_create($details['date_naissance'])->format("m/d/Y"):false;?>",
-					locale: "fr",
+					locale: "fr"
 				});
+
+				$("#certificat").fileinput({
+					autoReplace: true,
+					browseClass: "btn btn-info btn-block",
+					browseLabel: 'Choisissez un fichier',
+					dropZoneEnabled: false,
+					maxFileCount: 1,
+					uploadLabel: 'Envoyer',
+					removeLabel: 'Supprimer',
+					showCaption: false,
+					uploadExtraData:{
+						user_id: /([0-9]+)/.exec(top.location.pathname)[0],
+						location: "../user_data/certificats_medicaux/"
+					},
+					uploadUrl: "functions/upload_file.php"
+				})
+
+				$("#rib").fileinput({
+					autoReplace: true,
+					browseClass: "btn btn-info btn-block",
+					browseLabel: 'Choisissez un fichier',
+					dropZoneEnabled: false,
+					maxFileCount: 1,
+					uploadLabel: 'Envoyer',
+					removeLabel: 'Supprimer',
+					showCaption: false,
+					uploadExtraData:{
+						user_id: /([0-9]+)/.exec(top.location.pathname)[0],
+						location: "../user_data/ribs/"
+					},
+					uploadUrl: "functions/upload_file.php"
+				})
 
 				// Croppie
 				var $uploadCrop;
@@ -310,7 +375,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 					var product_id = clicked.val();
 					var session_id = clicked.prev().val();
 					$.post("functions/link_forfait.php", {eleve_id : eleve_id, session_id : session_id, product_id : product_id}).done(function(data){
-						showSuccessNotif(data);
+						showNotification(data, "success");
 						clicked.parents("tr.warning").removeClass('warning');
 						clicked.hide();
 						clicked.parent().html(product_id);
@@ -344,6 +409,10 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 					var updated_adress = $("#rue").val()+" - "+$("#code_postal").val()+" "+$("#ville").val();
 					$("#refresh-address").text(updated_adress);
 					$("#refresh-region").text($("#user-location>option:selected").text());
+					$("#refresh-mail").text($("#mail").val());
+					$("#refresh-telephone").text($("#telephone").val());
+					$("#refresh-prenom").text($("#user_prenom").val());
+					$("#refresh-nom").text($("#user_nom").val());
 				})
 			})
 		</script>

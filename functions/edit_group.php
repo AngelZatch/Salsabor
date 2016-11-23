@@ -1,5 +1,6 @@
 <?php
 require_once "db_connect.php";
+require_once "tools.php";
 include "cours.php";
 include "fetch_session_group.php";
 
@@ -9,6 +10,7 @@ $delta_steps = $_POST["delta_steps"];
 
 /* Depending on the value of delta_steps, we will have to add or remove sessions from the group.
 */
+logAction($db, "Modification", "session_groups-".$group_id);
 if($delta_steps > 0){ // Add sessions to the group
 	// We get all the details from the group
 	$group_details = fetchGroupDetails($db, $group_id);

@@ -25,6 +25,7 @@ try{
 	} else {
 		echo 0;
 	}
+	logAction($db, "Ajout", "task_comments-".$db->lastInsertId());
 } catch(PDOException $e){
 	echo $e->getMessage();
 }

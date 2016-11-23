@@ -66,6 +66,7 @@ try{
 	$db->beginTransaction();
 	$update = $db->query($query);
 	echo $query;
+	logAction($db, "Modification", $table_name."-".$entry_id);
 	$db->commit();
 } catch(PDOException $e){
 	$db->rollBack();

@@ -132,6 +132,7 @@ $(document).ready(function(){
 						return arr !== parseInt(session_id);
 					})
 			}
+			logAction("sessions", "Fermeture", session_id);
 		})
 	}
 })

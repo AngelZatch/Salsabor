@@ -20,5 +20,5 @@
 <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
 
 <!-- custom -->
-<script src="assets/js/tools.js"></script>
+<script src="assets/js/tools.min.js"></script>
 <script src="assets/js/notifications.js"></script>

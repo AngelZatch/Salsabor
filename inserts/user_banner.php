@@ -2,14 +2,13 @@
 	<div class="user-pp">
 		<img src="/Salsabor/<?php echo $details["photo"];?>" alt="<?php echo $details["user_prenom"];?>" class="banner-profile-picture">
 	</div>
-	<div class="col-sm-7 legend user-legend">
-		<span class="modal-editable-<?php echo $user_id;?>" data-field="user_prenom" data-name="Prénom"><?php echo $details["user_prenom"];?></span>
-		<span class="modal-editable-<?php echo $user_id;?>" data-field="user_nom" data-name="Nom"><?php echo $details["user_nom"];?></span>
+	<div class="col-xs-7 col-sm-9 legend user-legend">
+		<span id="refresh-prenom"><?php echo $details["user_prenom"];?></span>
+		<span id="refresh-nom"><?php echo $details["user_nom"];?></span>
 		<?php if($details["archived"] == 1) { ?>
 		<span class="archived-state">(Archivé)</span>
 		<?php } ?>
 	</div>
-	<span class="col-xs-1 glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt glyphicon-button-big" data-toggle="modal" data-target="#edit-modal" data-entry="<?php echo $details["user_id"];?>" data-table="users" title='Modifier les détails de <?php echo $details["user_prenom"]." ".$details["user_nom"];?>'></span>
 	<?php if($details["archived"] == 0) { ?>
 	<span class="col-xs-1 glyphicon glyphicon-folder-close glyphicon-button glyphicon-button-alt glyphicon-button-big" title="Archiver" data-toggle="modal" data-target="#archive-modal" data-entry="<?php echo $details["user_id"];?>" data-table="users"></span>
 	<?php } else { ?>
@@ -30,7 +29,7 @@
 		<div class="col-xs-6">
 			<div>
 				<span class="glyphicon glyphicon-envelope glyphicon-description"></span>
-				<p class="modal-editable-<?php echo $user_id;?>" data-field="mail" data-name="Adresse mail"><?php echo $details["mail"];?></p>
+				<p id="refresh-mail"><?php echo $details["mail"];?></p>
 			</div>
 			<div>
 				<span class="glyphicon glyphicon-qrcode glyphicon-description"></span>
@@ -56,7 +55,7 @@
 		<div class="col-xs-6">
 			<div>
 				<span class="glyphicon glyphicon-earphone glyphicon-description"></span>
-				<p class="modal-editable-<?php echo $user_id;?>" data-field="telephone" data-name="Téléphone"><?php echo $details["telephone"];?></p>
+				<p id="refresh-telephone"><?php echo $details["telephone"];?></p>
 			</div>
 			<div>
 				<span class="glyphicon glyphicon-home glyphicon-description"></span>

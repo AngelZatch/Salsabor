@@ -50,7 +50,9 @@ function addEntry($db, $table_name, Array $values){
 		$db->beginTransaction();
 		$insert = $db->query($query);
 		$new_id = $db->lastInsertId();
+		logAction($db, "Ajout", $table_name."-".$new_id);
 		$db->commit();
+		echo $query;
 		if(isset($_POST["table"])){//AJAX
 			echo $new_id;
 		}

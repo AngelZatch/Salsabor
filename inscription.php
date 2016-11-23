@@ -7,10 +7,6 @@ require_once 'functions/db_connect.php';
 include "functions/add_entry.php";
 $db = PDOFactory::getConnection();
 
-$titleText = "Réaliser une inscription";
-
-$now = date_create('now')->format('Y-m-d');
-
 $connaissances = $db->query("SELECT * FROM sources_connaissance");
 
 // Locations
@@ -34,26 +30,18 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 		"telephone" => $_POST["telephone"],
 		"tel_secondaire" => $_POST["tel_secondaire"],
 		"commentaires" => $_POST["commentaires"],
-		"source_connaissance" => $_POST["sources_connaissance"],
-		"user_location" => $_POST["user_location"],
-		"user_rib" => $_POST["user_rib"],
-		"commentaires" => $_POST["commentaires"]
+		"source_connaissance" => $_POST["source_connaissance"]
 	);
+	// If there's a set location
+	if($_POST["user_location"] != null){
+		$user_details["user_location"] = $_POST["user_location"];
+	}
 	// If there's a set birthdate
 	if($_POST["date_naissance"] != null){
 		$birthdate = DateTime::createFromFormat("d/m/Y", $_POST["date_naissance"]);
 		$birthdate = $birthdate->format("d/m/Y H:i:s");
 		// Add to array
 		$user_details["date_naissance"] = $birthdate;
-	}
-	// If there's a picture to upload
-	if($_FILES["profile-picture"]["name"]){
-		$target_dir = "assets/pictures/";
-		$target_file = $target_dir.basename($_FILES["profile-picture"]["name"]);
-		$picture = $target_dir.$data.".".pathinfo($_FILES["profile-picture"]["name"], PATHINFO_EXTENSION);
-		move_uploaded_file($_FILES["profile-picture"]["tmp_name"], $picture);
-		// Add to array
-		$user_details["picture"] = $picture;
 	}
 
 	// Once everythin's set, we create the new user
@@ -85,7 +73,7 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 			<div class="row">
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
-					<legend><span class="glyphicon glyphicon-pencil"></span> <?php echo $titleText;?></legend>
+					<legend><span class="glyphicon glyphicon-pencil"></span> Inscription</legend>
 					<form action="" method="post" class="form-horizontal" role="form" id="user-add" enctype="multipart/form-data">
 						<p class="sub-legend">Informations personnelles</p>
 						<div class="form-group">
@@ -104,15 +92,6 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 							<label for="mail" class="col-sm-3 control-label">Adresse mail</label>
 							<div class="col-sm-9">
 								<input type="email" name="mail" id="mail" placeholder="Adresse mail" class="form-control">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="avatar" class="col-sm-3 control-label">Photo de profil</label>
-							<div class="col-sm-9">
-								<div id="kv-avatar-errors" class="center-block" style="width:800px;display:none;"></div>
-								<div id="avatar-container">
-									<input type="file" id="avatar" name="profile-picture" class="file-loading">
-								</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -169,14 +148,6 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 								<textarea rows="5" class="form-control" name="commentaires"></textarea>
 							</div>
 						</div>
-						<!--						<div class="row">
-<div class="col-lg-6">
-<div class="form-group">
-<label for="certificat_medical" class="control-label">Certificat Médical</label>
-<input type="file" class="form-control" name="certificat_medical">
-</div>
-</div>
-</div>-->
 						<p class="sub-legend">Informations Salsabor</p>
 						<div class="form-group">
 							<label for="date_inscription" class="col-sm-3 control-label">Date d'inscription</label>
@@ -195,7 +166,7 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="product_location" class="control-label col-lg-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings, membres accessibles en fonction de leurs régions. La région est ignorée pour les utilisateurs non-staff."></span></label>
+							<label for="user_location" class="control-label col-lg-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings, membres accessibles en fonction de leurs régions. La région est ignorée pour les utilisateurs non-staff."></span></label>
 							<div class="col-lg-9">
 								<select name="user_location" class="form-control">
 									<option value="">Pas de région</option>
@@ -205,17 +176,10 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 								</select>
 							</div>
 						</div>
-						<div class="form-group" id="rib-data" style="display:none;">
-							<label for="user_rib" class="col-sm-3 control-label">Informations bancaires</label>
-							<div class="col-sm-9">
-								<input type="text" name="user_rib" class="form-control">
-								<p class="help-block">Pour un professeur, un staff ou un prestataire</p>
-							</div>
-						</div>
 						<div class="form-group">
-							<label for="sources_connaissance" class="col-sm-3 control-label">D'où connaissez-vous Salsabor ?</label>
+							<label for="source_connaissance" class="col-sm-3 control-label">D'où connaissez-vous Salsabor ?</label>
 							<div class="col-sm-9">
-								<select name="sources_connaissance" class="form-control">
+								<select name="source_connaissance" class="form-control">
 									<?php while($sources = $connaissances->fetch(PDO::FETCH_ASSOC)){ ?>
 									<option value="<?php echo $sources["source_id"];?>"><?php echo $sources["source"];?></option>
 									<?php } ?>
@@ -245,21 +209,6 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 					defaultDate: moment()
 				});
 			})
-			$("#avatar").fileinput({
-				overwriteInitial: true,
-				maxFileSize: 3000,
-				showClose: false,
-				showCaption: false,
-				browseLabel: '',
-				removeLabel: '',
-				browseIcon: '<i class="glyphicon glyphicon-folder-open"></i>',
-				removeTitle: 'Cancel or reset changes',
-				elErrorContainers: '#kv-avatar-errors',
-				elPreviewContainer: '#avatar-container',
-				msgErrorClass: 'alert alert-block alert-danger',
-				defaultPreviewContent: '<img src="assets/images/logotype-white.png" alt="Image par défaut" style="width:118px;">',
-				layoutTemplates: {main2: '{preview} {browse}' },
-			});
 			var listening = false;
 			var wait;
 			$("[name='fetch-rfid']").click(function(){

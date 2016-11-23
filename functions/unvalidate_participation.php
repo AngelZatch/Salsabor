@@ -1,5 +1,6 @@
 <?php
 require_once "db_connect.php";
+include "tools.php";
 $db = PDOFactory::getConnection();
 
 /** This code will set the status of the record to 1 or 3 again, depending on whether there are products for the user, and delete the participation. Once it's done, we'll "Compute" the product to refresh its data.**/
@@ -29,7 +30,8 @@ if(!isset($product_id) || $product_id == null || $product_id == '0'){
 }
 
 // Update the record as handled with the correct session and status
-$update = $db->query("UPDATE participations SET status = '$status' WHERE passage_id = '$participation_id'");
+$db->query("UPDATE participations SET status = '$status' WHERE passage_id = '$participation_id'");
+logAction($db, "Invalidation", "participations-".$participation_id);
 
 $s["status"] = $status;
 echo json_encode($s);
