@@ -10,7 +10,7 @@
 					<div class="form-group">
 						<label for="user_identity" class="col-lg-4 control-label">Identité</label>
 						<div class="col-lg-8">
-							<input type="text" class="form-control name-input" name="user_identity">
+							<input type="text" class="form-control name-input" data-filter="active" name="user_identity">
 						</div>
 					</div>
 				</form>
