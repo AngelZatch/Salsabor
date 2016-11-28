@@ -4,27 +4,7 @@ session_start();
 ?>
 	// Oh yeah we cheating boys. Basically we need to get $_SESSION variables for comments, so this is an acceptable method.
 
-	$(document).on('focus', '.name-input', function(){
-	var id = $(this).attr("id");
-	$.get("functions/fetch_user_list.php", {filter : "staff"}).done(function(data){
-		var userList = JSON.parse(data);
-		var autocompleteList = [];
-		for(var i = 0; i < userList.length; i++){
-			autocompleteList.push(userList[i].user);
-		}
-		$("#"+id).textcomplete([{
-			match: /(^|\b)(\w{2,})$/,
-			search: function(term, callback){
-				callback($.map(autocompleteList, function(item){
-					return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
-				}));
-			},
-			replace: function(item){
-				return item;
-			}
-		}]);
-	});
-}).on('click', '.panel-heading-task', function(){
+	$(document).on('click', '.panel-heading-task', function(){
 	var id = document.getElementById($(this).attr("id")).dataset.trigger;
 	$("#body-task-"+id).collapse("toggle");
 }).on('show.bs.collapse', '.panel-task-body', function(){
@@ -385,7 +365,7 @@ function renderTask(task, half){
 		var recipient = task.recipient;
 		var is_placeholder = false;
 	}
-	contents += "<p class='modal-editable-"+task.id+"' id='task-recipient-"+task.id+"' data-field='task_recipient' data-name='Membre affecté à cette tâche' data-placeholder='"+is_placeholder+"'>"+recipient+"</p>";
+	contents += "<p class='modal-editable-"+task.id+"' id='task-recipient-"+task.id+"' data-field='task_recipient' data-name='Membre affecté à cette tâche' data-placeholder='"+is_placeholder+"' data-complete='true' data-complete-filter='staff'>"+recipient+"</p>";
 	contents += "</div>";
 
 	contents += "</div>";

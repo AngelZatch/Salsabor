@@ -67,12 +67,16 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 					<div>
 						<?php while($achats = $queryAchats->fetch(PDO::FETCH_ASSOC)){
 	$productQty = $db->query("SELECT id_produit_adherent FROM produits_adherents WHERE id_transaction_foreign='$achats[id_transaction]'")->rowCount();
-						$handler = ($achats["handler"]!=null)?$achats["handler"]:"Pas de vendeur";?>
+	$handler = ($achats["handler"]!=null)?$achats["handler"]:"Pas de vendeur";?>
 						<div class="panel panel-purchase" id="purchase-<?php echo $achats["id_transaction"];?>">
 							<div class="panel-heading container-fluid" onClick="displayPurchase('<?php echo $achats["id_transaction"];?>')">
-								<p class="purchase-id col-xs-4">Transaction <?php echo $achats["id_transaction"];?></p>
+								<p class="purchase-id col-xs-3">Transaction <?php echo $achats["id_transaction"];?></p>
 								<p class="col-xs-2"><?php echo $productQty;?> produit(s)</p>
-								<p class="purchase-sub col-xs-4"><?php echo date_create($achats["date_achat"])->format('d/m/Y');?> - <span id="handler-<?php echo $achats["id_transaction"];?>"><?php echo $handler;?></span> - <span id="price-<?php echo $achats["id_transaction"];?>"><?php echo $achats["prix_total"];?></span> €</p>
+								<p class="purchase-sub col-xs-4">
+									<span class="modal-editable-<?php echo $achats["id_transaction"];?>" data-field="date_achat" data-name="Date" id="date-<?php echo $achats["id_transaction"];?>"><?php echo date_create($achats["date_achat"])->format('d/m/Y');?></span> -
+									<span class="modal-editable-<?php echo $achats["id_transaction"];?>" data-field="transaction_handler" data-name="Vendeur" data-complete="true" data-complete-filter="staff" id="handler-<?php echo $achats["id_transaction"];?>"><?php echo $handler;?></span> -
+									<span class="modal-editable-<?php echo $achats["id_transaction"];?>" data-field="prix_total" data-name="Prix" id="price-<?php echo $achats["id_transaction"];?>"><?php echo $achats["prix_total"];?></span> €</p>
+								<span class="glyphicon glyphicon-pencil glyphicon-button glyphicon-button-alt glyphicon-button-big col-xs-1" id="edit-<?php echo $achats["id_transaction"];?>" data-toggle="modal" data-target="#edit-modal" data-entry="<?php echo $achats["id_transaction"];?>" data-table="transactions" title="Modifier les détails de la transaction"></span>
 								<span class="glyphicon glyphicon-briefcase glyphicon-button glyphicon-button-alt glyphicon-button-big create-contract col-xs-1" id="create-contract-<?php echo $achats["id_transaction"];?>" data-transaction="<?php echo $achats["id_transaction"];?>"title="Afficher le contrat"></span>
 								<span class="glyphicon glyphicon-file glyphicon-button glyphicon-button-alt glyphicon-button-big create-invoice col-xs-1" id="create-invoice-<?php echo $achats["id_transaction"];?>" data-transaction="<?php echo $achats["id_transaction"];?>" title="Afficher la facture"></span>
 							</div>

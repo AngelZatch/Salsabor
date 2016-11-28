@@ -158,6 +158,7 @@ $(document).ready(function(){
 					addOptions += "</div>"; /*form-group*/
 					addOptions += "</div>"; /*col-lg-6*/
 					addOptions += "</div>"; /*row*/
+					addOptions += "<p class='help-block'><span class='glyphicon glyphicon-warning-sign'></span> Par défaut, la date d'inscription est celle du jour. Si vous voulez la modifier, n'oubliez pas de vous rendre sur le profil de l'utilisateur après la transaction</p>";
 					addOptions += "<a class='btn btn-primary btn-block' onClick='addAdherent()'>Inscrire l'adhérent</a>";
 					addOptions += "</div>"; /*well*/
 					addOptions += "</div>"; /*collapse*/
@@ -205,6 +206,10 @@ $(document).ready(function(){
 	});
 }).on('click', '.submit-relay', function(){
 	$(".submit-relay-target").click();
+}).on('focus', '.name-input', function(){
+	var filter = $(this).data('filter');
+	console.log(filter);
+	provideAutoComplete($(this), filter);
 }).on('click', '.sub-modal-close', function(){
 	$(".sub-modal").toggle();
 }).on('click', '.trigger-sub', function(e){
@@ -544,6 +549,7 @@ $(document).ready(function(){
 
 		Once you've done all this, you'll be set.
 	*/
+	event.stopPropagation();
 	var entry_id = $(event.relatedTarget).data('entry'), secondary_id = $(event.relatedTarget).data('transaction'), table = $(event.relatedTarget).data('table'), modal = $(this);
 	modal.find(".modal-title").text($(event.relatedTarget).attr('title'));
 
@@ -579,10 +585,18 @@ $(document).ready(function(){
 			edit_form += '</select>';
 		} else {
 			if(input_type === undefined){
-				if(is_placeholder){
-					edit_form += '<input type="text" class="form-control" name="'+field_name+'" placeholder="'+element.text()+'">';
+				edit_form += '<input type="text" class="form-control';
+				if($(this).data('complete') !== undefined){
+					console.log($(this).data('complete-filter'));
+					edit_form += ' name-input" data-filter="'+$(this).data('complete-filter')+'"';
 				} else {
-					edit_form += '<input type="text" class="form-control" name="'+field_name+'" value="'+element.text()+'">';
+					edit_form += '"';
+				}
+				edit_form += ' name="'+field_name+'"';
+				if(is_placeholder){
+					edit_form += 'placeholder="'+element.text()+'">';
+				} else {
+					edit_form += ' value="'+element.text()+'">';
 				}
 			} else {
 				if(input_type == "textarea"){
@@ -602,13 +616,14 @@ $(document).ready(function(){
 		var values = modal.find("#modal-form").serialize();
 		console.log(entry_id);
 		var m = /\D*/.exec(entry_id);
-		if(m === null || m == ""){
+		if(m === null || m == "" || table == "transactions"){
 			console.log("no chars");
-			real_entry_id = entry_id;
+			var real_entry_id = entry_id;
 		} else {
 			console.log("chars");
 			var real_entry_id = entry_id.replace(/(\D*)/i, '');
 		}
+		console.log("obtained entry: "+real_entry_id);
 		$.when(updateEntry(table, values, real_entry_id)).done(function(data){
 			/*console.log(data);*/
 			var updated_values = modal.find("#modal-form").serializeArray(), i = 0;
