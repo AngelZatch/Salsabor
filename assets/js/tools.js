@@ -158,6 +158,7 @@ $(document).ready(function(){
 					addOptions += "</div>"; /*form-group*/
 					addOptions += "</div>"; /*col-lg-6*/
 					addOptions += "</div>"; /*row*/
+					addOptions += "<p class='help-block'><span class='glyphicon glyphicon-warning-sign'></span> Par défaut, la date d'inscription est celle du jour. Si vous voulez la modifier, n'oubliez pas de vous rendre sur le profil de l'utilisateur après la transaction</p>";
 					addOptions += "<a class='btn btn-primary btn-block' onClick='addAdherent()'>Inscrire l'adhérent</a>";
 					addOptions += "</div>"; /*well*/
 					addOptions += "</div>"; /*collapse*/

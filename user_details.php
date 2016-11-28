@@ -166,6 +166,12 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							</div>
 						</div>
 						<div class="form-group">
+							<label for="date_inscription" class="control-label col-sm-3">Date d'inscription</label>
+							<div class="col-sm-9">
+								<input type="text" name="date_inscription" id="register_date" class="form-control">
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="user_location" class="control-label col-sm-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings et résultats de recherche accessibles en fonction de leurs régions. Correspond à la région principale fréquentée pour les utilisateurs non-staff."></span></label>
 							<div class="col-sm-9">
 								<select name="user_location" id="user-location" class="form-control">
@@ -262,6 +268,11 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 				$("#birthdate").datetimepicker({
 					format: "DD/MM/YYYY",
 					defaultDate: "<?php echo (isset($details["date_naissance"]))?date_create($details['date_naissance'])->format("m/d/Y"):false;?>",
+					locale: "fr"
+				});
+				$("#register_date").datetimepicker({
+					format: "DD/MM/YYYY",
+					defaultDate: "<?php echo $details["date_inscription"];?>",
 					locale: "fr"
 				});
 
