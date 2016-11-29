@@ -448,7 +448,7 @@ legend, .sub-legend, .search-title, .big-legend, p.legend, div.legend:nth-child(
   cursor: pointer; }
 
 /* line 174, C:/xampp/htdocs/Salsabor/assets/css/default-style.sass */
-.label-addable, .label-restyle {
+.label-addable, .label-restyle, .label-manual {
   margin-bottom: 5px;
   text-align: left;
   padding-top: .5em;

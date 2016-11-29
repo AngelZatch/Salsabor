@@ -99,7 +99,7 @@ if(isset($_POST["edit"])){
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<form action="" class="form-horizontal" id="form-product" method="post">
 						<legend><span class="glyphicon glyphicon-credit-card"></span> <?php echo $produit["product_name"];?>
-							<input type="submit" name="edit" role="button" class="btn btn-primary hidden-xs" value="Enregistrer">
+							<input type="submit" name="edit" role="button" class="btn btn-primary hidden-xs edit-product" value="Enregistrer">
 						</legend>
 						<p class="sub-legend">Informations générales</p>
 						<div class="form-group">
@@ -111,7 +111,7 @@ if(isset($_POST["edit"])){
 						<div class="form-group">
 							<label for="" class="col-lg-3 control-label">&Eacute;tiquettes</label>
 							<div class="col-lg-9 session-tags">
-								<h4>
+								<h4 class="tags_container">
 									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){
 	if($label["is_mandatory"] == 1){
 		$label_name = "<span class='glyphicon glyphicon-star'></span> ".$label["rank_name"];
@@ -119,7 +119,7 @@ if(isset($_POST["edit"])){
 		$label_name = $label["rank_name"];
 	}
 									?>
-									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="product-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype="product" style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label_name;?></span>
+									<span class="label label-salsabor" title="<?php echo $label_name;?>" style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label_name;?></span>
 									<?php } ?>
 									<span class="label label-default label-clickable label-add trigger-sub" id="label_add" data-subtype="session-tags" data-targettype="product" title="Ajouter une étiquette">+</span>
 								</h4>
@@ -215,7 +215,7 @@ if(isset($_POST["edit"])){
 								<input type="number" class="form-control" name="echeances" value="<?php echo $produit["echeances_paiement"];?>">
 							</div>
 						</div>
-						<input type="submit" name="edit" role="button" class="btn btn-primary btn-block visible-xs" value="Enregistrer">
+						<input type="submit" name="edit" role="button" class="btn btn-primary btn-block visible-xs edit-product" value="Enregistrer">
 					</form>
 				</div>
 			</div>
@@ -224,9 +224,14 @@ if(isset($_POST["edit"])){
 	</body>
 	<script>
 		$(document).ready(function(){
+			initial_tags = createTagsArray();
+			console.log(initial_tags);
 			if($("#size-null").val() == 0){
 				$("#product-size-group").hide();
 			}
+		}).on('click', '.edit-product', function(){
+			var current_tags = createTagsArray(), entry_id = /([0-9]+)/.exec(top.location.pathname)[0];
+			updateTargetTags(initial_tags, current_tags, entry_id, "product");
 		})
 		$('#size-null').on('change', function(){
 			console.log($(this));

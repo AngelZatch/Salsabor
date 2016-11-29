@@ -17,7 +17,12 @@ if(isset($_POST["tag"]) && isset($_POST["target"]) && isset($_POST["type"])){
 function associateTag($db, $tag, $target, $type){
 	if(isset($target)){
 		if(!is_numeric($tag)){
-			$tag = $db->query("SELECT rank_id FROM tags_".$type." WHERE rank_name='$tag'")->fetch(PDO::FETCH_COLUMN);
+			if($type == "product"){
+				$tag_type = "session";
+			} else {
+				$tag_type = $type;
+			}
+			$tag = $db->query("SELECT rank_id FROM tags_".$tag_type." WHERE rank_name='$tag'")->fetch(PDO::FETCH_COLUMN);
 		}
 
 		$query = "INSERT IGNORE INTO assoc_".$type."_tags(".$type."_id_foreign, tag_id_foreign) VALUES($target, $tag)";

@@ -157,9 +157,9 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						<div class="form-group">
 							<label for="statuts" class="col-lg-3 control-label">&Eacute;tiquettes</label>
 							<div class="col-sm-9 user_tags">
-								<h4>
+								<h4 class="tags_container">
 									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
-									<span class="label label-salsabor label-clickable label-deletable" title="Supprimer l'étiquette" id="user-tag-<?php echo $label["entry_id"];?>" data-target="<?php echo $label["entry_id"];?>" data-targettype='user' style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
+									<span class="label label-salsabor" title="<?php echo $label["rank_name"];?>" id="user-tag-<?php echo $label["entry_id"];?>" style="background-color:<?php echo $label["tag_color"];?>"><?php echo $label["rank_name"];?></span>
 									<?php } ?>
 									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='user-tags' data-targettype='user' title="Ajouter une étiquette">+</span>
 								</h4>
@@ -265,6 +265,8 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 		</style>
 		<script>
 			$(document).ready(function(){
+				initial_tags = createTagsArray();
+				console.log(initial_tags);
 				$("#birthdate").datetimepicker({
 					format: "DD/MM/YYYY",
 					defaultDate: "<?php echo (isset($details["date_naissance"]))?date_create($details['date_naissance'])->format("m/d/Y"):false;?>",
@@ -374,24 +376,6 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						}
 					});
 				}
-
-				$("[name='link-forfait']").click(function(){
-					$("[name='forfaits-actifs']").show();
-					$("[name='link-forfait']").hide();
-				});
-
-				$("[name='forfaits-actifs']").blur(function(){
-					var clicked = $(this);
-					var eleve_id = <?php echo $user_id;?>;
-					var product_id = clicked.val();
-					var session_id = clicked.prev().val();
-					$.post("functions/link_forfait.php", {eleve_id : eleve_id, session_id : session_id, product_id : product_id}).done(function(data){
-						showNotification(data, "success");
-						clicked.parents("tr.warning").removeClass('warning');
-						clicked.hide();
-						clicked.parent().html(product_id);
-					});
-				});
 			}).on('click', '.upload-result', function(){
 				var picture_value = $("#imagebase64").val();
 				var user_id = /([0-9]+)/.exec(top.location.pathname);
@@ -403,9 +387,9 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 				})
 			}).on('click', '#update-user', function(){
 				var user_id = /([0-9]+)/.exec(top.location.pathname);
-				var values = $("#user-details-form").serialize(), table = "users", entry_id = user_id[0];
+				var values = $("#user-details-form").serialize(), table = "users", entry_id = user_id[0], current_tags = createTagsArray();
 				console.log(values);
-				$.when(updateEntry(table, values, entry_id)).done(function(data){
+				$.when(updateEntry(table, values, entry_id), updateTargetTags(initial_tags, current_tags, entry_id, "user")).done(function(data){
 					console.log(data);
 					var rfid = $("#user-rfid").val();
 					if(rfid != ""){
@@ -424,6 +408,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 					$("#refresh-telephone").text($("#telephone").val());
 					$("#refresh-prenom").text($("#user_prenom").val());
 					$("#refresh-nom").text($("#user_nom").val());
+					initial_tags = current_tags;
 				})
 			})
 		</script>
