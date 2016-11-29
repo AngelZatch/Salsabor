@@ -1,6 +1,6 @@
 <?php
 require_once "db_connect.php";
-include "tools.php";
+require_once "tools.php";
 $db = PDOFactory::getConnection();
 
 $task_creator_id = null;
