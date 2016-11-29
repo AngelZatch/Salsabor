@@ -37,6 +37,31 @@ $(document).on('click', '.label-deletable', function(e){
 			$(insert).before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='"+target_type+"-tag-"+data+"' data-target='"+data+"' data-targettype='"+target_type+"' style='background-color:"+value[0]+"'>"+tag_text+"</span>");
 		})
 	}
+}).on('click', '.label-manual', function(e){
+	e.stopPropagation();
+	var tag = $(this).data('tag'), target_type = $(this).data('targettype');
+	if(target_type == "task" || target_type == "page"){
+		var target = /([0-9]+)/.exec(window.target)[0];
+	} else {
+		var target = /([0-9]+$)/.exec(document.location.href)[0];
+	}
+	var tag_text = $(this).text();
+	console.log(tag_text);
+	if(target_type == "task" || target_type == "page"){
+		var insert = "#label-add-"+target;
+	} else {
+		var insert = ".label-add";
+	}
+	if($(this).hasClass("toggled")){
+		$("#tag-"+tag).removeClass("toggled");
+		$("#tag-"+tag).find("span").remove();
+		$(insert).parent(".tags_container").find("span:contains("+tag_text+")").remove();
+	} else {
+		var value = /([a-z0-9]+)/i.exec($(this).css("backgroundColor"));
+		$("#tag-"+tag).addClass("toggled");
+		$("#tag-"+tag).append("<span class='glyphicon glyphicon-ok float-right'></span>");
+		$(insert).before("<span class='label label-salsabor' title='"+tag_text+"' style='background-color:"+value[0]+"'>"+tag_text+"</span>");
+	}
 }).on('click', '.label-new-tag', function(){
 	var tag_type = document.getElementById($(this).attr("id")).dataset.tagtype;
 	var target_type = document.getElementById($(this).attr("id")).dataset.targettype;
@@ -112,21 +137,23 @@ function displayTargetTags(data, target_type, tag_type){
 	var tags = JSON.parse(data), addable = "", added = "", body = "";
 	for(var i = 0; i < tags.length; i++){
 		if(target_type == "task" || target_type == "page"){
-			var compare = $("#"+target_type+"-"+/([0-9]+)/.exec(window.target)[0]).find(".label-deletable");
+			var compare = $("#"+target_type+"-"+/([0-9]+)/.exec(window.target)[0]).find(".label-salsabor");
+			var label_class = "label-addable";
 		} else {
-			var compare = $(".label-deletable");
+			var compare = $(".label-salsabor");
+			var label_class = "label-manual";
 		}
 		compare.each(function(){
 			if(tags[i].rank_name == $(this).text()){
-				addable = " toggled";
-				added = " <span class='glyphicon glyphicon-ok float-right'></span>";
+				addable = "toggled";
+				added = "<span class='glyphicon glyphicon-ok float-right'></span>";
 				return false;
 			} else {
 				addable = "";
 				added = "";
 			}
 		})
-		body += "<h4><span class='label col-xs-12 label-clickable label-addable"+addable+"' id='tag-"+tags[i].rank_id+"' data-tag='"+tags[i].rank_id+"' data-targettype='"+target_type+"' data-tagtype='"+tag_type+"' style='background-color:"+tags[i].color+"'>"+tags[i].rank_name+added+"</span></h4>";
+		body += "<h4><span class='label col-xs-12 label-clickable "+label_class+" "+addable+"' id='tag-"+tags[i].rank_id+"' data-tag='"+tags[i].rank_id+"' data-targettype='"+target_type+"' data-tagtype='"+tag_type+"' style='background-color:"+tags[i].color+"'>"+tags[i].rank_name+added+"</span></h4>";
 	}
 	body += "<h4><span class='label col-xs-12 label-default label-clickable label-new-tag' id='label-new' data-targettype='"+target_type+"' data-tagtype='"+tag_type+"'>Créer une étiquette</span></h4>";
 	return body;
@@ -173,4 +200,27 @@ function attachTag(tag, target, target_type){
 
 function detachTag(tag, target, target_type){
 	return $.post("functions/detach_tag.php", {tag : tag, target : target, type : target_type});
+}
+
+function createTagsArray(){
+	var tags = [];
+	$(".label-salsabor").each(function(){
+		tags.push($(this).text());
+	})
+	return tags;
+}
+
+function updateTargetTags(initial_tags, current_tags, entry_id, entry_type){
+	// Once the update is called on an entity, this function is called to compare the initial_tags array with the update_tags array. It will then attach or detach tags as needed.
+	// WARNING : The code below, though very effective, is borderline intended by the developers of jQuery. If something breaks when updating to a newer version of jQuery (> 2.1.4), please see here first.
+	var to_be_detached = $(initial_tags).not(current_tags).get();
+	var to_be_attached = $(current_tags).not(initial_tags).get();
+	for(var i = 0; i < to_be_detached.length; i++){
+		detachTag(to_be_detached[i], entry_id, entry_type);
+		console.log("detaching tag "+to_be_detached[i]+" from "+entry_type+" "+entry_id);
+	}
+	for(var i = 0; i < to_be_attached.length; i++){
+		attachTag(to_be_attached[i], entry_id, entry_type);
+		console.log("attaching tag "+to_be_attached[i]+" to "+entry_type+" "+entry_id);
+	}
 }
