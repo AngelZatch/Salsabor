@@ -23,7 +23,8 @@ function addEntry($db, $table_name, Array $values){
 	}
 	$query .= " VALUES(";
 	foreach($values as $column => $value){
-		if($column == "session_teacher" || $column == "event_handler" || $column == "booking_holder"){
+		$id_solving_tokens = array("session_teacher", "event_handler", "booking_holder", "booking_handler", "task_recipient", "transaction_handler");
+		if(in_array($column, $id_solving_tokens)){
 			$value = solveAdherentToId($value);
 		}
 		if(preg_match("/(start|end|date)/i", $column)){
@@ -52,7 +53,7 @@ function addEntry($db, $table_name, Array $values){
 		$new_id = $db->lastInsertId();
 		logAction($db, "Ajout", $table_name."-".$new_id);
 		$db->commit();
-		echo $query;
+		/*echo $query;*/
 		if(isset($_POST["table"])){//AJAX
 			echo $new_id;
 		}

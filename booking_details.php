@@ -9,7 +9,11 @@ require_once 'functions/reservations.php';
 
 
 $booking_id = $_GET['id'];
-$booking_query = $db->prepare('SELECT * FROM reservations JOIN users ON booking_holder=users.user_id WHERE booking_id=?');
+$booking_query = $db->prepare("SELECT *, CONCAT(u.user_prenom, ' ', u.user_nom) AS holder, CONCAT(u2.user_prenom, ' ', u2.user_nom) AS handler
+							FROM reservations b
+							JOIN users u ON b.booking_holder = u.user_id
+							LEFT JOIN users u2 ON b.booking_handler = u2.user_id
+							WHERE booking_id = ?");
 $booking_query->bindParam(1, $booking_id);
 $booking_query->execute();
 $booking_details = $booking_query->fetch(PDO::FETCH_ASSOC);
@@ -60,7 +64,7 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 						<div class="form-group">
 							<label for="booking_name" class="col-lg-3 control-label">Réservation pour</label>
 							<div class="col-lg-9">
-								<input type="text" class="form-control" name="booking_holder" value="<?php echo $booking_details['user_prenom']." ".$booking_details['user_nom'];?>">
+								<input type="text" class="form-control" name="booking_holder" value="<?php echo $booking_details['holder']?>">
 							</div>
 						</div>
 						<div class="form-group">
@@ -87,6 +91,12 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 									<?php }
 } ?>
 								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="booking_handler" class="col-lg-3 control-label">Responsable de la réservation</label>
+							<div class="col-lg-9">
+								<input type="text" class="form-control" name="booking_handler" value="<?php echo $booking_details["handler"];?>" placeholder="Staff qui a réalisé cette réservation">
 							</div>
 						</div>
 						<!--<div class="form-group">
