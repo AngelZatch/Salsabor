@@ -205,6 +205,7 @@ function deactivateProduct(product_id, value){
 		$("#btn-activate-"+product_id).attr("data-subtype", "activate");
 		$("#btn-activate-"+product_id).addClass("trigger-sub");
 		$("btn-activate-"+product_id).prop('onclick', null).off('click');
+		computeRemainingHours(product_id, true);
 	})
 }
 
