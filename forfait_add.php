@@ -4,6 +4,7 @@ if(!isset($_SESSION["username"])){
 	header('location: portal');
 }
 require_once 'functions/db_connect.php';
+include "functions/tools.php";
 $db = PDOFactory::getConnection();
 
 // Product categories
@@ -39,6 +40,7 @@ if(isset($_POST["add"])){
 		$new->bindParam(':echeances', $_POST["echeances"]);
 		$new->bindParam(':autorisation_report', $_POST["autorisation_report"]);
 		$new->execute();
+		logAction($db, "Ajout", "produits-".$db->lastInsertId());
 		$db->commit();
 		header("Location: forfaits?region=1");
 	}catch (PDOException $e){

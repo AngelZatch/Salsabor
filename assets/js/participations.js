@@ -98,8 +98,6 @@ $(document).ready(function(){
 		$(".sub-modal").hide();
 	}
 	//}
-}).on('focus', '.name-input', function(){
-	provideAutoComplete($(this), "active");
 }).on('click', '.validate-session', function(e){
 	e.stopPropagation();
 	var session_id = document.getElementById($(this).attr("id")).dataset.session;
@@ -132,6 +130,7 @@ $(document).ready(function(){
 						return arr !== parseInt(session_id);
 					})
 			}
+			logAction("sessions", "Fermeture", session_id);
 		})
 	}
 })

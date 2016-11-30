@@ -1,5 +1,6 @@
 <?php
 require_once "db_connect.php";
+require_once "tools.php";
 $db = PDOFactory::getConnection();
 
 $task_creator_id = null;
@@ -37,6 +38,7 @@ function createTask($db, $task_title, $task_description, $task_token, $task_crea
 			else
 				$stmt->bindValue(":creator_id", NULL, PDO::PARAM_INT);
 			$stmt->execute();
+			logAction($db, "Ajout", "tasks-".$db->lastInsertId());
 			echo $db->lastInsertId();
 			return $db->lastInsertId();
 		} catch(PDOException $e){

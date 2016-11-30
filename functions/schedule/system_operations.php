@@ -64,16 +64,45 @@ try{
 
 try{
 	$db->beginTransaction();
-	// We check all active users whod don't have an active membership card
+	// Check all membership cards from active users
 	$noCards = $db->query("SELECT user_id FROM users u WHERE actif = 1")->fetchAll(PDO::FETCH_COLUMN);
 	foreach($noCards as $user){
-		$test = $db->query("SELECT * FROM produits_adherents pa
+		$membership_cards = $db->query("SELECT id_produit_adherent, pa.actif, date_achat, date_expiration
+							FROM produits_adherents pa
+							JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 							JOIN produits p ON pa.id_produit_foreign = p.product_id
-							WHERE id_user_foreign = '$user' AND product_name = 'Adhésion Annuelle' AND pa.actif != 2")->rowCount();
-		if($test == 0){
+							WHERE id_user_foreign = '$user' AND product_name = 'Adhésion Annuelle' ORDER BY id_produit_adherent ASC")->fetchAll();
+		if(sizeof($membership_cards == 0)){ // If there's no membership card, we create a task
 			$new_task_id = createTask($db, "Adhésion Annuelle manquante", "Cet utilisateur n'a pas d'adhésion annuelle.", "[USR-".$user."]", null);
 			$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
 			associateTag($db, intval($tag), $new_task_id, "task");
+		} else {
+			// Resetting loop variables
+			$active_card = false;
+			unset($next_activation_date);
+			// Looping on membership cards of the user
+			foreach($membership_cards as $card){
+				if($card["actif"] == 0 && !$active_card){
+					if(isset($next_activation_date))
+						$activation_date = $next_activation_date;
+					else
+						$activation_date = $card["date_achat"];
+
+					activateProduct($db, $card["id_produit_adherent"], $activation_date);
+					$active_card = true;
+				}
+				if($card["actif"] == 1){ // If the card is active, no need to search for other cards to activate
+					$active_card = true;
+				}
+				if($card["actif"] == 2){ // If the card has expired, the next one will have to be activated with this one's expiration date in mind for continued activation.
+					$next_activation_date = $card["date_expiration"];
+				}
+			}
+			if(!$active_card){
+				$new_task_id = createTask($db, "Adhésion Annuelle manquante", "Cet utilisateur n'a pas d'adhésion annuelle.", "[USR-".$user."]", null);
+				$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
+				associateTag($db, intval($tag), $new_task_id, "task");
+			}
 		}
 	}
 } catch(PDOException $e){

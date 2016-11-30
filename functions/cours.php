@@ -37,6 +37,8 @@ function addCours(){
 			/** Inserting lone child **/
 			$session_id = createSession($db, $session_group_id, $session_name, $start, $end, $user_id, $room_id, $session_duration, 0, 2);
 
+			logAction($db, "Ajout", "sessions-".$session_id);
+
 			$db->commit();
 			header("Location: cours/$session_id");
 		} catch(PDOException $e){
@@ -78,6 +80,7 @@ function addCours(){
 				$end = date("Y-m-d H:i:s", $end_date);
 
 			}
+			logAction($db, "Ajout", "session_groups-".$session_group_id);
 			$db->commit();
 			header("Location: cours/$first_session_id");
 		} catch(PDOException $e){

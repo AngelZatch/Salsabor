@@ -1,5 +1,6 @@
 <?php
 require_once "db_connect.php";
+include "tools.php";
 $db = PDOFactory::getConnection();
 
 $room_location = $_POST["room_location"];
@@ -12,6 +13,7 @@ try{
 	$stmt->bindParam(2, $room_name, PDO::PARAM_STR);
 	$stmt->execute();
 	echo $db->lastInsertId();
+	logAction($db, "Ajout", "rooms-".$db->lastInsertId());
 	$db->commit();
 } catch(PDOException $e){
 	$db->rollBack();

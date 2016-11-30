@@ -4,27 +4,7 @@ session_start();
 ?>
 	// Oh yeah we cheating boys. Basically we need to get $_SESSION variables for comments, so this is an acceptable method.
 
-	$(document).on('focus', '.name-input', function(){
-	var id = $(this).attr("id");
-	$.get("functions/fetch_user_list.php", {filter : "staff"}).done(function(data){
-		var userList = JSON.parse(data);
-		var autocompleteList = [];
-		for(var i = 0; i < userList.length; i++){
-			autocompleteList.push(userList[i].user);
-		}
-		$("#"+id).textcomplete([{
-			match: /(^|\b)(\w{2,})$/,
-			search: function(term, callback){
-				callback($.map(autocompleteList, function(item){
-					return item.toLowerCase().indexOf(term.toLocaleLowerCase()) === 0 ? item : null;
-				}));
-			},
-			replace: function(item){
-				return item;
-			}
-		}]);
-	});
-}).on('click', '.panel-heading-task', function(){
+	$(document).on('click', '.panel-heading-task', function(){
 	var id = document.getElementById($(this).attr("id")).dataset.trigger;
 	$("#body-task-"+id).collapse("toggle");
 }).on('show.bs.collapse', '.panel-task-body', function(){
@@ -95,10 +75,12 @@ session_start();
 			$("#task-"+target_id).addClass("task-old");
 			$("#toggle-task-"+target_id).addClass("glyphicon-remove");
 			$("#toggle-task-"+target_id).attr("title", "Marquer comme non traitée");
+			logAction(table_name, "Validation", target_id);
 		} else {
 			$("#task-"+target_id).addClass("task-new");
 			$("#toggle-task-"+target_id).addClass("glyphicon-ok");
 			$("#toggle-task-"+target_id).attr("title", "Marquer comme traitée");
+			logAction(table_name, "Invalidation", target_id);
 		}
 		if(top.location.pathname === "/Salsabor/dashboard"){
 			$("#task-"+target_id).fadeOut('normal', function(){
@@ -123,6 +105,7 @@ session_start();
 		} else {
 			$("#deadline-"+task_id).html("<span class='glyphicon glyphicon-time'></span> Ajouter une date limite");
 		}
+		logAction("tasks", "Modification", task_id);
 	})
 }).on('click', '.delete-comment', function(){
 	var id = document.getElementById($(this).attr("id")).dataset.target;
@@ -382,7 +365,7 @@ function renderTask(task, half){
 		var recipient = task.recipient;
 		var is_placeholder = false;
 	}
-	contents += "<p class='modal-editable-"+task.id+"' id='task-recipient-"+task.id+"' data-field='task_recipient' data-name='Membre affecté à cette tâche' data-placeholder='"+is_placeholder+"'>"+recipient+"</p>";
+	contents += "<p class='modal-editable-"+task.id+"' id='task-recipient-"+task.id+"' data-field='task_recipient' data-name='Membre affecté à cette tâche' data-placeholder='"+is_placeholder+"' data-complete='true' data-complete-filter='staff'>"+recipient+"</p>";
 	contents += "</div>";
 
 	contents += "</div>";

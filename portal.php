@@ -1,5 +1,6 @@
 <?php
 require_once "functions/db_connect.php";
+include "functions/tools.php";
 $db = PDOFactory::getConnection();
 if(isset($_SESSION["username"])){
 	header("Location: dashboard");
@@ -18,9 +19,10 @@ if(isset($_SESSION["username"])){
 			$credentials = $checkCredentials->fetch(PDO::FETCH_ASSOC);
 			session_start();
 			$_SESSION["user_id"] = $credentials["user_id"];
-			$_SESSION["username"] = $credentials["user_prenom"];
+			$_SESSION["username"] = $credentials["user_prenom"]." ".$credentials["user_nom"];
 			$_SESSION["photo"] = $credentials["photo"];
 			$_SESSION["location"] = $credentials["user_location"];
+			logAction($db, "Connexion", "users-".$credentials["user_id"]);
 			header("Location: dashboard");
 		}
 	}

@@ -3,8 +3,7 @@
 <link rel="icon" type="image/png" href="assets/images/logotype-white.png">
 <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
 <link rel="stylesheet" href="assets/css/common.css">
-<link rel="stylesheet" href="assets/css/default-style.css">
-<link rel="stylesheet" href="assets/css/labels.css">
+<link rel="stylesheet" href="assets/css/default-style.min.css">
 
 <link rel="stylesheet" href="assets/css/fonts.css">
 

@@ -9,10 +9,6 @@
 	font-family: 'Open Sans' sans-serif;
 }
 
-.form-horizontal .control-label{
-	text-align: right;
-}
-
 .navbar-brand{
 	color: #FFF;
 	font-weight: 800;
@@ -20,15 +16,6 @@
 	padding-top: 3px;
 	padding-bottom: 3px;
 }
-
-/*.sidebar{
-	display: none;
-}
-@media(min-width:768px){
-	.sidebar{
-		z-index: 100;
-	}
-}*/
 
 .span-mandatory {
 	color: red;
@@ -57,14 +44,6 @@
 /** To be in front of the lightboxes **/
 .ui-widget{
 	z-index: 3 !important;
-}
-
-.level-display{
-	text-align: center;
-}
-
-#cours-options{
-	padding: 15px !important;
 }
 
 .table-responsive{
@@ -120,49 +99,10 @@
 	font-family: 'globersemibold_free';
 }
 
-.search-form {
-	margin-bottom: 10px;
-}
-
-.glyphicon-inactive {
-	color: #BBB !important;
-}
-
-.glyphicon-success {
-	color: #5cb85c !important;
-}
-
-.glyphicon-sort {
-	cursor: pointer;
-}
-
 #shopping-cart-price {
 	padding: 10px 0;
 	text-align: right;
 	font-size: 20px;
-}
-
-#prix-total {
-	font-size: 28px;
-	color: #a9023a;
-}
-
-.fixed {
-	position: fixed;
-	left: 16.667%;
-	z-index: 1000;
-	padding: 5px;
-	width: 100%;
-	color: white;
-	min-height: 50px;
-}
-
-.statut-salsabor,.statut-banque {
-	float: right;
-}
-
-.span-btn {
-	cursor: pointer;
 }
 
 .popover-content {

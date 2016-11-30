@@ -158,6 +158,7 @@ $(document).ready(function(){
 					addOptions += "</div>"; /*form-group*/
 					addOptions += "</div>"; /*col-lg-6*/
 					addOptions += "</div>"; /*row*/
+					addOptions += "<p class='help-block'><span class='glyphicon glyphicon-warning-sign'></span> Par défaut, la date d'inscription est celle du jour. Si vous voulez la modifier, n'oubliez pas de vous rendre sur le profil de l'utilisateur après la transaction</p>";
 					addOptions += "<a class='btn btn-primary btn-block' onClick='addAdherent()'>Inscrire l'adhérent</a>";
 					addOptions += "</div>"; /*well*/
 					addOptions += "</div>"; /*collapse*/
@@ -205,6 +206,10 @@ $(document).ready(function(){
 	});
 }).on('click', '.submit-relay', function(){
 	$(".submit-relay-target").click();
+}).on('focus', '.name-input', function(){
+	var filter = $(this).data('filter');
+	console.log(filter);
+	provideAutoComplete($(this), filter);
 }).on('click', '.sub-modal-close', function(){
 	$(".sub-modal").toggle();
 }).on('click', '.trigger-sub', function(e){
@@ -519,6 +524,8 @@ $(document).ready(function(){
 			$("#tag-"+target).prepend("<span class='glyphicon glyphicon-star'></span> ");
 		else
 			$("#tag-"+target).remove($(".glyphicon-star"));
+
+		logAction("tags_session", "Modification", target);
 	})
 }).on('click', '.sub-menu-toggle', function(){
 	console.log("toggling");
@@ -542,6 +549,7 @@ $(document).ready(function(){
 
 		Once you've done all this, you'll be set.
 	*/
+	event.stopPropagation();
 	var entry_id = $(event.relatedTarget).data('entry'), secondary_id = $(event.relatedTarget).data('transaction'), table = $(event.relatedTarget).data('table'), modal = $(this);
 	modal.find(".modal-title").text($(event.relatedTarget).attr('title'));
 
@@ -577,10 +585,18 @@ $(document).ready(function(){
 			edit_form += '</select>';
 		} else {
 			if(input_type === undefined){
-				if(is_placeholder){
-					edit_form += '<input type="text" class="form-control" name="'+field_name+'" placeholder="'+element.text()+'">';
+				edit_form += '<input type="text" class="form-control';
+				if($(this).data('complete') !== undefined){
+					console.log($(this).data('complete-filter'));
+					edit_form += ' name-input" data-filter="'+$(this).data('complete-filter')+'"';
 				} else {
-					edit_form += '<input type="text" class="form-control" name="'+field_name+'" value="'+element.text()+'">';
+					edit_form += '"';
+				}
+				edit_form += ' name="'+field_name+'"';
+				if(is_placeholder){
+					edit_form += 'placeholder="'+element.text()+'">';
+				} else {
+					edit_form += ' value="'+element.text()+'">';
 				}
 			} else {
 				if(input_type == "textarea"){
@@ -600,13 +616,14 @@ $(document).ready(function(){
 		var values = modal.find("#modal-form").serialize();
 		console.log(entry_id);
 		var m = /\D*/.exec(entry_id);
-		if(m === null || m == ""){
+		if(m === null || m == "" || table == "transactions"){
 			console.log("no chars");
-			real_entry_id = entry_id;
+			var real_entry_id = entry_id;
 		} else {
 			console.log("chars");
 			var real_entry_id = entry_id.replace(/(\D*)/i, '');
 		}
+		console.log("obtained entry: "+real_entry_id);
 		$.when(updateEntry(table, values, real_entry_id)).done(function(data){
 			/*console.log(data);*/
 			var updated_values = modal.find("#modal-form").serializeArray(), i = 0;
@@ -664,6 +681,7 @@ $(document).ready(function(){
 			$(".user-legend").append("<span class='archived-state'>(Archivé)</span>");
 			button.replaceWith("<span class='col-xs-1 glyphicon glyphicon-folder-open glyphicon-button glyphicon-button-alt glyphicon-button-big dearchive-data' title='Désarchiver' data-entry='"+entry_id+"' data-table='users'></span>");
 			modal.modal('hide');
+			logAction(table, "Archivage", entry_id);
 			showNotification("Utilisateur archivé", "Success");
 		})
 	})
@@ -674,6 +692,7 @@ $(document).ready(function(){
 	$.when(updateColumn(table, "archived", 0, entry_id)).done(function(data){
 		$(".archived-state").empty();
 		$(".dearchive-data").replaceWith("<span class='col-xs-1 glyphicon glyphicon-folder-close glyphicon-button glyphicon-button-alt glyphicon-button-big' title='Archiver' data-toggle='modal' data-target='#archive-modal' data-entry='"+entry_id+"' data-table='users'></span>");
+		logAction(table, "Désarchivage", entry_id);
 		showNotification("Utilisateur désarchivé", "Success");
 	})
 }).on('click', '.selectable', function(){
@@ -758,10 +777,6 @@ function badgeTasks(){
 	})
 }
 
-function showSuccessNotif(data){
-	$.notify(data, {globalPosition:"right bottom", className:"success"});
-}
-
 function showNotification(message, notif_type){
 	$.notify(message, {globalPosition: "bottom right", className:notif_type});
 }
@@ -808,7 +823,7 @@ function addAdherent(){
 			window.miniCart["id_beneficiaire"] = parse["id"];
 			window.miniCart["nom_beneficiaire"] = identite_prenom+" "+identite_nom;
 		}
-		showSuccessNotif(parse["success"]);
+		showNotification(parse["success"], "success");
 		$(":regex(id,^unknown-user)").hide('500');
 	});
 }
@@ -907,12 +922,182 @@ function deleteTasksByTarget(token, target_id){
 	return $.post("functions/delete_tasks_by_target.php", {token : token, target_id : target_id});
 }
 
+function logAction(table, action, target_id){
+	return $.post("functions/log_action.php", {table : table, action : action, target_id : target_id});
+}
+
 function postNotification(token, target, recipient){
 	return $.post("functions/post_notifications.php", {token : token, target : target, recipient : recipient});
 }
 
 function fetchColors(){
 	return $.get("functions/fetch_colors.php");
+}
+
+function fetchLogs(DOMcontainer, target, last_id){
+	$(DOMcontainer).trigger('loading');
+	$.get("functions/fetch_logs.php", {target: target, last_id : last_id}).done(function(data){
+		last_id = renderLogs(DOMcontainer, data, last_id);
+		console.log(last_id);
+		setTimeout(fetchLogs, 10000, DOMcontainer, target, last_id)
+	})
+}
+
+function renderLogs(DOMcontainer, data, last_id){
+	$(DOMcontainer).trigger('loaded');
+	var logs = JSON.parse(data);
+	console.log(last_id);
+	for(var i = 0; i < logs.length; i++){
+		var content = "", content_action = "", action_icon = "", type_text = "", type_icon = "";
+		// Switch on action token
+		switch(logs[i].action){
+			case 'Ajout':
+				content_action = " a ajouté";
+				action_icon = "plus";
+				break;
+
+			case 'Archivage':
+				content_action = " a archivé";
+				break;
+
+			case 'Connexion':
+				content_action = " s'est connecté(e)";
+				action_icon = "log-off";
+				break;
+
+			case 'Déconnexion':
+				content_action = " s'est déconnecté(e)";
+				action_icon = "log-off";
+				break;
+
+			case 'Désarchivage':
+				content_action = " a désarchivé";
+				break;
+
+			case 'Fermeture':
+				content_action =  " a fermé";
+				break;
+
+			case 'Invalidation':
+				content_action = " a invalidé";
+				break;
+
+			case 'Modification':
+				content_action = " a modifié";
+				action_icon = "pencil";
+				break;
+
+			case 'Prolongation':
+				content_action = " a prolongé";
+				break;
+
+			case 'Suppression':
+				content_action = " a supprimé";
+				action_icon = "trash";
+				break;
+
+			case 'Transaction':
+				content_action = " a conclu";
+				action_icon = "refresh";
+				break;
+
+			case 'Validation':
+				content_action = " a validé";
+				break;
+		}
+
+		switch(logs[i].target_type){
+			case 'locations':
+				type_text = " la région ";
+				type_icon = "pushpin";
+				break;
+
+			case 'participations':
+				type_text = " la participation";
+				break;
+
+			case 'product_categories':
+				type_text = " la catégorie de produits ";
+				type_icon = "list";
+				break;
+
+			case 'produits':
+				type_text = " le produit ";
+				type_icon = "credit-card";
+				break;
+
+			case 'produits_echeances':
+				type_text = " l'échéance ";
+				type_icon = "refresh";
+				break;
+
+			case 'rooms':
+				type_text = " la salle ";
+				type_icon = "pushpin";
+				break;
+
+			case 'sessions':
+				type_text = " le cours ";
+				type_icon = "eye-open";
+				break;
+
+			case 'session_groups':
+				type_text = " le groupe de récurrence ";
+				type_icon = "eye-open";
+				break;
+
+			case 'tags_session':
+				type_text = " l'étiquette cours ";
+				type_icon = "tags";
+				break;
+
+			case 'tags_user':
+				type_text = " l'étiquette utilisateur ";
+				type_icon = "tags";
+				break;
+
+			case 'tasks':
+				type_text = " la tâche ";
+				type_icon = "list-alt";
+				break;
+			case 'task_comments':
+				type_text = " un commentaire sur la tâche ";
+				type_icon = "bubble";
+				break;
+
+			case 'transactions':
+				type_text = " la transaction ";
+				break;
+
+			case 'users':
+				type_text = " le profil de ";
+				type_icon = "user";
+				break;
+		}
+
+		content += "<div class='log-row' id='row-"+logs[i].id+"' data-entry='"+logs[i].id+"'>";
+		// User icon column
+		content += "<span class='col-xs-1 centered'>";
+		content += "<img class='log-picture' src='"+logs[i].user_photo+"'>";
+		content += "</span>";
+		content += "<span>";
+		content += "<strong>"+logs[i].user_name+"</strong>";
+		content += content_action;
+		if(logs[i].action != "Connexion" && logs[i].action != "Déconnexion"){
+			content += type_text;
+			if(logs[i].url){
+				content += "<a href='"+logs[i].url+"'>"+logs[i].target_name+"</a>";
+			} else {
+				content += logs[i].target_name;
+			}
+		}
+		content += "</span>";
+		content += "<span class='timestamp'>"+moment(logs[i].timestamp).fromNow()+"</span>";
+		content += "</div>";
+		last_id = logs[i].id;
+		$(DOMcontainer).prepend(content);
+	}
+	return last_id;
 }
 
 // http://stackoverflow.com/questions/19491336/get-url-parameter-jquery-or-how-to-get-query-string-values-in-js

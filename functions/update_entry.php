@@ -18,7 +18,8 @@ $primary_key = $db->query("SHOW INDEX FROM $table_name WHERE Key_name = 'PRIMARY
 $query = "UPDATE $table_name SET ";
 foreach($values as $column => $value){
 	// Have to solve users to their ID if needed here.
-	if($column == "session_teacher" || $column == "event_handler" || $column == "booking_holder" || $column == "task_recipient"){
+	$id_solving_tokens = array("session_teacher", "event_handler", "booking_holder", "booking_handler", "task_recipient", "transaction_handler");
+	if(in_array($column, $id_solving_tokens)){
 		$value = solveAdherentToId($value);
 	}
 	// Have to solve the reader ID of the room
@@ -66,6 +67,7 @@ try{
 	$db->beginTransaction();
 	$update = $db->query($query);
 	echo $query;
+	logAction($db, "Modification", $table_name."-".$entry_id);
 	$db->commit();
 } catch(PDOException $e){
 	$db->rollBack();
