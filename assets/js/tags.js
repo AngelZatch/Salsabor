@@ -45,8 +45,6 @@ $(document).on('click', '.label-deletable', function(e){
 	var tag = $(this).data('tag'), target_type = $(this).data('targettype');
 	if(target_type == "task" || target_type == "page"){
 		var target = /([0-9]+)/.exec(window.target)[0];
-	} else {
-		var target = /([0-9]+$)/.exec(document.location.href)[0];
 	}
 	var tag_text = $(this).text();
 	console.log(tag_text);

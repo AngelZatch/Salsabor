@@ -155,7 +155,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						</div>
 						<p class="sub-legend">Informations Salsabor</p>
 						<div class="form-group">
-							<label for="statuts" class="col-lg-3 control-label">&Eacute;tiquettes</label>
+							<label for="statuts" class="col-sm-3 control-label">&Eacute;tiquettes</label>
 							<div class="col-sm-9 user_tags">
 								<h4 class="tags_container">
 									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
