@@ -6,6 +6,7 @@ $(document).on('click', '.label-deletable', function(e){
 	console.log(target, table);
 	$.when(deleteEntry(table, target)).done(function(data){
 		$("#"+id).remove();
+		showNotification("Etiquette détachée", "success");
 	});
 }).on('click', '.label-addable', function(e){
 	e.stopPropagation();
@@ -23,6 +24,7 @@ $(document).on('click', '.label-deletable', function(e){
 			$("#tag-"+tag).removeClass("toggled");
 			$("#tag-"+tag).find("span").remove();
 			$("#"+target_type+"-tag-"+data).remove();
+			showNotification("Etiquette "+tag_text+" détachée", "success");
 		})
 	} else {
 		var value = /([a-z0-9]+)/i.exec($(this).css("backgroundColor"));
@@ -35,6 +37,7 @@ $(document).on('click', '.label-deletable', function(e){
 				var insert = ".label-add";
 			}
 			$(insert).before("<span class='label label-salsabor label-clickable label-deletable' title='Supprimer l&apos;étiquette' id='"+target_type+"-tag-"+data+"' data-target='"+data+"' data-targettype='"+target_type+"' style='background-color:"+value[0]+"'>"+tag_text+"</span>");
+			showNotification("Etiquette "+tag_text+" attachée", "success");
 		})
 	}
 }).on('click', '.label-manual', function(e){
@@ -42,8 +45,6 @@ $(document).on('click', '.label-deletable', function(e){
 	var tag = $(this).data('tag'), target_type = $(this).data('targettype');
 	if(target_type == "task" || target_type == "page"){
 		var target = /([0-9]+)/.exec(window.target)[0];
-	} else {
-		var target = /([0-9]+$)/.exec(document.location.href)[0];
 	}
 	var tag_text = $(this).text();
 	console.log(tag_text);

@@ -1,6 +1,6 @@
 <?php
 require_once "db_connect.php";
-include "tools.php";
+require_once "tools.php";
 include "post_task.php";
 include "attach_tag.php";
 
@@ -104,7 +104,11 @@ function computeProduct($product_id){
 		**/
 	// We compute the date of expiration
 	if($new_activation_date){
-		$new_expiration_date = date_create(computeExpirationDate($db, $new_activation_date, $product_details["product_validity"], $product_details["counts_holidays"]))->format("Y-m-d H:i:s");
+		$computed_expiration_date = date_create(computeExpirationDate($db, $new_activation_date, $product_details["product_validity"], $product_details["counts_holidays"]))->format("Y-m-d H:i:s");
+
+		// We check against the potential extended date
+		$new_expiration_date = max($computed_expiration_date, $product_details["date_prolongee"]);
+
 		// The computed expiration date can be used to adjust the status
 		if($new_expiration_date < date("Y-m-d H:i:s")) $new_status = 2;
 	}

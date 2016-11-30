@@ -42,6 +42,7 @@ while($product = $load->fetch(PDO::FETCH_ASSOC)){
 		"expiration" => max($product["date_prolongee"], $product["date_expiration"]),
 		"usage_date" => $product["date_fin_utilisation"],
 		"display_expiration" => max($product["date_prolongee"], $product["date_expiration"],$product["date_fin_utilisation"]),
+		"extended" => $product["date_prolongee"],
 		"remaining_hours" => $product["volume_cours"],
 		"price" => $product["prix_achat"],
 		"product_size" => $product["product_size"],

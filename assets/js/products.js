@@ -172,42 +172,7 @@ function activateProductWithDate(product_id, start_date){
 function computeRemainingHours(product_id, refresh){
 	console.log("Computing product "+product_id);
 	$.post("functions/compute_product.php", {product_id : product_id}).done(function(computed_product_details){
-		/*console.log(value);
-
-		var values = JSON.parse(value);
-		console.log(values);
-		var hours = values.hours, status = values.status, product_size = values.product_size;
-		if(values.expiration != null){ var date = moment(values.expiration).format("DD/MM/YYYY"); }
-		if(values.activation != null){ var activation = moment(values.activation).format("DD/MM/YYYY"); }
-		if(values.usage != null){ var usage = moment(values.usage).format("DD/MM/YYYY"); }
-
-		if(status == 2){ // If the product is expired
-			if(hours < 0){ // If the product is overused
-				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(-1 * hours + " heures en excès");
-				$("#purchase-item-"+product_id).addClass("item-overused");
-			} else if(hours > 0){ // If the product still has remaining hours
-				$("#purchase-item-"+product_id).addClass("item-expired");
-			} else { // If the product has no more hours.
-				$("#purchase-item-"+product_id+">p.purchase-product-hours").html("Heures épuisées");
-				$("#purchase-item-"+product_id).addClass("item-expired");
-			}
-			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Expiré le "+date);
-		} else if (status == 1){ // If the product is active
-			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("Valide du "+activation+" au "+date);
-			$("#product-status-"+product_id).html("<span class='highlighted-value'>"+ hours + " heures</span> restantes");
-			if(product_size != '1'){
-				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
-			}
-			$("#purchase-item-"+product_id).addClass("item-active");
-		} else { // If the product is pending
-			$("#product-status-"+product_id).html("<span class='highlighted-value'>En attente</span>");
-			if(product_size != '1'){
-				$("#purchase-item-"+product_id+">p.purchase-product-hours").html(hours + " heures restantes");
-			}
-			$("#product-validity-"+product_id).html("<span class='highlighted-value'>En attente</span>");
-			$("#purchase-item-"+product_id+">p.purchase-product-validity").html("En attente");
-			$("#purchase-item-"+product_id).addClass("item-pending");
-		}*/
+		console.log(JSON.parse(computed_product_details));
 		if(refresh){
 			$.when(fetchSessions(product_id)).done(function(sessions){
 				renderProductModal($("#product-modal"), JSON.parse(computed_product_details), JSON.parse(sessions));
@@ -240,6 +205,7 @@ function deactivateProduct(product_id, value){
 		$("#btn-activate-"+product_id).attr("data-subtype", "activate");
 		$("#btn-activate-"+product_id).addClass("trigger-sub");
 		$("btn-activate-"+product_id).prop('onclick', null).off('click');
+		computeRemainingHours(product_id, true);
 	})
 }
 

@@ -155,7 +155,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						</div>
 						<p class="sub-legend">Informations Salsabor</p>
 						<div class="form-group">
-							<label for="statuts" class="col-lg-3 control-label">&Eacute;tiquettes</label>
+							<label for="statuts" class="col-sm-3 control-label">&Eacute;tiquettes</label>
 							<div class="col-sm-9 user_tags">
 								<h4 class="tags_container">
 									<?php while($label = $labels->fetch(PDO::FETCH_ASSOC)){ ?>
@@ -376,6 +376,14 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						}
 					});
 				}
+
+				window.initial_form = $("#user-details-form").serialize();
+				$(window).on('beforeunload', function(){
+					var current_form = $("#user-details-form").serialize();
+					console.log(window.initial_form, current_form);
+					if(current_form !== window.initial_form)
+						return "Vous avez des modifications non enregistrées, êtes-vous sûr de vouloir quitter la page ?";
+				})
 			}).on('click', '.upload-result', function(){
 				var picture_value = $("#imagebase64").val();
 				var user_id = /([0-9]+)/.exec(top.location.pathname);
@@ -409,6 +417,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 					$("#refresh-prenom").text($("#user_prenom").val());
 					$("#refresh-nom").text($("#user_nom").val());
 					initial_tags = current_tags;
+					window.initial_form = $("#user-details-form").serialize();
 				})
 			})
 		</script>

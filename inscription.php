@@ -11,52 +11,6 @@ $connaissances = $db->query("SELECT * FROM sources_connaissance");
 
 // Locations
 $locations = $db->query("SELECT * FROM locations ORDER BY location_name ASC");
-
-if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
-	// Formatting sign_in_date
-	$sign_up_date = DateTime::createFromFormat("d/m/Y", $_POST["date_inscription"]);
-	$sign_up_date = $sign_up_date->format("d/m/Y H:i:s");
-	$user_details = array(
-		"user_prenom" => $_POST["user_prenom"],
-		"user_nom" => $_POST["user_nom"],
-		"user_rfid" => $_POST["user_rfid"],
-		"date_inscription" => $sign_up_date,
-		"rue" => $_POST["rue"],
-		"code_postal" => $_POST["code_postal"],
-		"ville" => $_POST["ville"],
-		"mail" => $_POST["mail"],
-		"website" => $_POST["website"],
-		"organisation" => $_POST["organisation"],
-		"telephone" => $_POST["telephone"],
-		"tel_secondaire" => $_POST["tel_secondaire"],
-		"commentaires" => $_POST["commentaires"],
-		"source_connaissance" => $_POST["source_connaissance"]
-	);
-	// If there's a set location
-	if($_POST["user_location"] != null){
-		$user_details["user_location"] = $_POST["user_location"];
-	}
-	// If there's a set birthdate
-	if($_POST["date_naissance"] != null){
-		$birthdate = DateTime::createFromFormat("d/m/Y", $_POST["date_naissance"]);
-		$birthdate = $birthdate->format("d/m/Y H:i:s");
-		// Add to array
-		$user_details["date_naissance"] = $birthdate;
-	}
-
-	// Once everythin's set, we create the new user
-	$user_id = addEntry($db, "users", $user_details);
-	if(isset($_POST["user_rfid"])){
-		$delete = $db->prepare('DELETE FROM participations WHERE user_rfid=? AND status=1');
-		$delete->bindParam(1, $_POST["user_rfid"]);
-		$delete->execute();
-	}
-
-	if(isset($_POST["add-user-sell"]))
-		header('Location: catalogue.php?user='.$user_id);
-	else
-		header('Location: dashboard');
-}
 ?>
 <html>
 	<head>
@@ -64,6 +18,7 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 		<title>Inscription d'un adhérent | Salsabor</title>
 		<?php include "styles.php";?>
 		<?php include "scripts.php";?>
+		<script src="assets/js/tags.js"></script>
 		<script src="assets/js/fileinput.min.js"></script>
 		<?php include "inserts/sub_modal_product.php";?>
 	</head>
@@ -74,7 +29,7 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 				<?php include "side-menu.php";?>
 				<div class="col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 					<legend><span class="glyphicon glyphicon-pencil"></span> Inscription</legend>
-					<form action="" method="post" class="form-horizontal" role="form" id="user-add" enctype="multipart/form-data">
+					<form amethod="post" class="form-horizontal" role="form" id="user-form">
 						<p class="sub-legend">Informations personnelles</p>
 						<div class="form-group">
 							<label for="user_prenom" class="col-sm-3 control-label">Prénom</label>
@@ -142,13 +97,15 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 								<input type="text" name="date_naissance" id="birthdate" class="form-control">
 							</div>
 						</div>
+						<p class="sub-legend">Informations Salsabor</p>
 						<div class="form-group">
-							<label for="commentaires" class="col-sm-3 control-label">Commentaires</label>
-							<div class="col-sm-9">
-								<textarea rows="5" class="form-control" name="commentaires"></textarea>
+							<label for="statuts" class="col-sm-3 control-label">&Eacute;tiquettes</label>
+							<div class="col-sm-9 user_tags">
+								<h4 class="tags_container">
+									<span class="label label-default label-clickable label-add trigger-sub" id="label-add" data-subtype='user-tags' data-targettype='user' title="Ajouter une étiquette">+</span>
+								</h4>
 							</div>
 						</div>
-						<p class="sub-legend">Informations Salsabor</p>
 						<div class="form-group">
 							<label for="date_inscription" class="col-sm-3 control-label">Date d'inscription</label>
 							<div class="col-sm-9">
@@ -166,8 +123,8 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="user_location" class="control-label col-lg-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings, membres accessibles en fonction de leurs régions. La région est ignorée pour les utilisateurs non-staff."></span></label>
-							<div class="col-lg-9">
+							<label for="user_location" class="control-label col-sm-3">Région d'activité <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Personnalise les salles, plannings, membres accessibles en fonction de leurs régions. La région est ignorée pour les utilisateurs non-staff."></span></label>
+							<div class="col-sm-9">
 								<select name="user_location" class="form-control">
 									<option value="">Pas de région</option>
 									<?php while($location = $locations->fetch(PDO::FETCH_ASSOC)){ ?>
@@ -187,18 +144,25 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 								<p class="help-block">Sélectionnez la source la plus influente</p>
 							</div>
 						</div>
-						<div class="col-xs-6">
-							<input type="submit" name="add-user" role="button" class="btn btn-primary submit-button btn-block" value="Enregistrer" disabled>
-						</div>
-						<div class="col-xs-6">
-							<input type="submit" name="add-user-sell" role="button" class="btn btn-primary submit-button btn-block" value="Enregistrer et acheter" disabled>
+						<div class="form-group">
+							<label for="commentaires" class="col-sm-3 control-label">Commentaires</label>
+							<div class="col-sm-9">
+								<textarea rows="5" class="form-control" name="commentaires"></textarea>
+							</div>
 						</div>
 					</form>
+					<div class="col-xs-6">
+						<button class="btn btn-primary submit-button btn-block" id="user-add" disabled>Inscrire</button>
+					</div>
+					<div class="col-xs-6">
+						<button class="btn btn-primary submit-button btn-block" id="user-add-sell" disabled>Inscrire et acheter</button>
+					</div>
 				</div>
 			</div>
 		</div>
 		<script>
 			$(document).ready(function(){
+				initial_tags = createTagsArray();
 				$("#birthdate").datetimepicker({
 					format: "DD/MM/YYYY",
 					locale: "fr",
@@ -208,6 +172,20 @@ if(isset($_POST["add-user"]) || isset($_POST["add-user-sell"])){
 					locale: "fr",
 					defaultDate: moment()
 				});
+			}).on('click', '.submit-button', function(){
+				var data = $("#user-form").serialize();
+				console.log(data);
+				$.when(addEntry("users", data)).done(function(user_id){
+					console.log(user_id);
+					var current_tags = createTagsArray();
+					$.when(updateTargetTags(initial_tags, current_tags, user_id, "user")).done(function(data){
+						showNotification("Utilisateur créé avec succès", "success");
+						if($(this).attr("id") == "user-add-sell")
+							window.top.location = "catalogue.php?user="+user_id;
+						else
+							window.top.location = "user/"+user_id;
+					})
+				})
 			})
 			var listening = false;
 			var wait;

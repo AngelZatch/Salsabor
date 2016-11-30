@@ -18,7 +18,7 @@ $primary_key = $db->query("SHOW INDEX FROM $table_name WHERE Key_name = 'PRIMARY
 $query = "UPDATE $table_name SET ";
 foreach($values as $column => $value){
 	// Have to solve users to their ID if needed here.
-	$id_solving_tokens = array("session_teacher", "event_handler", "booking_holder", "task_recipient", "transaction_handler");
+	$id_solving_tokens = array("session_teacher", "event_handler", "booking_holder", "booking_handler", "task_recipient", "transaction_handler");
 	if(in_array($column, $id_solving_tokens)){
 		$value = solveAdherentToId($value);
 	}

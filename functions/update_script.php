@@ -14,6 +14,13 @@ try{
 	action_target VARCHAR(60),
 	action_time DATETIME DEFAULT CURRENT_TIMESTAMP
 	)");
+
+	$db->query("ALTER TABLE reservations
+	ADD booking_handler INT(11) DEFAULT NULL AFTER booking_price,
+	ADD CONSTRAINT fk_booking_handler FOREIGN KEY(booking_handler)
+	REFERENCES users(user_id)
+	ON DELETE SET NULL
+	ON UPDATE NO ACTION");
 } catch(PDOException $e){
 	echo $e->getMessage();
 }
