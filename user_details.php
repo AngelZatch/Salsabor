@@ -376,6 +376,14 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						}
 					});
 				}
+
+				window.initial_form = $("#user-details-form").serialize();
+				$(window).on('beforeunload', function(){
+					var current_form = $("#user-details-form").serialize();
+					console.log(window.initial_form, current_form);
+					if(current_form !== window.initial_form)
+						return "Vous avez des modifications non enregistrées, êtes-vous sûr de vouloir quitter la page ?";
+				})
 			}).on('click', '.upload-result', function(){
 				var picture_value = $("#imagebase64").val();
 				var user_id = /([0-9]+)/.exec(top.location.pathname);
@@ -409,6 +417,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 					$("#refresh-prenom").text($("#user_prenom").val());
 					$("#refresh-nom").text($("#user_nom").val());
 					initial_tags = current_tags;
+					window.initial_form = $("#user-details-form").serialize();
 				})
 			})
 		</script>

@@ -229,9 +229,17 @@ if(isset($_POST["edit"])){
 			if($("#size-null").val() == 0){
 				$("#product-size-group").hide();
 			}
+			window.initial_form = $("#form-product").serialize();
+			$(window).on('beforeunload', function(){
+				var current_form = $("#form-product").serialize();
+				console.log(window.initial_form, current_form);
+				if(current_form !== window.initial_form)
+					return "Vous avez des modifications non enregistrées, êtes-vous sûr de vouloir quitter la page ?";
+			})
 		}).on('click', '.edit-product', function(){
 			var current_tags = createTagsArray(), entry_id = /([0-9]+)/.exec(top.location.pathname)[0];
 			updateTargetTags(initial_tags, current_tags, entry_id, "product");
+			window.initial_form = $("#form-product").serialize();
 		})
 		$('#size-null').on('change', function(){
 			console.log($(this));
