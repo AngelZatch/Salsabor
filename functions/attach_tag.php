@@ -1,6 +1,5 @@
 <?php
 require_once "db_connect.php";
-$db = PDOFactory::getConnection();
 
 if(isset($_POST["tag"]) && isset($_POST["target"]) && isset($_POST["type"])){
 	if(is_numeric($_POST["tag"])){
@@ -11,10 +10,12 @@ if(isset($_POST["tag"]) && isset($_POST["target"]) && isset($_POST["type"])){
 	$target = $_POST["target"];
 	$type = $_POST["type"];
 
-	associateTag($db, $tag, $target, $type);
+	associateTag($tag, $target, $type);
 }
 
-function associateTag($db, $tag, $target, $type){
+function associateTag($tag, $target, $type){
+	$db = PDOFactory::getConnection();
+
 	if(isset($target)){
 		if(!is_numeric($tag)){
 			if($type == "product"){

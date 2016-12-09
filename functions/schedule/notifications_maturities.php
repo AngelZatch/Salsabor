@@ -49,15 +49,15 @@ while($maturity = $maturities->fetch(PDO::FETCH_ASSOC)){
 	} else if($maturity["date_echeance"] > $reminder && $maturity["date_echeance"] <= $today){
 		$token .= "L";
 		$task_message = "L'échéance prévue le ".date_create($maturity["date_echeance"])->format("d/m/Y")." de ".$maturity["payeur_echeance"]." a atteint sa date limite alors qu'elle n'a pas été reçue.";
-		$new_task_id = createTask($db, "Echéance expirée", $task_message, "[MAT-".$target."]", null);
+		$new_task_id = createTask("Echéance expirée", $task_message, "[MAT-".$target."]", null);
 		$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
-		associateTag($db, intval($tag), $new_task_id, "task");
+		associateTag(intval($tag), $new_task_id, "task");
 	} else if($maturity["date_echeance"] <= $maturity_limit){
 		$token .= "NE";
 	}
 	$date = date("Y-m-d H:i:s");
 
-	postNotification($db, $token, $target, null, $date);
+	postNotification($token, $target, null, $date);
 }
 
 

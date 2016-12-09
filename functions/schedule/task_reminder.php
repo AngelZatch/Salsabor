@@ -26,6 +26,6 @@ while($task = $watch->fetch(PDO::FETCH_ASSOC)){
 	}
 	$target = $task["task_id"];
 
-	postNotification($db, $token, $target, null, $now);
+	postNotification($token, $target, null, $now);
 }
 ?>
