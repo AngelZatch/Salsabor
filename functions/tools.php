@@ -214,11 +214,13 @@ function isHoliday($db, $target_date){
 }
 
 function logAction($db, $action, $target){
-	$insert = $db->prepare("INSERT INTO logging(user_id, action, action_target) VALUES(?, ?, ?)");
-	$insert->bindParam(1, $_SESSION["user_id"]);
-	$insert->bindParam(2, $action);
-	$insert->bindParam(3, $target);
-	$insert->execute();
+	if(isset($_SESSION["user_id"])){
+		$insert = $db->prepare("INSERT INTO logging(user_id, action, action_target) VALUES(?, ?, ?)");
+		$insert->bindParam(1, $_SESSION["user_id"]);
+		$insert->bindParam(2, $action);
+		$insert->bindParam(3, $target);
+		$insert->execute();
+	}
 }
 
 function postNotification($db, $token, $target, $recipient, $date){

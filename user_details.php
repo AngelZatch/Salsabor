@@ -200,7 +200,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							<div class="col-sm-9">
 								<div class="row">
 									<div class="col-sm-6">
-										<input type="file" class="file-loading" id="certificat" name="certificat">
+										<input type="file" class="file-loading" id="certificat-input" name="certificat">
 									</div>
 									<?php if($details["certificat"] != null){ ?>
 									<div class="col-sm-6">
@@ -215,7 +215,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							<div class="col-sm-9">
 								<div class="row">
 									<div class="col-sm-6">
-										<input type="file" class="file-loading" id="rib" name="rib">
+										<input type="file" class="file-loading" id="rib-input" name="rib">
 									</div>
 									<?php if($details["rib"] != null){ ?>
 									<div class="col-sm-6">
@@ -278,7 +278,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 					locale: "fr"
 				});
 
-				$("#certificat").fileinput({
+				$("#certificat-input").fileinput({
 					autoReplace: true,
 					browseClass: "btn btn-info btn-block",
 					browseLabel: 'Choisissez un fichier',
@@ -294,7 +294,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 					uploadUrl: "functions/upload_file.php"
 				})
 
-				$("#rib").fileinput({
+				$("#rib-input").fileinput({
 					autoReplace: true,
 					browseClass: "btn btn-info btn-block",
 					browseLabel: 'Choisissez un fichier',
