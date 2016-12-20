@@ -13,7 +13,10 @@ if($column == "room_reader"){
 		$resolved_value = $db->query("SELECT reader_id FROM readers WHERE reader_token = '$value'")->fetch(PDO::FETCH_COLUMN);
 		if($resolved_value == null){
 			$new = htmlspecialchars($value);
-			$value = addEntry($db, "readers", "reader_token", $new);
+			$new_reader = array(
+				"reader_token" => $value
+			);
+			$value = addEntry("readers", $new_reader);
 		} else {
 			$value = $resolved_value;
 		}

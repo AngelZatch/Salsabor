@@ -7,9 +7,9 @@ $data = explode('*', $_GET["carte"]);
 $tag_rfid = $data[0];
 $reader_token = $data[1];
 
-prepareParticipationBeta($db, $tag_rfid, $reader_token);
+prepareParticipationBeta($tag_rfid, $reader_token);
 
-function prepareParticipationBeta($db, $user_tag, $reader_token){
+function prepareParticipationBeta($user_tag, $reader_token){
 	$today = date("Y-m-d H:i:s");
 	if($reader_token == "192.168.0.3"){
 		$status = "1";
@@ -24,6 +24,6 @@ function prepareParticipationBeta($db, $user_tag, $reader_token){
 		$values["passage_date"] = date("d/m/Y H:i:s");
 		$values["room_token"] = $reader_token;
 		$values["user_rfid"] = $user_tag;
-		addParticipationBeta($db, $values);
+		addParticipationBeta($values);
 	}
 }

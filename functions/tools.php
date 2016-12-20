@@ -1,7 +1,8 @@
 <?php
 if(!isset($_SESSION))
 	session_start();
-function addParticipationBeta($db, $values){
+function addParticipationBeta($values){
+	$db = PDOFactory::getConnection();
 	if(!isset($values["user_id"])){
 		// We try to find the user from the details
 		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$values[user_rfid]'")->fetch(PDO::FETCH_COLUMN);
@@ -29,7 +30,7 @@ function addParticipationBeta($db, $values){
 	if($user_id != "" || $user_id != NULL){
 		$values["user_id"] = $user_id;
 		if($session_id != "" || $session_id != NULL){
-			$product_id = getCorrectProductFromTags($db, $session_id, $user_id) or NULL;
+			$product_id = getCorrectProductFromTags($session_id, $user_id) or NULL;
 			if($product_id != "") $status = 0; // Product found.
 			else $status = 3; // No product available
 			$values["produit_adherent_id"] = $product_id;
@@ -43,7 +44,7 @@ function addParticipationBeta($db, $values){
 	$values["status"] = $status;
 
 	include "add_entry.php";
-	addEntry($db, "participations", $values);
+	addEntry("participations", $values);
 	/*}*/
 
 	echo "$";
@@ -89,7 +90,8 @@ function generateReference() {
 	return $reference;
 }
 
-function getCorrectProductFromTags($db, $session_id, $user_id){
+function getCorrectProductFromTags($session_id, $user_id){
+	$db = PDOFactory::getConnection();
 	/** When a participation is recorded, this function will be called to find the correct product of the user based on the tags of the session the user is attending to **/
 	$tags_session = $db->query("SELECT tag_id_foreign, is_mandatory FROM assoc_session_tags ast
 								JOIN tags_session ts ON ts.rank_id = ast.tag_id_foreign
@@ -187,10 +189,9 @@ function getCorrectProductFromTags($db, $session_id, $user_id){
 			/*echo "<br>-- PRODUCT --<br>";*/
 			return $supplementary_array[0];
 		}
-	} else {
-		/*echo "NOTHING";*/
-		return null;
 	}
+	/* echo NOTHING */
+	return null;
 }
 
 function getLieu($id){

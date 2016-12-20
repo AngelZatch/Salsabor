@@ -31,7 +31,7 @@ foreach($values as $column => $value){
 				"reader_token" => $new
 			);
 			require_once "add_entry.php";
-			$value = addEntry($db, "readers", $reader_details);
+			$value = addEntry("readers", $reader_details);
 		} else {
 			$value = $resolved_value;
 		}

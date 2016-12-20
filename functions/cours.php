@@ -14,7 +14,7 @@ function addCours(){
 			"user_prenom" => $matches[1],
 			"user_nom" => $matches[3]
 		);
-		$user_id = addEntry($db, "users", $user_details);
+		$user_id = addEntry("users", $user_details);
 	}
 	$room_id = $_POST['lieu'];
 
