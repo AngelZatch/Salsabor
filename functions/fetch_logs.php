@@ -122,11 +122,11 @@ while($log = $stmt->fetch()){
 					break;
 
 				case "MAT": // Task for maturities
-					$sub_query = $db->query("SELECT u.user_id FROM produits_echeances m
+					$user_id = $db->query("SELECT u.user_id FROM produits_echeances m
 									JOIN transactions t ON m.reference_achat = t.id_transaction
 									JOIN users u ON t.payeur_transaction = u.user_id
 									WHERE produits_echeances_id = '$details[task_target]'")->fetch(PDO::FETCH_COLUMN);
-					$l["url"] = "user/".$sub_query["user_id"]."/taches#task-".$target_id;
+					$l["url"] = "user/".$user_id."/taches#task-".$target_id;
 					break;
 
 				default:

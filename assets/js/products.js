@@ -438,7 +438,7 @@ function renderProductModal(modal, product_details, participations_list){
 	// Renders product in the modal
 	// Title
 	modal.find(".modal-title").text(product_details.product_name+" (ID : "+product_details.id+")");
-	modal.find(".purchase-sub").text("Transaction "+product_details.transaction_id+" du "+moment(product_details.transaction_date).format("DD/MM/YYYY")+"; utilisé par "+product_details.user);
+	modal.find(".purchase-sub").text("Transaction "+product_details.transaction_id+" du "+moment(product_details.date_achat).format("DD/MM/YYYY")+"; utilisé par "+product_details.user);
 
 	// Status block
 	if(product_details.activation)

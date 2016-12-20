@@ -14,6 +14,7 @@ $load = $db->query("SELECT pr.passage_id, pr.passage_date, pr.status, s.session_
 					LEFT JOIN rooms r2 ON s.session_room = r.room_id
 					WHERE (pr.status = 0 OR pr.status = 3 OR (pr.status = 2 AND (produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0)))
 					AND pr.user_id = '$user_id'
+					GROUP BY pr.passage_id
 					ORDER BY pr.passage_id DESC");
 
 $notifications_settings = $db->query("SELECT * FROM master_settings WHERE user_id = '0'")->fetch(PDO::FETCH_ASSOC);

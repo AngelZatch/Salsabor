@@ -1,16 +1,16 @@
 <?php
 require_once "db_connect.php";
 require_once "tools.php";
-$db = PDOFactory::getConnection();
 
 if(isset($_POST["table"])){ // AJAX call.
 	$table_name = htmlspecialchars($_POST["table"]);
 	parse_str($_POST["values"], $values);
-	addEntry($db, $table_name, $values);
+	addEntry($table_name, $values);
 }
 
 // Type hinting $values because it can come from AJAX or PHP and MUST be an array. This function has to do the minimal amount of work, it doesn't have time to play with the values argument, which has to be parsed or unserialized beforehand.
-function addEntry($db, $table_name, Array $values){
+function addEntry($table_name, Array $values){
+	$db = PDOFactory::getConnection();
 	// Constructing generic query
 	$query = "INSERT INTO $table_name(";
 	foreach($values as $column => $value){

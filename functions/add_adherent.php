@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "db_connect.php";
+require_once "tools.php";
 $db = PDOFactory::getConnection();
 
 $accesWeb = 1;

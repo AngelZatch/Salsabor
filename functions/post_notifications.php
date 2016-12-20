@@ -10,5 +10,5 @@ if(is_string($_POST["recipient"])){
 }
 $today = date("Y-m-d H:i:s");
 
-postNotification($db, $token, $target, $recipient, $today);
+postNotification($token, $target, $recipient, $today);
 ?>
