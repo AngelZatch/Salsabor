@@ -1,15 +1,15 @@
 <?php
 require_once "db_connect.php";
 include "tools.php";
-$db = PDOFactory::getConnection();
 
 $data = explode('*', $_GET["carte"]);
 $tag_rfid = $data[0];
 $reader_token = $data[1];
 
-prepareParticipationBeta($db, $tag_rfid, $reader_token);
+prepareParticipationBeta($tag_rfid, $reader_token);
 
-function prepareParticipationBeta($db, $user_tag, $reader_token){
+function prepareParticipationBeta($user_tag, $reader_token){
+	$db = PDOFactory::getConnection();
 	$today = date("Y-m-d H:i:s");
 	if($reader_token == "192.168.0.3"){
 		$status = "1";
@@ -20,10 +20,11 @@ function prepareParticipationBeta($db, $user_tag, $reader_token){
 		// If the tag is not for associating, we search a product that could be used for this session.
 		// First, we get the name of the session and the ID of the user.
 		// For the session, we have to find it based on the time of the record and the position.
-		$values = array();
-		$values["passage_date"] = date("d/m/Y H:i:s");
-		$values["room_token"] = $reader_token;
-		$values["user_rfid"] = $user_tag;
-		addParticipationBeta($db, $values);
+		$values = array(
+			"passage_date" => $today,
+			"room_token" => $reader_token,
+			"user_rfid" => $user_tag
+		);
+		addParticipationBeta($values);
 	}
 }

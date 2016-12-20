@@ -21,5 +21,5 @@ $values["passage_date"] = date("d/m/Y H:i:s");
 $values["room_token"] = $reader_token;
 $values["session_id"] = $session_id;
 
-addParticipationBeta($db, $values);
+addParticipationBeta($values);
 ?>

@@ -1,12 +1,12 @@
 <?php
-require_once "/opt/lampp/htdocs/Salsabor/functions/db_connect.php";
+/*require_once "/opt/lampp/htdocs/Salsabor/functions/db_connect.php";
 require_once "/opt/lampp/htdocs/Salsabor/functions/compute_product.php";
 require_once "/opt/lampp/htdocs/Salsabor/functions/post_task.php";
-require_once "/opt/lampp/htdocs/Salsabor/functions/attach_tag.php";
-/*require_once "../db_connect.php";
+require_once "/opt/lampp/htdocs/Salsabor/functions/attach_tag.php";*/
+require_once "../db_connect.php";
 require_once "../compute_product.php";
 require_once "../post_task.php";
-require_once "../attach_tag.php";*/
+require_once "../attach_tag.php";
 
 $db = PDOFactory::getConnection();
 
@@ -36,14 +36,14 @@ try{
 	$toActivate = $db->query("SELECT product_id FROM produits WHERE date_activation <= '$compare_start' AND date_activation != '0000-00-00 00:00:00'");
 	while($match = $toActivate->fetch(PDO::FETCH_ASSOC)){
 		updateColumn($db, "produits", "actif", 1, $match["product_id"]);
-		postNotification($db, "PRO-S", $match["product_id"], null, $compare_start);
+		postNotification("PRO-S", $match["product_id"], null, $compare_start);
 	}
 
 	// Or deactivate expired ones
 	$toDeactive = $db->query("SELECT product_id FROM produits WHERE date_desactivation <= '$compare_start' AND date_desactivation != '0000-00-00 00:00:00'");
 	while($match = $toDeactive->fetch(PDO::FETCH_ASSOC)){
 		updateColumn($db, "produits", "actif", 0, $match["product_id"]);
-		postNotification($db, "PRO-E", $match["product_id"], null, $compare_start);
+		postNotification("PRO-E", $match["product_id"], null, $compare_start);
 	}*/
 
 	$db->commit();
@@ -73,9 +73,13 @@ try{
 							JOIN produits p ON pa.id_produit_foreign = p.product_id
 							WHERE id_user_foreign = '$user' AND product_name = 'Adhésion Annuelle' ORDER BY id_produit_adherent ASC")->fetchAll();
 		if(sizeof($membership_cards == 0)){ // If there's no membership card, we create a task
-			$new_task_id = createTask($db, "Adhésion Annuelle manquante", "Cet utilisateur n'a pas d'adhésion annuelle.", "[USR-".$user."]", null);
-			$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
-			associateTag($db, intval($tag), $new_task_id, "task");
+			$new_task_id = createTask("Adhésion Annuelle manquante", "Cet utilisateur n'a pas d'adhésion annuelle.", "[USR-".$user."]", null);
+			if($new_task_id !== null){
+				echo "Nouvelle tâche ajoutée, ID : ".$new_task_id."<br>";
+				$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
+				echo "Ajout du tag ".intval($tag)." à la tâche ".$new_task_id."<br>";
+				associateTag(intval($tag), $new_task_id, "task");
+			}
 		} else {
 			// Resetting loop variables
 			$active_card = false;
@@ -99,9 +103,9 @@ try{
 				}
 			}
 			if(!$active_card){
-				$new_task_id = createTask($db, "Adhésion Annuelle manquante", "Cet utilisateur n'a pas d'adhésion annuelle.", "[USR-".$user."]", null);
+				$new_task_id = createTask("Adhésion Annuelle manquante", "Cet utilisateur n'a pas d'adhésion annuelle.", "[USR-".$user."]", null);
 				$tag = $db->query("SELECT rank_id FROM tags_user WHERE missing_info_default = 1")->fetch(PDO::FETCH_COLUMN);
-				associateTag($db, intval($tag), $new_task_id, "task");
+				associateTag(intval($tag), $new_task_id, "task");
 			}
 		}
 	}

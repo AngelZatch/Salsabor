@@ -29,7 +29,7 @@ try{
 		if($session["session_opened"] == 0){
 			$open = $db->query("UPDATE sessions SET session_opened = 1 WHERE session_id='$session_id'");
 			$token = "SES";
-			postNotification($db, $token, $session_id, null, $now);
+			postNotification($token, $session_id, null, $now);
 		}
 	}
 
