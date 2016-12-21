@@ -128,7 +128,11 @@ function computeProduct($product_id){
 		if($new_usage_date) $compute_query .= " date_fin_utilisation = '$new_usage_date',";
 		else $compute_query .= " date_fin_utilisation = NULL,";
 	}
-	if(!$lock_status) $compute_query .= " actif = $new_status,";
+	if(!$lock_status){
+		$compute_query .= " actif = $new_status,";
+	} else {
+		$new_status = $product_details["produit_adherent_actif"];
+	}
 
 	if($new_size) $compute_query .= " volume_cours = $new_size";
 	else $compute_query .= " volume_cours = NULL";
@@ -147,7 +151,7 @@ function computeProduct($product_id){
 		"product_name" => $product_details["product_name"],
 		"user" => $product_details["user"],
 		"transaction_id" => $product_details["id_transaction"],
-		"transaction_date" => $product_details["date_achat"],
+		"date_achat" => $product_details["date_achat"],
 		"activation" => $new_activation_date,
 		"expiration" => $new_expiration_date,
 		"usage_date" => $new_usage_date,
