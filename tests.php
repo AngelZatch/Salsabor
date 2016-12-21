@@ -1,11 +1,11 @@
 <?php
 session_start();
 require_once 'functions/db_connect.php';
-include "functions/mails.php";
-include "functions/tools.php";
-include "functions/post_task.php";
-include "functions/attach_tag.php";
-include "functions/activate_product.php";
+require_once "functions/mails.php";
+//require_once "functions/tools.php";
+require_once "functions/post_task.php";
+require_once "functions/attach_tag.php";
+require_once "functions/activate_product.php";
 $db = PDOFactory::getConnection();
 ?>
 <html>
@@ -27,50 +27,69 @@ $db = PDOFactory::getConnection();
 					$loading = $loading[1] + $loading[0];
 					$start = $loading;
 					/** CODE **/
-					$noCards = $db->query("SELECT user_id FROM users u WHERE actif = 1")->fetchAll(PDO::FETCH_COLUMN);
+					$today = date("Y-m-d H:i:s");
+					$reader_token = "192.168.0.4";
+					$user_tag = "123457";
+					$values = array(
+						"passage_date" => $today,
+						"room_token" => $reader_token,
+						"user_rfid" => $user_tag
+					);
+					addParticipationTest($values);
 
 					?>
 					<pre>
 						<?php
-foreach($noCards as $user){
-	$membership_cards = $db->query("SELECT id_produit_adherent, pa.actif, date_achat, date_expiration
-							FROM produits_adherents pa
-							JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
-							JOIN produits p ON pa.id_produit_foreign = p.product_id
-							WHERE id_user_foreign = '$user' AND product_name = 'Adhésion Annuelle' ORDER BY id_produit_adherent ASC")->fetchAll();
-	echo "User : ".$user."<br>";
-	if(sizeof($membership_cards) == 0){
-		echo "No active card<br>";
+function addParticipationTest($values){
+	$db = PDOFactory::getConnection();
+	if(!isset($values["user_id"])){
+		echo "No ID, finding...<br>";
+		// We try to find the user from the details
+		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$values[user_rfid]'")->fetch(PDO::FETCH_COLUMN);
 	} else {
-		echo "Cards : ".sizeof($membership_cards)."<br>";
-		// Resetting loop variables
-		$active_card = false;
-		unset($next_activation_date);
-		// Test purposes
-		foreach($membership_cards as $card){
-			print_r($card);
-			if($card["actif"] == 0 && !$active_card){
-				if(isset($next_activation_date))
-					$activation_date = $next_activation_date;
-				else
-					$activation_date = $card["date_achat"];
-				echo "This card needs to be activated with the set date : ".$activation_date."<br>";
-				activateProduct($db, $card["id_produit_adherent"], $activation_date);
-				$active_card = true;
-			}
-			if($card["actif"] == 1){ // If the card is active, no need to search for other cards to activate
-				$active_card = true;
-			}
-			if($card["actif"] == 2){ // If the card has expired, the next one will have to be activated with this one's expiration date in mind for continued activation.
-				echo "Card expired<br>";
-				$next_activation_date = $card["date_expiration"];
-			}
-		}
-		if(!$active_card){
-			echo "No active card<br>";
-		}
-		echo "<br>";
+		$user_id = $values["user_id"];
 	}
+
+	if(!isset($values["session_id"])){
+		// We try to find the session
+		$session_id = $db->query("SELECT session_id FROM sessions s
+								JOIN rooms r ON s.session_room = r.room_id
+								JOIN readers re ON r.room_reader = re.reader_id
+								WHERE session_opened = '1' AND reader_token = '$values[room_token]'")->fetch(PDO::FETCH_COLUMN);
+
+		if($session_id != "" || $session_id != NULL)
+			$values["session_id"] = $session_id;
+	} else {
+		$session_id = $values["session_id"];
+	}
+
+	// We create the array of values the system will find
+	//$duplicate_test = $db->query("SELECT COUNT(passage_id) FROM participations WHERE (user_rfid = '$values[user_rfid]' OR user_id = $values[user_id]) AND session_id = $values[session_id]")->fetch(PDO::FETCH_COLUMN);
+
+	/*if($duplicate_test == 0){*/
+	if($user_id != "" || $user_id != NULL){
+		$values["user_id"] = $user_id;
+		if($session_id != "" || $session_id != NULL){
+			$product_id = getCorrectProductFromTags($session_id, $user_id) or NULL;
+			if($product_id != "") $status = 0; // Product found.
+			else $status = 3; // No product available
+			$values["produit_adherent_id"] = $product_id;
+		} else {
+			$status = 4; // No session has been found
+		}
+	} else {
+		$status = 5; // No user ID has been matched
+	}
+
+	$values["status"] = $status;
+
+	print_r($values);
+
+	require_once "functions/add_entry.php";
+	addEntry("participations", $values);
+	/*}*/
+
+	echo "$";
 }
 ?>
 					</pre>
