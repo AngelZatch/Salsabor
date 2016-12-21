@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 parse_str($_GET["filter_token"], $filter_token);
 
-$query = "SELECT *, pa.actif AS produit_adherent_actif, pa.date_activation AS produit_adherent_activation, CONCAT(user_prenom, ' ', user_nom) AS user, user_id, date_prolongee, date_fin_utilisation, date_expiration, date_achat
+$query = "SELECT *, pa.actif AS produit_adherent_actif, pa.date_activation AS produit_adherent_activation, CONCAT(user_prenom, ' ', user_nom) AS user, user_id, date_prolongee, date_fin_utilisation, date_expiration, date_achat, lock_status, lock_dates
 					FROM produits_adherents pa
 					JOIN produits p
 						ON pa.id_produit_foreign = p.product_id
@@ -47,7 +47,9 @@ while($product = $load->fetch(PDO::FETCH_ASSOC)){
 		"price" => $product["prix_achat"],
 		"product_size" => $product["product_size"],
 		"user" => (isset($product["user"]))?$product["user"]:"Pas d'utilisateur",
-		"status" => $product["produit_adherent_actif"]
+		"status" => $product["produit_adherent_actif"],
+		"lock_status" => $product["lock_status"],
+		"lock_dates" => $product["lock_dates"]
 	);
 	array_push($products_list, $p);
 }

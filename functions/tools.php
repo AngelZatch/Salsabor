@@ -1,6 +1,8 @@
 <?php
+require_once "db_connect.php";
 if(!isset($_SESSION))
 	session_start();
+
 function addParticipationBeta($values){
 	$db = PDOFactory::getConnection();
 	if(!isset($values["user_id"])){
@@ -30,7 +32,7 @@ function addParticipationBeta($values){
 	if($user_id != "" || $user_id != NULL){
 		$values["user_id"] = $user_id;
 		if($session_id != "" || $session_id != NULL){
-			$product_id = getCorrectProductFromTags($session_id, $user_id) or NULL;
+			$product_id = getCorrectProductFromTags($session_id, $user_id) or NULL; // As of Dec. 21 2016, needs testing
 			if($product_id != "") $status = 0; // Product found.
 			else $status = 3; // No product available
 			$values["produit_adherent_id"] = $product_id;

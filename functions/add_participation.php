@@ -1,6 +1,6 @@
 <?php
 require_once "db_connect.php";
-include "tools.php";
+require_once "tools.php";
 $db = PDOFactory::getConnection();
 
 $user_id = $_POST["user_id"];
