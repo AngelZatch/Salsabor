@@ -276,6 +276,13 @@ function displayEligibleProducts(data){
 	return body;
 }
 
+// Forcefully expires a product
+function expireProduct(product_id){
+	$.post("functions/expire_product.php", {product_id : product_id}).done(function(){
+		computeRemainingHours(product_id, true);
+	})
+}
+
 /** Fetch the purchase : products and maturities of the purchase **/
 function fetchMaturities(purchase_id){
 	return $.post("functions/fetch_maturities.php", {purchase_id : purchase_id});
@@ -510,7 +517,7 @@ function renderProductModal(modal, product_details, participations_list){
 	} else {
 		var expiredAffix = "enabled";
 	}
-	buttons += "<button class='btn btn-default btn-block btn-modal "+expiredAffix+"' id='manual-expire' onclick='deactivateProduct("+product_details.id+", 2)'><span class='glyphicon glyphicon-hourglass'></span> Expirer</button>";
+	buttons += "<button class='btn btn-default btn-block btn-modal "+expiredAffix+"' id='manual-expire' onclick='expireProduct("+product_details.id+")'><span class='glyphicon glyphicon-hourglass'></span> Expirer</button>";
 	buttons += "<button class='btn btn-danger btn-block btn-modal trigger-sub' id='delete-product' data-subtype='delete-product' data-product='"+product_details.id+"'><span class='glyphicon glyphicon-trash'></span> Supprimer</button>";
 	buttons += "<h2 class='modal-body-title'>Verrous</h2>";
 	// Button to toggle automatic computing of this product.

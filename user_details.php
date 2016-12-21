@@ -168,7 +168,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						<div class="form-group">
 							<label for="date_inscription" class="control-label col-sm-3">Date d'inscription</label>
 							<div class="col-sm-9">
-								<input type="text" name="date_inscription" id="register_date" class="form-control">
+								<input type="text" name="date_inscription" id="register_date" class="form-control" placeholder="Date d'inscription">
 							</div>
 						</div>
 						<div class="form-group">
@@ -267,15 +267,19 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 			$(document).ready(function(){
 				initial_tags = createTagsArray();
 				console.log(initial_tags);
-				$("#birthdate").datetimepicker({
-					format: "DD/MM/YYYY",
-					defaultDate: "<?php echo (isset($details["date_naissance"]))?date_create($details['date_naissance'])->format("m/d/Y"):false;?>",
-					locale: "fr"
-				});
-				$("#register_date").datetimepicker({
-					format: "DD/MM/YYYY",
-					defaultDate: "<?php echo $details["date_inscription"];?>",
-					locale: "fr"
+				var user_id = /([0-9]+)/.exec(top.location.pathname)[0];
+				$.get("functions/fetch_user_details.php", {user_id : user_id}).done(function(data){
+					var user_dates = JSON.parse(data);
+					$("#birthdate").datetimepicker({
+						format: "DD/MM/YYYY",
+						defaultDate: user_dates.date_naissance,
+						locale: "fr"
+					});
+					$("#register_date").datetimepicker({
+						format: "DD/MM/YYYY",
+						defaultDate: user_dates.date_inscription,
+						locale: "fr"
+					});
 				});
 
 				$("#certificat-input").fileinput({
