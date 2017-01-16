@@ -56,6 +56,8 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 						<?php if($is_teacher == 1){ ?>
 						<!--<li role="presentation"><a>Cours donnés</a></li>-->
 						<li role="presentation"><a href="user/<?php echo $user_id;?>/tarifs">Tarifs</a></li>
+						<li role="presentation"><a href="user/<?php echo $user_id;?>/facturation">Facturation</a></li>
+
 						<!--<li role="presentation"><a>Statistiques</a></li>-->
 						<?php } ?>
 						<li role="presentation"><a href="user/<?php echo $user_id;?>/abonnements">Abonnements</a></li>

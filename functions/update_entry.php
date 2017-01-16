@@ -18,9 +18,10 @@ $primary_key = $db->query("SHOW INDEX FROM $table_name WHERE Key_name = 'PRIMARY
 $query = "UPDATE $table_name SET ";
 foreach($values as $column => $value){
 	// Have to solve users to their ID if needed here.
-	$id_solving_tokens = array("session_teacher", "event_handler", "booking_holder", "booking_handler", "task_recipient", "transaction_handler");
+	$id_solving_tokens = array("session_teacher", "event_handler", "booking_holder", "booking_handler", "task_recipient", "transaction_handler", "prestation_handler");
 	if(in_array($column, $id_solving_tokens)){
 		$value = solveAdherentToId($value);
+		$handler_id = $value;
 	}
 	// Have to solve the reader ID of the room
 	if($column == "room_reader"){
@@ -51,6 +52,16 @@ foreach($values as $column => $value){
 		}
 	} else {
 		$value = htmlspecialchars($value);
+	}
+	// If the table is sessions or prestations, we have to solve the invoice too
+	if(($table_name == "sessions" || $table_name == "prestations") && !isset($values["invoice_id"])){
+		if(preg_match("/start/i", $column)){
+			if($value != null){
+				// Get the month of the date
+				$period = date("Y-m-01", strtotime($value));
+				$db->query("UPDATE $table_name SET invoice_id = (SELECT invoice_id FROM invoices WHERE invoice_seller_id = $handler_id AND invoice_period = '$period') WHERE $primary_key[Column_name] = '$entry_id'");
+			}
+		}
 	}
 	if($value != NULL)
 		$query .= "$column = ".$db->quote($value);

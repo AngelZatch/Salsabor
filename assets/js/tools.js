@@ -679,10 +679,16 @@ $(document).ready(function(){
 	modal.find(".archive-data").on('click', function(){
 		$.when(updateColumn(table, "archived", 1, entry_id)).done(function(data){
 			$(".user-legend").append("<span class='archived-state'>(Archivé)</span>");
-			button.replaceWith("<span class='col-xs-1 glyphicon glyphicon-folder-open glyphicon-button glyphicon-button-alt glyphicon-button-big dearchive-data' title='Désarchiver' data-entry='"+entry_id+"' data-table='users'></span>");
+			if(top.location.pathname === "/Salsabor/regularisation/participations/all"){
+				$("#participation-"+entry_id).remove();
+				var current_count = $(".irregular-participations-title>span").text();
+				$(".irregular-participations-title>span").text(--current_count);
+			} else {
+				button.replaceWith("<span class='col-xs-1 glyphicon glyphicon-folder-open glyphicon-button glyphicon-button-alt glyphicon-button-big dearchive-data' title='Désarchiver' data-entry='"+entry_id+"' data-table='users'></span>");
+			}
 			modal.modal('hide');
 			logAction(table, "Archivage", entry_id);
-			showNotification("Utilisateur archivé", "Success");
+			showNotification("Entrée archivée", "Success");
 		})
 	})
 }).on('hide.bs.modal', '#archive-modal', function(e){
@@ -691,9 +697,13 @@ $(document).ready(function(){
 	var entry_id = $(this).data('entry'), table = $(this).data('table');
 	$.when(updateColumn(table, "archived", 0, entry_id)).done(function(data){
 		$(".archived-state").empty();
-		$(".dearchive-data").replaceWith("<span class='col-xs-1 glyphicon glyphicon-folder-close glyphicon-button glyphicon-button-alt glyphicon-button-big' title='Archiver' data-toggle='modal' data-target='#archive-modal' data-entry='"+entry_id+"' data-table='users'></span>");
+		if(top.location.pathname === "/Salsabor/regularisation/participations/old"){
+			$("#participation-"+entry_id).remove();
+		} else {
+			$(".dearchive-data").replaceWith("<span class='col-xs-1 glyphicon glyphicon-folder-close glyphicon-button glyphicon-button-alt glyphicon-button-big' title='Archiver' data-toggle='modal' data-target='#archive-modal' data-entry='"+entry_id+"' data-table='users'></span>");
+		}
 		logAction(table, "Désarchivage", entry_id);
-		showNotification("Utilisateur désarchivé", "Success");
+		showNotification("Entrée désarchivée", "Success");
 	})
 }).on('click', '.selectable', function(){
 	var selected = $(this);
@@ -745,7 +755,7 @@ function notifCoursParticipants(firstCount){
 			}
 			$("#badge-participations").show();
 			$("#badge-participations").html(data);
-			$(".irregular-participations-title>span").text(data);
+			/*$(".irregular-participations-title>span").text(data);*/
 		}
 	})
 }
@@ -1136,4 +1146,20 @@ function provideAutoComplete(target, filter){
 			}
 		}]);
 	});
+}
+
+function fillInvoiceSelect(DOMContainer, user_credentials, select_id){
+	$(DOMContainer).empty();
+	$.get("functions/fetch_user_invoices.php", {user_credentials : user_credentials}).done(function(data){
+		if(data){
+			var options = JSON.parse(data);
+			for(var i = 0; i < options.length; i++){
+				$(DOMContainer).append(
+					$("<option></option>").text(options[i].token).val(options[i].value)
+				);
+			}
+			if(select_id)
+				$(DOMContainer).val(select_id).change();
+		}
+	})
 }

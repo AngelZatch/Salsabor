@@ -3,6 +3,7 @@ include "db_connect.php";
 $db = PDOFactory::getConnection();
 
 $user_id = $_GET["user_id"];
+$archive = $_GET["archive"];
 
 $load = $db->query("SELECT pr.passage_id, pr.passage_date, pr.status, s.session_id, s.session_name, s.session_start, s.session_end, p.product_name, pa.date_expiration, pa.date_fin_utilisation, pa.date_prolongee, p.product_size, pa.volume_cours, r.room_name AS reader_room_name, r2.room_name AS session_room_name, u.user_rfid, pr.room_token FROM participations pr
 					LEFT JOIN readers re ON pr.room_token = re.reader_token
@@ -12,8 +13,9 @@ $load = $db->query("SELECT pr.passage_id, pr.passage_date, pr.status, s.session_
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.product_id
 					LEFT JOIN sessions s ON pr.session_id = s.session_id
 					LEFT JOIN rooms r2 ON s.session_room = r.room_id
-					WHERE (pr.status = 0 OR pr.status = 3 OR (pr.status = 2 AND (produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0)))
+					WHERE (pr.status != 2 OR (pr.status = 2 AND (produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0)))
 					AND pr.user_id = '$user_id'
+					AND pr.archived = $archive
 					GROUP BY pr.passage_id
 					ORDER BY pr.passage_id DESC");
 

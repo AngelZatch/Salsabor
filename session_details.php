@@ -47,6 +47,8 @@ $labels = $db->query("SELECT * FROM assoc_session_tags us
 $user_labels = $db->query("SELECT * FROM tags_user");
 
 $rates = $db->query("SELECT * FROM teacher_rates WHERE user_id_foreign = $cours[user_id]");
+
+$invoices = $db->query("SELECT * FROM invoices WHERE invoice_seller_id = $cours[user_id]");
 ?>
 <html>
 	<head>
@@ -168,6 +170,17 @@ $rates = $db->query("SELECT * FROM teacher_rates WHERE user_id_foreign = $cours[
 											<?php while($rate = $rates->fetch(PDO::FETCH_ASSOC)){ ?>
 											<option <?php if($rate["rate_id"] == $cours["teacher_rate"]) echo "selected='selected'";?> value="<?php echo $rate["rate_id"];?>"><?php echo $rate["rate_title"]." (".$rate["rate_value"]."€/".$rate["rate_ratio"].")";?></option>
 											<?php } ?>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="invoice_id" class="col-lg-3 control-label">Facture professeur</label>
+									<div class="col-lg-9">
+										<select name="invoice_id" id="invoice-select" class="form-control">
+										<option>Choisissez une facture</option>
+										<?php while($invoice = $invoices->fetch()){?>
+										<option <?php if($invoice["invoice_id"] == $cours["invoice_id"]) echo "selected='selected'";?> value="<?php echo $invoice["invoice_id"];?>"><?php echo $invoice["invoice_token"];?></option>
+										<?php } ?>
 										</select>
 									</div>
 								</div>
@@ -525,6 +538,7 @@ $rates = $db->query("SELECT * FROM teacher_rates WHERE user_id_foreign = $cours[
 						}
 					}
 				})
+				fillInvoiceSelect($("#invoice-select"), to_match);
 			})
 
 			function changeGroupButtonMessage(delta_steps){

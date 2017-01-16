@@ -14,12 +14,14 @@ $db = PDOFactory::getConnection();
 - Set products as expired
 - Show/Hide promotions
 - Watch for active/inactive users
+- Archive old participations
 - Clean obsolete notifications
 It's executed once per day, at night because some operations (like computing all active products) might take some time.
 cron line : cron : * 1 * * * /opt/lampp/bin/php /opt/lampp/htdocs/Salsabor/functions/schedule/system_operations.php
 (will be executed daily at 1am)
 **/
 
+$when = new DateTime();
 $compare_start = date("Y-m-d");
 $activationLimit = date("Y-m-d H:i:s", strtotime($compare_start.'-1YEAR'));
 
@@ -112,6 +114,17 @@ try{
 } catch(PDOException $e){
 	$db->rollBack();
 	echo $e->getMessage();
+}
+
+try{
+	$age = $db->query("SELECT setting_value FROM settings WHERE setting_code = 'archiv_part'")->fetch(PDO::FETCH_COLUMN);
+	$delta = "P".$age."M";
+	$when->sub(new dateinterval($delta));
+	$when = $when->format("Y-m-d H:i:s");
+
+	$db->query("UPDATE participations pr SET archived = 1
+				WHERE (pr.status != 2 OR (pr.status = 2 AND produit_adherent_id IS NULL))
+				AND passage_date < '$date'");
 }
 
 // We delete "old" notifications about closed sessions

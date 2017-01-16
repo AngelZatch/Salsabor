@@ -67,7 +67,7 @@ $(document).ready(function(){
 	$(this).find(".add-participation").off('click');
 	$(this).find(".name-input").off();
 }).on('click', '.panel-heading-container', function(){
-	if(top.location.pathname === '/Salsabor/regularisation/participations/user'){
+	if(top.location.pathname === '/Salsabor/regularisation/participations/user/0' || top.location.pathname == '/Salsabor/regularisation/participations/user/1'){
 		var id = document.getElementById($(this).attr("id")).dataset.user;
 		$("#body-"+id).collapse("toggle");
 	} else {
@@ -343,6 +343,8 @@ function displayIrregularParticipations(participation_id, age_action){
 					break;
 
 				case '2':
+				case '4':
+				case '5':
 					if(records_list[i].product_name == "-"){
 						record_status = "status-partial-success";
 					} else {
@@ -382,20 +384,26 @@ function displayIrregularParticipations(participation_id, age_action){
 					var user_message = "Pas d'utilisateur associé";
 				}
 			}
-			contents += "<p class='panel-item-title col-sm-7 col-lg-7 bf'>"+user_message+" ("+records_list[i].id+")</p>";
+			contents += "<p class='panel-item-title col-sm-6 bf'>"+user_message+" ("+records_list[i].id+")</p>";
 
 			// Action buttons
 			// Different button depending on the status of the record
-			contents += "<div class='col-xs-12 col-sm-3 col-lg-4'>";
+			//contents += "<div class='col-xs-12 col-sm-3 col-lg-4'>";
 			if(records_list[i].status == '2'){
-				contents += "<p class='col-xs-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateParticipation("+records_list[i].id+")' title='Annuler la validation'></span></p>";
+				contents += "<p class='col-xs-2 col-sm-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-remove glyphicon-button' onclick='unvalidateParticipation("+records_list[i].id+")' title='Annuler la validation'></span></p>";
 			} else {
-				contents += "<p class='col-xs-3 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateParticipation("+records_list[i].id+")' title='Valider le passage'></span></p>";
+				contents += "<p class='col-xs-2 col-sm-1 panel-item-options' id='option-validate'><span class='glyphicon glyphicon-ok glyphicon-button' onclick='validateParticipation("+records_list[i].id+")' title='Valider le passage'></span></p>";
 			}
-			contents += "<p class='col-xs-3 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
-			contents += "<p class='col-xs-3 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
-			contents += "<p class='col-xs-3 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' id='delete-record-"+records_list[i].id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+records_list[i].id+"' data-table='participations' data-delete='#participation-"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
-			contents += "</div>";
+			contents += "<p class='col-xs-2 col-sm-1 panel-item-options'><span class='glyphicon glyphicon-credit-card glyphicon-button trigger-sub' id='change-product-"+records_list[i].id+"' data-subtype='set-participation-product' data-participation='"+records_list[i].id+"' title='Changer le produit'></span></p>";
+			contents += "<p class='col-xs-2 col-sm-1 panel-item-options'><span class='glyphicon glyphicon-eye-open glyphicon-button trigger-sub' id='change-session-"+records_list[i].id+"' data-subtype='change-participation' data-argument='"+records_list[i].id+"' title='Changer le cours'></span></p>";
+			// Archive
+			if(records_list[i].archived == '0'){
+				contents += "<p class='col-xs-2 col-sm-1 panel-item-options'><span class='glyphicon glyphicon-folder-close glyphicon-button' id='archive-participation-"+records_list[i].id+"' title='Archiver la participation' data-toggle='modal' data-target='#archive-modal' data-entry='"+records_list[i].id+"' data-table='participations'></span></p>";
+			} else {
+				contents += "<p class='col-xs-2 col-sm-1 panel-item-options'><span class='glyphicon glyphicon-folder-open glyphicon-button dearchive-data' id='dearchive-participation-"+records_list[i].id+"' title='Désarchiver la participation' data-entry='"+records_list[i].id+"' data-table='participations'></span></p>";
+			}
+			contents += "<p class='col-xs-2 col-sm-1 panel-item-options'><span class='glyphicon glyphicon-trash glyphicon-button' id='delete-record-"+records_list[i].id+"' data-toggle='modal' data-target='#delete-modal' data-entry='"+records_list[i].id+"' data-table='participations' data-delete='#participation-"+records_list[i].id+"' title='Supprimer le passage'></span></p>";
+			//contents += "</div>";
 			contents += "</div>";
 
 			contents += "<div class='row irregular-record-details'>";
@@ -463,8 +471,8 @@ function displayIrregularParticipations(participation_id, age_action){
 	})
 }
 
-function displayIrregularUsers(){
-	$.get("functions/fetch_irregular_users.php").done(function(data){
+function displayIrregularUsers(archive){
+	$.get("functions/fetch_irregular_users.php", {archive : archive}).done(function(data){
 		var user_list = JSON.parse(data);
 		console.log(user_list);
 		var contents = "";
@@ -486,8 +494,8 @@ function displayIrregularUsers(){
 	})
 }
 
-function displayIrregularUserParticipations(user_id){
-	$.get("functions/fetch_irregular_user_participations.php", {user_id : user_id}).done(function(data){
+function displayIrregularUserParticipations(user_id, archive){
+	$.get("functions/fetch_irregular_user_participations.php", {user_id : user_id, archive : archive}).done(function(data){
 		$("#list-"+user_id).empty();
 		var records_list = JSON.parse(data);
 		var contents = "";
@@ -503,6 +511,8 @@ function displayIrregularUserParticipations(user_id){
 					break;
 
 				case '2':
+				case '4':
+				case '5':
 					if(records_list[i].product_name == "-"){
 						record_status = "status-partial-success";
 					} else {
@@ -798,4 +808,56 @@ function addParticipation(target_session_id, user_id){
 		displayParticipations(target_session_id);
 		showNotification("Participation ajoutée (doublons ignorés)", "success");
 	})
+}
+
+function renderParticipationWide(participation, is_waypoint){
+	var participation_status, waypoint_class = "", contents = "", photo = "assets/images/logotype-white.png";
+	switch(participation.status){
+		case '0':
+			if(participation.product_name == "-")
+				participation_status = "status-over";
+			else
+				participation_status = "status-pre-success";
+			break;
+
+		case '2':
+			if(participation.product_name == "-")
+				participation_status = "status-partial-success";
+			else
+				participation_status = "status-succes";
+			break;
+
+		case '3':
+			participation_status = "status-over";
+			break;
+	}
+	if(is_waypoint)
+		waypoint_class = "waypoint-mark";
+
+	contents += "<li class='panel-item panel-record irregular-record "+participation_status+" container-fluid col-lg-12 "+waypoint_class+"' id='participation-"+participation.id+"' data-participation='"+participation.id+"'>";
+
+	// Profile picture
+	if(participation.photo != null)
+		photo = participation.photo;
+
+	contents += "<div clas='notif-pp col-sm-2'><img src='"+photo+"' alt='"+participation.user+"'></div>";
+
+	// Details
+	contents += "<div class='row irregular-record-actions'>";
+	// User
+	var user_message = "";
+	if(participation.user != " "){
+		user_message = "<a href='user/"+participation.user_id+"'>"+participation.user+"</a>";
+	} else {
+		if(participation.card != null)
+			user_message = "Code inconnu - Pas d'utilisateur";
+		else
+			user_message = "Pas d'utilisateur associé";
+	}
+	contents += "<p class='panel-item-title col-sm-7 bf'>"+user_message+" ("+participation.id+")</p>";
+
+	// Actions
+
+
+	contents += "</li>";
 }

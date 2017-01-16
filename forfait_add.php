@@ -95,7 +95,7 @@ if(isset($_POST["add"])){
 							</div>
 						</div>
 						<div class="form-group" id="product-size-group">
-							<label for="product_size" class="col-lg-3 control-label">Volume de cours (en heures)</label>
+							<label for="product_size" class="col-lg-3 control-label">Volume de cours (en heures) <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Spécifiez 0 pour une formule illimitée"></span></label>
 							<div class="col-lg-9">
 								<input type="number" class="form-control" name="product_size" placeholder="Spécifiez 0 pour une formule illimitée.">
 							</div>

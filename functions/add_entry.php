@@ -23,7 +23,7 @@ function addEntry($table_name, Array $values){
 	}
 	$query .= " VALUES(";
 	foreach($values as $column => $value){
-		$id_solving_tokens = array("session_teacher", "event_handler", "booking_holder", "booking_handler", "task_recipient", "transaction_handler");
+		$id_solving_tokens = array("session_teacher", "event_handler", "booking_holder", "booking_handler", "task_recipient", "transaction_handler", "prestation_handler");
 		if(in_array($column, $id_solving_tokens)){
 			$value = solveAdherentToId($value);
 		}
