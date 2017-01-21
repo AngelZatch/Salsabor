@@ -105,7 +105,7 @@ if(isset($_POST["add"])){
 							<div class="col-lg-9">
 								<input type="number" class="form-control" name="validite" placeholder="Exemple : 48">
 								<label for="validite_jour" class="control-label">Jours</label>
-								<input name="validite_jour" id="validite_jour" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1"><span class="help-block">Si décoché, la durée sera calculée en semaines.</span>
+								<input name="validite_jour" id="validite_jour" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0"><span class="help-block">Si décoché, la durée sera calculée en semaines.</span>
 							</div>
 						</div>
 						<p class="sub-legend">Informations de gestion</p>

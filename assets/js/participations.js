@@ -649,9 +649,9 @@ function displayUserParticipations(data){
 			console.log("days");
 			contents += "<p class='col-xs-4 participation-details srd-product product-soon' title='Expiration prochaine : "+moment(records_list[i].product_expiration).format("DD/MM/YYYY")+"'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
 		} else if(parseFloat(records_list[i].product_hours) <= records_list[i].hours_before_exp){
-			contents += "<p class='col-xs-4 participation-details srd-product product-soon' title='Expiration prochaine : "+records_list[i].product_hours+" heures restantes'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+			contents += "<p class='col-xs-4 participation-details srd-product product-soon' title='Expiration prochaine : "+records_list[i].product_hours+" heures restantes'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+" (acheté le "+moment(records_list[i].date_achat).format("DD/MM/YYYY")+")</p>";
 		} else {
-			contents += "<p class='col-xs-4 participation-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+"</p>";
+			contents += "<p class='col-xs-4 participation-details srd-product'><span class='glyphicon glyphicon-credit-card'></span> "+records_list[i].product_name+" (acheté le "+moment(records_list[i].date_achat).format("DD/MM/YYYY")+")</p>";
 		}
 
 		contents += "</div>";

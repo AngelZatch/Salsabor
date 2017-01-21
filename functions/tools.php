@@ -53,7 +53,8 @@ function addParticipationBeta($values){
 }
 
 function computeExpirationDate($db, $date_activation, $validity, $has_holidays){
-	$validity--;
+	if($validity != 365)
+		$validity--;
 	$date_expiration = date("Y-m-d 23:59:59", strtotime($date_activation.'+'.$validity.'DAYS'));
 	if($has_holidays || $has_holidays == 1){
 		$queryHoliday = $db->prepare("SELECT * FROM holidays WHERE holiday_date >= ? AND holiday_date <= ?");
