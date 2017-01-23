@@ -54,7 +54,7 @@ foreach($values as $column => $value){
 		$value = htmlspecialchars($value);
 	}
 	// If the table is sessions or prestations, we have to solve the invoice too
-	if(($table_name == "sessions" || $table_name == "prestations") && !isset($values["invoice_id"])){
+	if(($table_name == "sessions") && !isset($values["invoice_id"])){
 		if(preg_match("/start/i", $column)){
 			if($value != null){
 				// Get the month of the date

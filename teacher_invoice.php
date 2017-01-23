@@ -36,12 +36,12 @@ function createInvoice($db, $invoice_id){
 	$pdf->MultiCell(0, 7, $invoice_details_line);
 
 	// PDF : Sessions list
-	$sessions = $db->query("SELECT session_id, session_name, session_group, session_start, session_end, rate_value, rate_ratio, invoice_token FROM sessions s
+	$sessions = $db->query("SELECT session_id, session_name, session_group, session_start, session_end, rate_value, rate_ratio, rate_title, invoice_token FROM sessions s
 			LEFT JOIN teacher_rates tr ON s.teacher_rate = tr.rate_id
 			LEFT JOIN invoices i ON s.invoice_id = i.invoice_id
 			WHERE session_teacher = $user_id
 			AND s.invoice_id = $invoice_id
-			ORDER BY session_start ASC");
+			ORDER BY rate_title ASC, session_start ASC");
 
 	$pdf->setXY(30, 54);
 	$l = 1; $current_line = 64;
@@ -58,8 +58,10 @@ function createInvoice($db, $invoice_id){
 	$total_price = 0;
 
 	$first_line = 56;
+	$rate_title = "";
 	while($session = $sessions->fetch()){
 		$pdf->SetFont('Arial', '', 11);
+
 		$participations = $db->query("SELECT COUNT(passage_id) FROM participations WHERE session_id = $session[session_id]")->fetch(PDO::FETCH_COLUMN);
 
 		switch($session["rate_ratio"]){
@@ -82,9 +84,20 @@ function createInvoice($db, $invoice_id){
 
 		// PDF : List of products
 		$current_line = $first_line + (18*$l);
-		if($current_line > 275){
+		if($current_line > 270){
 			$pdf->AddPage();
 			$l = 1; $first_line = 2; $current_line = $first_line;
+			$current_line = $first_line + (18*$l);
+		}
+
+		if($rate_title != $session["rate_title"]){
+			$l++;
+			$rate_title = $session["rate_title"];
+			$pdf->setXY(10, $current_line);
+			$pdf->SetFont('Arial', 'B', 24);
+			$infos = $session["rate_title"];
+			$infos = iconv('UTF-8', 'windows-1252', $infos);
+			$pdf->Write(0, $infos);
 			$current_line = $first_line + (18*$l);
 		}
 
@@ -134,10 +147,12 @@ function createInvoice($db, $invoice_id){
 	$l++;
 
 	// Prestations
-	$prestations = $db->query("SELECT prestation_id, prestation_start, prestation_end, prestation_address, prestation_price FROM prestations p WHERE p.invoice_id = $invoice_id
+	$prestations = $db->query("SELECT pu.prestation_id, prestation_start, prestation_end, prestation_address, price FROM prestation_users pu
+	JOIN prestations p ON pu.prestation_id = p.prestation_id
+	WHERE pu.invoice_id = $invoice_id
 	ORDER BY prestation_start ASC");
 	while($prestation = $prestations->fetch()){
-		$price = $prestation["prestation_price"];
+		$price = $prestation["price"];
 		$pdf->SetFont('Arial', '', 11);
 
 		// PDF : List of products

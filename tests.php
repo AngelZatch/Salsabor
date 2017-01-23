@@ -27,85 +27,17 @@ $db = PDOFactory::getConnection();
 					$loading = $loading[1] + $loading[0];
 					$start = $loading;
 					/** CODE **/
-<<<<<<< HEAD
-					$when = new DateTime();
-=======
-					$today = date("Y-m-d H:i:s");
-					$reader_token = "192.168.0.4";
-					$user_tag = "123457";
-					$values = array(
-						"passage_date" => $today,
-						"room_token" => $reader_token,
-						"user_rfid" => $user_tag
-					);
-					addParticipationTest($values);
->>>>>>> dev
-
+					$period_start = "2017-03-01";
+					$period_end = "2017-03-30";
+					$invoice_seller_id = 78;
+					$prestations = $db->query("SELECT pu.prestation_id FROM prestation_users pu
+			JOIN prestations p ON pu.prestation_id = p.prestation_id
+			WHERE prestation_start > '$period_start' AND prestation_end < '$period_end' AND user_id = $invoice_seller_id AND invoice_id IS NULL")->fetchAll(PDO::FETCH_COLUMN);
 					?>
 					<pre>
 						<?php
-<<<<<<< HEAD
-$age = $db->query("SELECT setting_value FROM settings WHERE setting_code = 'archiv_part'")->fetch(PDO::FETCH_COLUMN);
-$delta = "P".$age."M";
-$when->sub(new dateinterval($delta));
-$when = $when->format("Y-m-d H:i:s");
-
-$db->query("UPDATE participations pr SET archived = 1
-				WHERE (pr.status != 2 OR (pr.status = 2 AND produit_adherent_id IS NULL))
-				AND passage_date < '$when'");
-=======
-function addParticipationTest($values){
-	$db = PDOFactory::getConnection();
-	if(!isset($values["user_id"])){
-		echo "No ID, finding...<br>";
-		// We try to find the user from the details
-		$user_id = $db->query("SELECT user_id FROM users WHERE user_rfid = '$values[user_rfid]'")->fetch(PDO::FETCH_COLUMN);
-	} else {
-		$user_id = $values["user_id"];
-	}
-
-	if(!isset($values["session_id"])){
-		// We try to find the session
-		$session_id = $db->query("SELECT session_id FROM sessions s
-								JOIN rooms r ON s.session_room = r.room_id
-								JOIN readers re ON r.room_reader = re.reader_id
-								WHERE session_opened = '1' AND reader_token = '$values[room_token]'")->fetch(PDO::FETCH_COLUMN);
-
-		if($session_id != "" || $session_id != NULL)
-			$values["session_id"] = $session_id;
-	} else {
-		$session_id = $values["session_id"];
-	}
-
-	// We create the array of values the system will find
-	//$duplicate_test = $db->query("SELECT COUNT(passage_id) FROM participations WHERE (user_rfid = '$values[user_rfid]' OR user_id = $values[user_id]) AND session_id = $values[session_id]")->fetch(PDO::FETCH_COLUMN);
-
-	/*if($duplicate_test == 0){*/
-	if($user_id != "" || $user_id != NULL){
-		$values["user_id"] = $user_id;
-		if($session_id != "" || $session_id != NULL){
-			$product_id = getCorrectProductFromTags($session_id, $user_id) or NULL;
-			if($product_id != "") $status = 0; // Product found.
-			else $status = 3; // No product available
-			$values["produit_adherent_id"] = $product_id;
-		} else {
-			$status = 4; // No session has been found
-		}
-	} else {
-		$status = 5; // No user ID has been matched
-	}
-
-	$values["status"] = $status;
-
-	print_r($values);
-
-	require_once "functions/add_entry.php";
-	addEntry("participations", $values);
-	/*}*/
-
-	echo "$";
-}
->>>>>>> dev
+print_r($prestations);
+echo implode(", ", $prestations);
 ?>
 					</pre>
 

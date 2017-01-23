@@ -26,7 +26,10 @@ $db->commit();
 $db->query("UPDATE sessions SET invoice_id = $invoice_id WHERE session_start > '$period_start' AND session_end < '$period_end' AND session_teacher = $invoice_seller_id");
 
 // Associate all the corresponding prestations
-$db->query("UPDATE prestations SET invoice_id = $invoice_id WHERE prestation_start > '$period_start' AND session_end < '$period_end' AND prestation_handler = $invoice_seller_id");
+$prestations = $db->query("SELECT pu.prestation_id FROM prestation_users pu
+			JOIN prestations p ON pu.prestation_id = p.prestation_id
+			WHERE prestation_start > '$period_start' AND prestation_end < '$period_end' AND user_id = $invoice_seller_id AND invoice_id IS NULL")->fetchAll(PDO::FETCH_COLUMN);
+$db->query("UPDATE prestation_users SET invoice_id = $invoice_id WHERE prestation_id IN (".implode(", ", $prestations).")");
 
 echo $invoice_id;
 ?>

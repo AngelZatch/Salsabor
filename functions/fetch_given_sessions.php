@@ -15,7 +15,7 @@ if($filter_flag == "invoice"){
 }
 
 // Fetch sessions
-$query = "SELECT session_id, session_name, session_group, session_start, session_end, rate_value, rate_ratio, invoice_token FROM sessions s
+$query = "SELECT session_id, session_name, session_group, session_start, session_end, rate_value, rate_ratio, rate_title, invoice_token FROM sessions s
 			LEFT JOIN teacher_rates tr ON s.teacher_rate = tr.rate_id
 			LEFT JOIN invoices i ON s.invoice_id = i.invoice_id
 			WHERE session_teacher = $user_id";
@@ -27,7 +27,7 @@ if($filter_flag == "invoice"){
 	if(isset($_GET["filters"][1]))
 		$query .= " AND session_end < '$end_date'";
 }
-$query .= " ORDER BY session_start ASC";
+$query .= " ORDER BY rate_title ASC, session_start ASC";
 $load = $db->query($query);
 
 $sessions = array();
@@ -67,6 +67,7 @@ while($session = $load->fetch()){
 		"invoice" => $invoice,
 		"rate" => $session["rate_value"],
 		"ratio" => $session["rate_ratio"],
+		"rate_title" => $session["rate_title"],
 		"price" => $price,
 		"type" => "Cours"
 	);
@@ -74,11 +75,12 @@ while($session = $load->fetch()){
 }
 
 // Fetch prestations
-$query = "SELECT prestation_id, prestation_address, prestation_start, prestation_end, prestation_price, p.invoice_id, invoice_token FROM prestations p
-			LEFT JOIN invoices i ON p.invoice_id = i.invoice_id
-			WHERE prestation_handler = $user_id";
+$query = "SELECT pu.prestation_id, prestation_address, prestation_start, prestation_end, pu.price, pu.invoice_id, i.invoice_token FROM prestation_users pu
+		JOIN prestations p ON pu.prestation_id = p.prestation_id
+		LEFT JOIN invoices i ON pu.invoice_id = i.invoice_id
+		WHERE user_id = $user_id";
 if($filter_flag == "invoice"){
-	$query .= " AND p.invoice_id = $invoice_id";
+	$query .= " AND pu.invoice_id = $invoice_id";
 } else {
 	if(isset($_GET["filters"][0]))
 		$query .= " AND prestation_start > '$start_date'";
@@ -99,7 +101,7 @@ while($prestation = $load->fetch()){
 		"end" => $prestation["prestation_end"],
 		"invoice" => $invoice,
 		"address" => $prestation["prestation_address"],
-		"price" => $prestation["prestation_price"],
+		"price" => $prestation["price"],
 		"type" => "Prestation"
 	);
 	array_push($sessions, $p);

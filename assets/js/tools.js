@@ -1149,8 +1149,10 @@ function provideAutoComplete(target, filter){
 }
 
 function fillInvoiceSelect(DOMContainer, user_credentials, select_id){
+	console.log(DOMContainer);
 	$(DOMContainer).empty();
 	$.get("functions/fetch_user_invoices.php", {user_credentials : user_credentials}).done(function(data){
+	console.log(data);
 		if(data){
 			var options = JSON.parse(data);
 			for(var i = 0; i < options.length; i++){

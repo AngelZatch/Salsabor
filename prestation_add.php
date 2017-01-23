@@ -27,24 +27,14 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 					<legend><span class="glyphicon glyphicon-cd"></span> Ajouter une prestation
 						<button class="btn btn-primary btn-add">Ajouter</button>
 					</legend>
-					<form method="post" role="form" class="form-horizontal" id="prestation-add-form">
+					<form name="prestation_users" id="prestation_users" role="form" class="form-horizontal">
 						<div class="form-group">
-							<label for="prestation_handler" class="col-lg-3 control-label">Prestation de <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Vous pouvez régler les noms qui vous seront suggérés avec le sélecteur 'Suggérer parmi...'"></span></label>
-							<div class="col-lg-9">
-								<div class="input-group">
-									<div class="input-group-btn">
-										<button type="button" class="btn btn-default dropdown-toggle suggestion-text" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Suggérer parmi... <span class="caret"></span></button>
-										<ul class="dropdown-menu dropdown-custom">
-											<?php while($user_label = $user_labels->fetch(PDO::FETCH_ASSOC)){ ?>
-											<li class="completion-option"><a><?php echo $user_label["rank_name"];?></a></li>
-											<?php } ?>
-											<li class="completion-option"><a>Ne pas suggérer</a></li>
-										</ul>
-									</div>
-									<input type="text" class="form-control filtered-complete" id="complete-teacher" name="prestation_handler">
-								</div>
+							<div class="col-lg-9 col-lg-offset-3">
+								<button class="btn btn-primary add-participant btn-block" type="button">Ajouter un participant</button>
 							</div>
 						</div>
+					</form>
+					<form method="post" role="form" class="form-horizontal" id="prestation-add-form">
 						<div class="form-group">
 							<label for="prestation_start" class="col-lg-3 control-label">Début</label>
 							<div class="col-lg-9">
@@ -69,12 +59,6 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 								<textarea name="prestation_description" id="" cols="30" rows="10" class="form-control"></textarea>
 							</div>
 						</div>
-						<div class="form-group">
-							<label for="prestation_price" class="col-lg-3 control-label">Prix</label>
-							<div class="col-lg-9">
-								<input type="number" class="form-control" name="prestation_price">
-							</div>
-						</div>
 					</form>
 				</div>
 			</div>
@@ -83,6 +67,13 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 	<style>
 		.main{
 			overflow: visible;
+		}
+		.prestation-users{
+			padding-left: 0;
+		}
+
+		.add-participant{
+			margin-bottom: 10px;
 		}
 	</style>
 	<script>
@@ -103,11 +94,42 @@ $user_labels = $db->query("SELECT * FROM tags_user");
 			});
 
 		}).on('click', '.btn-add', function(){
+			var prestataires = $("#prestation_users").serialize();
 			var table = "prestations", values = $("#prestation-add-form").serialize();
 			console.log(values);
 			$.when(addEntry(table, values)).done(function(data){
-				window.location.href = "prestation/"+data;
+				var prestation_id = data;
+				$.post("functions/update_prestataires.php", {prestation_id : prestation_id, prestataires : prestataires}).done(function(data){
+					console.log(data);
+					showNotification("Prestation ajoutée", "success");
+					window.location.href = "prestation/"+prestation_id;
+				});
 			})
+		}).on('click', '.add-participant', function(){
+			var rank = $(".participant").last().data('rank');
+			if(rank) rank++;
+			else rank = 1;
+			var render = "<div class='form-group participant' id='participant-"+rank+"' data-rank='"+rank+"'>";
+			render += "<label for='presentation_handler' class='col-lg-3 control-label'>Participant</label>";
+			render += "<div class='col-lg-9 prestation-users'>";
+			render += "<div class='col-lg-4'>";
+			render += "<input type='text' class='form-control name-input complete-teacher' data-filter='Professeur' name='user_id_"+rank+"' data-rank='"+rank+"'>";
+			render += "</div>";
+			render += "<div class='col-lg-3'>";
+			render += "<select name='invoice_id_"+rank+"' id='invoice-select-"+rank+"' class='form-control'></select>";
+			render += "</div>";
+			render += "<div class='col-lg-3'>";
+			render += "<input type='number' class='form-control' name='price_"+rank+"'>";
+			render += "</div>";
+			render += "<button class='btn btn-danger delete-participant col-lg-2' type='button' id='delete_"+rank+"' data-target='"+rank+"'>Supprimer</button>";
+			render += "</div>";
+			render += "</div>";
+			$(".add-participant").parent().parent().before(render);
+		}).on('keyup change', '.complete-teacher', function(){
+			var rank = $(this).data('rank');
+			var to_match = $(this).val();
+			$("#invoice-select-"+rank+" option").remove();
+			fillInvoiceSelect($("#invoice-select-"+rank), to_match, null);
 		})
 	</script>
 	</body>

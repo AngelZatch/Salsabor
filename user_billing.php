@@ -405,11 +405,15 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 				/*$(".list").trigger("loaded");*/
 				$(".list").empty();
 				var sessions = JSON.parse(data);
-				var contents = "", total_price = 0;
+				var contents = "", total_price = 0, rate_title = "";
 				$("#filtered-sessions-number").text(sessions.length);
 				for(var i = 0; i < sessions.length; i++){
 					contents += "<div class='row session-row' id='session-"+sessions[i].id+"' data-session='"+sessions[i].id+"'>";
 					if(sessions[i].type == "Cours"){
+						if(rate_title != sessions[i].rate_title){
+							rate_title = sessions[i].rate_title;
+							contents += "<p class='bf'><span class='glyphicon glyphicon-tasks'></span> "+rate_title+": "+sessions[i].rate+"€ / "+sessions[i].ratio+"</p>";
+						}
 						contents += "<p class='col-xs-11 bf'><label class='label label-info'>"+sessions[i].type+"</label> <strong>"+sessions[i].name+"</strong></p>";
 						contents += "<a class='link-glyphicon' href='cours/"+sessions[i].id+"' title='Aller au cours'><span class='col-xs-1 glyphicon glyphicon-share-alt glyphicon-button-alt'></span></a>";
 						contents += "<p class='col-xs-4 col-md-3'><span class='glyphicon glyphicon-time'></span> "+moment(sessions[i].start).format("lll")+" - "+moment(sessions[i].end).format("HH:mm")+"</p>";

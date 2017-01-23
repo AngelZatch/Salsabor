@@ -57,7 +57,31 @@ try{
 	ADD CONSTRAINT fk_invoice_id FOREIGN KEY(invoice_id)
 	REFERENCES invoices(invoice_id)
 	ON DELETE SET NULL
-	ON UPDATE NO ACTION");*/
+	ON UPDATE NO ACTION");
+
+	$db->query("CREATE TABLE prestation_users(
+	prestation_id INT (11),
+	user_id INT (11),
+	invoice_id INT (11) DEFAULT NULL,
+	price DOUBLE (11,2) DEFAULT NULL)");*/
+
+	$db->query("ALTER TABLE prestation_users
+	ADD CONSTRAINT fk_prestation_id FOREIGN KEY(prestation_id)
+	REFERENCES prestations(prestation_id)
+	ON DELETE CASCADE
+	ON UPDATE RESTRICT");
+
+	$db->query("ALTER TABLE prestation_users
+	ADD CONSTRAINT fk_user_id FOREIGN KEY(user_id)
+	REFERENCES users(user_id)
+	ON DELETE CASCADE
+	ON UPDATE RESTRICT");
+
+	$db->query("ALTER TABLE prestation_users
+	ADD CONSTRAINT fk_invoice_id FOREIGN KEY(invoice_id)
+	REFERENCES invoices(invoice_id)
+	ON DELETE SET NULL
+	ON UPDATE NO ACTION");
 
 } catch(PDOException $e){
 	echo $e->getMessage();
