@@ -7,7 +7,7 @@ try{
 	// Create billing table for teachers
 	// The table will keep track of every invoice made to pay people. It has to contain the user who will get paid, the total price and what's being paid. It'll also contain two status and their flags : emitted and paid.
 
-	/*$db->query("CREATE TABLE invoices (
+	$db->query("CREATE TABLE invoices (
 	invoice_id INT(11) AUTO_INCREMENT PRIMARY KEY,
 	invoice_token VARCHAR(20),
 	invoice_seller_id INT(11) DEFAULT NULL,
@@ -63,7 +63,7 @@ try{
 	prestation_id INT (11),
 	user_id INT (11),
 	invoice_id INT (11) DEFAULT NULL,
-	price DOUBLE (11,2) DEFAULT NULL)");*/
+	price DOUBLE (11,2) DEFAULT NULL)");
 
 	$db->query("ALTER TABLE prestation_users
 	ADD CONSTRAINT fk_prestation_id FOREIGN KEY(prestation_id)
