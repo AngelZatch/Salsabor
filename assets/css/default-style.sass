@@ -181,6 +181,9 @@ legend
 	&:hover
 		background-color: darken($system-color, 20%)
 
+.label-prestation
+	background-color: #FF993D
+
 #colors
 	margin-top: 5px
 	text-align: center
@@ -544,6 +547,9 @@ a
 .purchase-product-subdetails>p
 	padding-top: 0 !important
 
+.list
+	padding: 0
+
 .purchase-product-list-container
 	margin-bottom: 20px
 
@@ -759,7 +765,7 @@ h2.modal-body-title.first
 .sub-modal-notification
 	position: fixed
 	@extend .sub-modal
-	z-index:1000000000000
+	z-index: 99999
 	overflow-x: hidden
 	border-radius: 0
 
@@ -770,7 +776,6 @@ h2.modal-body-title.first
 	-webkit-box-shadow: inset 0px -4px 10px 1px $system-color
 	-o-box-shadow: inset 0px -4px 10px 1px $system-color
 	box-shadow: inset 0px -4px 10px 1px $system-color
-	filter:progid:DXImageTransform.Microsoft.Shadow(color=$system-color, Direction=90, Strength=10);
 	.glyphicon-button
 		color: transparentize($salsabor-red, 0.6)
 		&:hover
@@ -901,7 +906,6 @@ div.legend:nth-child(1n+0)
 
 /** RECORDS **/
 .records-product-list
-	@extend .purchase-product-list
 	padding: 0
 
 /** NOTIFICATIONS **/
@@ -1111,7 +1115,7 @@ div.legend:nth-child(1n+0)
 	border: 2px solid black
 	cursor: pointer
 
-.room-filter, .location-filter
+.room-filter, .location-filter, .type-filter
 	cursor: pointer
 	padding: 5px 0 5px 5px
 	&.activated
@@ -1190,3 +1194,25 @@ div.legend:nth-child(1n+0)
 	@extend .notif-hour
 	font-size: .85em
 	padding-left: 5px
+
+.invoice-actions
+	display: none
+	padding-bottom: 10px
+	margin-bottom: 10px
+	border-top: 1px solid $system-color
+	border-bottom: 1px solid $system-color
+	p:first-child
+		padding-top: 10px
+		font-size: 1.2em
+		font-weight: 700
+
+.invoice-filter, .dates-filter
+	&:hover
+		opacity: 1 !important
+
+#sub-legend-helper
+	font-size: .875em
+	color: $system-color
+	letter-spacing: .04em
+	padding-left: 5px
+	font-weight: 200

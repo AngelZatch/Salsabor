@@ -53,7 +53,8 @@ function addParticipationBeta($values){
 }
 
 function computeExpirationDate($db, $date_activation, $validity, $has_holidays){
-	$validity--;
+	if($validity != 365)
+		$validity--;
 	$date_expiration = date("Y-m-d 23:59:59", strtotime($date_activation.'+'.$validity.'DAYS'));
 	if($has_holidays || $has_holidays == 1){
 		$queryHoliday = $db->prepare("SELECT * FROM holidays WHERE holiday_date >= ? AND holiday_date <= ?");
@@ -125,6 +126,7 @@ function getCorrectProductFromTags($session_id, $user_id){
 				LEFT JOIN transactions t ON pa.id_transaction_foreign = t.id_transaction
 				WHERE tag_id_foreign = $tag
 				AND id_user_foreign = $user_id
+				AND p.product_size IS NOT NULL
 				AND pa.actif != 2
 				ORDER BY date_achat DESC";
 		// If a subscription has mandatory tags that are NOT in the list of the session, they are not added to the list of compatible subscriptions.

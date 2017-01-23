@@ -1,7 +1,7 @@
 <?php
 require_once "db_connect.php";
 require_once "tools.php";
-include "cours.php";
+require_once "cours.php";
 include "fetch_session_group.php";
 
 $db = PDOFactory::getConnection();

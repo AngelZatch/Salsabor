@@ -127,8 +127,12 @@ function insertParent($db, $session_name, $weekday, $start, $end, $user_id, $roo
 }
 
 function createSession($db, $session_group_id, $session_name, $start, $end, $teacher_id, $room_id, $session_duration, $hour_fee, $priorite){
-	$insertCours = $db->prepare('INSERT INTO sessions(session_group, session_name, session_start, session_end, session_teacher, session_room, session_duration, session_price, priorite)
-			VALUES(:session_group, :intitule, :session_start, :session_end, :session_teacher, :session_room, :unite, :cout_horaire, :priorite)');
+	// Get the month of the date
+	$period = date("Y-m-01", strtotime($start));
+	$invoice_id = $db->query("SELECT invoice_id FROM invoices WHERE invoice_seller_id = $teacher_id AND invoice_period = '$period'")->fetch(PDO::FETCH_COLUMN);
+
+	$insertCours = $db->prepare('INSERT INTO sessions(session_group, session_name, session_start, session_end, session_teacher, session_room, session_duration, session_price, priorite, invoice_id)
+			VALUES(:session_group, :intitule, :session_start, :session_end, :session_teacher, :session_room, :unite, :cout_horaire, :priorite, :invoice)');
 	$insertCours->bindParam(':session_group', $session_group_id);
 	$insertCours->bindParam(':intitule', $session_name);
 	$insertCours->bindParam(':session_start', $start);
@@ -138,13 +142,46 @@ function createSession($db, $session_group_id, $session_name, $start, $end, $tea
 	$insertCours->bindParam(':unite', $session_duration);
 	$insertCours->bindParam(':cout_horaire', $hour_fee);
 	$insertCours->bindParam(':priorite', $priorite);
+	$insertCours->bindParam(':invoice', $invoice_id);
 	$insertCours->execute();
 
 	$session_id = $db->lastInsertId();
+
 	return $session_id;
 }
 
 function updateRecurrenceEndDate($db, $group_id, $new_recurrence_end){
 	$db->query("UPDATE session_groups SET parent_end_date = '$new_recurrence_end' WHERE session_group_id = $group_id");
+}
+
+function setInvoice($session_id, $invoice_id){
+	$db = PDOFactory::getConnection();
+
+	if($invoice_id == 0 || $invoice_id == NULL){
+		$teacher_id = getTeacher($session_id);
+		$start_date = getStartDate($session_id);
+		$period = date("Y-m-01", strtotime($start_date));
+
+		$invoice_id = $db->query("SELECT invoice_id FROM invoices WHERE invoice_seller_id = $teacher_id AND invoice_period = '$period'")->fetch(PDO::FETCH_COLUMN);
+	}
+	
+	if($invoice_id != null){
+		$db->query("UPDATE sessions SET invoice_id = $invoice_id WHERE session_id = $session_id");
+	} else {
+		$db->query("UPDATE sessions SET invoice_id = NULL WHERE session_id = $session_id");
+	}
+
+}
+
+function getStartDate($session_id){
+	$db = PDOFactory::getConnection();
+
+	return $db->query("SELECT session_start FROM sessions WHERE session_id = $session_id")->fetch(PDO::FETCH_COLUMN);
+}
+
+function getTeacher($session_id){
+	$db = PDOFactory::getConnection();
+
+	return $db->query("SELECT session_teacher FROM sessions WHERE session_id = $session_id")->fetch(PDO::FETCH_COLUMN);
 }
 ?>

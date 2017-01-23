@@ -9,6 +9,7 @@ RewriteRule ^vente$ catalogue.php
 RewriteRule ^reservation$ resa_add.php
 RewriteRule ^invitation$ eleve_inviter.php
 RewriteRule ^participations$ participations.php
+RewriteRule ^regularisation/participations/([A-Za-z0-9-]+)/([0-9])$ participations_irregulieres.php?display=$1&archive=$2 [NC]
 RewriteRule ^regularisation/participations/([A-Za-z0-9-]+)$ participations_irregulieres.php?display=$1 [NC]
 RewriteRule ^regularisation/forfaits$ irreg_products.php
 RewriteRule ^planning$ planning.php
@@ -30,10 +31,12 @@ RewriteRule ^my/profile$ my_profile.php
 RewriteRule ^my/products$ my_products.php
 RewriteRule ^event/new$ event_add.php
 RewriteRule ^reservation/new$ booking_add.php
+RewriteRule ^prestation/new$ prestation_add.php
 RewriteRule ^monitoring/participations$ monitoring_participations.php
 RewriteRule ^doublons$ duplicates.php
 RewriteRule ^categories-produits$ product_categories.php
 RewriteRule ^logging$ logging.php
+RewriteRule ^historique$ history.php
 
 #User Details
 RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]
@@ -43,11 +46,13 @@ RewriteRule ^user/([0-9-]+)/historique user_history.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/reservations user_reservations.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/taches user_tasks.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/tarifs user_rates.php?id=$1 [NC,L]
+RewriteRule ^user/([0-9-]+)/facturation user_billing.php?id=$1 [NC,L]
 
 RewriteRule ^forfait/([A-Za-z0-9-]+)$ product_details.php?id=$1
 RewriteRule ^cours/([A-Za-z0-9-]+)$ session_details.php?id=$1
 RewriteRule ^event/([A-Za-z0-9-]+)$ event_details.php?id=$1
 RewriteRule ^reservation/([A-Za-z0-9-]+)$ booking_details.php?id=$1
+RewriteRule ^prestation/([A-Za-z0-9-]+)$ prestation_details.php?id=$1
 RewriteRule ^taches/([A-Za-z]+)$ tasks.php?display=$1 [NC]
 RewriteRule ^tags/([A-Za-z]+)$ tags.php?type=$1 [NC]
 

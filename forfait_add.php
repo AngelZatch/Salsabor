@@ -95,7 +95,7 @@ if(isset($_POST["add"])){
 							</div>
 						</div>
 						<div class="form-group" id="product-size-group">
-							<label for="product_size" class="col-lg-3 control-label">Volume de cours (en heures)</label>
+							<label for="product_size" class="col-lg-3 control-label">Volume de cours (en heures) <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Spécifiez 0 pour une formule illimitée"></span></label>
 							<div class="col-lg-9">
 								<input type="number" class="form-control" name="product_size" placeholder="Spécifiez 0 pour une formule illimitée.">
 							</div>
@@ -105,7 +105,7 @@ if(isset($_POST["add"])){
 							<div class="col-lg-9">
 								<input type="number" class="form-control" name="validite" placeholder="Exemple : 48">
 								<label for="validite_jour" class="control-label">Jours</label>
-								<input name="validite_jour" id="validite_jour" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="1"><span class="help-block">Si décoché, la durée sera calculée en semaines.</span>
+								<input name="validite_jour" id="validite_jour" data-toggle="checkbox-x" data-size="lg" data-three-state="false" value="0"><span class="help-block">Si décoché, la durée sera calculée en semaines.</span>
 							</div>
 						</div>
 						<p class="sub-legend">Informations de gestion</p>
