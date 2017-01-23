@@ -2,13 +2,11 @@
 require_once "../functions/db_connect.php";
 $db = PDOFactory::getConnection();
 
-$time = date("Y-m-d H:i:s");
-$status = "1";
+$time = date("Y-m-d H:i:s", strtotime("-10 seconds"));
 
-$rfid = $db->prepare('SELECT user_rfid FROM participations WHERE status=? AND passage_date > ?');
-$rfid->bindParam(1, $status);
-$rfid->bindParam(2, $time);
-$rfid->execute();
+$query = "SELECT user_rfid FROM participations WHERE status = 1 AND passage_date >= '$time'";
+
+$rfid = $db->query($query);
 
 echo $rfid->fetch(PDO::FETCH_COLUMN);
 ?>
