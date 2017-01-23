@@ -1,4 +1,5 @@
 <?php
+/** WARNING : THIS WHOLE FILE IS DEPRECATED DUE TO SOME DATA TABLE HAVING BEEN DELETED -Jan 2017- **/
 require_once "db_connect.php";
 include "librairies/fpdf/fpdf.php";
 include "librairies/fpdi/fpdi.php";
@@ -50,6 +51,7 @@ function outputBookingInvoice(){
 	} else $textPriorite = 'payée';
 
 	// Obtention de l'intitulé du type de prestation
+	// DEPRECATED
 	$nomPresa = $db->query('SELECT prestations_name FROM prestations WHERE prestations_id='.$prestation)->fetch(PDO::FETCH_ASSOC);
 
 	$reservation = $nomPresa['prestations_name']."\nLe ".date_create($date_debut)->format('d/m/Y')." de ".date_create($date_debut)->format('H:i')." à ".date_create($date_fin)->format('H:i')."\nRéservation ".$textPriorite."\n".$salle['room_name'];

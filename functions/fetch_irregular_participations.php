@@ -9,7 +9,7 @@ if($participation_id == 0){
 	$participation_id = PHP_INT_MAX;
 }
 
-$query = "SELECT *, pr.user_rfid AS pr_rfid FROM participations pr
+$query = "SELECT *, pr.user_rfid AS pr_rfid, pr.archived AS pr_archived FROM participations pr
 					LEFT JOIN readers re ON pr.room_token = re.reader_token
 					LEFT JOIN rooms r ON re.reader_id = r.room_reader
 					LEFT JOIN locations l ON r.room_location = l.location_id
@@ -17,27 +17,16 @@ $query = "SELECT *, pr.user_rfid AS pr_rfid FROM participations pr
 					LEFT JOIN produits_adherents pa ON pr.produit_adherent_id = pa.id_produit_adherent
 					LEFT JOIN produits p ON pa.id_produit_foreign = p.product_id
 					LEFT JOIN sessions s ON pr.session_id = s.session_id
-					WHERE (pr.status = 0 OR pr.status = 3 OR (pr.status = 2 AND (produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0)))
-					AND location_id = $_SESSION[location]
-					AND passage_id < '$participation_id'
-					AND passage_date";
-if($age_action == 0){
-	$query .= " > ";
-}
-if($age_action == 1){
-	$query .= " < ";
-}
+					WHERE (pr.status != 2 OR (pr.status = 2 AND (produit_adherent_id IS NULL OR produit_adherent_id = '' OR produit_adherent_id = 0)))
+					AND location_id = $_SESSION[location]";
+if($age_action == 0)
+	$query .= " AND pr.archived = 0 ";
+else
+	$query .= " AND pr.archived = 1 ";
 
-// Age of participations
-$date = new DateTime();
-$age = $db->query("SELECT setting_value FROM settings WHERE setting_code = 'archiv_part'")->fetch(PDO::FETCH_COLUMN);
-$delta = "P".$age."M";
-$date->sub(new DateInterval($delta));
-$date = $date->format('Y-m-d H:i:s');
-
-$query .= "'$date' ";
-$query .= "ORDER BY pr.passage_id DESC
-					LIMIT 30";
+$query .= "AND passage_id < '$participation_id'
+			ORDER BY pr.passage_id DESC
+			LIMIT 30";
 
 /*echo $query;*/
 $load = $db->query($query);
@@ -87,6 +76,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 	}
 	$r["days_before_exp"] = $notifications_settings["days_before_exp"];
 	$r["hours_before_exp"] = $notifications_settings["hours_before_exp"];
+	$r["archived"] = $details["pr_archived"];
 	array_push($recordsList, $r);
 }
 

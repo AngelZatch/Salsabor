@@ -46,6 +46,7 @@ $rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 					<legend><span class="glyphicon glyphicon-time"></span> Planning
 						<div class="btn-toolbar float-right">
 							<a href="reservation/new" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-bookmark"></span> Ajouter une réservation</a>
+							<a href="prestation/new" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-cd"></span> Ajouter une prestation</a>
 							<a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-eye-open"></span> Ajouter un cours</a>
 							<a href="event/new" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-calendar"></span> Ajouter un événement</a>
 						</div>
@@ -58,10 +59,8 @@ $rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 							<ul class="collapse" id="location-filtering">
 								<?php foreach($locations as $location){
 	if($location["location_id"] == $_SESSION["location"]){
-		$filter = 1;
 		$selected = "activated";
 	} else{
-		$filter = 0;
 		$selected = "";
 	}
 								?>
@@ -84,6 +83,23 @@ $rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 								</div>
 								<?php }
 } ?>
+							</ul>
+						</div>
+						<div class="container-fluid col-xs-12 col-sm-4 col-lg-3">
+							<p class="filter-title" data-toggle="collapse" href="#type-filtering" title="Cliquez pour dérouler les types affichés">Types <span class="glyphicon glyphicon-menu-down float-right"></span></p>
+							<ul class="collapse" id="type-filtering">
+								<div class="type-filter activated" data-type="eso_cours">
+									<p class="filter-name"><span class="glyphicon glyphicon-eye-open"></span> Cours</p>
+								</div>
+								<div class="type-filter activated" data-type="eso_events">
+									<p class="filter-name"><span class="glyphicon glyphicon-calendar"></span> Evénement</p>
+								</div>
+								<div class="type-filter activated" data-type="eso_prestations">
+									<p class="filter-name"><span class="glyphicon glyphicon-cd"></span> Prestation</p>
+								</div>
+								<div class="type-filter activated" data-type="eso_bookings">
+									<p class="filter-name"><span class="glyphicon glyphicon-bookmark"></span> Réservation</p>
+								</div>
 							</ul>
 						</div>
 					</div>
@@ -122,6 +138,63 @@ $rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 				if(height < 350)
 					height = docHeight - xPos.top + 40;
 
+				// Event source objects
+				eso_cours = {
+					url: 'functions/calendarfeed_cours.php',
+					type: 'GET',
+					id: 'cours',
+					data: function(){
+						var filters = [];
+						$(".room-filter").each(function(){
+							if(document.getElementById($(this).attr("id")).dataset.filter == 1){
+								filters.push(document.getElementById($(this).attr("id")).dataset.room);
+							}
+						})
+						return {
+							filters: filters
+						};
+					},
+					textColor:'black',
+					error: function(data){
+						console.log(data);
+					}
+				};
+				eso_bookings = {
+					url: 'functions/calendarfeed_bookings.php',
+					type: 'GET',
+					data: function(){
+						var filters = [];
+						$(".room-filter").each(function(){
+							if(document.getElementById($(this).attr("id")).dataset.filter == 1){
+								filters.push(document.getElementById($(this).attr("id")).dataset.room);
+							}
+						})
+						return {
+							filters: filters
+						};
+					},
+					textColor: 'black',
+					error: function(data){
+						console.log(data);
+					}
+				};
+				eso_events = {
+					url: "functions/calendarfeed_events.php",
+					type: "GET",
+					textColor: "black",
+					error: function(data){
+						console.log(data);
+					}
+				};
+				eso_prestations = {
+					url: "functions/calendarfeed_prestations.php",
+					type: "GET",
+					textColor: "black",
+					error: function(data){
+						console.log(data);
+					}
+				};
+
 				// Full calendar
 				$('#calendar').fullCalendar({
 					contentHeight: height,
@@ -131,44 +204,10 @@ $rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 					editable: false,
 					eventOrder: "lieu",
 					eventSources:[
-						{
-							url: 'functions/calendarfeed_cours.php',
-							type: 'GET',
-							data: function(){
-								var filters = [];
-								$(".room-filter").each(function(){
-									if(document.getElementById($(this).attr("id")).dataset.filter == 1){
-										filters.push(document.getElementById($(this).attr("id")).dataset.room);
-									}
-								})
-								return {
-									filters: filters
-								};
-							},
-							textColor:'black',
-							error: function(data){
-								console.log(data);
-							}
-						},
-						{
-							url: 'functions/calendarfeed_bookings.php',
-							type: 'GET',
-							data: function(){
-								var filters = [];
-								$(".room-filter").each(function(){
-									if(document.getElementById($(this).attr("id")).dataset.filter == 1){
-										filters.push(document.getElementById($(this).attr("id")).dataset.room);
-									}
-								})
-								return {
-									filters: filters
-								};
-							},
-							textColor: 'black',
-							error: function(data){
-								console.log(data);
-							}
-						},
+						eso_cours,
+						eso_bookings,
+						eso_events,
+						eso_prestations,
 						{
 							url: 'functions/calendarfeed_holidays.php',
 							type: 'GET',
@@ -186,14 +225,6 @@ $rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 							},
 							textColor: 'black',
 							rendering: 'background',
-							error: function(data){
-								console.log(data);
-							}
-						},
-						{
-							url: "functions/calendarfeed_events.php",
-							type: "GET",
-							textColor: "black",
 							error: function(data){
 								console.log(data);
 							}
@@ -279,6 +310,18 @@ $rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 									$(".session-modal-details:eq(1)").append("<span>Réservation par</span>"+booking.holder);
 									$(".session-modal-details:eq(2)").append("<span>Salle</span>"+booking.room);
 									$(".sub-modal-footer").append("<a href='reservation/"+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
+								})
+							}
+							if(calEvent.type == "prestation"){
+								$.get("functions/fetch_prestation_details.php", {prestation_id : target[0]}).done(function(data){
+									var prestation = JSON.parse(data);
+									// Color change
+									$(".sub-modal-title").css("color", calEvent.color);
+									// Filling fields
+									$(".sub-modal-title").append("<span class='glyphicon glyphicon-cd'></span> "+prestation.handler);
+									$(".session-modal-details:eq(0)").append("<span>Date</span>"+moment(calEvent.start).format("ll[,] HH:mm")+" - "+moment(calEvent.end).format("ll[,] HH:mm"));
+									$(".session-modal-details:eq(1)").append("<span>Adresse</span>"+prestation.address);
+									$(".sub-modal-footer").append("<a href='prestation/"+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
 								})
 							}
 							// Showing modal once everything is done
@@ -459,6 +502,14 @@ $rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 					})
 					$("#calendar").fullCalendar('refetchEvents');
 				}
+			}).on('click', '.type-filter', function(){
+				var filter = $(this).data('type');
+				console.log(filter);
+				if($(this).hasClass("activated"))
+					$("#calendar").fullCalendar('removeEventSource', window[filter]);
+				else
+					$("#calendar").fullCalendar('addEventSource', window[filter]);
+				$(this).toggleClass("activated");
 			})
 
 			function postOrDeleteHolidays(date, duration, postOrDelete){
