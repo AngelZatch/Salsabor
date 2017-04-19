@@ -142,7 +142,10 @@ function createSession($db, $session_group_id, $session_name, $start, $end, $tea
 	$insertCours->bindParam(':unite', $session_duration);
 	$insertCours->bindParam(':cout_horaire', $hour_fee);
 	$insertCours->bindParam(':priorite', $priorite);
-	$insertCours->bindParam(':invoice', $invoice_id);
+	if($invoice_id != NULL)
+		$insertCours->bindParam(':invoice', $invoice_id);
+	else
+		$insertCours->bindValue(':invoice', NULL);
 	$insertCours->execute();
 
 	$session_id = $db->lastInsertId();
@@ -164,7 +167,7 @@ function setInvoice($session_id, $invoice_id){
 
 		$invoice_id = $db->query("SELECT invoice_id FROM invoices WHERE invoice_seller_id = $teacher_id AND invoice_period = '$period'")->fetch(PDO::FETCH_COLUMN);
 	}
-	
+
 	if($invoice_id != null){
 		$db->query("UPDATE sessions SET invoice_id = $invoice_id WHERE session_id = $session_id");
 	} else {
