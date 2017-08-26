@@ -10,11 +10,15 @@ function addCours(){
 	$user_id = solveAdherentToId($_POST["session_teacher"]);
 	if($user_id == null){
 		preg_match("/(\S*)(\s(.*))/", $_POST["session_teacher"], $matches);
-		$user_details = array(
-			"user_prenom" => $matches[1],
-			"user_nom" => $matches[3]
-		);
-		$user_id = addEntry("users", $user_details);
+        if(!$matches){
+            $user_id = null;
+        } else {
+            $user_details = array(
+                "user_prenom" => $matches[1],
+                "user_nom" => $matches[3]
+            );
+            $user_id = addEntry("users", $user_details);
+        }
 	}
 	$room_id = $_POST['lieu'];
 
@@ -129,7 +133,11 @@ function insertParent($db, $session_name, $weekday, $start, $end, $user_id, $roo
 function createSession($db, $session_group_id, $session_name, $start, $end, $teacher_id, $room_id, $session_duration, $hour_fee, $priorite){
 	// Get the month of the date
 	$period = date("Y-m-01", strtotime($start));
-	$invoice_id = $db->query("SELECT invoice_id FROM invoices WHERE invoice_seller_id = $teacher_id AND invoice_period = '$period'")->fetch(PDO::FETCH_COLUMN);
+    if($teacher_id != null){
+	    $invoice_id = $db->query("SELECT invoice_id FROM invoices WHERE invoice_seller_id = $teacher_id AND invoice_period = '$period'")->fetch(PDO::FETCH_COLUMN);
+    } else {
+        $invoice_id = null;
+    }
 
 	$insertCours = $db->prepare('INSERT INTO sessions(session_group, session_name, session_start, session_end, session_teacher, session_room, session_duration, session_price, priorite, invoice_id)
 			VALUES(:session_group, :intitule, :session_start, :session_end, :session_teacher, :session_room, :unite, :cout_horaire, :priorite, :invoice)');
