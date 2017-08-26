@@ -11,9 +11,8 @@ $id = $_GET['id'];
 $cours = $db->query("SELECT * FROM sessions s
 							JOIN rooms r ON s.session_room = r.room_id
 							JOIN locations l ON r.room_location = l.location_id
-							JOIN users u ON s.session_teacher = u.user_id
+							LEFT JOIN users u ON s.session_teacher = u.user_id
 							WHERE session_id='$id'")->fetch(PDO::FETCH_ASSOC);
-
 // Array of all the sessions from this parent.
 $all = $db->query("SELECT session_id FROM sessions WHERE session_group = $cours[session_group]")->fetchAll(PDO::FETCH_COLUMN);
 $count = sizeof($all);
@@ -46,9 +45,14 @@ $labels = $db->query("SELECT * FROM assoc_session_tags us
 
 $user_labels = $db->query("SELECT * FROM tags_user");
 
-$rates = $db->query("SELECT * FROM teacher_rates WHERE user_id_foreign = $cours[user_id]");
+if($cours['user_id']){
+    $rates = $db->query("SELECT * FROM teacher_rates WHERE user_id_foreign = $cours[user_id]");
+    $invoices = $db->query("SELECT * FROM invoices WHERE invoice_seller_id = $cours[user_id]");
+} else {
+    $rates = [];
+    $invoices = [];
+}
 
-$invoices = $db->query("SELECT * FROM invoices WHERE invoice_seller_id = $cours[user_id]");
 ?>
 <html>
 	<head>
@@ -161,8 +165,10 @@ $invoices = $db->query("SELECT * FROM invoices WHERE invoice_seller_id = $cours[
 											</div>
 											<input type="text" class="form-control filtered-complete" id="complete-teacher" name="session_teacher" value="<?php echo $cours['user_prenom']." ".$cours['user_nom'];?>">
 										</div>
+                                        <?php if($cours['user_id'] == null){?> <small class="help-block">Aucun professeur n'a été trouvé pendant la saisie. Vous pouvez le renseigner pour retrouver ses tarifs et factures.</small><?php } ?>
 									</div>
 								</div>
+                                <?php if($cours['user_id'] != null){ ?>
 								<div class="form-group">
 									<label for="teacher_rate" class="col-lg-3 control-label">Tarif</label>
 									<div class="col-lg-9">
@@ -184,6 +190,7 @@ $invoices = $db->query("SELECT * FROM invoices WHERE invoice_seller_id = $cours[
 										</select>
 									</div>
 								</div>
+                                <?php } ?>
 								<div class="form-group">
 									<label for="session_start" class="col-lg-3 control-label">Début</label>
 									<div class="col-lg-9">
@@ -403,9 +410,8 @@ $invoices = $db->query("SELECT * FROM invoices WHERE invoice_seller_id = $cours[
 						break;
 				}
 				var definitive_tags = createTagsArray();
-				console.log(initial_tags, definitive_tags);
+                console.log(initial_tags, definitive_tags);
 				$.post("functions/update_session.php", {sessions : sessions, values : form.serialize(), hook : entry_id}).done(function(data){
-					/*console.log(data);*/
 					// Attach & detach tags to other sessions
 					for(var i = 0; i < sessions.length; i++){
 						var copy_initial_tags = initial_tags;

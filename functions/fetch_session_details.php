@@ -4,7 +4,7 @@ $db = PDOFactory::getConnection();
 
 $session_id = $_GET['session_id'];
 $session_details = $db->query("SELECT s.session_id, session_name, session_start, session_end, room_name, color_value, COUNT(passage_id) AS participations_count, CONCAT(u.user_prenom, ' ', u.user_nom) AS teacher FROM sessions s
-							JOIN users u ON s.session_teacher = u.user_id
+							LEFT JOIN users u ON s.session_teacher = u.user_id
 							JOIN rooms r ON s.session_room = r.room_id
 							JOIN colors co ON r.room_color = co.color_id
 							JOIN participations pr ON s.session_id = pr.session_id
