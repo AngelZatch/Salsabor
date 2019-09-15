@@ -1,10 +1,10 @@
 <?php
+$user_id = $_SESSION['user_id'];
 $menu = $db->query("SELECT * FROM app_menus am
 					JOIN app_pages ap ON am.menu_id = ap.page_menu
 					LEFT JOIN assoc_page_tags apt ON ap.page_id = apt.page_id_foreign
 					WHERE am.is_visible = 1 AND ap.is_visible = 1
-					AND (tag_id_foreign IN (SELECT tag_id_foreign FROM assoc_user_tags WHERE user_id_foreign = $_SESSION[user_id]) OR tag_id_foreign IS NULL)
-					GROUP BY ap.page_id
+					AND (tag_id_foreign IN (SELECT tag_id_foreign FROM assoc_user_tags WHERE user_id_foreign = $user_id) OR tag_id_foreign IS NULL)
 					ORDER BY am.menu_order, ap.page_order ASC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <div class="sidebar-container hidden-xs">
