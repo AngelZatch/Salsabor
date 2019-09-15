@@ -15,3 +15,7 @@ assets/css/*.css.map
 assets/css/*.sass
 assets/css/default-style.css
 assets/js/tools.js
+
+# VSCode
+.idea
+admin-salsabor
