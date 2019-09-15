@@ -1,21 +1,23 @@
 <?php
 session_start();
 if(!isset($_SESSION["username"])){
-	header('location: portal');
+	header('location: portal.php');
 }
 include "functions/db_connect.php";
 $db = PDOFactory::getConnection();
 
+$user_id = $_SESSION['user_id'];
+
 $user_tags = $db->query("SELECT tag_id_foreign FROM assoc_user_tags aut
 					JOIN tags_user tu ON aut.tag_id_foreign = tu.rank_id
-					WHERE user_id_foreign = $_SESSION[user_id]")->fetchAll(PDO::FETCH_COLUMN);
+					WHERE user_id_foreign = $user_id")->fetchAll(PDO::FETCH_COLUMN);
 $page = str_replace("/Salsabor/", "", $_SERVER["REQUEST_URI"]);
 $page_tags = $db->query("SELECT tag_id_foreign FROM app_pages ap
 						LEFT JOIN assoc_page_tags apt ON ap.page_id = apt.page_id_foreign
 						LEFT JOIN tags_user tu ON apt.tag_id_foreign = tu.rank_id
 						WHERE page_url = '$page'")->fetchAll(PDO::FETCH_COLUMN);
 if(count(array_intersect($user_tags, $page_tags)) == 0){
-	header("Location: my/profile");
+	header("Location: my_profile.php");
 }
 
 $date = date_create('now')->format('H:i:s');

@@ -3,7 +3,7 @@ require_once "functions/db_connect.php";
 include "functions/tools.php";
 $db = PDOFactory::getConnection();
 if(isset($_SESSION["username"])){
-	header("Location: dashboard");
+	header("Location: dashboard.php");
 } else {
 	if(isset($_POST["login"])){
 		$username = stripslashes($_POST["user_login"]);
@@ -23,7 +23,7 @@ if(isset($_SESSION["username"])){
 			$_SESSION["photo"] = $credentials["photo"];
 			$_SESSION["location"] = $credentials["user_location"];
 			logAction($db, "Connexion", "users-".$credentials["user_id"]);
-			header("Location: dashboard");
+			header("Location: dashboard.php");
 		}
 	}
 }
