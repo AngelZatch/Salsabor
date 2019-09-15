@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(!isset($_SESSION["username"])){
-	header('location: portal');
+	header('location: portal.php');
 }
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
@@ -75,7 +75,7 @@ if(isset($_POST['imagebase64'])){
 								<div class="crop-step">
 									<div id="upload-demo"></div>
 									<input type="hidden" id="imagebase64" name="imagebase64">
-									<a href="my/profile#" class="btn btn-primary btn-block upload-result">Mettre à jour</a>
+									<a href="my_profile.php#" class="btn btn-primary btn-block upload-result">Mettre à jour</a>
 								</div>
 							</form>
 						</div>

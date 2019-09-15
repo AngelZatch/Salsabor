@@ -9,7 +9,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE booking_paid=0 AN
 	<div class="container-fluid">
 		<div class="hidden-sm hidden-md hidden-lg">
 			<div class="navbar-header">
-				<a href="my/profile" class="navbar-brand"><img src="assets/images/salsabor_perso.png" alt="Mon Salsabor" style="height:100%;"></a>
+				<a href="my_profile.php" class="navbar-brand"><img src="assets/images/salsabor_perso.png" alt="Mon Salsabor" style="height:100%;"></a>
 				<?php if(isset($_SESSION["username"])){ ?>
 				<button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
 					<div class="nav-pp">
@@ -26,7 +26,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE booking_paid=0 AN
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar">
-					<li><a href="my/profile" class="small-nav"><span class="glyphicon glyphicon-user"></span> Mes infos</a></li>
+					<li><a href="my_profile.php" class="small-nav"><span class="glyphicon glyphicon-user"></span> Mes infos</a></li>
 					<li><a href="my/products" class="small-nav"><span class="glyphicon glyphicon-th"></span> Ma conso</a></li>
 					<li><a class="small-nav" href="logout.php"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
 				</ul>
@@ -34,7 +34,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE booking_paid=0 AN
 		</div>
 		<div class="visible-sm visible-md visible-lg">
 			<div class="navbar-header">
-				<a href="my/profile" class="navbar-brand"><img src="assets/images/salsabor_perso.png" alt="Salsabor Gestion" style="height:100%;"></a>
+				<a href="my_profile.php" class="navbar-brand"><img src="assets/images/salsabor_perso.png" alt="Salsabor Gestion" style="height:100%;"></a>
 			</div>
 			<?php if(isset($_SESSION["username"])){ ?>
 			<ul class="nav navbar-nav navbar-right">
@@ -45,7 +45,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE booking_paid=0 AN
 						</div>
 					</a>
 					<ul class="dropdown-menu dropdown-custom">
-						<li><a href="my/profile"><span class="glyphicon glyphicon-user"></span> Mes infos</a></li>
+						<li><a href="my_profile.php"><span class="glyphicon glyphicon-user"></span> Mes infos</a></li>
 						<li><a href="my/products"><span class="glyphicon glyphicon-th"></span> Ma conso</a></li>
 						<li><a href="logout.php"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
 					</ul>
