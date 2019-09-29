@@ -2,7 +2,7 @@
 require_once "functions/db_connect.php";
 $db = PDOFactory::getConnection();
 if(isset($_SESSION["username"])){
-	header("Location: dashboard");
+	header("Location: dashboard.php");
 } else {
 	if(isset($_POST["login"])){
 		$user_id = $_POST["user_id"];
@@ -11,7 +11,7 @@ if(isset($_SESSION["username"])){
 
 		try{
 			$uploadCredentials = $db->query("UPDATE users SET login = '$username', password = '$password' WHERE user_id = '$user_id'");
-			header("Location: portal");
+			header("Location: portal.php");
 		} catch(PDOException $e){
 			$e->getMessage();
 		}

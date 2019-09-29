@@ -3,7 +3,7 @@ require_once "functions/db_connect.php";
 require_once "functions/tools.php";
 $db = PDOFactory::getConnection();
 if(isset($_SESSION["username"])){
-	header("Location: dashboard");
+	header("Location: dashboard.php");
 } else {
 	if(isset($_POST["login"])){
 		$fullname = $_POST["user_prenom"]." ".$_POST["user_nom"];
@@ -17,7 +17,7 @@ if(isset($_SESSION["username"])){
 			$uploadCredentials->bindParam(2, $password, PDO::PARAM_STR);
 			$uploadCredentials->bindParam(3, $user_id, PDO::PARAM_INT);
 			$uploadCredentials->execute();
-			header("Location: portal");
+			header("Location: portal.php");
 		} catch(PDOException $e){
 			$e->getMessage();
 		}
@@ -51,7 +51,7 @@ if(isset($_SESSION["username"])){
 						</div>
 						<input type="submit" class="btn btn-primary btn-block" name="login" value="Création">
 					</form>
-					<p class="login-help">Vous avez déjà des identifiants ? Identifiez-vous par <a href="portal">ici</a></p>
+					<p class="login-help">Vous avez déjà des identifiants ? Identifiez-vous par <a href="portal.php">ici</a></p>
 				</div>
 			</div>
 		</div>

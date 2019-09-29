@@ -5,6 +5,6 @@ include "functions/tools.php";
 $db = PDOFactory::getConnection();
 if(session_destroy()){
 	logAction($db, "Déconnexion", "users-".$_SESSION["user_id"]);
-	header("Location: dashboard");
+	header("Location: dashboard.php");
 }
 ?>
