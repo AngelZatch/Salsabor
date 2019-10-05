@@ -4,5 +4,5 @@
 		<p class="smn-title">Notifications<a class="read-all">Tout marquer comme lu</a></p>
 	</div>
 	<div class="smn-body row"></div>
-	<div class="smn-footer"><a href="notifications">Tout afficher</a></div>
+	<div class="smn-footer"><a href="notifications.php">Tout afficher</a></div>
 </div>

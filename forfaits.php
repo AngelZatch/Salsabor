@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(!isset($_SESSION["username"])){
-	header('location: portal');
+	header('location: portal.php');
 }
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
@@ -92,7 +92,7 @@ $produits = $db->query($query);
 								<p class="product-description purchase-sub">Pas de description</p>
 								<?php } ?>
 								<p class="product-price"><?php echo $produit["product_price"];?> €</p>
-								<a href="forfait/<?php echo $produit["product_id"];?>" class="btn btn-default btn-block"><span class="glyphicon glyphicon-search"></span> Détails...</a>
+								<a href="product_details.php?id=<?php echo $produit["product_id"];?>" class="btn btn-default btn-block"><span class="glyphicon glyphicon-search"><span> Détails...</a>
 							</div>
 						</div>
 					</div>

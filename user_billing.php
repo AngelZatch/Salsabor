@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(!isset($_SESSION["username"])){
-	header('location: portal');
+	header('location: portal.php');
 }
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
@@ -56,15 +56,15 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 						<li role="presentation" class="hidden-xs"><a href="user/<?php echo $user_id;?>">Informations personnelles</a></li>
 						<?php if($is_teacher == 1){ ?>
 						<!--<li role="presentation"><a>Cours donnés</a></li>-->
-						<li role="presentation"><a href="user/<?php echo $user_id;?>/tarifs">Tarifs</a></li>
-						<li role="presentation" class="active"><a href="user/<?php echo $user_id;?>/facturation">Facturation</a></li>
+						<li role="presentation"><a href="user_rates.php?id=<?php echo $user_id;?>">Tarifs</a></li>
+						<li role="presentation" class="active"><a href="user_billing.php?id=<?php echo $user_id;?>">Facturation</a></li>
 						<!--<li role="presentation"><a>Statistiques</a></li>-->
 						<?php } ?>
-						<li role="presentation"><a href="user/<?php echo $user_id;?>/abonnements">Abonnements</a></li>
-						<li role="presentation"><a href="user/<?php echo $user_id;?>/historique">Participations</a></li>
+						<li role="presentation"><a href="user_subscriptions.php?id=<?php echo $user_id;?>">Abonnements</a></li>
+						<li role="presentation"><a href="user_history.php?id=<?php echo $user_id;?>">Participations</a></li>
 						<li role="presentation"><a href="user/<?php echo $user_id;?>/achats">Achats</a></li>
-						<li role="presentation"><a href="user/<?php echo $user_id;?>/reservations">Réservations</a></li>
-						<li role="presentation"><a href="user/<?php echo $user_id;?>/taches">Tâches</a></li>
+						<li role="presentation"><a href="user_reservations.php?id=<?php echo $user_id;?>">Réservations</a></li>
+						<li role="presentation"><a href="user_tasks.php?id=<?php echo $user_id;?>">Tâches</a></li>
 					</ul>
 					<div class="container-fluid">
 						<p class="help-block">Filtrez les cours par l'une des deux façons ci-dessous. Lorsqu'une facture est sélectionnée, il est impossible de filtrer par dates.</p>
@@ -415,7 +415,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							contents += "<p class='bf'><span class='glyphicon glyphicon-tasks'></span> "+rate_title+": "+sessions[i].rate+"€ / "+sessions[i].ratio+"</p>";
 						}
 						contents += "<p class='col-xs-11 bf'><label class='label label-info'>"+sessions[i].type+"</label> <strong>"+sessions[i].name+"</strong></p>";
-						contents += "<a class='link-glyphicon' href='cours/"+sessions[i].id+"' title='Aller au cours'><span class='col-xs-1 glyphicon glyphicon-share-alt glyphicon-button-alt'></span></a>";
+						contents += "<a class='link-glyphicon' href='session_details.php?id="+sessions[i].id+"' title='Aller au cours'><span class='col-xs-1 glyphicon glyphicon-share-alt glyphicon-button-alt'><span></a>";
 						contents += "<p class='col-xs-4 col-md-3'><span class='glyphicon glyphicon-time'></span> "+moment(sessions[i].start).format("lll")+" - "+moment(sessions[i].end).format("HH:mm")+"</p>";
 						contents += "<p class='col-xs-2'><span class='glyphicon glyphicon-user'></span> "+sessions[i].participants+"</p>";
 						contents += "<p class='col-xs-2'><span class='glyphicon glyphicon-tasks'></span> "+sessions[i].rate+"€ / "+sessions[i].ratio+"</p>";

@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(!isset($_SESSION["username"])){
-	header('location: portal');
+	header('location: portal.php');
 }
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
@@ -49,15 +49,15 @@ $is_teacher = $db->query("SELECT * FROM assoc_user_tags ur
 						<li role="presentation" class="hidden-xs"><a href="user/<?php echo $user_id;?>">Informations personnelles</a></li>
 						<?php if($is_teacher == 1){ ?>
 						<!--<li role="presentation"><a>Cours donnés</a></li>-->
-						<li role="presentation"><a href="user/<?php echo $user_id;?>/tarifs">Tarifs</a></li>
-						<li role="presentation"><a href="user/<?php echo $user_id;?>/facturation">Facturation</a></li>
+						<li role="presentation"><a href="user_rates.php?id=<?php echo $user_id;?>">Tarifs</a></li>
+						<li role="presentation"><a href="user_billing.php?id=<?php echo $user_id;?>">Facturation</a></li>
 						<!--<li role="presentation"><a>Statistiques</a></li>-->
 						<?php } ?>
-						<li role="presentation"><a href="user/<?php echo $user_id;?>/abonnements">Abonnements</a></li>
-						<li role="presentation"><a href="user/<?php echo $user_id;?>/historique">Participations</a></li>
+						<li role="presentation"><a href="user_subscriptions.php?id=<?php echo $user_id;?>">Abonnements</a></li>
+						<li role="presentation"><a href="user_history.php?id=<?php echo $user_id;?>">Participations</a></li>
 						<li role="presentation"><a href="user/<?php echo $user_id;?>/achats">Achats</a></li>
-						<li role="presentation" class="active"><a href="user/<?php echo $user_id;?>/reservations">Réservations</a></li>
-						<li role="presentation"><a href="user/<?php echo $user_id;?>/taches">Tâches</a></li>
+						<li role="presentation" class="active"><a href="user_reservations.php?id=<?php echo $user_id;?>">Réservations</a></li>
+						<li role="presentation"><a href="user_tasks.php?id=<?php echo $user_id;?>">Tâches</a></li>
 					</ul>
 					<section id="resa">
 						<table class="table table-striped">

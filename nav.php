@@ -30,8 +30,8 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE booking_paid=0 AN
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar">
 					<li><a class="col-xs-3 small-nav" href="taches/user"><span class="glyphicon glyphicon-list-alt"></span> Tâches</a></li>
-					<li><a class="col-xs-3 small-nav" href="notifications"><span class="glyphicon glyphicon-bell"></span> Notifications</a></li>
-					<li><a href="user/<?php echo $_SESSION["user_id"];?>" class="col-xs-3 small-nav"><span class="glyphicon glyphicon-user"></span> Profil</a></li>
+					<li><a class="col-xs-3 small-nav" href="notifications.php"><span class="glyphicon glyphicon-bell"></span> Notifications</a></li>
+					<li><a href="user_details.php?id=<?php echo $_SESSION["user_id"];?>" class="col-xs-3 small-nav"><span class="glyphicon glyphicon-user"></span> Profil</a></li>
 					<li><a class="col-xs-3 small-nav" href="logout.php"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
 				</ul>
 			</div>
@@ -88,7 +88,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE booking_paid=0 AN
 						</div>
 					</a>
 					<ul class="dropdown-menu dropdown-custom">
-						<li><a href="user/<?php echo $_SESSION["user_id"];?>"><span class="glyphicon glyphicon-user"></span> Profil</a></li>
+						<li><a href="user_details.php?id=<?php echo $_SESSION["user_id"];?>"><span class="glyphicon glyphicon-user"></span> Profil</a></li>
 						<li><a href="logout.php"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
 					</ul>
 				</li>

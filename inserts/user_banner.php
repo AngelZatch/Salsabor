@@ -50,7 +50,7 @@
 			}
 
 			?>
-			<a href="user/<?php echo $user_id;?>/taches" id="refresh-tasks" class="<?php echo $class;?>"><span class="glyphicon glyphicon-list-alt"></span> <?php echo $message;?></a>
+			<a href="user_tasks.php?id=<?php echo $user_id;?>" id="refresh-tasks" class="<?php echo $class;?>"><span class="glyphicon glyphicon-list-alt"></span> <?php echo $message;?></a>
 		</div>
 		<div class="col-xs-6">
 			<div>

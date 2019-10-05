@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(!isset($_SESSION["username"])){
-	header('location: portal');
+	header('location: portal.php');
 }
 require_once 'functions/db_connect.php';
 $db = PDOFactory::getConnection();
@@ -40,7 +40,7 @@ $count = $db->query("SELECT passage_id FROM participations pr
 			}).on('click', '.glyphicon-button-alt', function(e){
 				e.stopPropagation();
 				var user_id = document.getElementById($(this).attr("id")).dataset.user;
-				window.top.location = "user/"+user_id+"/historique";
+				window.top.location = "user_history.php?id="+user_id;
 			})
 		</script>
 	</head>

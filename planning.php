@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(!isset($_SESSION["username"])){
-	header('location: portal');
+	header('location: portal.php');
 }
 require_once "functions/db_connect.php";
 $db = PDOFactory::getConnection();
@@ -284,7 +284,7 @@ $rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 									$(".session-modal-details:eq(2)").append("<span>Lieu</span>"+session.room);
 									$(".session-modal-details:eq(3)").append("<span>Professeur</span>"+session.teacher);
 									$(".session-modal-details:eq(4)").append("<span>Participants</span>"+session.participations_count);
-									$(".sub-modal-footer").append("<a href='cours/"+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
+									$(".sub-modal-footer").append("<a href='session_details.php?id="+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'><span> Détails...</a>");
 								})
 							}
 							if(calEvent.type == "event"){

@@ -7,7 +7,7 @@
  */
 session_start();
 if(!isset($_SESSION["username"])){
-    header('location: portal');
+    header('location: portal.php');
 }
 
 require_once 'functions/db_connect.php';

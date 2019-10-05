@@ -84,7 +84,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 		case "PRD": // Task for products
 			$sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo, product_name FROM users u JOIN produits_adherents pa ON pa.id_user_foreign = u.user_id JOIN produits p ON p.product_id = pa.id_produit_foreign WHERE id_produit_adherent ='$t[target]'")->fetch(PDO::FETCH_ASSOC);
 			$t["user_id"] = $sub_query["user_id"];
-			$t["link"] = "user/".$t["user_id"]."/abonnements";
+			$t["link"] = "user_subscriptions.php?id=".$t["user_id"];
 			$t["user"] = $sub_query["user"];
 			$t["photo"] = $sub_query["photo"];
 			$t["target_phrase"] = $sub_query["product_name"]." de ".$t["user"];

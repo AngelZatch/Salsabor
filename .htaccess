@@ -42,15 +42,15 @@ RewriteRule ^analyse$ analysis.php
 #User Details
 RewriteRule ^user/([0-9-]+)$ user_details.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/achats user_purchases.php?id=$1 [NC,L]
-RewriteRule ^user/([0-9-]+)/abonnements user_subscriptions.php?id=$1 [NC,L]
-RewriteRule ^user/([0-9-]+)/historique user_history.php?id=$1 [NC,L]
-RewriteRule ^user/([0-9-]+)/reservations user_reservations.php?id=$1 [NC,L]
+#RewriteRule ^user/([0-9-]+)/abonnements user_subscriptions.php?id=$1 [NC,L]
+#RewriteRule ^user/([0-9-]+)/historique user_history.php?id=$1 [NC,L]
+#RewriteRule ^user/([0-9-]+)/reservations user_reservations.php?id=$1 [NC,L]
 RewriteRule ^user/([0-9-]+)/taches user_tasks.php?id=$1 [NC,L]
-RewriteRule ^user/([0-9-]+)/tarifs user_rates.php?id=$1 [NC,L]
-RewriteRule ^user/([0-9-]+)/facturation user_billing.php?id=$1 [NC,L]
+#RewriteRule ^user/([0-9-]+)/tarifs user_rates.php?id=$1 [NC,L]
+#RewriteRule ^user/([0-9-]+)/facturation user_billing.php?id=$1 [NC,L]
 
-RewriteRule ^forfait/([A-Za-z0-9-]+)$ product_details.php?id=$1
-RewriteRule ^cours/([A-Za-z0-9-]+)$ session_details.php?id=$1
+#RewriteRule ^forfait/([A-Za-z0-9-]+)$ product_details.php?id=$1
+#RewriteRule ^cours/([A-Za-z0-9-]+)$ session_details.php?id=$1
 RewriteRule ^event/([A-Za-z0-9-]+)$ event_details.php?id=$1
 RewriteRule ^reservation/([A-Za-z0-9-]+)$ booking_details.php?id=$1
 RewriteRule ^prestation/([A-Za-z0-9-]+)$ prestation_details.php?id=$1

@@ -108,7 +108,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 				case "PRD":
 					$sub_sub_query = $db->query("SELECT user_id, CONCAT(user_prenom, ' ', user_nom) AS user, photo FROM users u WHERE user_id = (SELECT id_user_foreign FROM produits_adherents WHERE id_produit_adherent ='$n[sub_target]')")->fetch(PDO::FETCH_ASSOC);
 					$n["user_id"] = $sub_sub_query["user_id"];
-					$n["link"] = "user/".$n["user_id"]."/abonnements";
+					$n["link"] = "user_subscriptions.php?id=".$n["user_id"];
 					$n["photo"] = $sub_sub_query["photo"];
 					break;
 
@@ -121,7 +121,7 @@ while($details = $load->fetch(PDO::FETCH_ASSOC)){
 
 				case "CMT":
 					$sub_sub_query = $db->query("SELECT CONCAT(user_prenom, ' ', user_nom) AS user, user_id, photo FROM users u WHERE user_id = '$n[sub_target]'")->fetch(PDO::FETCH_ASSOC);
-					$n["link"] = "user/".$n["user_id"]."/taches";
+					$n["link"] = "user_tasks.php?id=".$n["user_id"]."";
 					break;
 
 				default:
