@@ -43,7 +43,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE booking_paid=0 AN
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a href="dashboard" class="navbar-brand"><img src="assets/images/logotest.png" alt="Salsabor Gestion" style="height:100%;"></a>
+				<a href="dashboard.php" class="navbar-brand"><img src="assets/images/logotest.png" alt="Salsabor Gestion" style="height:100%;"></a>
 			</div>
 			<?php if(isset($_SESSION["username"])){ ?>
 			<div class="col-sm-6 col-lg-7">

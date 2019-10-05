@@ -22,7 +22,7 @@ $transaction_id = $_GET["transaction"];
 							<button class="col-xs-6 btn btn-primary create-contract" id="contract-<?php echo $transaction_id;?>" data-transaction="<?php echo $transaction_id;?>"><span class="glyphicon glyphicon-briefcase"></span> Générer le contrat</button>
 							<button class="col-xs-6 btn btn-primary create-invoice" id="invoice-<?php echo $transaction_id;?>" data-transaction="<?php echo $transaction_id;?>"><span class="glyphicon glyphicon-file"></span> Générer la facture</button>
 						</div>
-						<a href="dashboard" role="button" class="btn btn-default btn-block">Retour au panneau principal</a>
+						<a href="dashboard.php" role="button" class="btn btn-default btn-block">Retour au panneau principal</a>
 					</div>
 				</div>
 			</div>
