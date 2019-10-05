@@ -415,7 +415,7 @@ $queryEcheances = $db->query("SELECT * FROM produits_echeances JOIN transactions
 							contents += "<p class='bf'><span class='glyphicon glyphicon-tasks'></span> "+rate_title+": "+sessions[i].rate+"€ / "+sessions[i].ratio+"</p>";
 						}
 						contents += "<p class='col-xs-11 bf'><label class='label label-info'>"+sessions[i].type+"</label> <strong>"+sessions[i].name+"</strong></p>";
-						contents += "<a class='link-glyphicon' href='session_details.php?id="+sessions[i].id+"' title='Aller au cours'><span class='col-xs-1 glyphicon glyphicon-share-alt glyphicon-button-alt'><span></a>";
+						contents += "<a class='link-glyphicon' href='session_details.php?id="+sessions[i].id+"' title='Aller au cours'><span class='col-xs-1 glyphicon glyphicon-share-alt glyphicon-button-alt'></span></a>";
 						contents += "<p class='col-xs-4 col-md-3'><span class='glyphicon glyphicon-time'></span> "+moment(sessions[i].start).format("lll")+" - "+moment(sessions[i].end).format("HH:mm")+"</p>";
 						contents += "<p class='col-xs-2'><span class='glyphicon glyphicon-user'></span> "+sessions[i].participants+"</p>";
 						contents += "<p class='col-xs-2'><span class='glyphicon glyphicon-tasks'></span> "+sessions[i].rate+"€ / "+sessions[i].ratio+"</p>";

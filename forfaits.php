@@ -92,7 +92,7 @@ $produits = $db->query($query);
 								<p class="product-description purchase-sub">Pas de description</p>
 								<?php } ?>
 								<p class="product-price"><?php echo $produit["product_price"];?> €</p>
-								<a href="product_details.php?id=<?php echo $produit["product_id"];?>" class="btn btn-default btn-block"><span class="glyphicon glyphicon-search"><span> Détails...</a>
+								<a href="product_details.php?id=<?php echo $produit["product_id"];?>" class="btn btn-default btn-block"><span class="glyphicon glyphicon-search"></span> Détails...</a>
 							</div>
 						</div>
 					</div>

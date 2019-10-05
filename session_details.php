@@ -472,7 +472,7 @@ if($cours['user_id']){
 					$("#group-edit").text("Valider les modifications d'appartenance");
 					if(delta_steps > 0){
 						if($(".next-session").hasClass("disabled")){
-							$(".next-session").replaceWith("<a href='session_details.php?id="+data+"' class='sub-legend next-session float-right'> Cours suivant <span class='glyphicon glyphicon-arrow-right'><span></a>");
+							$(".next-session").replaceWith("<a href='session_details.php?id="+data+"' class='sub-legend next-session float-right'> Cours suivant <span class='glyphicon glyphicon-arrow-right'></span></a>");
 						}
 					}
 					if(delta_steps < 0){

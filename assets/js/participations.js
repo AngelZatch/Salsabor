@@ -164,7 +164,7 @@ function displaySessions(data, fetched) {
         as_display += "<div class='container-fluid'>";
         as_display += "<p class='session-id col-xs-5'>" + active_sessions[i].title + "</p>";
         as_display += "<p class='session-date col-xs-4'><span class='glyphicon glyphicon-time'></span> Le " + session_start.format("DD/MM") + " de " + session_start.format("HH:mm") + " à " + moment(active_sessions[i].end).format("HH:mm") + "</p>";
-        as_display += "<a href='session_details.php?id=" + active_sessions[i].id + "' class='link-glyphicon session-option'><span class='glyphicon glyphicon-share-alt col-xs-1 glyphicon-button-alt glyphicon-button-big' title='Aller à la page du cours'><span></a>";
+        as_display += "<a href='session_details.php?id=" + active_sessions[i].id + "' class='link-glyphicon session-option'><span class='glyphicon glyphicon-share-alt col-xs-1 glyphicon-button-alt glyphicon-button-big' title='Aller à la page du cours'></span></a>";
         as_display += "<span class='glyphicon glyphicon-ban-circle col-xs-1 session-option close-session glyphicon-button-alt glyphicon-button-big' id='close-session-" + active_sessions[i].id + "' data-session='" + active_sessions[i].id + "' title='Fermer le cours'></span>";
         as_display += "<span class='glyphicon glyphicon-ok-sign col-xs-1 session-option validate-session glyphicon-button-alt glyphicon-button-big' id='validate-session-" + active_sessions[i].id + "' data-session='" + active_sessions[i].id + "' title='Valider tous les passages'></span></p>";
         as_display += "</div>";

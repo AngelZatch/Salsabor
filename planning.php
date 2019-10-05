@@ -48,7 +48,7 @@ $rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 							<a href="reservation/new" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-bookmark"></span> Ajouter une réservation</a>
 							<a href="prestation/new" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-cd"></span> Ajouter une prestation</a>
 							<a href="cours_add.php" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-eye-open"></span> Ajouter un cours</a>
-							<a href="event/new" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-calendar"></span> Ajouter un événement</a>
+							<a href="event_details.php?id=new" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-calendar"></span> Ajouter un événement</a>
 						</div>
 					</legend>
 					<p class="help-block">Sur périphériques tactiles, maintenez appuyé pour sélectionner un événement ou une plage horaire.</p>
@@ -284,7 +284,7 @@ $rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 									$(".session-modal-details:eq(2)").append("<span>Lieu</span>"+session.room);
 									$(".session-modal-details:eq(3)").append("<span>Professeur</span>"+session.teacher);
 									$(".session-modal-details:eq(4)").append("<span>Participants</span>"+session.participations_count);
-									$(".sub-modal-footer").append("<a href='session_details.php?id="+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'><span> Détails...</a>");
+									$(".sub-modal-footer").append("<a href='session_details.php?id="+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
 								})
 							}
 							if(calEvent.type == "event"){
@@ -297,7 +297,7 @@ $rooms = $db->query($query_rooms)->fetchAll(PDO::FETCH_ASSOC);
 									$(".session-modal-details:eq(0)").append("<span>Date</span>"+moment(calEvent.start).format("ll[,] HH:mm")+" - "+moment(calEvent.end).format("ll[,] HH:mm"));
 									$(".session-modal-details:eq(1)").append("<span>Organisateur</span>"+event.handler);
 									$(".session-modal-details:eq(2)").append("<span>Adresse</span>"+event.address);
-									$(".sub-modal-footer").append("<a href='event/"+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
+									$(".sub-modal-footer").append("<a href='event_details.php?id="+target+"' class='btn btn-default float-right btn-to-session'><span class='glyphicon glyphicon-search'></span> Détails...</a>");
 								})
 							}
 							if(calEvent.type == "reservation"){
