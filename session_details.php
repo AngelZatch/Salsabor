@@ -119,7 +119,7 @@ if($cours['user_id']){
 					<div class="container-fluid session-nav">
 						<div class="col-xs-4 col-sm-3">
 							<?php if(isset($prev)){ ?>
-							<a href="session_details.php?id=<?php echo $prev;?>" class="sub-legend prev-session"><span class="glyphicon glyphicon-arrow-left"><span> Cours précédent</a>
+							<a href="session_details.php?id=<?php echo $prev;?>" class="sub-legend prev-session"><span class="glyphicon glyphicon-arrow-left"></span> Cours précédent</a>
 							<?php } else { ?>
 							<p class="sub-legend prev-session disabled"><span class="glyphicon glyphicon-arrow-left"></span> - </p>
 							<?php } ?>
@@ -129,7 +129,7 @@ if($cours['user_id']){
 						</div>
 						<div class="col-xs-4 col-sm-3">
 							<?php if(isset($next)){ ?>
-							<a href="session_details.php?id=<?php echo $next;?>" class="sub-legend next-session float-right">Cours suivant <span class="glyphicon glyphicon-arrow-right"><span></a>
+							<a href="session_details.php?id=<?php echo $next;?>" class="sub-legend next-session float-right">Cours suivant <span class="glyphicon glyphicon-arrow-right"></span></a>
 							<?php } else { ?>
 							<p class="sub-legend next-session float-right disabled"> - <span class="glyphicon glyphicon-arrow-right"></span></p>
 							<?php } ?>

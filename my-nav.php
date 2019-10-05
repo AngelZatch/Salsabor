@@ -27,7 +27,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE booking_paid=0 AN
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar">
 					<li><a href="my_profile.php" class="small-nav"><span class="glyphicon glyphicon-user"></span> Mes infos</a></li>
-					<li><a href="my/products" class="small-nav"><span class="glyphicon glyphicon-th"></span> Ma conso</a></li>
+					<li><a href="my_products.php" class="small-nav"><span class="glyphicon glyphicon-th"></span> Ma conso</a></li>
 					<li><a class="small-nav" href="logout.php"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
 				</ul>
 			</div>
@@ -46,7 +46,7 @@ $locationsNotif = $db->query("SELECT * FROM reservations WHERE booking_paid=0 AN
 					</a>
 					<ul class="dropdown-menu dropdown-custom">
 						<li><a href="my_profile.php"><span class="glyphicon glyphicon-user"></span> Mes infos</a></li>
-						<li><a href="my/products"><span class="glyphicon glyphicon-th"></span> Ma conso</a></li>
+						<li><a href="my_products.php"><span class="glyphicon glyphicon-th"></span> Ma conso</a></li>
 						<li><a href="logout.php"><span class="glyphicon glyphicon-off"></span> Déconnexion</a></li>
 					</ul>
 				</li>
